@@ -1,0 +1,12 @@
+c-app-menu {
+  display: grid;
+  padding: var(--c-app-menu-padding);
+
+  & c-app-menu-item {
+    display: flex;
+
+    & .item {
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@import 'c-app-menu';
+
+c-app-menu[mode=vertical] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--c-app-menu-gap);
+  overflow-y: auto;
+
+  &.slot-before {
+    grid-template-rows: auto 1fr;
+  }
+
+  &.slot-after {
+    grid-template-rows: 1fr auto;
+  }
+
+  &.slot-before.slot-after {
+    grid-template-rows: auto 1fr auto;
+  }
+
+  .app-menu {
+    c-app-menu-item {
+      .dropdown {
+        .items {
+          display: none;
+          margin-left: var(--c-app-menu-padding);
+        }
+
+        &[active] {
+          & > .items {
+            display: grid;
+          }
+        }
+      }
+    }
+  }
+}

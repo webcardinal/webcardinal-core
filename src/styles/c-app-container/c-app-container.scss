@@ -1,0 +1,19 @@
+c-app-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--c-app-container-gap);
+  overflow-y: auto;
+
+  &.slot-before {
+    grid-template-rows: auto 1fr;
+  }
+
+  &.slot-after {
+    grid-template-rows: 1fr auto;
+  }
+
+  &.slot-before.slot-after {
+    grid-template-rows: auto 1fr auto;
+  }
+}
