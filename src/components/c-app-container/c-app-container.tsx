@@ -11,11 +11,14 @@ export class CAppContainer {
 
   private slots = {
     before: false,
-    after: false
+    after: false,
+    unnamed: false,
   }
 
   async componentWillLoad() {
     // manage slots
+    this.slots.unnamed = this.host.children.length > 0;
+
     for (const key of Object.keys(this.slots)) {
       if (this.host.querySelector(`[slot=${key}]`)) {
         this.slots[key] = true;
@@ -35,7 +38,7 @@ export class CAppContainer {
         : null
       ),
       <div class="container app-container">
-        <c-app-router/>
+        { this.slots.unnamed ? <slot/> : <c-app-router/> }
       </div>,
       ( this.slots.after
         ? <div class="container after">

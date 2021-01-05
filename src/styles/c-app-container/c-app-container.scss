@@ -4,6 +4,7 @@ c-app-container {
   grid-template-rows: 1fr;
   gap: var(--c-app-container-gap);
   overflow-y: auto;
+  background: var(--c-app-container-background);
 
   &.slot-before {
     grid-template-rows: auto 1fr;

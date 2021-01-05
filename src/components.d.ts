@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface CAppContainer {
     }
@@ -23,10 +24,17 @@ export namespace Components {
     }
     interface CAppRoot {
         "controller": any;
+        "history": RouterHistory;
+        "loaderElement": HTMLElement;
     }
     interface CAppRouter {
         "base": string;
+        "root": string;
         "routes": any[];
+    }
+    interface CController {
+        "history": RouterHistory;
+        "name"?: string | null;
     }
 }
 declare global {
@@ -66,6 +74,12 @@ declare global {
         prototype: HTMLCAppRouterElement;
         new (): HTMLCAppRouterElement;
     };
+    interface HTMLCControllerElement extends Components.CController, HTMLStencilElement {
+    }
+    var HTMLCControllerElement: {
+        prototype: HTMLCControllerElement;
+        new (): HTMLCControllerElement;
+    };
     interface HTMLElementTagNameMap {
         "c-app-container": HTMLCAppContainerElement;
         "c-app-loader": HTMLCAppLoaderElement;
@@ -73,6 +87,7 @@ declare global {
         "c-app-menu-item": HTMLCAppMenuItemElement;
         "c-app-root": HTMLCAppRootElement;
         "c-app-router": HTMLCAppRouterElement;
+        "c-controller": HTMLCControllerElement;
     }
 }
 declare namespace LocalJSX {
@@ -94,11 +109,18 @@ declare namespace LocalJSX {
     }
     interface CAppRoot {
         "controller"?: any;
+        "history"?: RouterHistory;
+        "loaderElement"?: HTMLElement;
     }
     interface CAppRouter {
         "base"?: string;
         "onCardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        "root"?: string;
         "routes"?: any[];
+    }
+    interface CController {
+        "history"?: RouterHistory;
+        "name"?: string | null;
     }
     interface IntrinsicElements {
         "c-app-container": CAppContainer;
@@ -107,6 +129,7 @@ declare namespace LocalJSX {
         "c-app-menu-item": CAppMenuItem;
         "c-app-root": CAppRoot;
         "c-app-router": CAppRouter;
+        "c-controller": CController;
     }
 }
 export { LocalJSX as JSX };
@@ -119,6 +142,7 @@ declare module "@stencil/core" {
             "c-app-menu-item": LocalJSX.CAppMenuItem & JSXBase.HTMLAttributes<HTMLCAppMenuItemElement>;
             "c-app-root": LocalJSX.CAppRoot & JSXBase.HTMLAttributes<HTMLCAppRootElement>;
             "c-app-router": LocalJSX.CAppRouter & JSXBase.HTMLAttributes<HTMLCAppRouterElement>;
+            "c-controller": LocalJSX.CController & JSXBase.HTMLAttributes<HTMLCControllerElement>;
         }
     }
 }

@@ -1,0 +1,24 @@
+:root {
+  /* --c-font-family: */
+  --c-padding: 1em;
+  --c-gap: 0.75em;
+}
+
+html {
+  /* <c-app-menu> */
+  --c-app-menu-gap: var(--c-gap);
+  --c-app-menu-padding: var(--c-padding);
+  --c-app-menu-min-width: 220px;
+  --c-app-menu-max-width: 100%;
+  --c-app-menu-color: #F1F1F1;
+  --c-app-menu-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
+  --c-app-menu-items-gap: calc(var(--c-gap) / 2);
+
+  /* <c-app-container> */
+  --c-app-container-gap: var(--c-gap);
+  --c-app-container-background: #F1F1F1;
+}
+
+body {
+  font-family: var(--c-font-family);
+}

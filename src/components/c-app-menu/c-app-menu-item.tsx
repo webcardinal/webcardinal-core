@@ -42,8 +42,6 @@ export class CAppMenuItem {
   };
 
   render() {
-    if (!this.item.indexed) { return null; }
-
     const { path, name, children } = this.item;
     const base = this._trimmedPath(this.base) + '/~dev-link';
     const href = this._trimmedPath(new URL(path, new URL(base, window.location.origin)).href);
@@ -57,13 +55,13 @@ export class CAppMenuItem {
       items: []
     };
 
-    // console.log({ name, base: this.base, path, url });
-
     if (children) {
       const props = { base: href, level: this.level + 1 } as any;
       children.forEach(item => {
-        props.item = item;
-        dropdown.items.push(<c-app-menu-item {...props}/>)
+        if (item.indexed) {
+          props.item = item;
+          dropdown.items.push(<c-app-menu-item {...props}/>);
+        }
       });
     }
 

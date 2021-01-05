@@ -66,7 +66,7 @@ export class CAppMenu {
           : null
         ),
         <div class="container app-menu items">
-          {this.items.map(item => <c-app-menu-item item={item}/>)}
+          { this.items.map(item => item.indexed ? <c-app-menu-item item={item}/> : null) }
         </div>,
         ( this.slots.after
           ? <div class="container after">

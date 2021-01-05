@@ -1,4 +1,5 @@
 import { Component, Element, h, Prop, State } from '@stencil/core';
+import { RouterHistory, injectHistory } from '@stencil/router';
 
 import { ApplicationController } from '../../controllers';
 import { ControllerRegistryService } from '../../services';
@@ -15,7 +16,9 @@ export class CAppRoot {
 
   @Prop() controller: any;
 
-  @State() loaderElement: HTMLElement;
+  @Prop() history: RouterHistory;
+
+  @Prop() loaderElement: HTMLElement;
 
   @State() hasSlot: boolean = false;
   @State() disconnected: boolean = false;
@@ -91,3 +94,5 @@ export class CAppRoot {
     return <slot/>;
   }
 }
+
+injectHistory(CAppRoot);

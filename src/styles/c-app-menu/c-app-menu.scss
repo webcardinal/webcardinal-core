@@ -7,6 +7,10 @@ c-app-menu {
 
     & .item {
       cursor: pointer;
+
+      &, & a {
+        color: var(--c-app-menu-color);
+      }
     }
   }
 }

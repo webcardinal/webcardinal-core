@@ -21,7 +21,7 @@ c-app-menu[mode=horizontal] {
     display: flex;
     gap: var(--c-app-menu-gap);
 
-    pskx-app-menu-item {
+    c-app-menu-item {
       .dropdown {
         .items {
           // display: none;

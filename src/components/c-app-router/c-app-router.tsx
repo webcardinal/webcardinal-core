@@ -1,6 +1,4 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
-// import { MenuItem } from '../../../interfaces/MenuItem';
-// import { ExtendedHistoryType } from '../../../interfaces/ExtendedHistoryType';
 import { promisifyEventEmit } from '../../utils';
 
 @Component({
@@ -8,21 +6,16 @@ import { promisifyEventEmit } from '../../utils';
 })
 export class CAppRouter {
 
-  @Prop() routes = [];
+  @Prop({ mutable: true }) routes = [];
 
-  @Prop() base: string = '';
+  @Prop({ mutable: true }) base: string = '';
 
-  // @Prop() historyType: ExtendedHistoryType;
+  @Prop({ mutable: true }) root: string = '';
 
   @Event({
     eventName: 'cardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter
-
-  // @Event({
-  //   eventName: 'getHistoryType',
-  //   bubbles: true, cancelable: true, composed: true
-  // }) getHistoryTypeEvent: EventEmitter;
 
   private _trimmedPath = (path) => {
     return path.endsWith('/') ? path.slice(0, -1) : path
@@ -37,8 +30,6 @@ export class CAppRouter {
         src
       }
     }
-    console.log({ src, url: props.url });
-
     return <stencil-route data-test-url={props.url} data-test-src={src} {...props}/>;
   };
 
@@ -71,20 +62,16 @@ export class CAppRouter {
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;
-      this.base = routing.pagesPathname;
-      // this.historyType = await promisifyEventEmit(this.getHistoryTypeEvent);
+      this.root = new URL(routing.baseURL).pathname;
+      this.base = new URL(routing.baseURL + routing.pagesPathname).pathname;
     } catch (error) {
       console.error(error);
     }
   }
 
-  async componentDidLoad() {
-    console.log('c-app-router loaded!');
-  }
-
   render() {
     return (
-      <stencil-router>
+      <stencil-router root={this.root + '/'}>
         <stencil-route-switch scrollTopOffset={0}>
         { this._renderRoutes(this.routes) }
         </stencil-route-switch>

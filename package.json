@@ -16,7 +16,7 @@
   "scripts": {
     "build": "stencil build --prod",
     "dev": "stencil build --dev",
-    "postdev": "rm -f ../../../../cardinal/components/router/* && cp -r ./build/dist/cardinal/* ../../../../cardinal/components/router",
+    "postdev": "rm -f ../../../../cardinal/components/core/* && cp -r ./build/dist/cardinal/* ../../../../cardinal/components/core",
     "generate": "stencil generate"
   },
   "dependencies": {},

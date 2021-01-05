@@ -5,6 +5,9 @@ c-app-menu[mode=vertical] {
   grid-template-rows: 1fr;
   gap: var(--c-app-menu-gap);
   overflow-y: auto;
+  min-width: var(--c-app-menu-min-width);
+  max-width: var(--c-app-menu-max-width);
+  background: var(--c-app-menu-background);
 
   &.slot-before {
     grid-template-rows: auto 1fr;
@@ -19,6 +22,17 @@ c-app-menu[mode=vertical] {
   }
 
   .app-menu {
+    &.items, .items {
+      display: flex;
+      flex-direction: column;
+      align-content: start;
+      row-gap: var(--c-app-menu-items-gap);
+    }
+    .items {
+      margin-top: calc(var(--c-app-menu-items-gap) * 0.65);
+      margin-bottom: var(--c-app-menu-items-gap);
+    }
+
     c-app-menu-item {
       .dropdown {
         .items {
