@@ -12,6 +12,8 @@ export class CAppRouter {
 
   @Prop({ mutable: true }) root: string = '';
 
+  @Prop({ mutable: true }) fallback: null;
+
   @Event({
     eventName: 'cardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
@@ -58,12 +60,29 @@ export class CAppRouter {
     })
   };
 
+  private _renderFallback = (fallback) => {
+    if (!fallback) {
+      return null;
+    }
+
+    const base = this._trimmedPath(this.base) + '/~dev-fallback';
+    const props = {
+      component: 'c-app-loader',
+      componentProps: {
+        src: this._trimmedPath(new URL(fallback.src, new URL(base,  window.location.origin)).href)
+      }
+    }
+    return <stencil-route {...props} />
+  }
+
+
   async componentWillLoad() {
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;
       this.root = new URL(routing.baseURL).pathname;
       this.base = new URL(routing.baseURL + routing.pagesPathname).pathname;
+      this.fallback = routing.pagesFallback;
     } catch (error) {
       console.error(error);
     }
@@ -71,9 +90,10 @@ export class CAppRouter {
 
   render() {
     return (
-      <stencil-router root={this.root + '/'}>
+      <stencil-router data-test-root={this.root + '/'} root={this.root + '/'}>
         <stencil-route-switch scrollTopOffset={0}>
-        { this._renderRoutes(this.routes) }
+          { this._renderRoutes(this.routes) }
+          { this._renderFallback(this.fallback) }
         </stencil-route-switch>
       </stencil-router>
     );

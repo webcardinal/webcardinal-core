@@ -2,7 +2,8 @@ import { Component, Element, h, Host, Prop, State } from '@stencil/core';
 
 const LOADER_TYPES = [
   'default',
-  'iframe'
+  'iframe',
+  'object'
 ]
 
 @Component({
@@ -56,18 +57,28 @@ export class CAppLoader {
       case 'iframe': {
         const attributes = {
           frameBorder: 0,
+          src: 'data:text/html;charset=utf-8, ' + escape(this.content),
           style: {
             overflow: 'hidden',
             width: '100%', height: '100%'
-          },
-          src: 'data:text/html;charset=utf-8, ' + escape(this.content)
+          }
         };
         return <iframe {...attributes}/>;
+      }
+      case 'object': {
+        const attributes = {
+          data: this.src,
+          type: 'text/html',
+          style: {
+            display: 'block',
+            width: '100%', height: '100%'
+          }
+        };
+        return <object {...attributes}/>;
       }
       default: {
         const attributes = {
           style: {
-            display: 'block',
             width: '100%', height: '100%'
           }
         }

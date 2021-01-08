@@ -29,6 +29,7 @@ export namespace Components {
     }
     interface CAppRouter {
         "base": string;
+        "fallback": null;
         "root": string;
         "routes": any[];
     }
@@ -114,6 +115,7 @@ declare namespace LocalJSX {
     }
     interface CAppRouter {
         "base"?: string;
+        "fallback"?: null;
         "onCardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
         "root"?: string;
         "routes"?: any[];
