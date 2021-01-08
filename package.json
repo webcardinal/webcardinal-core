@@ -1,7 +1,7 @@
 {
-  "name": "@webcardinal/router",
+  "name": "@webcardinal/core",
   "version": "1.0.0",
-  "description": "Cardinal components for general routing.",
+  "description": "WebCardinal components for general routing, bindable decorators and base controllers.",
   "main": "./build/dist/index.cjs.js",
   "module": "./build/dist/index.js",
   "es2015": "./build/dist/esm/index.mjs",
@@ -9,14 +9,13 @@
   "types": "./build/dist/types/index.d.ts",
   "collection": "./build/dist/collection/collection-manifest.json",
   "collection:main": "./build/dist/collection/index.js",
-  "unpkg": "./build/dist/cardinal/cardinal.js",
+  "unpkg": "./build/dist/webcardinal/webcardinal.js",
   "files": [
     "build/dist"
   ],
   "scripts": {
     "build": "stencil build --prod",
     "dev": "stencil build --dev",
-    "postdev": "rm -f ../../../../cardinal/components/core/* && cp -r ./build/dist/cardinal/* ../../../../cardinal/components/core",
     "generate": "stencil generate"
   },
   "dependencies": {},
@@ -27,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/webcardinal/cardinal-core.git"
+    "url": "git+https://github.com/webcardinal/webcardinal-core.git"
   },
   "license": "MIT"
 }

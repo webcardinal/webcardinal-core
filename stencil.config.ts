@@ -1,8 +1,8 @@
 import { Config as StencilConfig } from '@stencil/core';
-import { sass } from '@stencil/sass'
+import { sass } from '@stencil/sass';
 
 export const config: StencilConfig = {
-  namespace: 'cardinal',
+  namespace: 'webcardinal',
   globalScript: './src/globals/mode.ts',
   globalStyle: './src/globals/main.css',
   outputTargets: [
