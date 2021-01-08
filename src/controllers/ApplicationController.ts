@@ -2,7 +2,7 @@ import defaultConfig from './config/default';
 import EVENTS from './config/events';
 import fetch from '../../base/utils/fetch.js';
 
-const CONFIG_PATH = 'cardinal.json';
+const CONFIG_PATH = 'webcardinal.json';
 
 export default class ApplicationController {
   private readonly baseURL: URL;

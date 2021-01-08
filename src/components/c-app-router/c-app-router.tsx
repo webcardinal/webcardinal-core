@@ -75,7 +75,6 @@ export class CAppRouter {
     return <stencil-route {...props} />
   }
 
-
   async componentWillLoad() {
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
@@ -83,12 +82,19 @@ export class CAppRouter {
       this.root = new URL(routing.baseURL).pathname;
       this.base = new URL(routing.baseURL + routing.pagesPathname).pathname;
       this.fallback = routing.pagesFallback;
+
+      if (this.root === '/') {
+        this.root = '';
+      }
     } catch (error) {
       console.error(error);
     }
   }
 
   render() {
+    // console.log(this);
+    // TODO: URL Helper Class, for joining origins with multiple paths
+
     return (
       <stencil-router data-test-root={this.root + '/'} root={this.root + '/'}>
         <stencil-route-switch scrollTopOffset={0}>
