@@ -17,7 +17,7 @@ type PagePathname = string
 // config
 export default {
   identity: {
-    name: 'Cardinal',
+    name: 'WebCardinal',
     email: 'privatesky@axiologic.net',
     avatar: '__TODO__'
   } as Identity,

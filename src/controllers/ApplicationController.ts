@@ -204,8 +204,6 @@ export default class ApplicationController {
 
       let callback;
 
-      console.log(event, key);
-
       if (typeof event.detail === 'function') {
         callback = event.detail;
       } else if (event.detail && typeof event.detail.callback === 'function') {
@@ -234,7 +232,6 @@ export default class ApplicationController {
         console.error(error);
         return;
       }
-      console.log('rawConfig', rawConfig);
 
       this.config = this._prepareConfiguration(rawConfig);
       this.isConfigLoaded = true;
@@ -243,8 +240,6 @@ export default class ApplicationController {
         let request = this.pendingRequests.pop();
         this._provideConfiguration(request.configKey, request.callback);
       }
-
-      console.log('config', this.config);
     });
 
     element.addEventListener(EVENTS.GET_ROUTING, this._registerListener('routing'));
@@ -255,20 +250,18 @@ export default class ApplicationController {
     element.addEventListener('getThemeConfig', this._registerListener('theme'));
     window.basePath = this.baseURL.href;
 
-    const t_debugger = [
-      'getAppVersion',
-      'needRoutes',
-      'needMenuItems',
-      'getUserInfo',
-      'getHistoryType',
-      'getModals',
-      'getTags',
-      'getConfiguration',
-      'validateUrl',
-      'getCustomLandingPage'
-    ];
-    for (const t of t_debugger) element.addEventListener(t, (e) => console.log(e, t))
-
-    console.log(element);
+    // const t_debugger = [
+    //   'getAppVersion',
+    //   'needRoutes',
+    //   'needMenuItems',
+    //   'getUserInfo',
+    //   'getHistoryType',
+    //   'getModals',
+    //   'getTags',
+    //   'getConfiguration',
+    //   'validateUrl',
+    //   'getCustomLandingPage'
+    // ];
+    // for (const t of t_debugger) element.addEventListener(t, (e) => console.log(e, t))
   }
 }

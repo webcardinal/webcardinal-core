@@ -1,0 +1,16 @@
+wcc-app-menu {
+  display: grid;
+  padding: var(--wcc-app-menu-padding);
+
+  & wcc-app-menu-item {
+    display: flex;
+
+    & .item {
+      cursor: pointer;
+
+      &, & a {
+        color: var(--wcc-app-menu-color);
+      }
+    }
+  }
+}

@@ -1,10 +1,11 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
+
 import { promisifyEventEmit } from '../../utils';
 
 @Component({
-  tag: 'c-app-router'
+  tag: 'wcc-app-router'
 })
-export class CAppRouter {
+export class WccAppRouter {
 
   @Prop({ mutable: true }) routes = [];
 
@@ -15,7 +16,7 @@ export class CAppRouter {
   @Prop({ mutable: true }) fallback: null;
 
   @Event({
-    eventName: 'cardinal:config:getRouting',
+    eventName: 'webcardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter
 
@@ -27,12 +28,12 @@ export class CAppRouter {
     const props = {
       url: new URL(path).pathname,
       exact: true,
-      component: 'c-app-loader',
+      component: 'wcc-app-loader',
       componentProps: {
         src
       }
     }
-    return <stencil-route data-test-url={props.url} data-test-src={src} {...props}/>;
+    return <stencil-route {...props}/>;
   };
 
   private _renderRoutes = (routes = [], { path, src } = {
@@ -67,7 +68,7 @@ export class CAppRouter {
 
     const base = this._trimmedPath(this.base) + '/~dev-fallback';
     const props = {
-      component: 'c-app-loader',
+      component: 'wcc-app-loader',
       componentProps: {
         src: this._trimmedPath(new URL(fallback.src, new URL(base,  window.location.origin)).href)
       }
@@ -96,7 +97,7 @@ export class CAppRouter {
     // TODO: URL Helper Class, for joining origins with multiple paths
 
     return (
-      <stencil-router data-test-root={this.root + '/'} root={this.root + '/'}>
+      <stencil-router root={this.root + '/'}>
         <stencil-route-switch scrollTopOffset={0}>
           { this._renderRoutes(this.routes) }
           { this._renderFallback(this.fallback) }

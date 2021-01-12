@@ -1,9 +1,9 @@
-@import 'c-app-menu';
+@import 'wcc-app-menu';
 
-c-app-menu[mode=horizontal] {
+wcc-app-menu[mode=horizontal] {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: var(--c-app-menu-gap);
+  gap: var(--wcc-app-menu-gap);
 
   &.slot-before {
     grid-template-columns: auto 1fr;
@@ -19,13 +19,13 @@ c-app-menu[mode=horizontal] {
 
   .app-menu {
     display: flex;
-    gap: var(--c-app-menu-gap);
+    gap: var(--wcc-app-menu-gap);
 
-    c-app-menu-item {
+    wcc-app-menu-item {
       .dropdown {
         .items {
           // display: none;
-          margin-left: var(--c-app-menu-padding);
+          margin-left: var(--wcc-app-menu-padding);
         }
       }
     }

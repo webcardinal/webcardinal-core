@@ -1,13 +1,15 @@
-import { Component, Element, h } from '@stencil/core';
+import { Component, h } from '@stencil/core';
+
+import { HostElement } from '../../decorators';
 
 @Component({
-  tag: 'c-app-container',
+  tag: 'wcc-app-container',
   styleUrls: {
-    default: '../../styles/c-app-container/c-app-container.scss'
+    default: '../../styles/wcc-app-container/wcc-app-container.scss'
   }
 })
-export class CAppContainer {
-  @Element() host: HTMLElement;
+export class WccAppContainer {
+  @HostElement() host: HTMLElement;
 
   private slots = {
     before: false,
@@ -38,7 +40,7 @@ export class CAppContainer {
         : null
       ),
       <div class="container app-container">
-        { this.slots.unnamed ? <slot/> : <c-app-router/> }
+        { this.slots.unnamed ? <slot/> : <wcc-app-router/> }
       </div>,
       ( this.slots.after
         ? <div class="container after">

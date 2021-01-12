@@ -2,14 +2,14 @@ import { Component, h, Prop, State } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 
 import { HostElement } from '../../decorators';
-import { ControllerRegistryService, ControllerBindableService } from '../../services';
+import { ControllerRegistryService } from '../../services';
 
 import DefaultContainerController from '../../../base/controllers/ContainerController';
 
 @Component({
-  tag: "wcc-bindable"
+  tag: "wcc-container"
 })
-export class WccBindable {
+export class WccContainer {
   @HostElement() private host: HTMLElement;
 
   @Prop({ attribute: 'controller' }) controllerName: string | null;
@@ -17,8 +17,6 @@ export class WccBindable {
   @Prop() history: RouterHistory;
 
   @State() disconnected: boolean = false;
-
-  private controller;
 
   connectedCallback() {
     this.disconnected = false;
@@ -34,17 +32,15 @@ export class WccBindable {
 
         // Prevent execution if the node has been removed from DOM
         if (!this.disconnected) {
-          this.controller = new Controller(this.host, this.history);
+          new Controller(this.host, this.history);
         }
       } catch (error) {
         console.error(error);
       }
     } else {
       // load default controller
-      this.controller = new DefaultContainerController(this.host);
+      new DefaultContainerController(this.host);
     }
-
-    ControllerBindableService.bindModel(this.host, this.controller);
   }
 
   render() {
@@ -52,4 +48,4 @@ export class WccBindable {
   }
 }
 
-injectHistory(WccBindable);
+injectHistory(WccContainer);

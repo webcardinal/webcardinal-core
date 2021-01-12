@@ -1,15 +1,17 @@
-import { Component, Element, Event, EventEmitter, h, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
+
+import { HostElement } from '../../decorators';
 import { promisifyEventEmit } from '../../utils';
 
 @Component({
-  tag: 'c-app-menu',
+  tag: 'wcc-app-menu',
   styleUrls: {
-    vertical: '../../styles/c-app-menu/c-app-menu.vertical.scss',
-    horizontal: '../../styles/c-app-menu/c-app-menu.horizontal.scss'
+    vertical: '../../styles/wcc-app-menu/wcc-app-menu.vertical.scss',
+    horizontal: '../../styles/wcc-app-menu/wcc-app-menu.horizontal.scss'
   }
 })
-export class CAppMenu {
-  @Element() host: HTMLElement;
+export class WccAppMenu {
+  @HostElement() host: HTMLElement;
 
   @Prop() items = [];
 
@@ -23,7 +25,7 @@ export class CAppMenu {
   @Prop({ reflect: true, mutable: true }) mode = this.defaultMode;
 
   @Event({
-    eventName: 'cardinal:config:getRouting',
+    eventName: 'webcardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter
 
@@ -40,7 +42,7 @@ export class CAppMenu {
 
     // manage modes
     if (!this.modes.includes(this.mode)) {
-      console.warn('c-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
+      console.warn('wcc-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
       this.mode = this.defaultMode;
     }
     this.host.parentElement.setAttribute('layout', this.mode);
@@ -66,7 +68,7 @@ export class CAppMenu {
           : null
         ),
         <div class="container app-menu items">
-          { this.items.map(item => item.indexed ? <c-app-menu-item item={item}/> : null) }
+          { this.items.map(item => item.indexed ? <wcc-app-menu-item item={item}/> : null) }
         </div>,
         ( this.slots.after
           ? <div class="container after">

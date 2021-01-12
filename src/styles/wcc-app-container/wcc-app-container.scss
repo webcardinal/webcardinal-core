@@ -1,10 +1,10 @@
-c-app-container {
+wcc-app-container {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: var(--c-app-container-gap);
+  gap: var(--wcc-app-container-gap);
   overflow-y: auto;
-  background: var(--c-app-container-background);
+  background: var(--wcc-app-container-background);
 
   &.slot-before {
     grid-template-rows: auto 1fr;

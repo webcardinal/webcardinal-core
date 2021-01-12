@@ -1,4 +1,6 @@
-import { Component, Element, h, Host, Prop, State } from '@stencil/core';
+import { Component, h, Host, Prop, State } from '@stencil/core';
+
+import { HostElement } from '../../decorators';
 
 const LOADER_TYPES = [
   'default',
@@ -7,15 +9,15 @@ const LOADER_TYPES = [
 ]
 
 @Component({
-  tag: 'c-app-loader',
+  tag: 'wcc-app-loader',
   shadow: true
 })
-export class CAppLoader {
+export class WccAppLoader {
   private defaults = {
     type: LOADER_TYPES[0],
   };
 
-  @Element() host: HTMLElement;
+  @HostElement() host: HTMLElement;
 
   @Prop() src: string = null;
 

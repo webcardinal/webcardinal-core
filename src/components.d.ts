@@ -7,73 +7,77 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { RouterHistory } from "@stencil/router";
 export namespace Components {
-    interface CAppContainer {
+    interface WccAppContainer {
     }
-    interface CAppLoader {
+    interface WccAppLoader {
         "src": string;
         "type": string;
     }
-    interface CAppMenu {
+    interface WccAppMenu {
         "items": any[];
         "mode": string;
     }
-    interface CAppMenuItem {
+    interface WccAppMenuItem {
         "base": string;
         "item": any;
         "level": number;
     }
-    interface CAppRoot {
-        "controller": any;
+    interface WccAppRoot {
+        "controllerName": string | null;
         "history": RouterHistory;
         "loaderElement": HTMLElement;
     }
-    interface CAppRouter {
+    interface WccAppRouter {
         "base": string;
         "fallback": null;
         "root": string;
         "routes": any[];
     }
     interface WccBindable {
+        "controllerName": string | null;
         "history": RouterHistory;
-        "name"?: string | null;
+    }
+    interface WccContainer {
+        "controllerName": string | null;
+        "history": RouterHistory;
     }
 }
 declare global {
-    interface HTMLCAppContainerElement extends Components.CAppContainer, HTMLStencilElement {
+    interface HTMLWccAppContainerElement extends Components.WccAppContainer, HTMLStencilElement {
     }
-    var HTMLCAppContainerElement: {
-        prototype: HTMLCAppContainerElement;
-        new (): HTMLCAppContainerElement;
+    var HTMLWccAppContainerElement: {
+        prototype: HTMLWccAppContainerElement;
+        new (): HTMLWccAppContainerElement;
     };
-    interface HTMLCAppLoaderElement extends Components.CAppLoader, HTMLStencilElement {
+    interface HTMLWccAppLoaderElement extends Components.WccAppLoader, HTMLStencilElement {
     }
-    var HTMLCAppLoaderElement: {
-        prototype: HTMLCAppLoaderElement;
-        new (): HTMLCAppLoaderElement;
+    var HTMLWccAppLoaderElement: {
+        prototype: HTMLWccAppLoaderElement;
+        new (): HTMLWccAppLoaderElement;
     };
-    interface HTMLCAppMenuElement extends Components.CAppMenu, HTMLStencilElement {
+    interface HTMLWccAppMenuElement extends Components.WccAppMenu, HTMLStencilElement {
     }
-    var HTMLCAppMenuElement: {
-        prototype: HTMLCAppMenuElement;
-        new (): HTMLCAppMenuElement;
+    var HTMLWccAppMenuElement: {
+        prototype: HTMLWccAppMenuElement;
+        new (): HTMLWccAppMenuElement;
     };
-    interface HTMLCAppMenuItemElement extends Components.CAppMenuItem, HTMLStencilElement {
+    interface HTMLWccAppMenuItemElement extends Components.WccAppMenuItem, HTMLStencilElement {
     }
-    var HTMLCAppMenuItemElement: {
-        prototype: HTMLCAppMenuItemElement;
-        new (): HTMLCAppMenuItemElement;
+    var HTMLWccAppMenuItemElement: {
+        prototype: HTMLWccAppMenuItemElement;
+        new (): HTMLWccAppMenuItemElement;
     };
-    interface HTMLCAppRootElement extends Components.CAppRoot, HTMLStencilElement {
+    interface HTMLWccAppRootElement extends Components.WccAppRoot, HTMLStencilElement {
     }
-    var HTMLCAppRootElement: {
-        prototype: HTMLCAppRootElement;
-        new (): HTMLCAppRootElement;
+    var HTMLWccAppRootElement: {
+        prototype: HTMLWccAppRootElement;
+        new (): HTMLWccAppRootElement;
     };
-    interface HTMLCAppRouterElement extends Components.CAppRouter, HTMLStencilElement {
+    interface HTMLWccAppRouterElement extends Components.WccAppRouter, HTMLStencilElement {
     }
-    var HTMLCAppRouterElement: {
-        prototype: HTMLCAppRouterElement;
-        new (): HTMLCAppRouterElement;
+    var HTMLWccAppRouterElement: {
+        prototype: HTMLWccAppRouterElement;
+        new (): HTMLWccAppRouterElement;
     };
     interface HTMLWccBindableElement extends Components.WccBindable, HTMLStencilElement {
     }
@@ -81,70 +85,83 @@ declare global {
         prototype: HTMLWccBindableElement;
         new (): HTMLWccBindableElement;
     };
+    interface HTMLWccContainerElement extends Components.WccContainer, HTMLStencilElement {
+    }
+    var HTMLWccContainerElement: {
+        prototype: HTMLWccContainerElement;
+        new (): HTMLWccContainerElement;
+    };
     interface HTMLElementTagNameMap {
-        "c-app-container": HTMLCAppContainerElement;
-        "c-app-loader": HTMLCAppLoaderElement;
-        "c-app-menu": HTMLCAppMenuElement;
-        "c-app-menu-item": HTMLCAppMenuItemElement;
-        "c-app-root": HTMLCAppRootElement;
-        "c-app-router": HTMLCAppRouterElement;
+        "wcc-app-container": HTMLWccAppContainerElement;
+        "wcc-app-loader": HTMLWccAppLoaderElement;
+        "wcc-app-menu": HTMLWccAppMenuElement;
+        "wcc-app-menu-item": HTMLWccAppMenuItemElement;
+        "wcc-app-root": HTMLWccAppRootElement;
+        "wcc-app-router": HTMLWccAppRouterElement;
         "wcc-bindable": HTMLWccBindableElement;
+        "wcc-container": HTMLWccContainerElement;
     }
 }
 declare namespace LocalJSX {
-    interface CAppContainer {
+    interface WccAppContainer {
     }
-    interface CAppLoader {
+    interface WccAppLoader {
         "src"?: string;
         "type"?: string;
     }
-    interface CAppMenu {
+    interface WccAppMenu {
         "items"?: any[];
         "mode"?: string;
-        "onCardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
     }
-    interface CAppMenuItem {
+    interface WccAppMenuItem {
         "base"?: string;
         "item"?: any;
         "level"?: number;
     }
-    interface CAppRoot {
-        "controller"?: any;
+    interface WccAppRoot {
+        "controllerName"?: string | null;
         "history"?: RouterHistory;
         "loaderElement"?: HTMLElement;
     }
-    interface CAppRouter {
+    interface WccAppRouter {
         "base"?: string;
         "fallback"?: null;
-        "onCardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
         "root"?: string;
         "routes"?: any[];
     }
     interface WccBindable {
+        "controllerName"?: string | null;
         "history"?: RouterHistory;
-        "name"?: string | null;
+    }
+    interface WccContainer {
+        "controllerName"?: string | null;
+        "history"?: RouterHistory;
     }
     interface IntrinsicElements {
-        "c-app-container": CAppContainer;
-        "c-app-loader": CAppLoader;
-        "c-app-menu": CAppMenu;
-        "c-app-menu-item": CAppMenuItem;
-        "c-app-root": CAppRoot;
-        "c-app-router": CAppRouter;
+        "wcc-app-container": WccAppContainer;
+        "wcc-app-loader": WccAppLoader;
+        "wcc-app-menu": WccAppMenu;
+        "wcc-app-menu-item": WccAppMenuItem;
+        "wcc-app-root": WccAppRoot;
+        "wcc-app-router": WccAppRouter;
         "wcc-bindable": WccBindable;
+        "wcc-container": WccContainer;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "c-app-container": LocalJSX.CAppContainer & JSXBase.HTMLAttributes<HTMLCAppContainerElement>;
-            "c-app-loader": LocalJSX.CAppLoader & JSXBase.HTMLAttributes<HTMLCAppLoaderElement>;
-            "c-app-menu": LocalJSX.CAppMenu & JSXBase.HTMLAttributes<HTMLCAppMenuElement>;
-            "c-app-menu-item": LocalJSX.CAppMenuItem & JSXBase.HTMLAttributes<HTMLCAppMenuItemElement>;
-            "c-app-root": LocalJSX.CAppRoot & JSXBase.HTMLAttributes<HTMLCAppRootElement>;
-            "c-app-router": LocalJSX.CAppRouter & JSXBase.HTMLAttributes<HTMLCAppRouterElement>;
+            "wcc-app-container": LocalJSX.WccAppContainer & JSXBase.HTMLAttributes<HTMLWccAppContainerElement>;
+            "wcc-app-loader": LocalJSX.WccAppLoader & JSXBase.HTMLAttributes<HTMLWccAppLoaderElement>;
+            "wcc-app-menu": LocalJSX.WccAppMenu & JSXBase.HTMLAttributes<HTMLWccAppMenuElement>;
+            "wcc-app-menu-item": LocalJSX.WccAppMenuItem & JSXBase.HTMLAttributes<HTMLWccAppMenuItemElement>;
+            "wcc-app-root": LocalJSX.WccAppRoot & JSXBase.HTMLAttributes<HTMLWccAppRootElement>;
+            "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
             "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
+            "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
         }
     }
 }

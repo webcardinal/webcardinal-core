@@ -1,10 +1,12 @@
-import { Component, Element, h, Host, Prop } from '@stencil/core';
+import { Component, h, Host, Prop } from '@stencil/core';
+
+import { HostElement } from '../../decorators';
 
 @Component({
-  tag: 'c-app-menu-item'
+  tag: 'wcc-app-menu-item'
 })
-export class CAppMenuItem {
-  @Element() host: HTMLElement;
+export class WccAppMenuItem {
+  @HostElement() host: HTMLElement;
 
   @Prop() item;
 
@@ -17,7 +19,7 @@ export class CAppMenuItem {
   private _setMode = () => {
     if (!this.mode) {
       let element = this.host.parentElement;
-      while (element.tagName.toLowerCase() !== 'c-app-menu') {
+      while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
         element = element.parentElement;
       }
       this.mode = element.getAttribute('mode');
@@ -60,7 +62,7 @@ export class CAppMenuItem {
       children.forEach(item => {
         if (item.indexed) {
           props.item = item;
-          dropdown.items.push(<c-app-menu-item {...props}/>);
+          dropdown.items.push(<wcc-app-menu-item {...props}/>);
         }
       });
     }
@@ -70,7 +72,7 @@ export class CAppMenuItem {
     return (
       <Host>
       { !children
-        ? <stencil-route-link class="item" url={url} data-test-url={url}>{name}</stencil-route-link>
+        ? <stencil-route-link class="item" url={url}>{name}</stencil-route-link>
         : (
           <div {...dropdown.attributes}>
             <div class="item" onClick={this.handleClick.bind(this)}>{name}</div>

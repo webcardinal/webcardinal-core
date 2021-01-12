@@ -1,29 +1,34 @@
-import { Component, Element, h, Prop, State } from '@stencil/core';
+import { Component, h, Prop, State } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 
 import { ApplicationController } from '../../controllers';
+import { HostElement } from "../../decorators";
 import { ControllerRegistryService } from '../../services';
 
 @Component({
-  tag: 'c-app-root',
+  tag: 'wcc-app-root',
   styleUrls: {
-    default: '../../styles/c-app-root/c-app-root.scss'
+    default: '../../styles/wcc-app-root/wcc-app-root.scss'
   },
   shadow: true
 })
-export class CAppRoot {
-  @Element() host: HTMLElement;
+export class WccAppRoot {
+  @HostElement() host: HTMLElement;
 
-  @Prop() controller: any;
+  @Prop({ attribute: 'controller' }) controllerName: string | null;
 
   @Prop() history: RouterHistory;
 
   @Prop() loaderElement: HTMLElement;
 
   @State() hasSlot: boolean = false;
+
   @State() disconnected: boolean = false;
 
   private _createLoader = () => {
+    // TODO: make a wcc-spinner
+    // + a renderer for personalization
+
     const NR_CIRCLES = 12;
     let circles = "";
 
@@ -58,11 +63,11 @@ export class CAppRoot {
       this.hasSlot = true;
     }
 
-    if (typeof this.controller === 'string') {
+    if (typeof this.controllerName === 'string') {
       try {
-        let Controller = await ControllerRegistryService.getController(this.controller);
+        let Controller = await ControllerRegistryService.getController(this.controllerName);
 
-        // Prevent javascript execution if the node has been removed from DOM
+        // Prevent execution if the node has been removed from DOM
         if (!this.disconnected) {
           new Controller(this.host);
         }
@@ -76,8 +81,6 @@ export class CAppRoot {
   }
 
   async componentDidLoad() {
-    console.log('c-app-root loaded!');
-
     if (this.loaderElement) {
       this.loaderElement.remove();
     }
@@ -86,8 +89,8 @@ export class CAppRoot {
   render() {
     if (!this.hasSlot) {
       this.host.innerHTML = `
-        <c-app-menu></c-app-menu>
-        <c-app-container></c-app-container>
+        <wcc-app-menu></wcc-app-menu>
+        <wcc-app-container></wcc-app-container>
       `;
     }
 
@@ -95,4 +98,4 @@ export class CAppRoot {
   }
 }
 
-injectHistory(CAppRoot);
+injectHistory(WccAppRoot);

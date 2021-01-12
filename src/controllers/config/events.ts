@@ -3,7 +3,7 @@ const EVENTS = {
 }
 
 export default (_ => {
-  const placeholder = 'cardinal:config:';
+  const placeholder = 'webcardinal:config:';
   const events = EVENTS;
   for (const key of Object.keys(events)) {
     if (key !== placeholder) {
