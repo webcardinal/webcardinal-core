@@ -7,9 +7,9 @@ import { ControllerRegistryService } from '../../services';
 import DefaultContainerController from '../../../base/controllers/ContainerController';
 
 @Component({
-  tag: "c-controller"
+  tag: "wcc-bindable"
 })
-export class CController {
+export class WccBindable {
   @HostElement() private host: HTMLElement;
 
   @Prop() name?: string | null;
@@ -81,8 +81,17 @@ export class CController {
         const keys = getModelKeys(child);
         const model = getBondedModel(controllerModel, keys);
 
-        for (const [key, value] of Object.entries(model)) {
+        for (let [key, value] of Object.entries(model)) {
           if (typeof value === 'object') {
+            continue;
+          }
+
+          if (typeof value === 'boolean') {
+            if (value) {
+              child.setAttribute(key, '');
+            } else {
+              child.removeAttribute(key);
+            }
             continue;
           }
 
@@ -115,4 +124,4 @@ export class CController {
   }
 
 }
-injectHistory(CController);
+injectHistory(WccBindable);

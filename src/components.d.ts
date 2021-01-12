@@ -33,7 +33,7 @@ export namespace Components {
         "root": string;
         "routes": any[];
     }
-    interface CController {
+    interface WccBindable {
         "history": RouterHistory;
         "name"?: string | null;
     }
@@ -75,11 +75,11 @@ declare global {
         prototype: HTMLCAppRouterElement;
         new (): HTMLCAppRouterElement;
     };
-    interface HTMLCControllerElement extends Components.CController, HTMLStencilElement {
+    interface HTMLWccBindableElement extends Components.WccBindable, HTMLStencilElement {
     }
-    var HTMLCControllerElement: {
-        prototype: HTMLCControllerElement;
-        new (): HTMLCControllerElement;
+    var HTMLWccBindableElement: {
+        prototype: HTMLWccBindableElement;
+        new (): HTMLWccBindableElement;
     };
     interface HTMLElementTagNameMap {
         "c-app-container": HTMLCAppContainerElement;
@@ -88,7 +88,7 @@ declare global {
         "c-app-menu-item": HTMLCAppMenuItemElement;
         "c-app-root": HTMLCAppRootElement;
         "c-app-router": HTMLCAppRouterElement;
-        "c-controller": HTMLCControllerElement;
+        "wcc-bindable": HTMLWccBindableElement;
     }
 }
 declare namespace LocalJSX {
@@ -120,7 +120,7 @@ declare namespace LocalJSX {
         "root"?: string;
         "routes"?: any[];
     }
-    interface CController {
+    interface WccBindable {
         "history"?: RouterHistory;
         "name"?: string | null;
     }
@@ -131,7 +131,7 @@ declare namespace LocalJSX {
         "c-app-menu-item": CAppMenuItem;
         "c-app-root": CAppRoot;
         "c-app-router": CAppRouter;
-        "c-controller": CController;
+        "wcc-bindable": WccBindable;
     }
 }
 export { LocalJSX as JSX };
@@ -144,7 +144,7 @@ declare module "@stencil/core" {
             "c-app-menu-item": LocalJSX.CAppMenuItem & JSXBase.HTMLAttributes<HTMLCAppMenuItemElement>;
             "c-app-root": LocalJSX.CAppRoot & JSXBase.HTMLAttributes<HTMLCAppRootElement>;
             "c-app-router": LocalJSX.CAppRouter & JSXBase.HTMLAttributes<HTMLCAppRouterElement>;
-            "c-controller": LocalJSX.CController & JSXBase.HTMLAttributes<HTMLCControllerElement>;
+            "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
         }
     }
 }
