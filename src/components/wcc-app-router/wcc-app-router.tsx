@@ -1,6 +1,7 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
-
 import { promisifyEventEmit } from '../../utils';
+
+// TODO: URL Helper Class, for joining origins with multiple paths
 
 @Component({
   tag: 'wcc-app-router'
@@ -77,6 +78,8 @@ export class WccAppRouter {
   }
 
   async componentWillLoad() {
+    console.log('WccAppRouter')
+
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;
@@ -93,9 +96,6 @@ export class WccAppRouter {
   }
 
   render() {
-    // console.log(this);
-    // TODO: URL Helper Class, for joining origins with multiple paths
-
     return (
       <stencil-router root={this.root + '/'}>
         <stencil-route-switch scrollTopOffset={0}>

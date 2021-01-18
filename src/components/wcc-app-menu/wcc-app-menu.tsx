@@ -1,5 +1,4 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
-
 import { HostElement } from '../../decorators';
 import { promisifyEventEmit } from '../../utils';
 
@@ -30,7 +29,7 @@ export class WccAppMenu {
   }) getRoutingConfigEvent: EventEmitter
 
   async componentWillLoad() {
-    // get items
+    // get routing data
     if (this.items.length === 0) {
       try {
         const routing = await promisifyEventEmit(this.getRoutingConfigEvent);

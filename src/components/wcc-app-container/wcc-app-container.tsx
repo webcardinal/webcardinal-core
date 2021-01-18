@@ -1,5 +1,4 @@
 import { Component, h } from '@stencil/core';
-
 import { HostElement } from '../../decorators';
 
 @Component({
@@ -20,7 +19,6 @@ export class WccAppContainer {
   async componentWillLoad() {
     // manage slots
     this.slots.unnamed = this.host.children.length > 0;
-
     for (const key of Object.keys(this.slots)) {
       if (this.host.querySelector(`[slot=${key}]`)) {
         this.slots[key] = true;

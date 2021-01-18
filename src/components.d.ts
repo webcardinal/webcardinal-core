@@ -25,7 +25,7 @@ export namespace Components {
     interface WccAppRoot {
         "controllerName": string | null;
         "history": RouterHistory;
-        "loaderElement": HTMLElement;
+        "loaderName": string;
     }
     interface WccAppRouter {
         "base": string;
@@ -40,6 +40,8 @@ export namespace Components {
     interface WccContainer {
         "controllerName": string | null;
         "history": RouterHistory;
+    }
+    interface WccSpinner {
     }
 }
 declare global {
@@ -91,6 +93,12 @@ declare global {
         prototype: HTMLWccContainerElement;
         new (): HTMLWccContainerElement;
     };
+    interface HTMLWccSpinnerElement extends Components.WccSpinner, HTMLStencilElement {
+    }
+    var HTMLWccSpinnerElement: {
+        prototype: HTMLWccSpinnerElement;
+        new (): HTMLWccSpinnerElement;
+    };
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
         "wcc-app-loader": HTMLWccAppLoaderElement;
@@ -100,6 +108,7 @@ declare global {
         "wcc-app-router": HTMLWccAppRouterElement;
         "wcc-bindable": HTMLWccBindableElement;
         "wcc-container": HTMLWccContainerElement;
+        "wcc-spinner": HTMLWccSpinnerElement;
     }
 }
 declare namespace LocalJSX {
@@ -122,7 +131,7 @@ declare namespace LocalJSX {
     interface WccAppRoot {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
-        "loaderElement"?: HTMLElement;
+        "loaderName"?: string;
     }
     interface WccAppRouter {
         "base"?: string;
@@ -139,6 +148,8 @@ declare namespace LocalJSX {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
     }
+    interface WccSpinner {
+    }
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
         "wcc-app-loader": WccAppLoader;
@@ -148,6 +159,7 @@ declare namespace LocalJSX {
         "wcc-app-router": WccAppRouter;
         "wcc-bindable": WccBindable;
         "wcc-container": WccContainer;
+        "wcc-spinner": WccSpinner;
     }
 }
 export { LocalJSX as JSX };
@@ -162,6 +174,7 @@ declare module "@stencil/core" {
             "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
             "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
             "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
+            "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
         }
     }
 }

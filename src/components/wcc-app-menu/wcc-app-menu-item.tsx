@@ -1,5 +1,4 @@
 import { Component, h, Host, Prop } from '@stencil/core';
-
 import { HostElement } from '../../decorators';
 
 @Component({
