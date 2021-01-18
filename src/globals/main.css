@@ -17,6 +17,19 @@ html {
   /* <wcc-app-container> */
   --wcc-app-container-gap: var(--wcc-gap);
   --wcc-app-container-background: #F1F1F1;
+
+  /* <wcc-spinner> */
+  --wcc-spinner-width: 35px;
+  --wcc-spinner-height: 35px;
+  --wcc-spinner-radius: 100%;
+  --wcc-spinner-dot-size: 6px;
+  --wcc-spinner-dot-radius: 100%;
+  --wcc-spinner-color: #354F9B;
+  --wcc-spinner-background: trasparent;
+  --wcc-spinner-border: 0.25em solid transparent;
+  --wcc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  --wcc-spinner-animation: 1s;
+  --wcc-spinner-animation-delay: 1.2s;
 }
 
 body {

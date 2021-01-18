@@ -1,0 +1,54 @@
+:host {
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  & > .circle-fade {
+    position: relative;
+    width: var(--wcc-spinner-width);
+    height: var(--wcc-spinner-height);
+    border: var(--wcc-spinner-border);
+    border-radius: var(--wcc-spinner-radius);
+    background: var(--wcc-spinner-background);
+    box-shadow: var(--wcc-spinner-box-shadow);
+
+    & > .circle {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+
+      &::after {
+        content: '';
+        display: block;
+        margin: 0.15em auto;
+        width: var(--wcc-spinner-dot-size);
+        height: var(--wcc-spinner-dot-size);
+        background-color: var(--wcc-spinner-color);
+        border-radius: var(--wcc-spinner-dot-radius);
+        animation: spinner-default-animation var(--wcc-spinner-animation) infinite linear;
+      }
+    }
+  }
+
+  @for $i from 1 through 9 {
+    & > .circle-fade .circle-#{$i} {
+      transform: rotate($i * -40deg);
+
+      &::after {
+        animation-delay: calc(#{$i / -10} * var(--wcc-spinner-animation-delay));
+      }
+    }
+  }
+}
+
+@keyframes spinner-default-animation {
+  0%, 39%, 100% {
+    opacity: 0;
+  }
+  40% {
+    opacity: 1;
+  }
+}
