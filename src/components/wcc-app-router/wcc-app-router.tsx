@@ -78,8 +78,6 @@ export class WccAppRouter {
   }
 
   async componentWillLoad() {
-    console.log('WccAppRouter')
-
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;

@@ -46,8 +46,10 @@ export class WccAppRoot {
       new ApplicationController(this.host);
     }
 
-    this.host.appendChild(document.createElement('wcc-app-menu'));
-    this.host.appendChild(document.createElement('wcc-app-container'));
+    if (this.host.children.length === 0) {
+      this.host.appendChild(document.createElement('wcc-app-menu'));
+      this.host.appendChild(document.createElement('wcc-app-container'));
+    }
   }
 
   async componentDidLoad() {
