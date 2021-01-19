@@ -1,2 +1,2 @@
 export { default as ControllerRegistryService } from './ControllerRegistryService';
-export { default as ControllerBindableService } from './ControllerBindableService';
+export { default as ControllerBindingService } from './ControllerBindingService';

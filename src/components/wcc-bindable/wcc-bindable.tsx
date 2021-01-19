@@ -1,9 +1,9 @@
 import { Component, h, Prop, State } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
-import { ControllerRegistryService, ControllerBindableService } from '../../services';
+import { ControllerRegistryService, ControllerBindingService } from '../../services'
 
-import DefaultContainerController from '../../../base/controllers/ContainerController';
+import DefaultController from '../../../base/controllers/Controller.js';
 
 // TODO: 2-way binding
 
@@ -35,10 +35,10 @@ export class WccBindable {
       }
     } else {
       // load default controller
-      this.controller = new DefaultContainerController(this.host);
+      this.controller = new DefaultController(this.host);
     }
 
-    ControllerBindableService.bindModel(this.host, this.controller);
+    ControllerBindingService.bindModel(this.host, this.controller);
   }
 
   render() {

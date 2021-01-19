@@ -3,7 +3,7 @@ import { RouterHistory, injectHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
 import { ControllerRegistryService } from '../../services';
 
-import DefaultContainerController from '../../../base/controllers/ContainerController';
+import DefaultController from '../../../base/controllers/Controller.js';
 
 @Component({
   tag: "wcc-container"
@@ -29,7 +29,7 @@ export class WccContainer {
       }
     } else {
       // load default controller
-      new DefaultContainerController(this.host);
+      new DefaultController(this.host);
     }
   }
 

@@ -1,5 +1,6 @@
 import defaultConfig from './config/default';
 import EVENTS from './config/events';
+import controllers from '../../base/controllers';
 import fetch from '../../base/utils/fetch.js';
 
 const CONFIG_PATH = 'webcardinal.json';
@@ -236,6 +237,11 @@ export default class ApplicationController {
       this.config = this._prepareConfiguration(rawConfig);
       this.isConfigLoaded = true;
 
+      window.WebCardinal = {
+        controllers,
+        baseURL: this.baseURL
+      }
+
       while (this.pendingRequests.length) {
         let request = this.pendingRequests.pop();
         this._provideConfiguration(request.configKey, request.callback);
@@ -243,12 +249,12 @@ export default class ApplicationController {
     });
 
     element.addEventListener(EVENTS.GET_ROUTING, this._registerListener('routing'));
+
     // TODO: production version
     // element.addEventListener(EVENTS.GET_THEME, this._registerListener('theme'));
 
     // TODO: development progress
     element.addEventListener('getThemeConfig', this._registerListener('theme'));
-    window.basePath = this.baseURL.href;
 
     // const t_debugger = [
     //   'getAppVersion',
