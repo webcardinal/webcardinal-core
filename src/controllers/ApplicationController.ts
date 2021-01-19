@@ -7,6 +7,7 @@ const CONFIG_PATH = 'webcardinal.json';
 
 export default class ApplicationController {
   private readonly baseURL: URL;
+  private readonly basePath: URL;
   private readonly configURL: URL;
   private config: {};
   private isConfigLoaded: boolean;
@@ -40,6 +41,10 @@ export default class ApplicationController {
     let baseHref = getBaseElementHref();
 
     return baseHref ? new URL(baseHref, windowLocation) : new URL(windowLocation);
+  }
+
+  private _getBasePath() {
+    return this._trimPathname(this.baseURL.pathname);
   }
 
   private _getResourceURL(resource) {
@@ -223,6 +228,7 @@ export default class ApplicationController {
 
   constructor(element) {
     this.baseURL = this._getBaseURL();
+    this.basePath = this._getBasePath();
     this.configURL = this._getResourceURL(CONFIG_PATH);
     this.config = {};
     this.pendingRequests = [];
@@ -239,7 +245,7 @@ export default class ApplicationController {
 
       window.WebCardinal = {
         controllers,
-        baseURL: this.baseURL
+        basePath: this.basePath
       }
 
       while (this.pendingRequests.length) {
