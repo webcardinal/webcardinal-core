@@ -5,8 +5,6 @@ import { ControllerRegistryService, ControllerBindingService } from '../../servi
 
 import DefaultController from '../../../base/controllers/Controller.js';
 
-// TODO: 2-way binding
-
 @Component({
   tag: "wcc-bindable"
 })
@@ -38,7 +36,7 @@ export class WccBindable {
       this.controller = new DefaultController(this.host);
     }
 
-    ControllerBindingService.bindModel(this.host, this.controller);
+    ControllerBindingService.bind(this.host, this.controller);
   }
 
   render() {
