@@ -44,7 +44,8 @@ export default class ApplicationController {
   }
 
   private _getBasePath() {
-    return this._trimPathname(this.baseURL.pathname);
+    const basePath = this._trimPathname(this.baseURL.pathname);
+    return basePath.length !== 0 ? '/' + basePath : basePath;
   }
 
   private _getResourceURL(resource) {
