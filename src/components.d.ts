@@ -41,6 +41,12 @@ export namespace Components {
         "controllerName": string | null;
         "history": RouterHistory;
     }
+    interface WccModal {
+        "autoClose": boolean;
+        "closeButtonText": string;
+        "confirmButtonText": string;
+        "modalTitle": string;
+    }
     interface WccSpinner {
     }
 }
@@ -93,6 +99,12 @@ declare global {
         prototype: HTMLWccContainerElement;
         new (): HTMLWccContainerElement;
     };
+    interface HTMLWccModalElement extends Components.WccModal, HTMLStencilElement {
+    }
+    var HTMLWccModalElement: {
+        prototype: HTMLWccModalElement;
+        new (): HTMLWccModalElement;
+    };
     interface HTMLWccSpinnerElement extends Components.WccSpinner, HTMLStencilElement {
     }
     var HTMLWccSpinnerElement: {
@@ -108,6 +120,7 @@ declare global {
         "wcc-app-router": HTMLWccAppRouterElement;
         "wcc-bindable": HTMLWccBindableElement;
         "wcc-container": HTMLWccContainerElement;
+        "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
     }
 }
@@ -148,6 +161,14 @@ declare namespace LocalJSX {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
     }
+    interface WccModal {
+        "autoClose"?: boolean;
+        "closeButtonText"?: string;
+        "confirmButtonText"?: string;
+        "modalTitle"?: string;
+        "onClosed"?: (event: CustomEvent<any>) => void;
+        "onConfirmed"?: (event: CustomEvent<any>) => void;
+    }
     interface WccSpinner {
     }
     interface IntrinsicElements {
@@ -159,6 +180,7 @@ declare namespace LocalJSX {
         "wcc-app-router": WccAppRouter;
         "wcc-bindable": WccBindable;
         "wcc-container": WccContainer;
+        "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
     }
 }
@@ -174,6 +196,7 @@ declare module "@stencil/core" {
             "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
             "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
             "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
+            "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
         }
     }

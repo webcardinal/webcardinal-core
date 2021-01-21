@@ -30,6 +30,24 @@ html {
   --wcc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   --wcc-spinner-animation: 1s;
   --wcc-spinner-animation-delay: 1.2s;
+
+  /* <wcc-modal> */
+  --wcc-modal-z-index: 1;
+  --wcc-modal-dialog-margin: 1rem auto;
+  --wcc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
+  --wcc-modal-border-radius: .3rem;
+  --wcc-modal-inner-padding: 1rem;
+  --wcc-modal-header-padding: 1rem;
+  --wcc-modal-header-title-line-height: 1rem;
+  --wcc-modal-header-border-width: 1px;
+  --wcc-modal-header-border-color: black;
+  --wcc-modal-content-color: null;
+  --wcc-modal-content-background: white;
+  --wcc-modal-content-border-width: 1px;
+  --wcc-modal-content-border-color: black;
+  --wcc-modal-footer-margin-between: .5rem;
+  --wcc-modal-footer-border-width: 1px;
+  --wcc-modal-footer-border-color: black;
 }
 
 body {
