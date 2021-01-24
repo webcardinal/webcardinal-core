@@ -43,9 +43,16 @@ export namespace Components {
     }
     interface WccModal {
         "autoClose": boolean;
+        "autoShow": boolean;
         "closeButtonText": string;
         "confirmButtonText": string;
+        "destroy": () => Promise<void>;
+        "hide": () => Promise<void>;
+        "modalFooterContent": string;
+        "modalName": string;
         "modalTitle": string;
+        "modalTitleContent": string;
+        "show": () => Promise<void>;
     }
     interface WccSpinner {
     }
@@ -163,9 +170,13 @@ declare namespace LocalJSX {
     }
     interface WccModal {
         "autoClose"?: boolean;
+        "autoShow"?: boolean;
         "closeButtonText"?: string;
         "confirmButtonText"?: string;
+        "modalFooterContent"?: string;
+        "modalName"?: string;
         "modalTitle"?: string;
+        "modalTitleContent"?: string;
         "onClosed"?: (event: CustomEvent<any>) => void;
         "onConfirmed"?: (event: CustomEvent<any>) => void;
     }

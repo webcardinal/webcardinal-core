@@ -5,8 +5,12 @@ import {
   Event,
   EventEmitter,
   Fragment,
+  State,
+  Method,
 } from "@stencil/core";
 import { HostElement } from "../../decorators";
+
+import { getModalContent } from "./wcc-modal-utils";
 
 @Component({
   tag: "wcc-modal",
@@ -18,14 +22,47 @@ import { HostElement } from "../../decorators";
 export class WccModal {
   @HostElement() private host: HTMLElement;
 
+  @State() isLoading: boolean = false;
+  @State() isVisible: boolean = false;
+  @State() content: string;
+
+  @Prop({ reflect: true }) modalName: string;
   @Prop({ reflect: true }) modalTitle: string;
+  @Prop({ reflect: true }) modalTitleContent: string;
+  @Prop({ reflect: true }) modalFooterContent: string;
   @Prop({ reflect: true }) closeButtonText: string = "Close";
   @Prop({ reflect: true }) confirmButtonText: string = "Ok";
 
+  @Prop({ reflect: true, mutable: true }) autoShow: boolean = true;
   @Prop({ reflect: true }) autoClose: boolean = true;
 
   @Event() confirmed: EventEmitter<any>;
   @Event() closed: EventEmitter<any>;
+
+  async componentWillLoad() {
+    this.isLoading = true;
+    if(this.autoShow) {
+        this.isVisible = true;
+    }
+
+    this.content = await getModalContent(this.modalName);
+    this.isLoading = false;
+  }
+
+  @Method()
+  async show() {
+    this.isVisible = true;
+  }
+
+  @Method()
+  async hide() {
+    this.isVisible = false;
+  }
+
+  @Method()
+  async destroy() {
+    this.host.remove();
+  }
 
   handleBackdropClick(e: MouseEvent) {
     e.preventDefault();
@@ -47,15 +84,9 @@ export class WccModal {
     this.confirmed.emit();
   }
 
-  hasTitleSlot() {
-    return !!this.host.querySelector('[slot="title"]');
-  }
-
-  hasFooterSlot() {
-    return !!this.host.querySelector('[slot="footer"]');
-  }
-
   render() {
+    if (!this.isVisible) return null;
+
     return (
       <div
         class="modal fade show"
@@ -66,8 +97,8 @@ export class WccModal {
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              {this.hasTitleSlot() ? (
-                <slot name="title" />
+              {this.modalTitleContent ? (
+                <div innerHTML={this.modalTitleContent}></div>
               ) : (
                 <h2 class="modal-title">{this.modalTitle}</h2>
               )}
@@ -83,33 +114,39 @@ export class WccModal {
               </button>
             </div>
 
-            <div class="modal-body">
-              <slot />
-            </div>
+            {this.isLoading ? (
+              <div class="modal-body">
+                <wcc-spinner />
+              </div>
+            ) : (
+              <Fragment>
+                <div class="modal-body" innerHTML={this.content}></div>
 
-            <div class="modal-footer">
-              {this.hasFooterSlot() ? (
-                <slot name="footer" />
-              ) : (
-                <Fragment>
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    onClick={this.handleClose.bind(this)}
-                  >
-                    {this.closeButtonText}
-                  </button>
+                <div class="modal-footer">
+                  {this.modalFooterContent ? (
+                    <div innerHTML={this.modalFooterContent}></div>
+                  ) : (
+                    <Fragment>
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onClick={this.handleClose.bind(this)}
+                      >
+                        {this.closeButtonText}
+                      </button>
 
-                  <button
-                    type="button"
-                    class="btn btn-primary"
-                    onClick={this.handleConfirm.bind(this)}
-                  >
-                    {this.confirmButtonText}
-                  </button>
-                </Fragment>
-              )}
-            </div>
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        onClick={this.handleConfirm.bind(this)}
+                      >
+                        {this.confirmButtonText}
+                      </button>
+                    </Fragment>
+                  )}
+                </div>
+              </Fragment>
+            )}
           </div>
         </div>
       </div>
