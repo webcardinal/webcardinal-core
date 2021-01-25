@@ -42,16 +42,53 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface WccModal {
+        /**
+          * Sets if the modal will automatically close when the user clicks outside of it
+         */
         "autoClose": boolean;
+        /**
+          * Sets if the modal will automatically show when the element is constructed
+         */
         "autoShow": boolean;
+        /**
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+         */
+        "centered": boolean;
+        /**
+          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
         "closeButtonText": string;
+        /**
+          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
         "confirmButtonText": string;
+        /**
+          * Method that completely removes the modal from the DOM.
+         */
         "destroy": () => Promise<void>;
+        /**
+          * Method that hides the modal.
+         */
         "hide": () => Promise<void>;
+        /**
+          * The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.
+         */
         "modalFooterContent": string;
+        /**
+          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+         */
         "modalName": string;
+        /**
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+         */
         "modalTitle": string;
+        /**
+          * The content that can be shown in the header, if provided and the "title" slot is missing from the content.
+         */
         "modalTitleContent": string;
+        /**
+          * Method that shows the modal.
+         */
         "show": () => Promise<void>;
     }
     interface WccSpinner {
@@ -169,16 +206,54 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
     }
     interface WccModal {
+        /**
+          * Sets if the modal will automatically close when the user clicks outside of it
+         */
         "autoClose"?: boolean;
+        /**
+          * Sets if the modal will automatically show when the element is constructed
+         */
         "autoShow"?: boolean;
+        /**
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+         */
+        "centered"?: boolean;
+        /**
+          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
         "closeButtonText"?: string;
+        /**
+          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
         "confirmButtonText"?: string;
+        /**
+          * The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.
+         */
         "modalFooterContent"?: string;
+        /**
+          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+         */
         "modalName"?: string;
+        /**
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+         */
         "modalTitle"?: string;
+        /**
+          * The content that can be shown in the header, if provided and the "title" slot is missing from the content.
+         */
         "modalTitleContent"?: string;
-        "onClosed"?: (event: CustomEvent<any>) => void;
+        /**
+          * Event that fires when the modal is pressed (only when the default footer is shown). The event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)
+         */
+        "onClosed"?: (event: CustomEvent<boolean>) => void;
+        /**
+          * Event that fires when the confirm button is pressed (only when the default footer is shown)
+         */
         "onConfirmed"?: (event: CustomEvent<any>) => void;
+        /**
+          * Event that fires when the modal is initialised (after the modal content was successfully loaded)
+         */
+        "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
     }
     interface WccSpinner {
     }

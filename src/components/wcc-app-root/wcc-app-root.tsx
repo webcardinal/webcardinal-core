@@ -9,7 +9,7 @@ import { ControllerRegistryService } from '../../services';
 @Component({
   tag: 'wcc-app-root',
   styleUrls: {
-    default: '../../styles/wcc-app-root/wcc-app-root.scss'
+    default: '../../styles/wcc-app-root/wcc-app-root.scss',
   },
   shadow: true
 })

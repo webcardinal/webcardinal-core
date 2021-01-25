@@ -17,6 +17,12 @@
       width: auto;
       margin: var(--wcc-modal-dialog-margin);
       pointer-events: none;
+
+      &.centered {
+        display: flex;
+        align-items: center;
+        min-height: calc(100% - calc(var(--wcc-modal-dialog-margin)) * 2)
+      }
     }
 
     // When fading in the modal, animate it to slide down
@@ -38,7 +44,7 @@
   }
 
   .modal-dialog-scrollable {
-    height: subtract(100%, calc(var(--wcc-modal-dialog-margin) * 2));
+    height: calc(100% - calc(var(--wcc-modal-dialog-margin)) * 2);
 
     .modal-content {
       max-height: 100%;

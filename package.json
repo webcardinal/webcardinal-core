@@ -16,7 +16,8 @@
   "scripts": {
     "build": "stencil build --prod",
     "dev": "stencil build --dev",
-    "generate": "stencil generate"
+    "generate": "stencil generate",
+    "docs": "stencil build --docs-readme"
   },
   "dependencies": {},
   "devDependencies": {
