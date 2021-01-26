@@ -1,0 +1,49 @@
+html {
+  /* <wcc-app-menu> */
+  --wcc-app-menu-gap: 0.75rem;
+  --wcc-app-menu-padding: 1rem;
+  --wcc-app-menu-min-width: 220px;
+  --wcc-app-menu-max-width: 100%;
+  --wcc-app-menu-color: #F1F1F1;
+  --wcc-app-menu-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
+  --wcc-app-menu-items-gap: calc(0.75rem / 2);
+
+  /* <wcc-app-container> */
+  --wcc-app-container-gap: 0.75em;
+  --wcc-app-container-background: #F1F1F1;
+
+  /* <wcc-spinner> */
+  --wcc-spinner-width: 35px;
+  --wcc-spinner-height: 35px;
+  --wcc-spinner-radius: 100%;
+  --wcc-spinner-dot-size: 6px;
+  --wcc-spinner-dot-radius: 100%;
+  --wcc-spinner-color: #354F9B;
+  --wcc-spinner-background: trasparent;
+  --wcc-spinner-border: 0.25em solid transparent;
+  --wcc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  --wcc-spinner-animation: 1s;
+  --wcc-spinner-animation-delay: 1.2s;
+
+  /* <wcc-modal> */
+  --wcc-modal-z-index: 1;
+  --wcc-modal-dialog-margin: 1rem auto;
+  --wcc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
+  --wcc-modal-border-radius: .3rem;
+  --wcc-modal-inner-padding: 1rem;
+  --wcc-modal-header-padding: 1rem;
+  --wcc-modal-header-title-line-height: 1rem;
+  --wcc-modal-header-border-width: 1px;
+  --wcc-modal-header-border-color: black;
+  --wcc-modal-content-color: null;
+  --wcc-modal-content-background: white;
+  --wcc-modal-content-border-width: 1px;
+  --wcc-modal-content-border-color: black;
+  --wcc-modal-footer-margin-between: .5rem;
+  --wcc-modal-footer-border-width: 1px;
+  --wcc-modal-footer-border-color: black;
+}
+
+body {
+  font-family: var(--wcc-font-family);
+}
