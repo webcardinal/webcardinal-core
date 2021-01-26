@@ -7,12 +7,12 @@
 
 ## Properties
 
-| Property   | Attribute | Description | Type     | Default     |
-| ---------- | --------- | ----------- | -------- | ----------- |
-| `base`     | `base`    |             | `string` | `''`        |
-| `fallback` | --        |             | `null`   | `undefined` |
-| `root`     | `root`    |             | `string` | `''`        |
-| `routes`   | --        |             | `any[]`  | `[]`        |
+| Property       | Attribute    | Description | Type     | Default     |
+| -------------- | ------------ | ----------- | -------- | ----------- |
+| `basePath`     | `base-path`  |             | `string` | `''`        |
+| `fallbackPage` | --           |             | `null`   | `undefined` |
+| `pagesPath`    | `pages-path` |             | `string` | `''`        |
+| `routes`       | --           |             | `any[]`  | `[]`        |
 
 
 ## Events

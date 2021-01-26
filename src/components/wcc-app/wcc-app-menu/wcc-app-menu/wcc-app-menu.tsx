@@ -1,18 +1,21 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
-import { HostElement } from '../../decorators';
-import { promisifyEventEmit } from '../../utils';
+import { HostElement } from '../../../../decorators';
+import { promisifyEventEmit } from '../../../../utils';
+import { URLHelper } from '../../wcc-app-utils';
 
 @Component({
   tag: 'wcc-app-menu',
   styleUrls: {
-    vertical: '../../styles/wcc-app-menu/wcc-app-menu.vertical.scss',
-    horizontal: '../../styles/wcc-app-menu/wcc-app-menu.horizontal.scss'
+    vertical: '../../../../styles/wcc-app-menu/wcc-app-menu.vertical.scss',
+    horizontal: '../../../../styles/wcc-app-menu/wcc-app-menu.horizontal.scss'
   }
 })
 export class WccAppMenu {
   @HostElement() host: HTMLElement;
 
-  @Prop() items = [];
+  @Prop({ mutable: true }) items = [];
+
+  @Prop({ mutable: true }) basePath: string = '';
 
   private slots = {
     before: false,
@@ -28,12 +31,46 @@ export class WccAppMenu {
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter
 
+  private _extractItems = items => {
+    let indexedItems = [];
+    for (let item of items) {
+      if (!item.indexed) continue;
+      let indexedItem = {
+        name: item.name,
+        path: item.path
+      } as any;
+      if (item.children && item.children.length > 0) {
+        indexedItem.children = this._extractItems(item.children);
+      }
+      indexedItems.push(indexedItem);
+    }
+    return indexedItems;
+  }
+
+  private _renderItem = item => {
+    const props = {
+      basePath: this.basePath,
+      name: item.name,
+      item: {
+        path: item.path,
+        children: item.children
+      }
+    }
+    return <wcc-app-menu-item {...props}/>
+  }
+
+  private _renderItems(items = [], itemRenderer = this._renderItem) {
+    if (!Array.isArray(items) || items.length === 0) return null;
+    return items.map(item => itemRenderer(item));
+  }
+
   async componentWillLoad() {
     // get routing data
     if (this.items.length === 0) {
       try {
         const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
-        this.items = routing.pages;
+        this.items = this._extractItems(routing.pages);
+        this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
       } catch (error) {
         console.error(error);
       }
@@ -67,7 +104,7 @@ export class WccAppMenu {
           : null
         ),
         <div class="container app-menu items">
-          { this.items.map(item => item.indexed ? <wcc-app-menu-item item={item}/> : null) }
+          { this._renderItems(this.items) }
         </div>,
         ( this.slots.after
           ? <div class="container after">

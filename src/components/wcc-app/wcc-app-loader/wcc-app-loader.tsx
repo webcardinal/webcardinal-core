@@ -1,5 +1,5 @@
 import { Component, h, Host, Prop, State } from '@stencil/core';
-import { HostElement } from '../../decorators';
+import { HostElement } from '../../../decorators';
 
 const LOADER_TYPES = [
   'default',

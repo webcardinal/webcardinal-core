@@ -1,10 +1,10 @@
 import { Component, h } from '@stencil/core';
-import { HostElement } from '../../decorators';
+import { HostElement } from '../../../decorators';
 
 @Component({
   tag: 'wcc-app-container',
   styleUrls: {
-    default: '../../styles/wcc-app-container/wcc-app-container.scss'
+    default: '../../../styles/wcc-app-container/wcc-app-container.scss'
   }
 })
 export class WccAppContainer {

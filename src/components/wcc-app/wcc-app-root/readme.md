@@ -7,18 +7,17 @@
 
 ## Properties
 
-| Property         | Attribute    | Description | Type            | Default         |
-| ---------------- | ------------ | ----------- | --------------- | --------------- |
-| `controllerName` | `controller` |             | `string`        | `undefined`     |
-| `history`        | --           |             | `RouterHistory` | `undefined`     |
-| `loaderName`     | `loader`     |             | `string`        | `'wcc-spinner'` |
+| Property     | Attribute | Description | Type            | Default         |
+| ------------ | --------- | ----------- | --------------- | --------------- |
+| `history`    | --        |             | `RouterHistory` | `undefined`     |
+| `loaderName` | `loader`  |             | `string`        | `'wcc-spinner'` |
 
 
 ## Dependencies
 
 ### Depends on
 
-- [wcc-app-menu](../wcc-app-menu)
+- [wcc-app-menu](../wcc-app-menu/wcc-app-menu)
 - [wcc-app-container](../wcc-app-container)
 
 ### Graph

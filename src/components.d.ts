@@ -14,23 +14,25 @@ export namespace Components {
         "type": string;
     }
     interface WccAppMenu {
+        "basePath": string;
         "items": any[];
         "mode": string;
     }
     interface WccAppMenuItem {
-        "base": string;
-        "item": any;
+        "basePath": string;
+        "item": { path: string; children: any; };
         "level": number;
+        "name": string;
+        "url": string | null;
     }
     interface WccAppRoot {
-        "controllerName": string | null;
         "history": RouterHistory;
         "loaderName": string;
     }
     interface WccAppRouter {
-        "base": string;
-        "fallback": null;
-        "root": string;
+        "basePath": string;
+        "fallbackPage": null;
+        "pagesPath": string;
         "routes": any[];
     }
     interface WccBindable {
@@ -176,25 +178,27 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface WccAppMenu {
+        "basePath"?: string;
         "items"?: any[];
         "mode"?: string;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
     }
     interface WccAppMenuItem {
-        "base"?: string;
-        "item"?: any;
+        "basePath"?: string;
+        "item"?: { path: string; children: any; };
         "level"?: number;
+        "name"?: string;
+        "url"?: string | null;
     }
     interface WccAppRoot {
-        "controllerName"?: string | null;
         "history"?: RouterHistory;
         "loaderName"?: string;
     }
     interface WccAppRouter {
-        "base"?: string;
-        "fallback"?: null;
+        "basePath"?: string;
+        "fallbackPage"?: null;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
-        "root"?: string;
+        "pagesPath"?: string;
         "routes"?: any[];
     }
     interface WccBindable {
