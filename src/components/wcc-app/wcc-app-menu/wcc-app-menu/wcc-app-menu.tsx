@@ -50,11 +50,13 @@ export class WccAppMenu {
   private _renderItem = item => {
     const props = {
       basePath: this.basePath,
-      name: item.name,
       item: {
         path: item.path,
         children: item.children
-      }
+      },
+      menuElement: this.host,
+      mode: this.mode,
+      name: item.name
     }
     return <wcc-app-menu-item {...props}/>
   }

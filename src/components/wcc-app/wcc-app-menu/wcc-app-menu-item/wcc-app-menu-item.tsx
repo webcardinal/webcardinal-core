@@ -8,6 +8,8 @@ import { URLHelper } from '../../wcc-app-utils';
 export class WccAppMenuItem {
   @HostElement() host: HTMLElement;
 
+  @Prop() menuElement: HTMLElement = null;
+
   @Prop({ mutable: true }) url: string | null = null;
 
   @Prop() basePath: string = '';
@@ -21,28 +23,35 @@ export class WccAppMenuItem {
 
   @Prop() name: string = ''
 
-  private mode: string | null = null;
+  @Prop() mode: string;
+
   private children;
 
-  private _setMode = () => {
-    if (!this.mode) {
-      let element = this.host.parentElement;
-      while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
-        element = element.parentElement;
-      }
-      this.mode = element.getAttribute('mode');
-    }
-  };
+  private _removeActive = () => {
+    this.menuElement.querySelectorAll('wcc-app-menu-item').forEach(element => {
+      element.removeAttribute('active');
+    })
+  }
 
   handleClick(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    this._setMode();
+    if (this.mode === 'vertical') {
+      const item = e.currentTarget as HTMLElement;
+      this._removeActive();
+      item.parentElement.setAttribute('active', '');
+    }
+  }
+
+  handleDropdownClick(e: MouseEvent) {
+    e.preventDefault();
+    e.stopImmediatePropagation();
 
     if (this.mode === 'vertical') {
       const item = e.currentTarget as HTMLElement;
       const dropdown = item.parentElement;
+      this._removeActive();
       dropdown.toggleAttribute('active');
     }
   };
@@ -56,6 +65,8 @@ export class WccAppMenuItem {
 
       const props = {
         basePath: this.basePath,
+        menuElement: this.menuElement,
+        mode: this.mode,
         level: this.level + 1,
       } as any;
 
@@ -72,6 +83,23 @@ export class WccAppMenuItem {
     }
   }
 
+  async componentDidLoad() {
+    // manage active menu item
+    if (this.mode === 'vertical') {
+      if (this.url === window.location.pathname) {
+        let element = this.host;
+        element.setAttribute('active', '');
+
+        while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
+          if (element.classList.contains('dropdown')) {
+            element.setAttribute('active', '');
+          }
+          element = element.parentElement;
+        }
+      }
+    }
+  }
+
   render() {
     const dropdown = {
       attributes: {
@@ -85,10 +113,13 @@ export class WccAppMenuItem {
     return (
       <Host>
         { !this.children
-          ? <stencil-route-link data-url={this.url} class="item" url={this.url}>{this.name}</stencil-route-link>
+          ? <stencil-route-link data-url={this.url}
+              class="item" url={this.url}
+              onClick={this.handleClick.bind(this)}
+            >{this.name}</stencil-route-link>
           : (
             <div {...dropdown.attributes}>
-              <div class="item" onClick={this.handleClick.bind(this)}>{this.name}</div>
+              <div class="item" onClick={this.handleDropdownClick.bind(this)}>{this.name}</div>
               <div class="items">{this.children}</div>
             </div>
           )

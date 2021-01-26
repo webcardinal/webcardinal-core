@@ -7,13 +7,15 @@
 
 ## Properties
 
-| Property   | Attribute   | Description | Type                               | Default                                  |
-| ---------- | ----------- | ----------- | ---------------------------------- | ---------------------------------------- |
-| `basePath` | `base-path` |             | `string`                           | `''`                                     |
-| `item`     | --          |             | `{ path: string; children: any; }` | `{     path: '',     children: null   }` |
-| `level`    | `level`     |             | `number`                           | `0`                                      |
-| `name`     | `name`      |             | `string`                           | `''`                                     |
-| `url`      | `url`       |             | `string`                           | `null`                                   |
+| Property      | Attribute   | Description | Type                               | Default                                  |
+| ------------- | ----------- | ----------- | ---------------------------------- | ---------------------------------------- |
+| `basePath`    | `base-path` |             | `string`                           | `''`                                     |
+| `item`        | --          |             | `{ path: string; children: any; }` | `{     path: '',     children: null   }` |
+| `level`       | `level`     |             | `number`                           | `0`                                      |
+| `menuElement` | --          |             | `HTMLElement`                      | `null`                                   |
+| `mode`        | `mode`      |             | `string`                           | `undefined`                              |
+| `name`        | `name`      |             | `string`                           | `''`                                     |
+| `url`         | `url`       |             | `string`                           | `null`                                   |
 
 
 ## Dependencies

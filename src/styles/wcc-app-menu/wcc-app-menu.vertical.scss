@@ -34,6 +34,10 @@ wcc-app-menu[mode=vertical] {
     }
 
     wcc-app-menu-item {
+      &[active] {
+        font-weight: bold;
+      }
+
       .dropdown {
         .items {
           display: none;

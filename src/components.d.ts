@@ -22,6 +22,8 @@ export namespace Components {
         "basePath": string;
         "item": { path: string; children: any; };
         "level": number;
+        "menuElement": HTMLElement;
+        "mode": string;
         "name": string;
         "url": string | null;
     }
@@ -187,6 +189,8 @@ declare namespace LocalJSX {
         "basePath"?: string;
         "item"?: { path: string; children: any; };
         "level"?: number;
+        "menuElement"?: HTMLElement;
+        "mode"?: string;
         "name"?: string;
         "url"?: string | null;
     }
