@@ -1,0 +1,116 @@
+wcc-app-error-toast {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  width: 600px;
+  max-width: calc(100vw);
+  height: auto;
+
+  .toast {
+    color: #fff;
+    text-align: left;
+    border-radius: 2px;
+    margin: 10px;
+    padding: 10px;
+    z-index: 1000;
+    right: 0;
+    bottom: 10px;
+    max-height: 250px;
+    overflow-y: auto;
+    -webkit-animation: fadein 0.5s;
+    animation: fadein 0.5s;
+
+    &.warning {
+      background-color: #ffa900;
+    }
+    &.error {
+      background-color: #ed441b;
+    }
+
+    .title {
+      position: relative;
+
+      .close {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        padding: 2px 4px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 28px;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .message {
+        font-size: 1.1rem;
+        margin-right: 20px;
+
+        .see-more {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .see-more-content {
+      display: none;
+      padding: 10px 0;
+
+      &.show {
+        display: block;
+      }
+    }
+
+    .details {
+      font-size: 0.9rem;
+      margin-top: 5px;
+    }
+  }
+
+  @-webkit-keyframes fadein {
+    from {
+      bottom: -30px;
+      opacity: 0;
+    }
+    to {
+      bottom: 10px;
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadein {
+    from {
+      bottom: -30px;
+      opacity: 0;
+    }
+    to {
+      bottom: 10px;
+      opacity: 1;
+    }
+  }
+
+  @-webkit-keyframes fadeout {
+    from {
+      bottom: 30px;
+      opacity: 1;
+    }
+    to {
+      bottom: 0;
+      opacity: 0;
+    }
+  }
+
+  @keyframes fadeout {
+    from {
+      bottom: 30px;
+      opacity: 1;
+    }
+    to {
+      bottom: 0;
+      opacity: 0;
+    }
+  }
+}

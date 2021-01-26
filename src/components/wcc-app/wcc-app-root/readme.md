@@ -19,12 +19,14 @@
 
 - [wcc-app-menu](../wcc-app-menu/wcc-app-menu)
 - [wcc-app-container](../wcc-app-container)
+- [wcc-app-error-toast](../wcc-app-error-toast)
 
 ### Graph
 ```mermaid
 graph TD;
   wcc-app-root --> wcc-app-menu
   wcc-app-root --> wcc-app-container
+  wcc-app-root --> wcc-app-error-toast
   wcc-app-menu --> wcc-app-menu-item
   wcc-app-menu-item --> wcc-app-menu-item
   wcc-app-menu-item --> stencil-route-link

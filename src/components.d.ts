@@ -9,6 +9,8 @@ import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface WccAppContainer {
     }
+    interface WccAppErrorToast {
+    }
     interface WccAppLoader {
         "src": string;
         "type": string;
@@ -105,6 +107,12 @@ declare global {
         prototype: HTMLWccAppContainerElement;
         new (): HTMLWccAppContainerElement;
     };
+    interface HTMLWccAppErrorToastElement extends Components.WccAppErrorToast, HTMLStencilElement {
+    }
+    var HTMLWccAppErrorToastElement: {
+        prototype: HTMLWccAppErrorToastElement;
+        new (): HTMLWccAppErrorToastElement;
+    };
     interface HTMLWccAppLoaderElement extends Components.WccAppLoader, HTMLStencilElement {
     }
     var HTMLWccAppLoaderElement: {
@@ -161,6 +169,7 @@ declare global {
     };
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
+        "wcc-app-error-toast": HTMLWccAppErrorToastElement;
         "wcc-app-loader": HTMLWccAppLoaderElement;
         "wcc-app-menu": HTMLWccAppMenuElement;
         "wcc-app-menu-item": HTMLWccAppMenuItemElement;
@@ -174,6 +183,8 @@ declare global {
 }
 declare namespace LocalJSX {
     interface WccAppContainer {
+    }
+    interface WccAppErrorToast {
     }
     interface WccAppLoader {
         "src"?: string;
@@ -267,6 +278,7 @@ declare namespace LocalJSX {
     }
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
+        "wcc-app-error-toast": WccAppErrorToast;
         "wcc-app-loader": WccAppLoader;
         "wcc-app-menu": WccAppMenu;
         "wcc-app-menu-item": WccAppMenuItem;
@@ -283,6 +295,7 @@ declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
             "wcc-app-container": LocalJSX.WccAppContainer & JSXBase.HTMLAttributes<HTMLWccAppContainerElement>;
+            "wcc-app-error-toast": LocalJSX.WccAppErrorToast & JSXBase.HTMLAttributes<HTMLWccAppErrorToastElement>;
             "wcc-app-loader": LocalJSX.WccAppLoader & JSXBase.HTMLAttributes<HTMLWccAppLoaderElement>;
             "wcc-app-menu": LocalJSX.WccAppMenu & JSXBase.HTMLAttributes<HTMLWccAppMenuElement>;
             "wcc-app-menu-item": LocalJSX.WccAppMenuItem & JSXBase.HTMLAttributes<HTMLWccAppMenuItemElement>;

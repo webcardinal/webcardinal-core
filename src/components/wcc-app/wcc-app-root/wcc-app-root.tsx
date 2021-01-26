@@ -2,6 +2,7 @@ import { Component, h, Prop } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { ApplicationController } from '../../../controllers';
 import { HostElement } from '../../../decorators';
+import { subscribeToErrors, subscribeToWarnings } from './wcc-app-root-utils';
 
 @Component({
   tag: 'wcc-app-root',
@@ -30,6 +31,10 @@ export class WccAppRoot {
     if (this.host.children.length === 0) {
       this.host.appendChild(document.createElement('wcc-app-menu'));
       this.host.appendChild(document.createElement('wcc-app-container'));
+      this.host.appendChild(document.createElement('wcc-app-error-toast'));
+
+      subscribeToErrors();
+      subscribeToWarnings();
     }
   }
 
