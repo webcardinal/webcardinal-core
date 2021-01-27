@@ -56,13 +56,12 @@ class Controller {
   }
 
   createWccModal({ modalTitle, text, canClose, showFooter }) {
-    const modal = Object.assign(document.createElement("wcc-modal"), {
+    const modal = this.createAndAddElement("wcc-modal", {
       modalTitle,
       text,
       canClose,
       showFooter,
     });
-    this.element.appendChild(modal);
 
     modal.addEventListener("confirmed", () => {
       modal.remove();
@@ -76,6 +75,17 @@ class Controller {
     this.element
       .querySelectorAll("wcc-modal")
       .forEach((modal) => modal.remove());
+  }
+
+  createElement(elementName, props) {
+    const element = Object.assign(document.createElement(elementName), props);
+    return element;
+  }
+
+  createAndAddElement(elementName, props) {
+    const element = this.createElement(elementName, props);
+    this.element.appendChild(element);
+    return element;
   }
 }
 
