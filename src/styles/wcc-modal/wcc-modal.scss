@@ -21,7 +21,7 @@
       &.centered {
         display: flex;
         align-items: center;
-        min-height: calc(100% - calc(var(--wcc-modal-dialog-margin)) * 2)
+        min-height: calc(100% - calc(var(--wcc-modal-dialog-margin)) * 2);
       }
     }
 
@@ -74,7 +74,7 @@
     border: var(--wcc-modal-content-border-width) solid
       var(--wcc-modal-content-border-color);
     border-radius: var(--wcc-modal-border-radius);
-    box-shadow: 0 0.125rem 0.25rem rgba(black, 0.075);
+    box-shadow: var(--wcc-modal-content-shadow);
     outline: 0;
   }
 
@@ -92,6 +92,7 @@
 
     .modal-title {
       margin: 0;
+      color: var(--wcc-modal-header-title-color);
       line-height: var(--wcc-modal-header-title-line-height);
     }
 
@@ -109,10 +110,7 @@
     flex: 1 1 auto;
     padding: var(--wcc-modal-inner-padding);
     min-height: 50px;
-
-    .text-content {
-        
-    }
+    color: var(--wcc-modal-body-color);
   }
 
   .modal-footer {
@@ -124,12 +122,25 @@
     padding: calc(var(--wcc-modal-inner-padding));
     border-top: var(--wcc-modal-footer-border-width) solid
       var(--wcc-modal-footer-border-color);
-
-    padding: 1rem;
-    border-top: 1px solid #e9ecef;
-
     border-bottom-right-radius: var(--wcc-modal-border-radius);
     border-bottom-left-radius: var(--wcc-modal-border-radius);
+
+    button {
+      color: var(--wcc-modal-footer-button-color);
+      background-color: var(--wcc-modal-footer-button-background-color);
+      border: var(--wcc-modal-footer-button-border);
+      border-radius: var(--wcc-modal-footer-button-border-radius);
+      padding: var(--wcc-modal-footer-button-padding);
+
+      &.cancel {
+        color: var(--wcc-modal-footer-cancel-button-color);
+        background-color: var(--wcc-modal-footer-cancel-button-background-color);
+      }
+      &.confirm {
+        color: var(--wcc-modal-footer-confirm-button-color);
+        background-color: var(--wcc-modal-footer-confirm-button-background-color);
+      }
+    }
 
     > * {
       margin: calc(var(--wcc-modal-footer-margin-between) / 2);

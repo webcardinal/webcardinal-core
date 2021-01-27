@@ -54,13 +54,13 @@ export class WccModal {
   /**
    * Sets if the close button will be shown or not
    */
-  @Prop({ reflect: true }) showCloseButton: boolean = false;
+  @Prop({ reflect: true }) showCancelButton: boolean = true;
 
   /**
    * The text that will appear on the footer close button
    * (if neither the "footer" slot nor modalFooterContent are provided)
    */
-  @Prop({ reflect: true }) closeButtonText: string = "Close";
+  @Prop({ reflect: true }) cancelButtonText: string = "Close";
 
   /**
    * The text that will appear on the footer confirm button
@@ -193,19 +193,19 @@ export class WccModal {
       return <div innerHTML={this.modalFooterContent}></div>;
     return (
       <Fragment>
-        {this.showCloseButton && (
+        {this.showCancelButton && (
           <button
             type="button"
-            class="btn btn-secondary"
+            class="cancel"
             onClick={this.handleClose.bind(this)}
           >
-            {this.closeButtonText}
+            {this.cancelButtonText}
           </button>
         )}
 
         <button
           type="button"
-          class="btn btn-primary"
+          class="confirm"
           onClick={this.handleConfirm.bind(this)}
         >
           {this.confirmButtonText}

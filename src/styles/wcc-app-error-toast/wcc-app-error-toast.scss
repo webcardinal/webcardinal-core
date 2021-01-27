@@ -21,10 +21,12 @@ wcc-app-error-toast {
     animation: fadein 0.5s;
 
     &.warning {
-      background-color: #ffa900;
+      background-color: var(--wcc-app-error-toast-warning-background-color);
+      color: var(--wcc-app-error-toast-warning-color);
     }
     &.error {
-      background-color: #ed441b;
+      background-color: var(--wcc-app-error-toast-error-background-color);
+      color: var(--wcc-app-error-toast-error-color);
     }
 
     .title {

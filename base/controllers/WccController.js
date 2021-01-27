@@ -5,13 +5,15 @@ class WccController extends Controller {
     super(element, history);
   }
 
-  showModal(text, modalTitle) {
+  showModal(text, modalTitle, onConfirm, onClose) {
     if (!modalTitle) {
       modalTitle = "Info";
     }
     this.createWccModal({
       modalTitle,
       text,
+      onConfirm,
+      onClose,
     });
   }
 
@@ -30,8 +32,10 @@ class WccController extends Controller {
     this.createWccModal({
       modalTitle: title,
       text: errorMessage,
+      canClose: false,
+      showCancelButton: false,
       onConfirm,
-      onClose: onClose || onConfirm,
+      onClose,
     });
   }
 
@@ -45,6 +49,7 @@ class WccController extends Controller {
       modalTitle: "Error",
       text: errorText,
       canClose: false,
+      showCancelButton: false,
       showFooter: false,
     });
 
@@ -59,15 +64,21 @@ class WccController extends Controller {
     modalTitle,
     text,
     canClose,
+    showCancelButton,
     showFooter,
     onConfirm,
     onClose,
   }) {
+    if (!onClose) {
+      onClose = onConfirm;
+    }
+
     const modal = this.createAndAddElement("wcc-modal", {
       modalTitle,
       text,
       canClose,
       showFooter,
+      showCancelButton,
     });
 
     modal.addEventListener("confirmed", () => {

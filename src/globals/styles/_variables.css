@@ -4,13 +4,13 @@ html {
   --wcc-app-menu-padding: 1rem;
   --wcc-app-menu-min-width: 220px;
   --wcc-app-menu-max-width: 100%;
-  --wcc-app-menu-color: #F1F1F1;
-  --wcc-app-menu-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
+  --wcc-app-menu-color: #f1f1f1;
+  --wcc-app-menu-background: linear-gradient(180deg, #5e7fe1 30%, #354f9b 100%);
   --wcc-app-menu-items-gap: calc(0.75rem / 2);
 
   /* <wcc-app-container> */
   --wcc-app-container-gap: 0.75em;
-  --wcc-app-container-background: #F1F1F1;
+  --wcc-app-container-background: #f1f1f1;
 
   /* <wcc-spinner> */
   --wcc-spinner-width: 35px;
@@ -18,7 +18,7 @@ html {
   --wcc-spinner-radius: 100%;
   --wcc-spinner-dot-size: 6px;
   --wcc-spinner-dot-radius: 100%;
-  --wcc-spinner-color: #354F9B;
+  --wcc-spinner-color: #354f9b;
   --wcc-spinner-background: trasparent;
   --wcc-spinner-border: 0.25em solid transparent;
   --wcc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
@@ -29,9 +29,10 @@ html {
   --wcc-modal-z-index: 1;
   --wcc-modal-dialog-margin: 1rem auto;
   --wcc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
-  --wcc-modal-border-radius: .3rem;
+  --wcc-modal-border-radius: 0.3rem;
   --wcc-modal-inner-padding: 1rem;
   --wcc-modal-header-padding: 1rem;
+  --wcc-modal-header-title-color: black;
   --wcc-modal-header-title-line-height: 1rem;
   --wcc-modal-header-border-width: 1px;
   --wcc-modal-header-border-color: black;
@@ -39,9 +40,26 @@ html {
   --wcc-modal-content-background: white;
   --wcc-modal-content-border-width: 1px;
   --wcc-modal-content-border-color: black;
-  --wcc-modal-footer-margin-between: .5rem;
+  --wcc-modal-content-shadow: 0 0.125rem 0.25rem rgba(black, 0.075);
+  --wcc-modal-body-color: black;
+  --wcc-modal-footer-margin-between: 0.5rem;
   --wcc-modal-footer-border-width: 1px;
-  --wcc-modal-footer-border-color: black;
+  --wcc-modal-footer-border-color: #e9ecef;
+  --wcc-modal-footer-button-color: black;
+  --wcc-modal-footer-button-background-color: white;
+  --wcc-modal-footer-button-border: 1px solid black;
+  --wcc-modal-footer-button-border-radius: 5px;
+  --wcc-modal-footer-button-padding: 5px 10px;
+  --wcc-modal-footer-cancel-button-color: black;
+  --wcc-modal-footer-cancel-button-background-color: white;
+  --wcc-modal-footer-confirm-button-color: white;
+  --wcc-modal-footer-confirm-button-background-color: #5e7fe1;
+
+  /* <wcc-app-error-toast> */
+  --wcc-app-error-toast-warning-color: #fff;
+  --wcc-app-error-toast-warning-background-color: #ffa900;
+  --wcc-app-error-toast-error-color: #fff;
+  --wcc-app-error-toast-error-background-color: #ed441b;
 }
 
 body {

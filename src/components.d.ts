@@ -61,13 +61,13 @@ export namespace Components {
          */
         "canClose": boolean;
         /**
+          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
+        "cancelButtonText": string;
+        /**
           * Sets if the popup is centered on the screen or if it appear at the top of the screen
          */
         "centered": boolean;
-        /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
-         */
-        "closeButtonText": string;
         /**
           * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
          */
@@ -103,7 +103,7 @@ export namespace Components {
         /**
           * Sets if the close button will be shown or not
          */
-        "showCloseButton": boolean;
+        "showCancelButton": boolean;
         /**
           * Sets if the modal has the footer displayed
          */
@@ -254,13 +254,13 @@ declare namespace LocalJSX {
          */
         "canClose"?: boolean;
         /**
+          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+         */
+        "cancelButtonText"?: string;
+        /**
           * Sets if the popup is centered on the screen or if it appear at the top of the screen
          */
         "centered"?: boolean;
-        /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
-         */
-        "closeButtonText"?: string;
         /**
           * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
          */
@@ -296,7 +296,7 @@ declare namespace LocalJSX {
         /**
           * Sets if the close button will be shown or not
          */
-        "showCloseButton"?: boolean;
+        "showCancelButton"?: boolean;
         /**
           * Sets if the modal has the footer displayed
          */
