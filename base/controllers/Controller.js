@@ -22,59 +22,8 @@ class Controller {
 
   navigateToPageTag(pageTag, state) {
     // TODO: get URL from page tag
-    this.history.push(pageTag, state);
-  }
-
-  showModal(text, modalTitle) {
-    if (!modalTitle) {
-      modalTitle = "Info";
-    }
-    this.createWccModal({
-      modalTitle,
-      text,
-    });
-  }
-
-  showErrorModalAndRedirect(errorText, page, timeout) {
-    if (!timeout) {
-      timeout = 5000;
-    }
-    this.hideModal();
-
-    this.createWccModal({
-      modalTitle: "Error",
-      text: errorText,
-      canClose: false,
-      showFooter: false,
-    });
-
-    setTimeout(() => {
-      this.hideModal();
-      console.log(`Redirecting to ${page}...`);
-      this.navigateToPageTag(page);
-    }, timeout);
-  }
-
-  createWccModal({ modalTitle, text, canClose, showFooter }) {
-    const modal = this.createAndAddElement("wcc-modal", {
-      modalTitle,
-      text,
-      canClose,
-      showFooter,
-    });
-
-    modal.addEventListener("confirmed", () => {
-      modal.remove();
-    });
-    modal.addEventListener("closed", () => {
-      modal.remove();
-    });
-  }
-
-  hideModal() {
-    this.element
-      .querySelectorAll("wcc-modal")
-      .forEach((modal) => modal.remove());
+    const pageUrl = pageTag;
+    this.history.push(pageUrl, state);
   }
 
   createElement(elementName, props) {

@@ -1,5 +1,7 @@
-import Controller from './Controller';
+import Controller from "./Controller";
+import WccController from "./WccController";
 
 export default {
-  Controller
-}
+  Controller,
+  WccController,
+};
