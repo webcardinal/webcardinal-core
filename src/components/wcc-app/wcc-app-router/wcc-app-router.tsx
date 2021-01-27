@@ -26,17 +26,13 @@ export class WccAppRouter {
   }) getRoutingConfigEvent: EventEmitter
 
   private _renderRoute = ({ path, src }: RoutesPayload) => {
-    let url = URLHelper.join(this.basePath, path).pathname;
-    if (url === '') url = '/';
-    src = URLHelper.join(this.pagesPath, src).pathname;
-
     const props = {
-      url,
+      url: path,
       exact: true,
       component: 'wcc-app-loader',
       componentProps: { src }
     }
-    return <stencil-route data-path={url} data-src={src} {...props}/>;
+    return <stencil-route data-path={path} data-src={src} {...props}/>;
   };
 
   private _renderRoutes = (
@@ -47,14 +43,22 @@ export class WccAppRouter {
     if (!Array.isArray(routes) || routes.length === 0) return null;
 
     return routes.map(route => {
-      const payload = {
+      let payload = {
         path: URLHelper.join('', path, route.path).pathname,
         src: URLHelper.join('', src, route.src).pathname
       }
-
       if (route.children) {
         return this._renderRoutes(route.children, payload);
       } else {
+        payload.path = URLHelper.join(this.basePath, payload.path).pathname;
+        if (payload.path === '') payload.path = '/';
+
+        if (route.src.startsWith('http')) {
+          payload.src = route.src;
+        } else {
+          payload.src = URLHelper.join(this.pagesPath, payload.src).pathname;
+        }
+
         return routeRenderer(payload);
       }
     })
