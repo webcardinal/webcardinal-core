@@ -18,6 +18,7 @@
 | `modalName`          | `modal-name`           | The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html   | `string`  | `undefined` |
 | `modalTitle`         | `modal-title`          | The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided         | `string`  | `undefined` |
 | `modalTitleContent`  | `modal-title-content`  | The content that can be shown in the header, if provided and the "title" slot is missing from the content.                | `string`  | `undefined` |
+| `text`               | `text`                 | The content that will be shown in the modal body, if modalName is not provided                                            | `string`  | `undefined` |
 
 
 ## Events

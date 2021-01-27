@@ -9,7 +9,7 @@
 
 ### Used by
 
- - [wcc-app-root](../wcc-app-root)
+ - [wcc-app-root](../wcc-app/wcc-app-root)
 
 ### Graph
 ```mermaid

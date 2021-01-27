@@ -57,6 +57,10 @@ export namespace Components {
          */
         "autoShow": boolean;
         /**
+          * Sets if the modal can be closed
+         */
+        "canClose": boolean;
+        /**
           * Sets if the popup is centered on the screen or if it appear at the top of the screen
          */
         "centered": boolean;
@@ -96,6 +100,18 @@ export namespace Components {
           * Method that shows the modal.
          */
         "show": () => Promise<void>;
+        /**
+          * Sets if the close button will be shown or not
+         */
+        "showCloseButton": boolean;
+        /**
+          * Sets if the modal has the footer displayed
+         */
+        "showFooter": boolean;
+        /**
+          * The content that will be shown in the modal body, if modalName is not provided
+         */
+        "text": string;
     }
     interface WccSpinner {
     }
@@ -234,6 +250,10 @@ declare namespace LocalJSX {
          */
         "autoShow"?: boolean;
         /**
+          * Sets if the modal can be closed
+         */
+        "canClose"?: boolean;
+        /**
           * Sets if the popup is centered on the screen or if it appear at the top of the screen
          */
         "centered"?: boolean;
@@ -273,6 +293,18 @@ declare namespace LocalJSX {
           * Event that fires when the modal is initialised (after the modal content was successfully loaded)
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
+        /**
+          * Sets if the close button will be shown or not
+         */
+        "showCloseButton"?: boolean;
+        /**
+          * Sets if the modal has the footer displayed
+         */
+        "showFooter"?: boolean;
+        /**
+          * The content that will be shown in the modal body, if modalName is not provided
+         */
+        "text"?: string;
     }
     interface WccSpinner {
     }

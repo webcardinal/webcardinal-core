@@ -42,9 +42,19 @@ export class WccModal {
   @Prop({ reflect: true }) modalTitleContent: string;
 
   /**
+   * The content that will be shown in the modal body, if modalName is not provided
+   */
+  @Prop({ reflect: true }) text: string;
+
+  /**
    * The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.
    */
   @Prop({ reflect: true }) modalFooterContent: string;
+
+  /**
+   * Sets if the close button will be shown or not
+   */
+  @Prop({ reflect: true }) showCloseButton: boolean = false;
 
   /**
    * The text that will appear on the footer close button
@@ -74,6 +84,16 @@ export class WccModal {
   @Prop({ reflect: true }) autoClose: boolean = true;
 
   /**
+   * Sets if the modal can be closed
+   */
+  @Prop({ reflect: true }) canClose: boolean = true;
+
+  /**
+   * Sets if the modal has the footer displayed
+   */
+  @Prop({ reflect: true }) showFooter: boolean = true;
+
+  /**
    * Event that fires when the modal is initialised (after the modal content was successfully loaded)
    */
   @Event() initialised: EventEmitter<HTMLElement>;
@@ -90,15 +110,17 @@ export class WccModal {
   @Event() closed: EventEmitter<boolean>;
 
   async componentWillLoad() {
-    this.isLoading = true;
     if (this.autoShow) {
       this.isVisible = true;
     }
 
-    this.content = await getModalContent(this.modalName);
-    this.isLoading = false;
+    if (this.modalName) {
+      this.isLoading = true;
+      this.content = await getModalContent(this.modalName);
+      this.isLoading = false;
+      this.host.innerHTML = this.content;
+    }
 
-    this.host.innerHTML = this.content;
     this.initialised.emit(this.host);
   }
 
@@ -129,7 +151,7 @@ export class WccModal {
   handleBackdropClick(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    if (this.autoClose && e.target === e.currentTarget) {
+    if (this.canClose && this.autoClose && e.target === e.currentTarget) {
       this.closed.emit(false);
     }
   }
@@ -171,13 +193,15 @@ export class WccModal {
       return <div innerHTML={this.modalFooterContent}></div>;
     return (
       <Fragment>
-        <button
-          type="button"
-          class="btn btn-secondary"
-          onClick={this.handleClose.bind(this)}
-        >
-          {this.closeButtonText}
-        </button>
+        {this.showCloseButton && (
+          <button
+            type="button"
+            class="btn btn-secondary"
+            onClick={this.handleClose.bind(this)}
+          >
+            {this.closeButtonText}
+          </button>
+        )}
 
         <button
           type="button"
@@ -208,15 +232,17 @@ export class WccModal {
             <div class="modal-header">
               {this.getTitleContent()}
 
-              <button
-                type="button"
-                class="close"
-                data-dismiss="modal"
-                aria-label="Close"
-                onClick={this.handleClose.bind(this)}
-              >
-                <span aria-hidden="true">&times;</span>
-              </button>
+              {this.canClose && (
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                  onClick={this.handleClose.bind(this)}
+                >
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              )}
             </div>
 
             {this.isLoading ? (
@@ -226,10 +252,16 @@ export class WccModal {
             ) : (
               <Fragment>
                 <div class="modal-body">
-                  <slot />
+                  {this.modalName ? (
+                    <slot />
+                  ) : (
+                    <div class="text-content">{this.text}</div>
+                  )}
                 </div>
 
-                <div class="modal-footer">{this.getFooterContent()}</div>
+                {this.showFooter && (
+                  <div class="modal-footer">{this.getFooterContent()}</div>
+                )}
               </Fragment>
             )}
           </div>
