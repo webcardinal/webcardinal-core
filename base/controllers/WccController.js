@@ -5,12 +5,10 @@ class WccController extends Controller {
     super(element, history);
   }
 
-  showModal(text, modalTitle, onConfirm, onClose) {
-    if (!modalTitle) {
-      modalTitle = "Info";
-    }
+  showModal(text, title, onConfirm, onClose) {
+    title = title ? title : "Info";
     this.createWccModal({
-      modalTitle,
+      modalTitle: title,
       text,
       onConfirm,
       onClose,
@@ -18,20 +16,20 @@ class WccController extends Controller {
   }
 
   showErrorModal(error, title, onConfirm, onClose) {
-    let errorMessage;
-    title = title ? title : "Validation Error";
+    let modalTitle = title ? title : "Error";
+    let text;
 
     if (error instanceof Error) {
-      errorMessage = error.message;
+      text = error.message;
     } else if (typeof error === "object") {
-      errorMessage = error.toString();
+      text = error.toString();
     } else {
-      errorMessage = error;
+      text = error;
     }
 
     this.createWccModal({
-      modalTitle: title,
-      text: errorMessage,
+      modalTitle,
+      text,
       canClose: false,
       showCancelButton: false,
       onConfirm,
@@ -39,15 +37,26 @@ class WccController extends Controller {
     });
   }
 
-  showErrorModalAndRedirect(errorText, page, timeout) {
+  showErrorModalAndRedirect(error, title, url, timeout) {
+    let modalTitle = title ? title : "Error";
+    let text;
+
+    if (error instanceof Error) {
+      text = error.message;
+    } else if (typeof error === "object") {
+      text = error.toString();
+    } else {
+      text = error;
+    }
+
     if (!timeout) {
       timeout = 5000;
     }
     this.hideModal();
 
     this.createWccModal({
-      modalTitle: "Error",
-      text: errorText,
+      modalTitle,
+      text,
       canClose: false,
       showCancelButton: false,
       showFooter: false,
@@ -55,8 +64,8 @@ class WccController extends Controller {
 
     setTimeout(() => {
       this.hideModal();
-      console.log(`Redirecting to ${page}...`);
-      this.navigateToPageTag(page);
+      console.log(`Redirecting to ${url}...`);
+      this.navigateToUrl(url);
     }, timeout);
   }
 
