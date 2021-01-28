@@ -1,4 +1,5 @@
 wcc-app-error-toast {
+  pointer-events: none;
   position: fixed;
   right: 0;
   bottom: 0;
@@ -7,6 +8,7 @@ wcc-app-error-toast {
   height: auto;
 
   .toast {
+    pointer-events: auto;
     color: #fff;
     text-align: left;
     border-radius: 2px;
