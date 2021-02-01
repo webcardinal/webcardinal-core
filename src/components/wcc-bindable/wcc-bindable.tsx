@@ -1,4 +1,4 @@
-import { Component, h, Prop, State } from '@stencil/core';
+import { Component, h, Method, Prop, State } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
 import { ControllerRegistryService, ControllerBindingService } from '../../services'
@@ -37,6 +37,14 @@ export class WccBindable {
     }
 
     ControllerBindingService.bind(this.host, this.controller);
+  }
+
+  @Method()
+  async getModel() {
+    if(this.controller) {
+        return this.controller.model;
+    }
+    return undefined;
   }
 
   render() {

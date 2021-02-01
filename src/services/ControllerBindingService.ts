@@ -58,6 +58,9 @@ function setElementModel(element, model, chain) {
     }
 
     if (targetModel.element === true) {
+      // variant to fix addEventListener issue 
+      // const elementContext = element;
+      // element.addEventListener = element.addEventListener.bind(elementContext);
       model.setChainValue(chain, {
         ...targetModel,
         element
@@ -89,6 +92,10 @@ const ControllerBindingService = {
     }
     if (!controller.model) {
       console.warn(`No model found for ${tagName}!`);
+      return;
+    }
+    // for some wcc-<components> binding is managed by component itself
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
       return;
     }
 

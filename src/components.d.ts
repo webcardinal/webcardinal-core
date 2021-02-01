@@ -41,11 +41,22 @@ export namespace Components {
     }
     interface WccBindable {
         "controllerName": string | null;
+        "getModel": () => Promise<any>;
         "history": RouterHistory;
     }
     interface WccContainer {
         "controllerName": string | null;
         "history": RouterHistory;
+    }
+    interface WccIf {
+        /**
+          * The condition that will be evaluated in order to check which slots will be visible
+         */
+        "condition": any | undefined;
+        /**
+          * An optional modal that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+         */
+        "model": any | undefined;
     }
     interface WccModal {
         /**
@@ -171,6 +182,12 @@ declare global {
         prototype: HTMLWccContainerElement;
         new (): HTMLWccContainerElement;
     };
+    interface HTMLWccIfElement extends Components.WccIf, HTMLStencilElement {
+    }
+    var HTMLWccIfElement: {
+        prototype: HTMLWccIfElement;
+        new (): HTMLWccIfElement;
+    };
     interface HTMLWccModalElement extends Components.WccModal, HTMLStencilElement {
     }
     var HTMLWccModalElement: {
@@ -193,6 +210,7 @@ declare global {
         "wcc-app-router": HTMLWccAppRouterElement;
         "wcc-bindable": HTMLWccBindableElement;
         "wcc-container": HTMLWccContainerElement;
+        "wcc-if": HTMLWccIfElement;
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
     }
@@ -239,6 +257,16 @@ declare namespace LocalJSX {
     interface WccContainer {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
+    }
+    interface WccIf {
+        /**
+          * The condition that will be evaluated in order to check which slots will be visible
+         */
+        "condition"?: any | undefined;
+        /**
+          * An optional modal that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+         */
+        "model"?: any | undefined;
     }
     interface WccModal {
         /**
@@ -318,6 +346,7 @@ declare namespace LocalJSX {
         "wcc-app-router": WccAppRouter;
         "wcc-bindable": WccBindable;
         "wcc-container": WccContainer;
+        "wcc-if": WccIf;
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
     }
@@ -335,6 +364,7 @@ declare module "@stencil/core" {
             "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
             "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
             "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
+            "wcc-if": LocalJSX.WccIf & JSXBase.HTMLAttributes<HTMLWccIfElement>;
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
         }

@@ -13,6 +13,19 @@
 | `history`        | --           |             | `RouterHistory` | `undefined` |
 
 
+## Methods
+
+### `getModel() => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*
