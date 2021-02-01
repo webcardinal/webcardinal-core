@@ -1,6 +1,8 @@
 import {
   MODEL_KEY,
   MODEL_CHAIN_PREFIX,
+  SKIP_BINDING_FOR_PROPERTIES,
+  SKIP_BINDING_FOR_COMPONENTS,
   PSK_CARDINAL_PREFIX
 } from '../constants';
 
@@ -13,6 +15,10 @@ function isNativeProperty(key) {
 }
 
 function setElementValue(element, { key, value }) {
+  if (SKIP_BINDING_FOR_PROPERTIES.includes(key)) {
+    return;
+  }
+
   if (typeof value === 'object') {
     return;
   }
@@ -49,6 +55,13 @@ function setElementModel(element, model, chain) {
   if (targetModel) {
     for (let [key, value] of Object.entries(targetModel)) {
       setElementValue(element, { key, value });
+    }
+
+    if (targetModel.element === true) {
+      model.setChainValue(chain, {
+        ...targetModel,
+        element
+      });
     }
   }
 
@@ -101,6 +114,11 @@ const ControllerBindingService = {
    * @param model - Object in which the specified chain (model="@chain") is searched
    */
   bindModel: (element: Element, model) => {
+    // for some wcc-<components> binding is managed by component itself
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
+      return;
+    }
+
     if (!element.getAttribute(MODEL_KEY)) {
       return;
     }
@@ -136,7 +154,12 @@ const ControllerBindingService = {
    * @param model - Object in which the specified chain (<attribute>="@chain") is searched
    */
   bindAttributes: (element: Element, model) => {
-    // for psk-<component> @BindModel decorator is design for this task
+    // for some wcc-<components> binding is managed by component itself
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
+      return;
+    }
+
+    // for psk-<components> @BindModel decorator is design for this task
     if (element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
       return;
     }
