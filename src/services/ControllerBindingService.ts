@@ -58,9 +58,12 @@ function setElementModel(element, model, chain) {
     }
 
     if (targetModel.element === true) {
-      // variant to fix addEventListener issue 
-      // const elementContext = element;
-      // element.addEventListener = element.addEventListener.bind(elementContext);
+      // ensure that each of element's methods have the correct context attached, because the model proxy doesn't set the context accordingly
+      for (const property in element) {
+        if (typeof element[property] === "function") {
+          element[property] = element[property].bind(element);          
+        }
+      }
       model.setChainValue(chain, {
         ...targetModel,
         element
