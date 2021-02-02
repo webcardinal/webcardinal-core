@@ -22,7 +22,7 @@ export class WccIf {
    * An optional modal that will be used to check the condition;
    * if not provided, then the component will find the closes wcc-bindable element and take the model from there
    */
-  @Prop()
+  @Prop({ attribute: 'data-model' })
   model: any | undefined = undefined;
 
   private falseSlot = null;

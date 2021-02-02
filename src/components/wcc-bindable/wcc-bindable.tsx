@@ -1,7 +1,11 @@
-import { Component, h, Method, Prop, State } from '@stencil/core';
+import { Component, h, Method, Prop } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
-import { ControllerRegistryService, ControllerBindingService } from '../../services'
+import {
+  ComponentListenersService,
+  ControllerRegistryService,
+  ControllerBindingService
+} from '../../services'
 
 import DefaultController from '../../../base/controllers/Controller.js';
 
@@ -15,28 +19,45 @@ export class WccBindable {
 
   @Prop() history: RouterHistory;
 
-  @State() disconnected: boolean = false;
-
   private controller;
+  private model;
+  private listeners: ComponentListenersService;
 
   async componentWillLoad() {
+    // load controller
     if (typeof this.controllerName === 'string') {
       try {
         const Controller = await ControllerRegistryService.getController(this.controllerName);
-
-        // Prevent execution if the node has been removed from DOM
         if (this.host.isConnected) {
           this.controller = new Controller(this.host, this.history);
         }
       } catch (error) {
         console.error(error);
+        return;
       }
     } else {
-      // load default controller
-      this.controller = new DefaultController(this.host);
+      this.controller = new DefaultController(this.host, this.history);
     }
 
-    ControllerBindingService.bind(this.host, this.controller);
+    // get the model
+    if (this.controller.model) {
+      this.model = this.controller.model;
+
+      // bind nodes
+      ControllerBindingService.bindRecursive(this.host, this.model);
+
+      // serve model
+      this.listeners = new ComponentListenersService(this.host, this.model);
+      this.listeners.getModel.add();
+    }
+  }
+
+  connectedCallback() {
+    this.listeners && this.listeners.getModel.add();
+  }
+
+  disconnectedCallback() {
+    this.listeners && this.listeners.getModel.remove();
   }
 
   @Method()

@@ -1,5 +1,6 @@
-// used by: ControllerBindingService.ts
-export const MODEL_KEY = 'model';
+export * from './events'
+
+export const MODEL_KEY = 'data-model';
 export const MODEL_CHAIN_PREFIX = '@';
 export const SKIP_BINDING_FOR_PROPERTIES = [
   'element'

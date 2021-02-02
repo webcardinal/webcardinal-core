@@ -48,6 +48,12 @@ export namespace Components {
         "controllerName": string | null;
         "history": RouterHistory;
     }
+    interface WccFor {
+        "autoBind": boolean;
+        "chain": string;
+        "controllerName": string | null;
+        "history": RouterHistory;
+    }
     interface WccIf {
         /**
           * The condition that will be evaluated in order to check which slots will be visible
@@ -182,6 +188,12 @@ declare global {
         prototype: HTMLWccContainerElement;
         new (): HTMLWccContainerElement;
     };
+    interface HTMLWccForElement extends Components.WccFor, HTMLStencilElement {
+    }
+    var HTMLWccForElement: {
+        prototype: HTMLWccForElement;
+        new (): HTMLWccForElement;
+    };
     interface HTMLWccIfElement extends Components.WccIf, HTMLStencilElement {
     }
     var HTMLWccIfElement: {
@@ -210,6 +222,7 @@ declare global {
         "wcc-app-router": HTMLWccAppRouterElement;
         "wcc-bindable": HTMLWccBindableElement;
         "wcc-container": HTMLWccContainerElement;
+        "wcc-for": HTMLWccForElement;
         "wcc-if": HTMLWccIfElement;
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
@@ -257,6 +270,13 @@ declare namespace LocalJSX {
     interface WccContainer {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
+    }
+    interface WccFor {
+        "autoBind"?: boolean;
+        "chain"?: string;
+        "controllerName"?: string | null;
+        "history"?: RouterHistory;
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
     }
     interface WccIf {
         /**
@@ -346,6 +366,7 @@ declare namespace LocalJSX {
         "wcc-app-router": WccAppRouter;
         "wcc-bindable": WccBindable;
         "wcc-container": WccContainer;
+        "wcc-for": WccFor;
         "wcc-if": WccIf;
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
@@ -364,6 +385,7 @@ declare module "@stencil/core" {
             "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
             "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
             "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
+            "wcc-for": LocalJSX.WccFor & JSXBase.HTMLAttributes<HTMLWccForElement>;
             "wcc-if": LocalJSX.WccIf & JSXBase.HTMLAttributes<HTMLWccIfElement>;
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;

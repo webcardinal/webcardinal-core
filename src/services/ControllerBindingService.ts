@@ -61,7 +61,7 @@ function setElementModel(element, model, chain) {
       // ensure that each of element's methods have the correct context attached, because the model proxy doesn't set the context accordingly
       for (const property in element) {
         if (typeof element[property] === "function") {
-          element[property] = element[property].bind(element);          
+          element[property] = element[property].bind(element);
         }
       }
       model.setChainValue(chain, {
@@ -82,18 +82,13 @@ function setElementModel(element, model, chain) {
 
 const ControllerBindingService = {
   /**
-   * @description - Binds the model for a specified element
-   *                (all values and attributes for any child of the element are set)
+   * @description - Binds all attributes and values from the model for any child of the element
    * @param element
-   * @param controller - Controller in witch the model can be found (controller.model)
+   * @param model
    */
-  bind: (element: Element, controller) => {
+  bindRecursive: (element: Element, model) => {
     const tagName = element.tagName.toLowerCase();
-    if (!controller) {
-      console.warn(`No controller found for ${tagName}!`);
-      return;
-    }
-    if (!controller.model) {
+    if (!model) {
       console.warn(`No model found for ${tagName}!`);
       return;
     }
@@ -102,7 +97,6 @@ const ControllerBindingService = {
       return;
     }
 
-    const { model } = controller;
     for (let i = 0; i < element.children.length; i++) {
       const target = element.children[i];
 
@@ -113,13 +107,13 @@ const ControllerBindingService = {
       ControllerBindingService.bindAttributes(target, model);
 
       if (target.children) {
-        ControllerBindingService.bind(target, controller);
+        ControllerBindingService.bindRecursive(target, model);
       }
     }
   },
 
   /**
-   * @description - Binds all values from specified model
+   * @description - Binds all values/properties from the specified model
    * @param element
    * @param model - Object in which the specified chain (model="@chain") is searched
    */
@@ -150,7 +144,7 @@ const ControllerBindingService = {
     setElementModel(element, model, chain);
 
     // onChange
-    model.onChange(chain, _ => setElementModel(element, model, chain));
+    model.onChange(chain, () => setElementModel(element, model, chain));
 
     // onChangeExpressionChain
     if (model.hasExpression(chain)) {
