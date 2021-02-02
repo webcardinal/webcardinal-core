@@ -1,7 +1,7 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
 import { RouterHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
-import { MODEL_KEY } from '../../constants';
+import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { ControllerBindingService, ControllerRegistryService } from '../../services';
 import { promisifyEventEmit, extractChain } from '../../utils';
 
@@ -47,6 +47,7 @@ export class WccFor {
           const element = node.cloneNode(true) as HTMLElement;
 
           const bindRelativeModel = (element) => {
+            let tag = element.tagName.toLowerCase();
             let chainSuffix = extractChain(element);
             if (chainSuffix) {
               chainSuffix = chainSuffix.slice(1);
@@ -54,6 +55,10 @@ export class WccFor {
               element.setAttribute('data-test-model', [this.chain, i, chainSuffix].join('.'));
             } else if (this.autoBind === true) {
               element.setAttribute(MODEL_KEY, [this.chain, i].join('.'));
+            }
+
+            if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
+              return;
             }
 
             ControllerBindingService.bindModel(element, this.model);
