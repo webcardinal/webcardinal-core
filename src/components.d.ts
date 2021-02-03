@@ -11,12 +11,18 @@ export namespace Components {
     }
     interface WccAppErrorToast {
     }
+    interface WccAppIdentity {
+        "avatar": string | null;
+        "email": string | null;
+        "name": string | null;
+    }
     interface WccAppLoader {
         "src": string;
         "type": string;
     }
     interface WccAppMenu {
         "basePath": string;
+        "disableIdentity": boolean;
         "items": any[];
         "mode": string;
     }
@@ -146,6 +152,12 @@ declare global {
         prototype: HTMLWccAppErrorToastElement;
         new (): HTMLWccAppErrorToastElement;
     };
+    interface HTMLWccAppIdentityElement extends Components.WccAppIdentity, HTMLStencilElement {
+    }
+    var HTMLWccAppIdentityElement: {
+        prototype: HTMLWccAppIdentityElement;
+        new (): HTMLWccAppIdentityElement;
+    };
     interface HTMLWccAppLoaderElement extends Components.WccAppLoader, HTMLStencilElement {
     }
     var HTMLWccAppLoaderElement: {
@@ -215,6 +227,7 @@ declare global {
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
         "wcc-app-error-toast": HTMLWccAppErrorToastElement;
+        "wcc-app-identity": HTMLWccAppIdentityElement;
         "wcc-app-loader": HTMLWccAppLoaderElement;
         "wcc-app-menu": HTMLWccAppMenuElement;
         "wcc-app-menu-item": HTMLWccAppMenuItemElement;
@@ -233,12 +246,19 @@ declare namespace LocalJSX {
     }
     interface WccAppErrorToast {
     }
+    interface WccAppIdentity {
+        "avatar"?: string | null;
+        "email"?: string | null;
+        "name"?: string | null;
+        "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
+    }
     interface WccAppLoader {
         "src"?: string;
         "type"?: string;
     }
     interface WccAppMenu {
         "basePath"?: string;
+        "disableIdentity"?: boolean;
         "items"?: any[];
         "mode"?: string;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
@@ -360,6 +380,7 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
         "wcc-app-error-toast": WccAppErrorToast;
+        "wcc-app-identity": WccAppIdentity;
         "wcc-app-loader": WccAppLoader;
         "wcc-app-menu": WccAppMenu;
         "wcc-app-menu-item": WccAppMenuItem;
@@ -379,6 +400,7 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             "wcc-app-container": LocalJSX.WccAppContainer & JSXBase.HTMLAttributes<HTMLWccAppContainerElement>;
             "wcc-app-error-toast": LocalJSX.WccAppErrorToast & JSXBase.HTMLAttributes<HTMLWccAppErrorToastElement>;
+            "wcc-app-identity": LocalJSX.WccAppIdentity & JSXBase.HTMLAttributes<HTMLWccAppIdentityElement>;
             "wcc-app-loader": LocalJSX.WccAppLoader & JSXBase.HTMLAttributes<HTMLWccAppLoaderElement>;
             "wcc-app-menu": LocalJSX.WccAppMenu & JSXBase.HTMLAttributes<HTMLWccAppMenuElement>;
             "wcc-app-menu-item": LocalJSX.WccAppMenuItem & JSXBase.HTMLAttributes<HTMLWccAppMenuItemElement>;

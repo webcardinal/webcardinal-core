@@ -10,7 +10,7 @@ export default {
   identity: {
     name: 'WebCardinal',
     email: 'privatesky@axiologic.net',
-    avatar: '__TODO__'
+    avatar: ''
   } as Identity,
   version: '1.0.0' as Version,
   pages: [

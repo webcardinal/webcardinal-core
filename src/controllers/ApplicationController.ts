@@ -2,6 +2,7 @@ import defaultConfig from './config/default';
 import {
   LOG_LEVEL,
   EVENT_CONFIG_GET_ROUTING,
+  EVENT_CONFIG_GET_IDENTITY,
   EVENT_CONFIG_GET_LOG_LEVEL
 } from '../constants';
 import controllers from '../../base/controllers';
@@ -267,6 +268,7 @@ export default class ApplicationController {
     });
 
     element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
+    element.addEventListener(EVENT_CONFIG_GET_IDENTITY, this._registerListener('identity'));
     element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
 
     // TODO: production version

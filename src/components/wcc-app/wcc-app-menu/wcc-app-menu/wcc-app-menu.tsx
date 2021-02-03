@@ -17,6 +17,8 @@ export class WccAppMenu {
 
   @Prop({ mutable: true }) basePath: string = '';
 
+  @Prop({ mutable: true, reflect: true }) disableIdentity = false;
+
   private slots = {
     before: false,
     after: false
@@ -94,6 +96,9 @@ export class WccAppMenu {
         this.host.classList.remove(`slot-${key}`);
       }
     }
+
+    const computedStyles = window.getComputedStyle(this.host);
+    this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-disable-identity').trim() === 'true';
   }
 
   private get _menu() {
@@ -105,8 +110,11 @@ export class WccAppMenu {
             </div>
           : null
         ),
-        <div class="container app-menu items">
-          { this._renderItems(this.items) }
+        <div class="container content">
+          { this.disableIdentity ? null : <wcc-app-identity /> }
+          <div class="app-menu items">
+            { this._renderItems(this.items) }
+          </div>
         </div>,
         ( this.slots.after
           ? <div class="container after">

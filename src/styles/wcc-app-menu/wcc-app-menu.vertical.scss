@@ -21,6 +21,12 @@ wcc-app-menu[mode=vertical] {
     grid-template-rows: auto 1fr auto;
   }
 
+  .content {
+    display: grid;
+    row-gap: var(--wcc-app-menu-gap);
+    grid-template-rows: auto 1fr;
+  }
+
   .app-menu {
     &.items, .items {
       display: flex;
@@ -51,5 +57,11 @@ wcc-app-menu[mode=vertical] {
         }
       }
     }
+  }
+}
+
+wcc-app-menu[mode=vertical][disable-identity] {
+  .content {
+    grid-template-rows: 1fr;
   }
 }

@@ -8,6 +8,16 @@ html {
   --wcc-app-menu-background: linear-gradient(180deg, #5e7fe1 30%, #354f9b 100%);
   --wcc-app-menu-items-gap: calc(0.75rem / 2);
 
+  /* <wcc-app-identity> */
+  --wcc-app-disable-identity: false;
+  --wcc-app-identity-color: #f1f1f1;
+  --wcc-app-identity-avatar-width: 3.5rem;
+  --wcc-app-identity-avatar-radius: 100%;
+  --wcc-app-identity-row-gap: 0.3rem;
+  --wcc-app-identity-column-gap: 0.5rem;
+  --wcc-app-identity-name-font-size: 1.3rem;
+  --wcc-app-identity-email-font-size: 1rem;
+
   /* <wcc-app-container> */
   --wcc-app-container-gap: 0.75em;
   --wcc-app-container-background: #f1f1f1;
@@ -40,7 +50,7 @@ html {
   --wcc-modal-content-background: white;
   --wcc-modal-content-border-width: 1px;
   --wcc-modal-content-border-color: black;
-  --wcc-modal-content-shadow: 0 0.125rem 0.25rem rgba(black, 0.075);
+  --wcc-modal-content-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
   --wcc-modal-body-color: black;
   --wcc-modal-footer-margin-between: 0.5rem;
   --wcc-modal-footer-border-width: 1px;
