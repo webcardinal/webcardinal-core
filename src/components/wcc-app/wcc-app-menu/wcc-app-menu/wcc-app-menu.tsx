@@ -98,7 +98,7 @@ export class WccAppMenu {
     }
 
     const computedStyles = window.getComputedStyle(this.host);
-    this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-disable-identity').trim() === 'true';
+    this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 
   private get _menu() {

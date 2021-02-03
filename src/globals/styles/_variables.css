@@ -7,9 +7,9 @@ html {
   --wcc-app-menu-color: #f1f1f1;
   --wcc-app-menu-background: linear-gradient(180deg, #5e7fe1 30%, #354f9b 100%);
   --wcc-app-menu-items-gap: calc(0.75rem / 2);
+  --wcc-app-menu-disable-identity: false;
 
   /* <wcc-app-identity> */
-  --wcc-app-disable-identity: false;
   --wcc-app-identity-color: #f1f1f1;
   --wcc-app-identity-avatar-width: 3.5rem;
   --wcc-app-identity-avatar-radius: 100%;
