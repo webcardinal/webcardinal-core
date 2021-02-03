@@ -3,29 +3,33 @@ import PskBindableModel from "../libs/bindableModel.js";
 
 const ControllerHelper = {
   checkEventListener: (eventName, listener, options) => {
-    if (typeof eventName !== 'string' || eventName.trim().length === 0) {
+    if (typeof eventName !== "string" || eventName.trim().length === 0) {
       throw Error(`
         Argument eventName is not valid. It must be a non-empty string.
         Provided value: ${eventName}
       `);
     }
 
-    if (typeof listener !== 'function') {
+    if (typeof listener !== "function") {
       throw Error(`
         Argument listener is not valid, it must be a function.
         Provided value: ${listener}
       `);
     }
 
-    if (options && typeof options !== 'boolean' && typeof options !== 'object') {
+    if (
+      options &&
+      typeof options !== "boolean" &&
+      typeof options !== "object"
+    ) {
       throw Error(`
         Argument options is not valid, it must a boolean (true/false) in case of capture, or an options object.
         If no options are needed, this argument can be left empty.
         Provided value: ${options}
       `);
     }
-  }
-}
+  },
+};
 
 class Controller {
   constructor(element, history) {
@@ -34,6 +38,8 @@ class Controller {
     this.element = element;
     this.history = history;
     this.element.componentOnReady().then(this.onReady.bind(this));
+
+    this.setLegacyGetModelEventListener();
   }
 
   createElement(elementName, props) {
@@ -70,7 +76,7 @@ class Controller {
       cancelable: true,
       composed: true,
       detail,
-      ...options
+      ...options,
     };
 
     this.element.dispatchEvent(new CustomEvent(eventName, eventOptions));
@@ -93,6 +99,31 @@ class Controller {
 
   setModel(model) {
     this.model = PskBindableModel.setModel(model);
+  }
+
+  setLegacyGetModelEventListener() {
+    let dispatchModel = function (bindValue, model, callback) {
+      if (bindValue && model[bindValue]) {
+        callback(null, model[bindValue]);
+      }
+
+      if (!bindValue) {
+        callback(null, model);
+      }
+    };
+
+    this.element.addEventListener("getModelEvent", (e) => {
+      e.preventDefault();
+      e.stopImmediatePropagation();
+
+      let { bindValue, callback } = e.detail;
+
+      if (typeof callback === "function") {
+        return dispatchModel(bindValue, this.model, callback);
+      }
+
+      callback(new Error("No callback provided"));
+    });
   }
 }
 
