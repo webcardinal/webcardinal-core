@@ -1,8 +1,9 @@
-import { Component, h, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { ApplicationController } from '../../../controllers';
 import { HostElement } from '../../../decorators';
-import { subscribeToErrors, subscribeToWarnings } from './wcc-app-root-utils';
+import { promisifyEventEmit } from '../../../utils';
+import { subscribeToLogs } from './wcc-app-root-utils';
 
 @Component({
   tag: 'wcc-app-root',
@@ -17,6 +18,11 @@ export class WccAppRoot {
   @Prop({ attribute: 'loader' }) loaderName: string = 'wcc-spinner';
 
   @Prop() history: RouterHistory;
+
+  @Event({
+    eventName: 'webcardinal:config:getLogLevel',
+    bubbles: true, composed: true, cancelable: true
+  }) getLogLevelEvent: EventEmitter
 
   private _loaderElement: HTMLElement;
 
@@ -33,8 +39,13 @@ export class WccAppRoot {
       this.host.appendChild(document.createElement('wcc-app-container'));
       this.host.appendChild(document.createElement('wcc-app-error-toast'));
 
-      subscribeToErrors();
-      subscribeToWarnings();
+      try {
+        const logLevel = await promisifyEventEmit(this.getLogLevelEvent);
+        console.log('LogLevel:', logLevel);
+        subscribeToLogs(logLevel);
+      } catch (error) {
+        console.error(error);
+      }
     }
   }
 

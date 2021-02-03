@@ -13,6 +13,13 @@
 | `loaderName` | `loader`  |             | `string`        | `'wcc-spinner'` |
 
 
+## Events
+
+| Event                            | Description | Type               |
+| -------------------------------- | ----------- | ------------------ |
+| `webcardinal:config:getLogLevel` |             | `CustomEvent<any>` |
+
+
 ## Dependencies
 
 ### Depends on

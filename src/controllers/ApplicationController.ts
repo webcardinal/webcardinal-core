@@ -1,5 +1,10 @@
 import defaultConfig from './config/default';
-import EVENTS from './config/events';
+import {
+  LOG_LEVEL,
+  EVENT_CONFIG_GET_ROUTING,
+  EVENT_CONFIG_GET_IDENTITY,
+  EVENT_CONFIG_GET_LOG_LEVEL
+} from '../constants';
 import controllers from '../../base/controllers';
 import fetch from '../../base/utils/fetch.js';
 
@@ -23,7 +28,7 @@ export default class ApplicationController {
     return path;
   };
 
-  private _getBaseURL() {
+  private _initBaseURL() {
     const getBaseElementHref = () => {
       let baseElement = document.querySelector('base');
       if (!baseElement) { return null; }
@@ -43,16 +48,16 @@ export default class ApplicationController {
     return baseHref ? new URL(baseHref, windowLocation) : new URL(windowLocation);
   }
 
-  private _getBasePath() {
+  private _initBasePath() {
     const basePath = this._trimPathname(this.baseURL.pathname);
     return basePath.length !== 0 ? '/' + basePath : basePath;
   }
 
-  private _getResourceURL(resource) {
+  private _initResourceURL(resource) {
     return new URL(this._trimPathname(this.baseURL.href) + '/' + this._trimPathname(resource));
   }
 
-  private _getConfiguration(callback) {
+  private _readConfiguration(callback) {
     const fetchJSON = async(path) => {
       let response = await fetch(path);
       return response.json();
@@ -73,24 +78,26 @@ export default class ApplicationController {
 
   private _prepareConfiguration(rawConfig) {
     const getRaw = (item) => {
-      if (rawConfig[item]) {
-        return rawConfig[item];
-      }
-      return defaultConfig[item];
+      return rawConfig[item] ? rawConfig[item] : defaultConfig[item];
     };
 
-    const getIdentity = (rawIdentity = getRaw('identity')) => {
-      const defaultIdentity = defaultConfig.identity;
+    const getIdentity = () => {
+      const rawIdentity = getRaw('identity');
       const result = {};
-      for (const key of Object.keys(defaultIdentity)) {
-        result[key] = rawIdentity[key] || defaultIdentity[key];
+      for (const key of Object.keys(defaultConfig.identity)) {
+        result[key] = rawIdentity[key] || defaultConfig.identity[key];
       }
       return result;
     };
 
-    const getBaseURL = (rawBaseURL = this.baseURL.href) => this._trimPathname(rawBaseURL);
+    const getBaseURL = () => {
+      return this._trimPathname(this.baseURL.href);
+    };
 
-    const getPages = (baseURL = this.baseURL.href, rawPages = getRaw('pages')) => {
+    const getPages = (
+      baseURL = this.baseURL.href,
+      rawPages = getRaw('pages')
+    ) => {
       let pages = [];
       for (let rawPage of rawPages) {
         let page: any = {};
@@ -155,14 +162,21 @@ export default class ApplicationController {
       return pages;
     };
 
-    const getPagesFallback = (baseURL = this.baseURL.href, rawPages = getRaw('pagesFallback')) => {
-      let fallback = getPages(baseURL, [rawPages])[0];
+    const getPagesFallback = () => {
+      let fallback = getPages(this.baseURL.href, [getRaw('pagesFallback')])[0];
       delete fallback.path;
       delete fallback.indexed;
       return fallback;
     }
 
-    const getPagesPathname = (rawPathname = getRaw('pagesPathname')) => '/' + this._trimPathname(rawPathname);
+    const getPagesPathname = () => {
+      return '/' + this._trimPathname(getRaw('pagesPathname'));
+    };
+
+    const getLogLevel = () => {
+      const logLevel = getRaw('logLevel');
+      return Object.values(LOG_LEVEL).includes(logLevel) ? logLevel : defaultConfig.logLevel;
+    }
 
     const config: any = {
       identity: getIdentity(),
@@ -173,12 +187,9 @@ export default class ApplicationController {
         pages: getPages(),
         pagesFallback: getPagesFallback(),
         pagesPathname: getPagesPathname(),
-      }
+      },
+      logLevel: getLogLevel()
     };
-
-    // TODO: modals
-
-    // TODO: and many more...
 
     return config;
   }
@@ -228,20 +239,21 @@ export default class ApplicationController {
   }
 
   constructor(element) {
-    this.baseURL = this._getBaseURL();
-    this.basePath = this._getBasePath();
-    this.configURL = this._getResourceURL(CONFIG_PATH);
+    this.baseURL = this._initBaseURL();
+    this.basePath = this._initBasePath();
+    this.configURL = this._initResourceURL(CONFIG_PATH);
     this.config = {};
     this.pendingRequests = [];
     this.isConfigLoaded = false;
 
-    this._getConfiguration((error, rawConfig) => {
+    this._readConfiguration((error, rawConfig) => {
       if (error) {
         console.error(error);
         return;
       }
 
       this.config = this._prepareConfiguration(rawConfig);
+      console.log('Application config:', this.config);
       this.isConfigLoaded = true;
 
       window.WebCardinal = {
@@ -255,7 +267,9 @@ export default class ApplicationController {
       }
     });
 
-    element.addEventListener(EVENTS.GET_ROUTING, this._registerListener('routing'));
+    element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
+    element.addEventListener(EVENT_CONFIG_GET_IDENTITY, this._registerListener('identity'));
+    element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
 
     // TODO: production version
     // element.addEventListener(EVENTS.GET_THEME, this._registerListener('theme'));

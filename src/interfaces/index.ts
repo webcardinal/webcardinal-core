@@ -1,1 +1,2 @@
-export * from "./app-error";
+export * from './AppError';
+export * from '../controllers/config/types';

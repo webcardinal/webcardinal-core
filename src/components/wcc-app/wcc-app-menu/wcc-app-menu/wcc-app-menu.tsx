@@ -17,6 +17,8 @@ export class WccAppMenu {
 
   @Prop({ mutable: true }) basePath: string = '';
 
+  @Prop({ mutable: true, reflect: true }) disableIdentity = false;
+
   private slots = {
     before: false,
     after: false
@@ -78,6 +80,9 @@ export class WccAppMenu {
       }
     }
 
+    const computedStyles = window.getComputedStyle(this.host);
+    this.mode = computedStyles.getPropertyValue('--wcc-app-menu-mode').trim();
+
     // manage modes
     if (!this.modes.includes(this.mode)) {
       console.warn('wcc-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
@@ -94,6 +99,9 @@ export class WccAppMenu {
         this.host.classList.remove(`slot-${key}`);
       }
     }
+
+    // disable flag for wcc-app-identity
+    this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 
   private get _menu() {
@@ -105,8 +113,11 @@ export class WccAppMenu {
             </div>
           : null
         ),
-        <div class="container app-menu items">
-          { this._renderItems(this.items) }
+        <div class="container content">
+          { this.disableIdentity ? null : <wcc-app-identity /> }
+          <div class="app-menu items">
+            { this._renderItems(this.items) }
+          </div>
         </div>,
         ( this.slots.after
           ? <div class="container after">
