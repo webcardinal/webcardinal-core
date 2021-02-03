@@ -255,6 +255,7 @@ declare namespace LocalJSX {
     interface WccAppRoot {
         "history"?: RouterHistory;
         "loaderName"?: string;
+        "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
     }
     interface WccAppRouter {
         "basePath"?: string;

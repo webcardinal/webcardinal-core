@@ -1,4 +1,5 @@
-import { AppError } from '../../../interfaces';
+import { AppError, LogLevel } from '../../../interfaces';
+import { LOG_LEVEL } from "../../../constants";
 
 export function subscribeToErrors() {
   window.onerror = function (msg, url, lineNo, columnNo, error) {
@@ -34,4 +35,20 @@ export function subscribeToWarnings() {
     );
     return originalWarn.apply(console, arguments);
   };
+}
+
+export function subscribeToLogs(logLevel: LogLevel | string) {
+  const { ERROR, WARN } = LOG_LEVEL;
+
+  switch (logLevel) {
+    case ERROR: {
+      subscribeToErrors();
+      subscribeToWarnings();
+      return;
+    }
+    case WARN: {
+      subscribeToWarnings();
+      return;
+    }
+  }
 }

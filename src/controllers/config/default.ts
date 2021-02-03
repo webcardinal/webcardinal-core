@@ -1,20 +1,11 @@
-// types
-type Identity = {
-  name: string
-  email: string
-  avatar: string
-}
-type Version = string
-type Page = {
-  name: string
-  path?: string
-  src?: string
-  indexed?: boolean
-  children?: Array<Page>
-}
-type PagePathname = string
+import {
+  Identity,
+  Version,
+  Page,
+  PagePathname,
+  LogLevel
+} from './types';
 
-// config
 export default {
   identity: {
     name: 'WebCardinal',
@@ -29,5 +20,6 @@ export default {
       src: 'index.html'
     }
   ] as Array<Page>,
-  pagesPathname: 'pages' as PagePathname
+  pagesPathname: 'pages' as PagePathname,
+  logLevel: 'error' as LogLevel
 }
