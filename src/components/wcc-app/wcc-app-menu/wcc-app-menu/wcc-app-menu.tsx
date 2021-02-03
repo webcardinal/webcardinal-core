@@ -80,6 +80,9 @@ export class WccAppMenu {
       }
     }
 
+    const computedStyles = window.getComputedStyle(this.host);
+    this.mode = computedStyles.getPropertyValue('--wcc-app-menu-mode').trim();
+
     // manage modes
     if (!this.modes.includes(this.mode)) {
       console.warn('wcc-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
@@ -97,7 +100,7 @@ export class WccAppMenu {
       }
     }
 
-    const computedStyles = window.getComputedStyle(this.host);
+    // disable flag for wcc-app-identity
     this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 
