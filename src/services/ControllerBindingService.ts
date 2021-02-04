@@ -138,7 +138,7 @@ const ControllerBindingService = {
     }
     chain = chain.slice(1);
 
-    element.removeAttribute(MODEL_KEY);
+    // element.removeAttribute(MODEL_KEY);
 
     // initial binding
     setElementModel(element, model, chain);

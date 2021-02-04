@@ -39,6 +39,8 @@ class Controller {
     this.history = history;
     this.element.componentOnReady().then(this.onReady.bind(this));
 
+    this.tagEventListeners = {};
+
     this.setLegacyGetModelEventListener();
   }
 
@@ -59,6 +61,53 @@ class Controller {
     } catch (err) {
       console.error(err);
     }
+  }
+
+  onTag(tag, eventName, listener, options) {
+    try {
+      ControllerHelper.checkEventListener(eventName, listener, options);
+
+      if (!this.tagEventListeners[eventName]) {
+        this.tagEventListeners[eventName] = [];
+        this.element.addEventListener(
+          eventName,
+          this.getEventListener(eventName)
+        );
+      }
+      const tagEventListener = this.tagEventListeners[eventName];
+      tagEventListener.push({ tag, listener, options });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  offTag(tag, eventName, listener, options) {
+    try {
+      ControllerHelper.checkEventListener(eventName, listener, options);
+
+      if (this.tagEventListeners[eventName]) {
+        const tagEventListener = this.tagEventListeners[eventName];
+        const entryIndexesToRemove = tagEventListener
+          .map((x, index) =>
+            x.tag === tag && x.listener === listener ? index : -1
+          )
+          .filter((index) => index !== -1);
+        entryIndexesToRemove.reverse();
+        entryIndexesToRemove.forEach((index) => {
+          tagEventListener.splice(index, 1);
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  onTagClick(tag, listener, options) {
+    this.onTag(tag, "click", listener, options);
+  }
+
+  offTagClick(tag, listener, options) {
+    this.offTag(tag, "click", listener, options);
   }
 
   off(eventName, listener, options) {
@@ -92,23 +141,60 @@ class Controller {
   }
 
   navigateToTag(tag, state) {
-    this.element.dispatchEvent(new CustomEvent('webcardinal:tags:get', {
-      bubbles: true, composed: true, cancelable: true,
-      detail: {
-        tag,
-        callback: (error, path) => {
-          if (error) {
-            console.error(error)
-            return;
-          }
-          this.history.push(path, state);
-        }
-      }
-    }))
+    this.element.dispatchEvent(
+      new CustomEvent("webcardinal:tags:get", {
+        bubbles: true,
+        composed: true,
+        cancelable: true,
+        detail: {
+          tag,
+          callback: (error, path) => {
+            if (error) {
+              console.error(error);
+              return;
+            }
+            this.history.push(path, state);
+          },
+        },
+      })
+    );
   }
 
   setModel(model) {
     this.model = PskBindableModel.setModel(model);
+  }
+
+  getEventListener(eventName) {
+    const tagEventListenerEntries = this.tagEventListeners[eventName];
+    return (event) => {
+      let target = event.target;
+      while (target && target !== this.element) {
+        const targetTag = target.getAttribute("data-tag");
+        if (targetTag) {
+          const targetTagListeners = tagEventListenerEntries.filter(
+            (x) => x.tag === targetTag
+          );
+          if (targetTagListeners.length) {
+            event.preventDefault(); // Cancel the native event
+            event.stopPropagation(); // Don't bubble/capture the event any further
+
+            console.log(
+              `Found listener for event ${eventName} for tag: ${targetTag}`
+            );
+            const dataModelChain = target.getAttribute("data-model");
+            const attachedModel = dataModelChain
+              ? this.model.toObject(dataModelChain.slice(1))
+              : undefined;
+
+            targetTagListeners.forEach((x) => {
+              x.listener(attachedModel, event);
+            });
+          }
+        }
+
+        target = target.parentElement;
+      }
+    };
   }
 
   setLegacyGetModelEventListener() {

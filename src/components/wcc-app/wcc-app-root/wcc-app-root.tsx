@@ -1,28 +1,31 @@
-import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
-import { RouterHistory, injectHistory } from '@stencil/router';
-import { ApplicationController } from '../../../controllers';
-import { HostElement } from '../../../decorators';
-import { promisifyEventEmit } from '../../../utils';
-import { subscribeToLogs } from './wcc-app-root-utils';
+import { Component, Event, EventEmitter, h, Prop } from "@stencil/core";
+import { RouterHistory, injectHistory } from "@stencil/router";
+import { ApplicationController } from "../../../controllers";
+import { HostElement } from "../../../decorators";
+import { promisifyEventEmit } from "../../../utils";
+import { subscribeToLogs } from "./wcc-app-root-utils";
 
 @Component({
-  tag: 'wcc-app-root',
+  tag: "wcc-app-root",
   styleUrls: {
-    default: '../../../styles/wcc-app-root/wcc-app-root.scss',
+    default: "../../../styles/wcc-app-root/wcc-app-root.scss",
   },
-  shadow: true
+  shadow: true,
 })
 export class WccAppRoot {
   @HostElement() host: HTMLElement;
 
-  @Prop({ attribute: 'loader' }) loaderName: string = 'wcc-spinner';
+  @Prop({ attribute: "loader" }) loaderName: string = "wcc-spinner";
 
   @Prop() history: RouterHistory;
 
   @Event({
-    eventName: 'webcardinal:config:getLogLevel',
-    bubbles: true, composed: true, cancelable: true
-  }) getLogLevelEvent: EventEmitter
+    eventName: "webcardinal:config:getLogLevel",
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getLogLevelEvent: EventEmitter;
 
   private _loaderElement: HTMLElement;
 
@@ -35,18 +38,11 @@ export class WccAppRoot {
     new ApplicationController(this.host);
 
     if (this.host.children.length === 0) {
-      this.host.appendChild(document.createElement('wcc-app-menu'));
-      this.host.appendChild(document.createElement('wcc-app-container'));
-      this.host.appendChild(document.createElement('wcc-app-error-toast'));
-
-      try {
-        const logLevel = await promisifyEventEmit(this.getLogLevelEvent);
-        console.log('LogLevel:', logLevel);
-        subscribeToLogs(logLevel);
-      } catch (error) {
-        console.error(error);
-      }
+      this.host.appendChild(document.createElement("wcc-app-menu"));
+      this.host.appendChild(document.createElement("wcc-app-container"));
     }
+
+    await this.registerAppErrorComponentAndListeners();
   }
 
   async componentDidLoad() {
@@ -55,6 +51,18 @@ export class WccAppRoot {
 
   render() {
     return <slot />;
+  }
+
+  private async registerAppErrorComponentAndListeners() {
+    this.host.appendChild(document.createElement("wcc-app-error-toast"));
+
+    try {
+      const logLevel = await promisifyEventEmit(this.getLogLevelEvent);
+      console.log("LogLevel:", logLevel);
+      subscribeToLogs(logLevel);
+    } catch (error) {
+      console.error(error);
+    }
   }
 }
 

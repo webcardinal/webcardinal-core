@@ -1,4 +1,4 @@
-import { AppError, LogLevel } from '../../../interfaces';
+import { AppError, LogLevel } from "../../../interfaces";
 import { LOG_LEVEL } from "../../../constants";
 
 export function subscribeToErrors() {
@@ -43,10 +43,10 @@ export function subscribeToLogs(logLevel: LogLevel | string) {
   switch (logLevel) {
     case ERROR: {
       subscribeToErrors();
-      subscribeToWarnings();
       return;
     }
     case WARN: {
+      subscribeToErrors();
       subscribeToWarnings();
       return;
     }
