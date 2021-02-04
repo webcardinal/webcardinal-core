@@ -1,4 +1,6 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
+import { HostElement } from "../../../decorators";
+import { ComponentListenersService } from "../../../services";
 import { promisifyEventEmit } from '../../../utils';
 import { URLHelper } from '../wcc-app-utils';
 
@@ -12,6 +14,8 @@ interface RoutesPayload {
 })
 export class WccAppRouter {
 
+  @HostElement() host: HTMLElement;
+
   @Prop({ mutable: true }) routes = [];
 
   @Prop({ mutable: true }) fallbackPage: null;
@@ -24,6 +28,10 @@ export class WccAppRouter {
     eventName: 'webcardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter
+
+  private listeners: ComponentListenersService;
+  private tags = {};
+  private content = [];
 
   private _renderRoute = ({ path, src }: RoutesPayload) => {
     const props = {
@@ -59,6 +67,10 @@ export class WccAppRouter {
           payload.src = URLHelper.join(this.pagesPath, payload.src).pathname;
         }
 
+        if (route.tag) {
+          this.tags[route.tag] = payload.path;
+        }
+
         return routeRenderer(payload);
       }
     })
@@ -81,17 +93,32 @@ export class WccAppRouter {
       this.fallbackPage = routing.pagesFallback;
       this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
       this.pagesPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.pagesPathname).pathname);
+      this.content = [
+        this._renderRoutes(this.routes),
+        this._renderFallback(this.fallbackPage)
+      ];
+      this.listeners = new ComponentListenersService(this.host, { tags: this.tags });
+      this.listeners.getTags.add();
     } catch (error) {
       console.error(error);
     }
   }
 
+  // connectedCallback() {
+  //   console.log('connectedCallback')
+  //   this.listeners && this.listeners.getTags.add();
+  // }
+  //
+  // disconnectedCallback() {
+  //   console.log('disconnectedCallback')
+  //   this.listeners && this.listeners.getTags.remove();
+  // }
+
   render() {
     return (
       <stencil-router root={this.basePath + '/'}>
         <stencil-route-switch scrollTopOffset={0}>
-          { this._renderRoutes(this.routes) }
-          { this._renderFallback(this.fallbackPage) }
+          { ...this.content }
         </stencil-route-switch>
       </stencil-router>
     );

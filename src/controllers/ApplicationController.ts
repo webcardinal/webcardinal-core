@@ -152,6 +152,11 @@ export default class ApplicationController {
           }
         }
 
+        // page tag
+        if (typeof rawPage.tag === 'string') {
+          page.tag = rawPage.tag;
+        }
+
         // children recursion
         if (hasChildren) {
           page.children = getPages(baseURL, rawPage.children);

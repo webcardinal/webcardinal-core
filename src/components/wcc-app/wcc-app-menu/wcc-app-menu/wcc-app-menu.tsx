@@ -31,7 +31,7 @@ export class WccAppMenu {
   @Event({
     eventName: 'webcardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
-  }) getRoutingConfigEvent: EventEmitter
+  }) getRoutingConfigEvent: EventEmitter;
 
   private _extractItems = items => {
     let indexedItems = [];

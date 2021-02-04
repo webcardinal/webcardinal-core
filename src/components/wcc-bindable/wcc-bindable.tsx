@@ -47,7 +47,7 @@ export class WccBindable {
       ControllerBindingService.bindRecursive(this.host, this.model);
 
       // serve model
-      this.listeners = new ComponentListenersService(this.host, this.model);
+      this.listeners = new ComponentListenersService(this.host, { model: this.model });
       this.listeners.getModel.add();
     }
   }

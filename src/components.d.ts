@@ -70,6 +70,10 @@ export namespace Components {
          */
         "model": any | undefined;
     }
+    interface WccLink {
+        "href": string | null;
+        "tag": string | null;
+    }
     interface WccModal {
         /**
           * Sets if the modal will automatically close when the user clicks outside of it
@@ -212,6 +216,12 @@ declare global {
         prototype: HTMLWccIfElement;
         new (): HTMLWccIfElement;
     };
+    interface HTMLWccLinkElement extends Components.WccLink, HTMLStencilElement {
+    }
+    var HTMLWccLinkElement: {
+        prototype: HTMLWccLinkElement;
+        new (): HTMLWccLinkElement;
+    };
     interface HTMLWccModalElement extends Components.WccModal, HTMLStencilElement {
     }
     var HTMLWccModalElement: {
@@ -237,6 +247,7 @@ declare global {
         "wcc-container": HTMLWccContainerElement;
         "wcc-for": HTMLWccForElement;
         "wcc-if": HTMLWccIfElement;
+        "wcc-link": HTMLWccLinkElement;
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
     }
@@ -308,6 +319,11 @@ declare namespace LocalJSX {
           * An optional modal that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
          */
         "model"?: any | undefined;
+    }
+    interface WccLink {
+        "href"?: string | null;
+        "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
+        "tag"?: string | null;
     }
     interface WccModal {
         /**
@@ -390,6 +406,7 @@ declare namespace LocalJSX {
         "wcc-container": WccContainer;
         "wcc-for": WccFor;
         "wcc-if": WccIf;
+        "wcc-link": WccLink;
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
     }
@@ -410,6 +427,7 @@ declare module "@stencil/core" {
             "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
             "wcc-for": LocalJSX.WccFor & JSXBase.HTMLAttributes<HTMLWccForElement>;
             "wcc-if": LocalJSX.WccIf & JSXBase.HTMLAttributes<HTMLWccIfElement>;
+            "wcc-link": LocalJSX.WccLink & JSXBase.HTMLAttributes<HTMLWccLinkElement>;
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
         }

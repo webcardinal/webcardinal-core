@@ -92,9 +92,19 @@ class Controller {
   }
 
   navigateToTag(tag, state) {
-    // TODO: get URL from page tag
-    const url = tag;
-    this.history.push(url, state);
+    this.element.dispatchEvent(new CustomEvent('webcardinal:tags:get', {
+      bubbles: true, composed: true, cancelable: true,
+      detail: {
+        tag,
+        callback: (error, path) => {
+          if (error) {
+            console.error(error)
+            return;
+          }
+          this.history.push(path, state);
+        }
+      }
+    }))
   }
 
   setModel(model) {
