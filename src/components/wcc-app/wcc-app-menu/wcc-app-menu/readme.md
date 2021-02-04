@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property   | Attribute   | Description | Type     | Default            |
-| ---------- | ----------- | ----------- | -------- | ------------------ |
-| `basePath` | `base-path` |             | `string` | `''`               |
-| `items`    | --          |             | `any[]`  | `[]`               |
-| `mode`     | `mode`      |             | `string` | `this.defaultMode` |
+| Property          | Attribute          | Description | Type      | Default            |
+| ----------------- | ------------------ | ----------- | --------- | ------------------ |
+| `basePath`        | `base-path`        |             | `string`  | `''`               |
+| `disableIdentity` | `disable-identity` |             | `boolean` | `false`            |
+| `items`           | --                 |             | `any[]`   | `[]`               |
+| `mode`            | `mode`             |             | `string`  | `this.defaultMode` |
 
 
 ## Events
@@ -30,11 +31,13 @@
 ### Depends on
 
 - [wcc-app-menu-item](../wcc-app-menu-item)
+- [wcc-app-identity](../../wcc-app-identity)
 
 ### Graph
 ```mermaid
 graph TD;
   wcc-app-menu --> wcc-app-menu-item
+  wcc-app-menu --> wcc-app-identity
   wcc-app-menu-item --> wcc-app-menu-item
   wcc-app-menu-item --> stencil-route-link
   wcc-app-root --> wcc-app-menu

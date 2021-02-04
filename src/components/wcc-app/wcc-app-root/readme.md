@@ -35,6 +35,7 @@ graph TD;
   wcc-app-root --> wcc-app-container
   wcc-app-root --> wcc-app-error-toast
   wcc-app-menu --> wcc-app-menu-item
+  wcc-app-menu --> wcc-app-identity
   wcc-app-menu-item --> wcc-app-menu-item
   wcc-app-menu-item --> stencil-route-link
   wcc-app-container --> wcc-app-router
