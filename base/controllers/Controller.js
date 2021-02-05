@@ -39,7 +39,7 @@ class Controller {
     this.history = history;
     this.element.componentOnReady().then(this.onReady.bind(this));
 
-    this.tagEventListeners = {};
+    this.tagEventListeners = [];
 
     this.setLegacyGetModelEventListener();
   }
@@ -67,15 +67,34 @@ class Controller {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
-      if (!this.tagEventListeners[eventName]) {
-        this.tagEventListeners[eventName] = [];
-        this.element.addEventListener(
-          eventName,
-          this.getEventListener(eventName)
-        );
-      }
-      const tagEventListener = this.tagEventListeners[eventName];
-      tagEventListener.push({ tag, listener, options });
+      const eventListener = (event) => {
+        let target = event.target;
+        while (target && target !== this.element) {
+          const targetTag = target.getAttribute("data-tag");
+          if (targetTag === tag) {
+            event.preventDefault(); // Cancel the native event
+            event.stopPropagation(); // Don't bubble/capture the event any further
+
+            console.log(
+              `Found listener for event ${eventName} for tag: ${targetTag}`
+            );
+            const dataModelChain = target.getAttribute("data-model");
+            const attachedModel = dataModelChain
+              ? this.model.toObject(dataModelChain.slice(1))
+              : undefined;
+
+            listener(attachedModel, target, event);
+            break;
+          }
+
+          target = target.parentElement;
+        }
+      };
+
+      const tagEventListener = { tag, eventName, listener, eventListener };
+      this.tagEventListeners.push(tagEventListener);
+
+      this.element.addEventListener(eventName, eventListener, options);
     } catch (err) {
       console.error(err);
     }
@@ -85,18 +104,17 @@ class Controller {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
-      if (this.tagEventListeners[eventName]) {
-        const tagEventListener = this.tagEventListeners[eventName];
-        const entryIndexesToRemove = tagEventListener
-          .map((x, index) =>
-            x.tag === tag && x.listener === listener ? index : -1
-          )
-          .filter((index) => index !== -1);
-        entryIndexesToRemove.reverse();
-        entryIndexesToRemove.forEach((index) => {
-          tagEventListener.splice(index, 1);
+      this.tagEventListeners
+        .filter(
+          (x) =>
+            x.tag === tag &&
+            x.eventName === eventName &&
+            x.listener === listener &&
+            x.options === options
+        )
+        .forEach((x) => {
+          this.element.removeEventListener(eventName, x.eventListener, options);
         });
-      }
     } catch (err) {
       console.error(err);
     }
@@ -162,39 +180,6 @@ class Controller {
 
   setModel(model) {
     this.model = PskBindableModel.setModel(model);
-  }
-
-  getEventListener(eventName) {
-    const tagEventListenerEntries = this.tagEventListeners[eventName];
-    return (event) => {
-      let target = event.target;
-      while (target && target !== this.element) {
-        const targetTag = target.getAttribute("data-tag");
-        if (targetTag) {
-          const targetTagListeners = tagEventListenerEntries.filter(
-            (x) => x.tag === targetTag
-          );
-          if (targetTagListeners.length) {
-            event.preventDefault(); // Cancel the native event
-            event.stopPropagation(); // Don't bubble/capture the event any further
-
-            console.log(
-              `Found listener for event ${eventName} for tag: ${targetTag}`
-            );
-            const dataModelChain = target.getAttribute("data-model");
-            const attachedModel = dataModelChain
-              ? this.model.toObject(dataModelChain.slice(1))
-              : undefined;
-
-            targetTagListeners.forEach((x) => {
-              x.listener(attachedModel, event);
-            });
-          }
-        }
-
-        target = target.parentElement;
-      }
-    };
   }
 
   setLegacyGetModelEventListener() {
