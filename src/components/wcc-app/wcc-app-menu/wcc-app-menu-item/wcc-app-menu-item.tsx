@@ -113,7 +113,7 @@ export class WccAppMenuItem {
     return (
       <Host>
         { !this.children
-          ? <stencil-route-link data-url={this.url}
+          ? <stencil-route-link
               class="item" url={this.url}
               onClick={this.handleClick.bind(this)}
             >{this.name}</stencil-route-link>

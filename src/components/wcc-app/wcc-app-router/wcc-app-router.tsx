@@ -40,7 +40,7 @@ export class WccAppRouter {
       component: 'wcc-app-loader',
       componentProps: { src }
     }
-    return <stencil-route data-path={path} data-src={src} {...props}/>;
+    return <stencil-route {...props}/>;
   };
 
   private _renderRoutes = (
