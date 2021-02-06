@@ -19,7 +19,6 @@ export class WccFor {
 
   @Prop({ attribute: "controller" }) controllerName: string | null;
 
-  // TODO: MODEL_KEY can't be used here
   @Prop({ attribute: "data-model" }) chain: string = "";
 
   @Prop() autoBind: boolean = true;
@@ -35,6 +34,36 @@ export class WccFor {
   private template = [];
   private controller;
   private model;
+  private bindRelativeModel = (element, index) => {
+    let tag = element.tagName.toLowerCase();
+    let chainSuffix = extractChain(element);
+    if (chainSuffix) {
+      chainSuffix = chainSuffix.slice(1);
+      element.setAttribute(
+        MODEL_KEY,
+        [this.chain, index, chainSuffix].join(".")
+      );
+      element.setAttribute(
+        "data-test-model",
+        [this.chain, index, chainSuffix].join(".")
+      );
+    } else if (this.autoBind === true) {
+      element.setAttribute(MODEL_KEY, [this.chain, index].join("."));
+    }
+
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
+      return;
+    }
+
+    ControllerBindingService.bindModel(element, this.model);
+    ControllerBindingService.bindAttributes(element, this.model);
+
+    if (element.children) {
+      Array.from(element.children).forEach((child) =>
+        this.bindRelativeModel(child, index)
+      );
+    }
+  }
 
   private _handleTemplate() {
     const chain = this.chain.slice(1);
@@ -58,8 +87,10 @@ export class WccFor {
         }
       }
     };
+
     renderTemplate();
-    this.model.onChange(chain, (info) => {
+
+    this.model.onChange(chain, () => {
       this.host.innerHTML = "";
       renderTemplate();
     });
@@ -67,9 +98,8 @@ export class WccFor {
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
-        return;
-      }
-
+      return;
+    }
 
     // validate chain
     this.chain = extractChain(this.host);
@@ -104,37 +134,6 @@ export class WccFor {
     }
 
     this._handleTemplate();
-  }
-
-  bindRelativeModel(element, index) {
-    let tag = element.tagName.toLowerCase();
-    let chainSuffix = extractChain(element);
-    if (chainSuffix) {
-      chainSuffix = chainSuffix.slice(1);
-      element.setAttribute(
-        MODEL_KEY,
-        [this.chain, index, chainSuffix].join(".")
-      );
-      element.setAttribute(
-        "data-test-model",
-        [this.chain, index, chainSuffix].join(".")
-      );
-    } else if (this.autoBind === true) {
-      element.setAttribute(MODEL_KEY, [this.chain, index].join("."));
-    }
-
-    if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
-      return;
-    }
-
-    ControllerBindingService.bindModel(element, this.model);
-    ControllerBindingService.bindAttributes(element, this.model);
-
-    if (element.children) {
-      Array.from(element.children).forEach((child) =>
-        this.bindRelativeModel(child, index)
-      );
-    }
   }
 
   render() {

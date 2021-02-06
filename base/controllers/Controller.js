@@ -63,6 +63,17 @@ class Controller {
     }
   }
 
+  off(eventName, listener, options) {
+    try {
+      ControllerHelper.checkEventListener(eventName, listener, options);
+      this.element.removeEventListener(eventName, listener, options);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  onReady() {}
+
   onTag(tag, eventName, listener, options) {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
@@ -128,32 +139,6 @@ class Controller {
     this.offTag(tag, "click", listener, options);
   }
 
-  off(eventName, listener, options) {
-    try {
-      ControllerHelper.checkEventListener(eventName, listener, options);
-      this.element.removeEventListener(eventName, listener, options);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  send(eventName, detail, options = {}) {
-    let eventOptions = {
-      bubbles: true,
-      cancelable: true,
-      composed: true,
-      detail,
-      ...options,
-    };
-
-    this.element.dispatchEvent(new CustomEvent(eventName, eventOptions));
-  }
-
-  async onReady() {
-    // TODO: a queue with all requests for listeners added with on method
-    //       than the onReady mechanism will be removed for the end user
-  }
-
   navigateToUrl(url, state) {
     this.history.push(url, state);
   }
@@ -161,9 +146,7 @@ class Controller {
   navigateToTag(tag, state) {
     this.element.dispatchEvent(
       new CustomEvent("webcardinal:tags:get", {
-        bubbles: true,
-        composed: true,
-        cancelable: true,
+        bubbles: true, composed: true, cancelable: true,
         detail: {
           tag,
           callback: (error, path) => {
@@ -176,6 +159,16 @@ class Controller {
         },
       })
     );
+  }
+
+  send(eventName, detail, options = {}) {
+    let eventOptions = {
+      bubbles: true, cancelable: true, composed: true,
+      detail,
+      ...options,
+    };
+
+    this.element.dispatchEvent(new CustomEvent(eventName, eventOptions));
   }
 
   setModel(model) {
