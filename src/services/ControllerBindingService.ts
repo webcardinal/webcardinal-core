@@ -7,6 +7,7 @@ import {
 } from '../constants';
 
 function isNativeProperty(key) {
+  // these values are not visible as attributes over the HTMLElement
   return [
     'value',
     'innerText',
@@ -14,12 +15,68 @@ function isNativeProperty(key) {
   ].includes(key);
 }
 
+function shortcutToProperty(key) {
+  switch (key) {
+    case 'model':
+      return 'data-model';
+    case 'tag':
+      return 'data-tag';
+    case 'text':
+      return 'innerText';
+    case 'html':
+      return 'innerHTML';
+    default:
+      return key;
+  }
+}
+
 function setElementValue(element, { key, value }) {
   if (SKIP_BINDING_FOR_PROPERTIES.includes(key)) {
     return;
   }
 
-  if (typeof value === 'object') {
+  if (['innerHTML', 'innerText'].includes(key)) {
+    console.warn(
+      `Model property "${key}" can be short handed, try "${key.substr(5).toLowerCase()}" instead!\n`,
+      `target element:`, element
+    );
+  }
+  if (['data-tag', 'data-model'].includes(key)) {
+    console.warn(
+      `Model property "${key}" can be shorthanded, try "${key.substr(5)}" instead!\n`,
+      `target model:`, element.getAttribute('data-model')
+    );
+  }
+
+  key = shortcutToProperty(key);
+
+  if (isNativeProperty(key)) {
+    element[key] = value;
+    return;
+  }
+
+  if (key === 'class') {
+    if (value === '') {
+      element.className = '';
+      return;
+    }
+
+    if (typeof value === 'string') {
+      element.classList.add(value);
+      return;
+    }
+
+    if (typeof value === 'object') {
+      for (const [className, active] of Object.entries(value)) {
+        if (active) {
+          element.classList.add(className);
+        } else {
+          element.classList.remove(className);
+        }
+      }
+      return;
+    }
+
     return;
   }
 
@@ -32,21 +89,15 @@ function setElementValue(element, { key, value }) {
     return;
   }
 
-  if (isNativeProperty(key)) {
+  if (typeof value === 'string') {
+    element.setAttribute(key, value);
+    return;
+  }
+
+  if (typeof value === 'object') {
     element[key] = value;
     return;
   }
-
-  if (typeof value !== 'string') {
-    return;
-  }
-
-  if (key === 'class') {
-    element.classList.add(value);
-    return;
-  }
-
-  element.setAttribute(key, value);
 }
 
 function setElementModel(element, model, chain) {
@@ -57,16 +108,18 @@ function setElementModel(element, model, chain) {
       setElementValue(element, { key, value });
     }
 
-    if (targetModel.element === true) {
-      // ensure that each of element's methods have the correct context attached, because the model proxy doesn't set the context accordingly
+    if (targetModel._saveElement === true) {
+      // ensure that each of element's methods have the correct context attached,
+      // because the model proxy doesn't set the context accordingly
       for (const property in element) {
         if (typeof element[property] === "function") {
           element[property] = element[property].bind(element);
         }
       }
+
       model.setChainValue(chain, {
         ...targetModel,
-        element
+        getElement: () => element
       });
     }
   }
@@ -129,16 +182,14 @@ const ControllerBindingService = {
 
     let chain = element.getAttribute(MODEL_KEY);
     if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-      const tagName = element.tagName.toLowerCase();
-      console.warn([
-        `Invalid chain found for ${tagName} (chain: "${chain}")!`,
-        `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`
-      ].join('\n'));
+      console.warn(
+        `Invalid chain found! (chain: "${chain}")!\n`,
+        `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
+        `target element:`, element
+      );
       return;
     }
     chain = chain.slice(1);
-
-    // element.removeAttribute(MODEL_KEY);
 
     // initial binding
     setElementModel(element, model, chain);
@@ -188,6 +239,6 @@ const ControllerBindingService = {
       });
     }
   }
-}
+};
 
 export default ControllerBindingService;

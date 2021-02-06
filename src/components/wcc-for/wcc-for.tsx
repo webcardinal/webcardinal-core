@@ -70,7 +70,7 @@ export class WccFor {
         return;
       }
 
-      
+
     // validate chain
     this.chain = extractChain(this.host);
 
@@ -129,7 +129,6 @@ export class WccFor {
 
     ControllerBindingService.bindModel(element, this.model);
     ControllerBindingService.bindAttributes(element, this.model);
-    // element.removeAttribute(MODEL_KEY);
 
     if (element.children) {
       Array.from(element.children).forEach((child) =>
