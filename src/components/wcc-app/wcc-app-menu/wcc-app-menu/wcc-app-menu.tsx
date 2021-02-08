@@ -1,4 +1,5 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
+import { injectHistory, RouterHistory } from '@stencil/router';
 import { HostElement } from '../../../../decorators';
 import { promisifyEventEmit } from '../../../../utils';
 import { URLHelper } from '../../wcc-app-utils';
@@ -19,6 +20,8 @@ export class WccAppMenu {
 
   @Prop({ mutable: true, reflect: true }) disableIdentity = false;
 
+  @Prop() history: RouterHistory;
+
   private slots = {
     before: false,
     after: false
@@ -32,6 +35,14 @@ export class WccAppMenu {
     eventName: 'webcardinal:config:getRouting',
     bubbles: true, composed: true, cancelable: true
   }) getRoutingConfigEvent: EventEmitter;
+
+  private _toggleActiveItem() {
+    const selector = `${this._renderItem({}).$tag$}[url="${window.location.pathname}"]`;
+    const item = this.host.querySelector(selector) as any;
+    if (item) {
+      item.deactivate().then(item.activate());
+    }
+  }
 
   private _extractItems = items => {
     let indexedItems = [];
@@ -135,7 +146,10 @@ export class WccAppMenu {
   }
 
   render() {
+    if (!this.history) return null;
+    this.history.listen(this._toggleActiveItem.bind(this));
     return this._menu[this.mode];
   }
 }
 
+injectHistory(WccAppMenu);

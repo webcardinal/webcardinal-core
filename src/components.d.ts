@@ -23,11 +23,14 @@ export namespace Components {
     interface WccAppMenu {
         "basePath": string;
         "disableIdentity": boolean;
+        "history": RouterHistory;
         "items": any[];
         "mode": string;
     }
     interface WccAppMenuItem {
+        "activate": () => Promise<void>;
         "basePath": string;
+        "deactivate": () => Promise<void>;
         "item": { path: string; children: any; };
         "level": number;
         "menuElement": HTMLElement;
@@ -270,6 +273,7 @@ declare namespace LocalJSX {
     interface WccAppMenu {
         "basePath"?: string;
         "disableIdentity"?: boolean;
+        "history"?: RouterHistory;
         "items"?: any[];
         "mode"?: string;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;

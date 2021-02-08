@@ -1,4 +1,4 @@
-import { Component, h, Host, Prop } from '@stencil/core';
+import { Component, h, Host, Method, Prop } from '@stencil/core';
 import { HostElement } from '../../../../decorators';
 import { URLHelper } from '../../wcc-app-utils';
 
@@ -10,7 +10,7 @@ export class WccAppMenuItem {
 
   @Prop() menuElement: HTMLElement = null;
 
-  @Prop({ mutable: true }) url: string | null = null;
+  @Prop({ mutable: true, reflect: true }) url: string | null = null;
 
   @Prop() basePath: string = '';
 
@@ -25,33 +25,54 @@ export class WccAppMenuItem {
 
   @Prop() mode: string;
 
-  private children;
+  @Method()
+  async activate() {
+    // manage active menu item
+    if (this.mode === 'vertical') {
+      if (this.url === window.location.pathname) {
+        let element = this.host;
+        element.setAttribute('active', '');
 
-  private _removeActive = () => {
-    this.menuElement.querySelectorAll('wcc-app-menu-item').forEach(element => {
-      element.removeAttribute('active');
-    })
+        while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
+          if (element.classList.contains('dropdown')) {
+            element.setAttribute('active', '');
+          }
+          element = element.parentElement;
+        }
+      }
+    }
   }
 
-  handleClick(e: MouseEvent) {
+  @Method()
+  async deactivate() {
+    this.menuElement
+      .querySelectorAll('wcc-app-menu-item')
+      .forEach(element => {
+        element.removeAttribute('active');
+      })
+  }
+
+  private children;
+
+  async handleClick(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
     if (this.mode === 'vertical') {
       const item = e.currentTarget as HTMLElement;
-      this._removeActive();
+      await this.deactivate();
       item.parentElement.setAttribute('active', '');
     }
   }
 
-  handleDropdownClick(e: MouseEvent) {
+  async handleDropdownClick(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
     if (this.mode === 'vertical') {
       const item = e.currentTarget as HTMLElement;
       const dropdown = item.parentElement;
-      this._removeActive();
+      await this.deactivate();
       dropdown.toggleAttribute('active');
     }
   };
@@ -84,20 +105,7 @@ export class WccAppMenuItem {
   }
 
   async componentDidLoad() {
-    // manage active menu item
-    if (this.mode === 'vertical') {
-      if (this.url === window.location.pathname) {
-        let element = this.host;
-        element.setAttribute('active', '');
-
-        while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
-          if (element.classList.contains('dropdown')) {
-            element.setAttribute('active', '');
-          }
-          element = element.parentElement;
-        }
-      }
-    }
+    await this.activate();
   }
 
   render() {
