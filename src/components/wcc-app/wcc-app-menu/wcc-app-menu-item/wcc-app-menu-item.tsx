@@ -21,14 +21,14 @@ export class WccAppMenuItem {
 
   @Prop() level: number = 0;
 
-  @Prop() name: string = ''
+  @Prop() name: string = '';
 
   @Prop() mode: string;
 
   @Method()
   async activate() {
     // manage active menu item
-    if (this.mode === 'vertical') {
+    if ('vertical' === this.mode) {
       if (this.url === window.location.pathname) {
         let element = this.host;
         element.setAttribute('active', '');
@@ -40,6 +40,22 @@ export class WccAppMenuItem {
           element = element.parentElement;
         }
       }
+      return;
+    }
+
+    if ('horizontal' === this.mode) {
+      if (this.url === window.location.pathname) {
+        let element = this.host;
+        element.setAttribute('active', '');
+
+        while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
+          if (element.classList.contains('dropdown')) {
+            element.setAttribute('active', '');
+          }
+          element = element.parentElement;
+        }
+      }
+      return;
     }
   }
 
@@ -49,31 +65,36 @@ export class WccAppMenuItem {
       .querySelectorAll('wcc-app-menu-item')
       .forEach(element => {
         element.removeAttribute('active');
+
+        if ('horizontal' === this.mode && element.firstElementChild) {
+          if (element.firstElementChild.classList.contains('level-0')) {
+            element.firstElementChild.removeAttribute('active');
+          }
+        }
       })
   }
 
   private children;
 
-  async handleClick(e: MouseEvent) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
-
-    if (this.mode === 'vertical') {
-      const item = e.currentTarget as HTMLElement;
-      await this.deactivate();
-      item.parentElement.setAttribute('active', '');
-    }
-  }
-
   async handleDropdownClick(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    if (this.mode === 'vertical') {
+    if ('vertical' === this.mode) {
       const item = e.currentTarget as HTMLElement;
       const dropdown = item.parentElement;
       await this.deactivate();
       dropdown.toggleAttribute('active');
+      return;
+    }
+
+    if ('horizontal' === this.mode) {
+      const item = e.currentTarget as HTMLElement;
+      const dropdown = item.parentElement;
+      if (!dropdown.classList.contains('level-0')) {
+        dropdown.toggleAttribute('active');
+      }
+      return;
     }
   };
 
@@ -121,10 +142,9 @@ export class WccAppMenuItem {
     return (
       <Host>
         { !this.children
-          ? <stencil-route-link
-              class="item" url={this.url}
-              onClick={this.handleClick.bind(this)}
-            >{this.name}</stencil-route-link>
+          ? (
+            <stencil-route-link class="item" url={this.url}>{this.name}</stencil-route-link>
+          )
           : (
             <div {...dropdown.attributes}>
               <div class="item" onClick={this.handleDropdownClick.bind(this)}>{this.name}</div>

@@ -9,6 +9,7 @@ wcc-app-menu[mode=vertical] {
   max-width: var(--wcc-app-menu-vertical-max-width);
   color: var(--wcc-app-menu-vertical-color);
   background: var(--wcc-app-menu-vertical-background);
+  padding: var(--wcc-app-menu-vertical-padding);
 
   &.slot-before {
     grid-template-rows: auto 1fr;
@@ -48,7 +49,7 @@ wcc-app-menu[mode=vertical] {
       .dropdown {
         .items {
           display: none;
-          margin-left: var(--wcc-app-menu-padding);
+          margin: var(--wcc-app-menu-vertical-dropdown-margin);
         }
 
         &[active] {
