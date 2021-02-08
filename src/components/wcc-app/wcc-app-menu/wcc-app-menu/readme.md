@@ -7,12 +7,13 @@
 
 ## Properties
 
-| Property          | Attribute          | Description | Type      | Default            |
-| ----------------- | ------------------ | ----------- | --------- | ------------------ |
-| `basePath`        | `base-path`        |             | `string`  | `''`               |
-| `disableIdentity` | `disable-identity` |             | `boolean` | `false`            |
-| `items`           | --                 |             | `any[]`   | `[]`               |
-| `mode`            | `mode`             |             | `string`  | `this.defaultMode` |
+| Property          | Attribute          | Description | Type            | Default            |
+| ----------------- | ------------------ | ----------- | --------------- | ------------------ |
+| `basePath`        | `base-path`        |             | `string`        | `''`               |
+| `disableIdentity` | `disable-identity` |             | `boolean`       | `false`            |
+| `history`         | --                 |             | `RouterHistory` | `undefined`        |
+| `items`           | --                 |             | `any[]`         | `[]`               |
+| `mode`            | `mode`             |             | `string`        | `this.defaultMode` |
 
 
 ## Events

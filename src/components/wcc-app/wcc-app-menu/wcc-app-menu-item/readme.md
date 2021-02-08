@@ -18,6 +18,29 @@
 | `url`         | `url`       |             | `string`                           | `null`                                   |
 
 
+## Methods
+
+### `activate() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+### `deactivate() => Promise<void>`
+
+
+
+#### Returns
+
+Type: `Promise<void>`
+
+
+
+
 ## Dependencies
 
 ### Used by

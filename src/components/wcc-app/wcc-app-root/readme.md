@@ -10,7 +10,7 @@
 | Property     | Attribute | Description | Type            | Default         |
 | ------------ | --------- | ----------- | --------------- | --------------- |
 | `history`    | --        |             | `RouterHistory` | `undefined`     |
-| `loaderName` | `loader`  |             | `string`        | `'wcc-spinner'` |
+| `loaderName` | `loader`  |             | `string`        | `"wcc-spinner"` |
 
 
 ## Events

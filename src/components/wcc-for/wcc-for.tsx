@@ -43,10 +43,6 @@ export class WccFor {
         MODEL_KEY,
         [this.chain, index, chainSuffix].join(".")
       );
-      element.setAttribute(
-        "data-test-model",
-        [this.chain, index, chainSuffix].join(".")
-      );
     } else if (this.autoBind === true) {
       element.setAttribute(MODEL_KEY, [this.chain, index].join("."));
     }
