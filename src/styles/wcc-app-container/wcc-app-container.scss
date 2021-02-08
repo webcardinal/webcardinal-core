@@ -6,6 +6,11 @@ wcc-app-container {
   overflow-y: auto;
   background: var(--wcc-app-container-background);
 
+  .container {
+    // bootstrap override
+    max-width: 100%; padding: 0;
+  }
+
   &.slot-before {
     grid-template-rows: auto 1fr;
   }

@@ -91,15 +91,11 @@ export class WccAppMenu {
       }
     }
 
-    const computedStyles = window.getComputedStyle(this.host);
-    this.mode = computedStyles.getPropertyValue('--wcc-app-menu-mode').trim();
-
     // manage modes
     if (!this.modes.includes(this.mode)) {
       console.warn('wcc-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
       this.mode = this.defaultMode;
     }
-    this.host.parentElement.setAttribute('layout', this.mode);
 
     // manage slots
     for (const key of Object.keys(this.slots)) {
@@ -112,6 +108,7 @@ export class WccAppMenu {
     }
 
     // disable flag for wcc-app-identity
+    const computedStyles = window.getComputedStyle(this.host);
     this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 

@@ -37,8 +37,11 @@ export class WccAppRoot {
 
     new ApplicationController(this.host);
 
+    const computedStyles = window.getComputedStyle(this.host);
     if (this.host.children.length === 0) {
-      this.host.appendChild(document.createElement("wcc-app-menu"));
+      this.host.appendChild(Object.assign(document.createElement("wcc-app-menu"), {
+        mode: computedStyles.getPropertyValue('--wcc-app-menu-mode').trim()
+      }));
       this.host.appendChild(document.createElement("wcc-app-container"));
     }
 

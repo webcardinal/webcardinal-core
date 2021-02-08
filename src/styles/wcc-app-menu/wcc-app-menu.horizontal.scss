@@ -4,6 +4,11 @@ wcc-app-menu[mode=horizontal] {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   gap: var(--wcc-app-menu-gap);
+  position: sticky;
+  top: 0; left: 0; right: 0;
+  color: var(--wcc-app-menu-horizontal-color);
+  height: var(--wcc-app-menu-horizontal-height);
+  background: var(--wcc-app-menu-horizontal-background);
 
   &.slot-before {
     grid-template-columns: auto 1fr;
@@ -15,6 +20,12 @@ wcc-app-menu[mode=horizontal] {
 
   &.slot-before.slot-after {
     grid-template-columns: auto 1fr auto;
+  }
+
+  .content {
+    display: flex;
+    gap: var(--wcc-app-container-gap);
+    align-items: center;
   }
 
   .app-menu {

@@ -2,14 +2,21 @@ html {
   /* <wcc-app-menu> */
   --wcc-app-menu-gap: 0.75rem;
   --wcc-app-menu-padding: 1rem;
-  --wcc-app-menu-min-width: 220px;
-  --wcc-app-menu-max-width: 100%;
   --wcc-app-menu-color: #f1f1f1;
-  --wcc-app-menu-background: linear-gradient(180deg, #5e7fe1 30%, #354f9b 100%);
   --wcc-app-menu-items-gap: calc(0.75rem / 2);
   --wcc-app-menu-mode: vertical;
   --wcc-app-menu-disable-identity: false;
 
+  /* <wcc-app-menu> only vertical mode */
+  --wcc-app-menu-vertical-color: var(--wcc-app-menu-color);
+  --wcc-app-menu-vertical-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
+  --wcc-app-menu-vertical-min-width: 220px;
+  --wcc-app-menu-vertical-max-width: 100%;
+
+  /* <wcc-app-menu> only horizontal mode */
+  --wcc-app-menu-horizontal-color: var(--wcc-app-menu-color);
+  --wcc-app-menu-horizontal-background: #354F9B;
+  --wcc-app-menu-horizontal-height: auto;
 
   /* <wcc-app-identity> */
   --wcc-app-identity-color: #f1f1f1;
