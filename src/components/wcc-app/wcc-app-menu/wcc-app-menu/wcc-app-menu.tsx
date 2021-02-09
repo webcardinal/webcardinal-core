@@ -8,7 +8,8 @@ import { URLHelper } from '../../wcc-app-utils';
   tag: 'wcc-app-menu',
   styleUrls: {
     vertical: '../../../../styles/wcc-app-menu/wcc-app-menu.vertical.scss',
-    horizontal: '../../../../styles/wcc-app-menu/wcc-app-menu.horizontal.scss'
+    horizontal: '../../../../styles/wcc-app-menu/wcc-app-menu.horizontal.scss',
+    mobile: '../../../../styles/wcc-app-menu/wcc-app-menu.mobile.scss'
   }
 })
 export class WccAppMenu {
@@ -93,7 +94,10 @@ export class WccAppMenu {
 
     // manage modes
     if (!this.modes.includes(this.mode)) {
-      console.warn('wcc-app-menu', `You should use one of the following modes: ${this.modes.join(', ')}`);
+      console.warn(
+        `You must use one of the following modes: ${this.modes.join(', ')}\n`,
+        `target element:`, this.host
+      );
       this.mode = this.defaultMode;
     }
 
@@ -136,9 +140,46 @@ export class WccAppMenu {
       ]
     }
 
+    const renderMobileMenu = () => {
+      const burgerClicked = () => {
+        this.host.toggleAttribute('active');
+      }
+
+      return [
+        ( this.slots.before
+            ? <div class="container before">
+              <slot name="before"/>
+            </div>
+            : null
+        ),
+        <header>
+          { this.disableIdentity ? null : <wcc-app-identity /> }
+          <div class="app-menu-toggle">
+            <button class="burger" onClick={burgerClicked.bind(this)}>
+              <span class="line"/>
+              <span class="line"/>
+              <span class="line"/>
+            </button>
+          </div>
+        </header>,
+        ( this.slots.after
+            ? <div class="container after">
+              <slot name="after"/>
+            </div>
+            : null
+        ),
+        <div class="app-menu-backdrop">
+          <aside class="app-menu items">
+            { this._renderItems(this.items) }
+          </aside>
+        </div>
+      ]
+    }
+
     return {
       vertical: renderMenu(),
-      horizontal: renderMenu()
+      horizontal: renderMenu(),
+      mobile: renderMobileMenu()
     }
   }
 

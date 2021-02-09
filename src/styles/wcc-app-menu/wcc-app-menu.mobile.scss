@@ -1,0 +1,104 @@
+@import 'wcc-app-menu';
+
+wcc-app-menu[mode=mobile] {
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  gap: var(--wcc-app-menu-gap);
+  position: sticky;
+  top: 0; left: 0; right: 0;
+  color: var(--wcc-app-menu-mobile-color);
+  height: var(--wcc-app-menu-mobile-height);
+  background: var(--wcc-app-menu-mobile-background);
+  padding: var(--wcc-app-menu-mobile-padding);
+  box-shadow: var(--wcc-app-menu-mobile-box-shadow);
+
+  &.slot-before {
+    grid-template-columns: auto 1fr;
+  }
+
+  &.slot-after {
+    grid-template-columns: 1fr auto;
+  }
+
+  &.slot-before.slot-after {
+    grid-template-columns: auto 1fr auto;
+  }
+
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    // bootstrap override
+    background: transparent;
+
+    .app-menu-toggle {
+      .burger {
+        position: relative;
+        background: transparent;
+        border: 0.5rem solid transparent;
+        width: 2.5rem; height: 2.0rem;
+
+        .line {
+          &,
+          &:before,
+          &:after {
+            position: absolute;
+            content: '';
+            left: 0; right: 0;
+            height: 2px;
+            margin-top: -1px;
+            border-radius: 2px;
+            background: var(--wcc-app-menu-mobile-burger-color);
+          }
+
+          & {
+            top: 50%;
+          }
+          &:first-child {
+            top: 0;
+          }
+          &:last-child {
+            top: 100%;
+          }
+        }
+
+        &[active] {
+
+        }
+      }
+    }
+  }
+
+  .app-menu-backdrop {
+    display: none;
+    position: fixed;
+    left: 0; top: var(--wcc-app-menu-mobile-height); right: 0; bottom: 0;
+    z-index: calc(var(--wcc-app-menu-z-index) - 1);
+
+    .app-menu {
+      display: grid;
+      gap: var(--wcc-app-menu-gap);
+      overflow-y: auto;
+      width: 100%; height: 100%;
+      padding: 1rem;
+      grid-auto-flow: column;
+    }
+
+    &:after {
+      position: fixed;
+      display: block;
+      content: '';
+      left: 0; top: var(--wcc-app-menu-mobile-height); right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(5px);
+      z-index: -1;
+    }
+  }
+
+  &[active] {
+    .app-menu-backdrop {
+      display: block;
+    }
+  }
+}

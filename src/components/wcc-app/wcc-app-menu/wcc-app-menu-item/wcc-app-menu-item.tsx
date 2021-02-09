@@ -10,7 +10,7 @@ export class WccAppMenuItem {
 
   @Prop() menuElement: HTMLElement = null;
 
-  @Prop({ mutable: true, reflect: true }) url: string | null = null;
+  @Prop({ mutable: true }) url: string | null = null;
 
   @Prop() basePath: string = '';
 
@@ -19,7 +19,7 @@ export class WccAppMenuItem {
     children: null
   };
 
-  @Prop() level: number = 0;
+  @Prop({ reflect: true }) level: number = 0;
 
   @Prop() name: string = '';
 
@@ -27,24 +27,8 @@ export class WccAppMenuItem {
 
   @Method()
   async activate() {
-    // manage active menu item
-    if ('vertical' === this.mode) {
-      if (this.url === window.location.pathname) {
-        let element = this.host;
-        element.setAttribute('active', '');
-
-        while (element.tagName.toLowerCase() !== 'wcc-app-menu') {
-          if (element.classList.contains('dropdown')) {
-            element.setAttribute('active', '');
-          }
-          element = element.parentElement;
-        }
-      }
-      return;
-    }
-
-    if ('horizontal' === this.mode) {
-      if (this.url === window.location.pathname) {
+    if (['vertical', 'horizontal'].includes(this.mode)) {
+      if (this.host.getAttribute('url') === window.location.pathname) {
         let element = this.host;
         element.setAttribute('active', '');
 
@@ -66,12 +50,12 @@ export class WccAppMenuItem {
       .forEach(element => {
         element.removeAttribute('active');
 
-        if ('horizontal' === this.mode && element.firstElementChild) {
-          if (element.firstElementChild.classList.contains('level-0')) {
+        if ('horizontal' === this.mode) {
+          if (typeof element['level'] === 'number' && element['level'] === 0) {
             element.firstElementChild.removeAttribute('active');
           }
         }
-      })
+      });
   }
 
   private children;
@@ -91,7 +75,8 @@ export class WccAppMenuItem {
     if ('horizontal' === this.mode) {
       const item = e.currentTarget as HTMLElement;
       const dropdown = item.parentElement;
-      if (!dropdown.classList.contains('level-0')) {
+      const element = dropdown.parentElement;
+      if (typeof element['level'] === 'number' && element['level'] !== 0) {
         dropdown.toggleAttribute('active');
       }
       return;
@@ -99,9 +84,12 @@ export class WccAppMenuItem {
   };
 
   async componentWillLoad() {
-    if (!this.url) this.url = URLHelper.join(this.basePath, this.item.path).pathname;
-    if (this.url === '') this.url = '/';
-
+    if (!this.url) {
+      this.url = URLHelper.join(this.basePath, this.item.path).pathname;
+    }
+    if (this.url === '') {
+      this.url = '/';
+    }
     if (this.item.children) {
       this.children = [];
 
@@ -130,28 +118,18 @@ export class WccAppMenuItem {
   }
 
   render() {
-    const dropdown = {
-      attributes: {
-        class: {
-          'dropdown': true,
-          [`level-${this.level}`]: true
-        }
-      }
-    };
+    if (this.children) {
+      return (
+        <div class="dropdown">
+          <div class="item" onClick={this.handleDropdownClick.bind(this)}>{this.name}</div>
+          <div class="items">{this.children}</div>
+        </div>
+      );
+    }
 
     return (
-      <Host>
-        { !this.children
-          ? (
-            <stencil-route-link class="item" url={this.url}>{this.name}</stencil-route-link>
-          )
-          : (
-            <div {...dropdown.attributes}>
-              <div class="item" onClick={this.handleDropdownClick.bind(this)}>{this.name}</div>
-              <div class="items">{this.children}</div>
-            </div>
-          )
-        }
+      <Host url={this.url}>
+        <stencil-route-link class="item" url={this.url}>{this.name}</stencil-route-link>
       </Host>
     );
   };

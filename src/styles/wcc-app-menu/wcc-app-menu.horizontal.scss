@@ -26,7 +26,6 @@ wcc-app-menu[mode=horizontal] {
 
   .content {
     display: flex;
-    gap: var(--wcc-app-container-gap);
     align-items: center;
   }
 
@@ -37,58 +36,39 @@ wcc-app-menu[mode=horizontal] {
     width: 100%;
 
     wcc-app-menu-item {
-      &[active] {
-        font-weight: bold;
-      }
-
-      .item {
-        display: flex;
-        align-items: center;
-        height: 100%;
-        padding: var(--wcc-app-menu-horizontal-items-padding);
-      }
-
-      .dropdown {
-        &[active] {
-          & > .items {
-            display: grid;
-          }
-        }
-
-        .items {
+      & > .dropdown {
+        & > .items {
           display: none;
           margin: var(--wcc-app-menu-horizontal-dropdown-margin);
 
           .item {
             padding: var(--wcc-app-menu-horizontal-dropdown-items-padding);
-          }
 
-          .item, .item > a {
-            color: var(--wcc-app-menu-horizontal-dropdown-color);
+            &, & > a {
+              color: var(--wcc-app-menu-horizontal-dropdown-color);
+            }
           }
         }
 
-        &.level-0 {
-          position: relative;
-
-          &[active] {
-            & > .item {
-              font-weight: bold;
-            }
-            & > .items {
-              display: none;
-            }
+        &[active] {
+          & > .items {
+            display: grid;
           }
+        }
+      }
 
-          .item {
-            height: initial;
-            align-items: initial;
-          }
+      &[level="0"] {
+        position: relative;
 
+        & > .item,
+        & > .dropdown > .item {
+          display: flex;
+          align-items: center;
+          height: 100%;
+        }
+
+        & > .dropdown {
           & > .item {
-            display: flex;
-            align-items: center;
-            height: 100%;
             margin-right: var(--wcc-app-menu-horizontal-triangle-size);
             padding-right: calc(3 * var(--wcc-app-menu-horizontal-triangle-size));
 
@@ -116,6 +96,15 @@ wcc-app-menu[mode=horizontal] {
             box-shadow: var(--wcc-app-menu-horizontal-dropdown-box-shadow);
           }
 
+          &[active] {
+            & > .item {
+              font-weight: bold;
+            }
+            & > .items {
+              display: none;
+            }
+          }
+
           &:hover {
             & > .items {
               display: grid;
@@ -124,9 +113,13 @@ wcc-app-menu[mode=horizontal] {
         }
       }
 
+      &[active] {
+        font-weight: bold;
+      }
+
       &:last-child {
-        .dropdown {
-          &.level-0 {
+        &[level="0"] {
+          .dropdown {
             & > .items {
               left: initial;
               right: 0;
