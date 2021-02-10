@@ -23,7 +23,7 @@ html {
   --wcc-app-menu-horizontal-color: var(--wcc-app-menu-color);
   --wcc-app-menu-horizontal-background: #354F9B;
   --wcc-app-menu-horizontal-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-  --wcc-app-menu-horizontal-height: auto;
+  --wcc-app-menu-horizontal-height: 80px;
   --wcc-app-menu-horizontal-padding: 0.35rem 1rem;
   --wcc-app-menu-horizontal-triangle-size: 5px;
   --wcc-app-menu-horizontal-items-padding: 0.3rem 0;
@@ -37,10 +37,18 @@ html {
   --wcc-app-menu-horizontal-dropdown-items-padding: 0.2rem 0;
 
   /* <wcc-app-menu> only mobile mode */
-  --wcc-app-menu-mobile-color: var(--wcc-app-menu-color);
-  --wcc-app-menu-mobile-burger-color: var(--wcc-app-menu-color);
+  --wcc-app-menu-mobile-backdrop-transition-duration: 150ms;
   --wcc-app-menu-mobile-background: #354F9B;
   --wcc-app-menu-mobile-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  --wcc-app-menu-mobile-breakpoint: 960px;
+  --wcc-app-menu-mobile-burger-color: var(--wcc-app-menu-color);
+  --wcc-app-menu-mobile-burger-transition-duration: 150ms;
+  --wcc-app-menu-mobile-color: var(--wcc-app-menu-color);
+  --wcc-app-menu-mobile-dropdown-gap: 0.2rem;
+  --wcc-app-menu-mobile-dropdown-items-padding: 0;
+  --wcc-app-menu-mobile-dropdown-margin: 0 0 0 1rem;
+  --wcc-app-menu-mobile-items-border-color: rgba(255, 255, 255, 0.3);
+  --wcc-app-menu-mobile-items-padding: 0.5rem;
   --wcc-app-menu-mobile-height: 80px;
   --wcc-app-menu-mobile-padding: 0.35rem 1rem;
 

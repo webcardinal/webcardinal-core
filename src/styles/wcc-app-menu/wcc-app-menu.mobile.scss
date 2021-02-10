@@ -47,9 +47,11 @@ wcc-app-menu[mode=mobile] {
             content: '';
             left: 0; right: 0;
             height: 2px;
+            overflow: hidden;
             margin-top: -1px;
             border-radius: 2px;
             background: var(--wcc-app-menu-mobile-burger-color);
+            transition: all var(--wcc-app-menu-mobile-burger-transition-duration) ease-in-out;
           }
 
           & {
@@ -61,10 +63,6 @@ wcc-app-menu[mode=mobile] {
           &:last-child {
             top: 100%;
           }
-        }
-
-        &[active] {
-
         }
       }
     }
@@ -82,7 +80,39 @@ wcc-app-menu[mode=mobile] {
       overflow-y: auto;
       width: 100%; height: 100%;
       padding: 1rem;
-      grid-auto-flow: column;
+      align-content: start;
+
+      @for $i from 1 through 5 {
+        @media screen and (min-width: $i * 320px) {
+          grid-template-columns: repeat($i, 1fr);
+        }
+      }
+
+      wcc-app-menu-item {
+        & > .dropdown {
+          & > .items {
+            display: none;
+            margin: var(--wcc-app-menu-mobile-dropdown-margin);
+            row-gap: var(--wcc-app-menu-mobile-dropdown-gap);
+            padding: var(--wcc-app-menu-mobile-dropdown-items-padding);
+          }
+
+          &[active] {
+            & > .items {
+              display: grid;
+            }
+          }
+        }
+
+        &[level="0"] {
+          padding: var(--wcc-app-menu-mobile-items-padding);
+          border-bottom: 1px solid var(--wcc-app-menu-mobile-items-border-color);
+        }
+
+        &[active] {
+          font-weight: bold;
+        }
+      }
     }
 
     &:after {
@@ -94,11 +124,47 @@ wcc-app-menu[mode=mobile] {
       backdrop-filter: blur(5px);
       z-index: -1;
     }
+
+    &, &:after {
+      opacity: 0;
+      pointer-events: none;
+      transition: all var(--wcc-app-menu-mobile-backdrop-transition-duration) ease-in-out;
+    }
   }
 
   &[active] {
     .app-menu-backdrop {
-      display: block;
+      display: flex;
+    }
+
+    &[visible] {
+      .app-menu-backdrop {
+        &, &:after {
+          opacity: 1;
+          pointer-events: all;
+        }
+      }
+
+      .app-menu-toggle {
+        .burger {
+          .line {
+            &:first-child,
+            &:last-child {
+              top: 50%;
+            }
+
+            &:first-child {
+              transform: rotateZ(-45deg);
+            }
+            &:nth-child(2) {
+              height: 0;
+            }
+            &:last-child {
+              transform: rotateZ(45deg);
+            }
+          }
+        }
+      }
     }
   }
 }

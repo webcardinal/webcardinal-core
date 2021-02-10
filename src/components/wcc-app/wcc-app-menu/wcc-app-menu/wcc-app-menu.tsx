@@ -1,7 +1,7 @@
 import { Component, Event, EventEmitter, h, Prop } from '@stencil/core';
 import { injectHistory, RouterHistory } from '@stencil/router';
 import { HostElement } from '../../../../decorators';
-import { promisifyEventEmit } from '../../../../utils';
+import { promisifyEventEmit, convertCSSTimeToMs } from '../../../../utils';
 import { URLHelper } from '../../wcc-app-utils';
 
 @Component({
@@ -29,6 +29,7 @@ export class WccAppMenu {
   }
   private modes = Object.keys(this._menu);
   private defaultMode = this.modes[0];
+  private computedStyles: CSSStyleDeclaration;
 
   @Prop({ reflect: true, mutable: true }) mode = this.defaultMode;
 
@@ -112,8 +113,8 @@ export class WccAppMenu {
     }
 
     // disable flag for wcc-app-identity
-    const computedStyles = window.getComputedStyle(this.host);
-    this.disableIdentity = computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
+    this.computedStyles = window.getComputedStyle(this.host);
+    this.disableIdentity = this.computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 
   private get _menu() {
@@ -142,7 +143,20 @@ export class WccAppMenu {
 
     const renderMobileMenu = () => {
       const burgerClicked = () => {
-        this.host.toggleAttribute('active');
+        if (this.host.hasAttribute('active')) {
+          this.host.removeAttribute('visible');
+          setTimeout(() => {
+            this.host.removeAttribute('active');
+          }, convertCSSTimeToMs(this.computedStyles.getPropertyValue('--wcc-app-menu-mobile-backdrop-transition-delay')) || 200)
+          console.log(convertCSSTimeToMs(this.computedStyles.getPropertyValue('--wcc-app-menu-mobile-backdrop-transition-delay')) || 200)
+        } else {
+          this.host.setAttribute('active', '');
+          setTimeout(() => {
+            this.host.setAttribute('visible', '');
+          }, 5)
+        }
+
+        // this.host.toggleAttribute('active');
       }
 
       return [

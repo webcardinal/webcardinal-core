@@ -39,10 +39,37 @@ export class WccAppRoot {
 
     if (this.host.children.length === 0) {
       const computedStyles = window.getComputedStyle(this.host);
-      const mode = computedStyles.getPropertyValue('--wcc-app-menu-mode').trim();
-      this.host.appendChild(Object.assign(document.createElement("wcc-app-menu"), { mode }));
+      const breakpoint = computedStyles.getPropertyValue('--wcc-app-menu-mobile-breakpoint');
+      const mediaQuery = window.matchMedia(`(max-width: ${breakpoint})`);
+
+      let initialMode = computedStyles.getPropertyValue('--wcc-app-menu-mode').trim();
+      let mobileMode = 'mobile';
+      let mode = mediaQuery.matches ? mobileMode : initialMode;
+
+      const elements = {
+        menu: Object.assign(document.createElement('wcc-app-menu'), { mode }),
+        container: document.createElement('wcc-app-container')
+      };
+      const mobileElements = {
+        menu: Object.assign(document.createElement('wcc-app-menu'), { mode: mobileMode }),
+      };
+
       this.host.setAttribute('layout', mode);
-      this.host.appendChild(document.createElement("wcc-app-container"));
+      this.host.append(elements.menu, elements.container);
+
+      mediaQuery.addEventListener('change', e => {
+        if (e.matches) {
+          document.documentElement.style.setProperty('--wcc-app-menu-mode', ` ${mobileMode}`);
+          elements.menu.remove();
+          this.host.setAttribute('layout', mobileMode);
+          this.host.insertBefore(mobileElements.menu, elements.container);
+        } else {
+          document.documentElement.style.setProperty('--wcc-app-menu-mode', ` ${initialMode}`);
+          mobileElements.menu.remove();
+          this.host.setAttribute('layout', initialMode);
+          this.host.insertBefore(elements.menu, elements.container);
+        }
+      });
     }
 
     await this.registerAppErrorComponentAndListeners();

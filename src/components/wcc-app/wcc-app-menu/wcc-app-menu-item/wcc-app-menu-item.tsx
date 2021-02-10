@@ -27,7 +27,7 @@ export class WccAppMenuItem {
 
   @Method()
   async activate() {
-    if (['vertical', 'horizontal'].includes(this.mode)) {
+    if (['vertical', 'horizontal', 'mobile'].includes(this.mode)) {
       if (this.host.getAttribute('url') === window.location.pathname) {
         let element = this.host;
         element.setAttribute('active', '');
@@ -37,6 +37,12 @@ export class WccAppMenuItem {
             element.setAttribute('active', '');
           }
           element = element.parentElement;
+        }
+
+        // element is wcc-app-menu
+        if ('mobile' === this.mode) {
+          element.removeAttribute('visible');
+          element.removeAttribute('active');
         }
       }
       return;
@@ -79,6 +85,14 @@ export class WccAppMenuItem {
       if (typeof element['level'] === 'number' && element['level'] !== 0) {
         dropdown.toggleAttribute('active');
       }
+      return;
+    }
+
+    if ('mobile' === this.mode) {
+      const item = e.currentTarget as HTMLElement;
+      const dropdown = item.parentElement;
+      await this.deactivate();
+      dropdown.toggleAttribute('active');
       return;
     }
   };
