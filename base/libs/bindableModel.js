@@ -24,9 +24,6 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                     $$.__runtimeModules["psk-bindable-model"] = require("psk-bindable-model");
                 }
             };
-            if (false) {
-                bindableModelLoadModules();
-            }
             global.bindableModelRequire = require;
             if (typeof $$ !== "undefined") {
                 $$.requireBundle("bindableModel");
@@ -414,10 +411,22 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                     }
                 }
 
+                function proxifyArrayElements(array, parentChain) {
+                    if(!array || !Array.isArray(array)) {
+                        return array;
+                    }
+
+                    return array.map((element, index) => {
+                        return proxify(element, extendChain(parentChain, index.toString()));
+                    });
+                }
+
                 function pushHandler(target, parentChain) {
                     return function() {
                         try {
-                            let arrayLength = Array.prototype.push.apply(target, arguments);
+                            // when we add new elements we need to make sure to proxify them
+                            const proxifiedArguments = proxifyArrayElements([...arguments], parentChain);
+                            let arrayLength = Array.prototype.push.apply(target, proxifiedArguments);
                             let index = arrayLength - 1;
                             root.notify(extendChain(parentChain, index));
                             return arrayLength;
@@ -431,7 +440,9 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                 function arrayFnHandler(fn, target, parentChain) {
                     return function() {
                         try {
-                            let returnedValue = Array.prototype[fn].apply(target, arguments);
+                            // there are cases in which we need to proxify the arguments (e.g. unshift)
+                            const proxifiedArguments = proxifyArrayElements([...arguments], parentChain);
+                            let returnedValue = Array.prototype[fn].apply(target, proxifiedArguments);
                             if (ARRAY_CHANGE_METHODS.indexOf(fn) !== -1) {
                                 root.notify(parentChain);
                             }
@@ -495,10 +506,11 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
 
                             let changedChains = getRelatedChains(changedChain);
 
-                            changedChains.forEach(changedChain => {
-                                SoundPubSub.publish(createChannelName(changedChain), {
+                            changedChains.forEach(chain => {
+                                SoundPubSub.publish(createChannelName(chain), {
                                     type: CHAIN_CHANGED,
-                                    chain: changedChain
+                                    chain: chain,
+                                    targetChain: changedChain
                                 });
                             })
                         };
@@ -570,6 +582,10 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                                 }
                             }
 
+                            if (prop === "__isProxy") {
+                                return true;
+                            }
+
                             return obj[prop];
                         },
                         set: makeSetter(parentChain),
@@ -615,6 +631,10 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                             obj[prop] = proxify(obj[prop], extendChain(parentChain, prop));
                         }
                     });
+
+                    if(obj.__isProxy) {
+                        return obj;
+                    }
 
                     return new Proxy(obj, handler);
                 }
