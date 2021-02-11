@@ -3,7 +3,8 @@ import {
   LOG_LEVEL,
   EVENT_CONFIG_GET_ROUTING,
   EVENT_CONFIG_GET_IDENTITY,
-  EVENT_CONFIG_GET_LOG_LEVEL
+  EVENT_CONFIG_GET_LOG_LEVEL,
+  EVENT_CONFIG_GET_CORE_TYPE
 } from '../constants';
 import controllers from '../../base/controllers';
 import fetch from '../../base/utils/fetch.js';
@@ -193,7 +194,8 @@ export default class ApplicationController {
         pagesFallback: getPagesFallback(),
         pagesPathname: getPagesPathname(),
       },
-      logLevel: getLogLevel()
+      logLevel: getLogLevel(),
+      coreType: 'webcardinal'
     };
 
     return config;
@@ -275,6 +277,7 @@ export default class ApplicationController {
     element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
     element.addEventListener(EVENT_CONFIG_GET_IDENTITY, this._registerListener('identity'));
     element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
+    element.addEventListener(EVENT_CONFIG_GET_CORE_TYPE, this._registerListener('coreType'));
 
     // TODO: production version
     // element.addEventListener(EVENTS.GET_THEME, this._registerListener('theme'));
