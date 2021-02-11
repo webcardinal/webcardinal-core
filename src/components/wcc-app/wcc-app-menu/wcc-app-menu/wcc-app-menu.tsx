@@ -39,7 +39,7 @@ export class WccAppMenu {
   }) getRoutingConfigEvent: EventEmitter;
 
   private _toggleActiveItem() {
-    const selector = `${this._renderItem({}).$tag$}[url="${window.location.pathname}"]`;
+    const selector = `[url="${window.location.pathname}"]`;
     const item = this.host.querySelector(selector) as any;
     if (item) {
       item.deactivate().then(item.activate());
@@ -82,6 +82,10 @@ export class WccAppMenu {
   }
 
   async componentWillLoad() {
+    // disable flag for wcc-app-identity
+    this.computedStyles = window.getComputedStyle(this.host);
+    this.disableIdentity = this.computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
+
     // get routing data
     if (this.items.length === 0) {
       try {
@@ -111,10 +115,6 @@ export class WccAppMenu {
         this.host.classList.remove(`slot-${key}`);
       }
     }
-
-    // disable flag for wcc-app-identity
-    this.computedStyles = window.getComputedStyle(this.host);
-    this.disableIdentity = this.computedStyles.getPropertyValue('--wcc-app-menu-disable-identity').trim() === 'true';
   }
 
   private get _menu() {
@@ -147,16 +147,15 @@ export class WccAppMenu {
           this.host.removeAttribute('visible');
           setTimeout(() => {
             this.host.removeAttribute('active');
-          }, convertCSSTimeToMs(this.computedStyles.getPropertyValue('--wcc-app-menu-mobile-backdrop-transition-delay')) || 200)
-          console.log(convertCSSTimeToMs(this.computedStyles.getPropertyValue('--wcc-app-menu-mobile-backdrop-transition-delay')) || 200)
+          }, convertCSSTimeToMs(
+            this.computedStyles.getPropertyValue('--wcc-app-menu-mobile-backdrop-transition-delay')) || 200
+          )
         } else {
           this.host.setAttribute('active', '');
           setTimeout(() => {
             this.host.setAttribute('visible', '');
           }, 5)
         }
-
-        // this.host.toggleAttribute('active');
       }
 
       return [

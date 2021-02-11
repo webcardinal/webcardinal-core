@@ -26,7 +26,7 @@
 
 - [wcc-app-menu](../wcc-app-menu/wcc-app-menu)
 - [wcc-app-container](../wcc-app-container)
-- [wcc-app-error-toast](../../wcc-app-error-toast)
+- [wcc-app-error-toast](../wcc-app-error-toast)
 
 ### Graph
 ```mermaid
