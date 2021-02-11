@@ -39,7 +39,7 @@ export class WccAppMenu {
   }) getRoutingConfigEvent: EventEmitter;
 
   private _toggleActiveItem() {
-    const selector = `${this._renderItem({}).$tag$}[url="${window.location.pathname}"]`;
+    const selector = `[url="${window.location.pathname}"]`;
     const item = this.host.querySelector(selector) as any;
     if (item) {
       item.deactivate().then(item.activate());
