@@ -48,19 +48,24 @@ export class WccAppRoot {
         const breakpoint = computedStyles.getPropertyValue('--wcc-app-menu-mobile-breakpoint');
         const mediaQuery = window.matchMedia(`(max-width: ${breakpoint})`);
 
+        let mode = initialMode;
         let mobileMode = 'mobile';
-        let mode = mediaQuery.matches ? mobileMode : initialMode;
 
         const elements = {
-          menu: Object.assign(document.createElement('wcc-app-menu'), { mode }),
+          menu: Object.assign(document.createElement('wcc-app-menu'), { mode: initialMode }),
           container: document.createElement('wcc-app-container')
         };
         const mobileElements = {
           menu: Object.assign(document.createElement('wcc-app-menu'), { mode: mobileMode }),
         };
 
-        this.host.setAttribute('layout', mode);
-        this.host.append(elements.menu, elements.container);
+        if (mediaQuery.matches) {
+          this.host.setAttribute('layout', mobileMode);
+          this.host.append(mobileElements.menu, elements.container);
+        } else {
+          this.host.setAttribute('layout', mode);
+          this.host.append(elements.menu, elements.container);
+        }
 
         mediaQuery.addEventListener('change', e => {
           if (e.matches) {
