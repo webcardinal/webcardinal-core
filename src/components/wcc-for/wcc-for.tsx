@@ -42,7 +42,7 @@ export class WccFor {
       chainSuffix = chainSuffix.slice(1);
       element.setAttribute(
         MODEL_KEY,
-        [this.chain, index, chainSuffix].join(".")
+        [this.chain, index, chainSuffix].filter(String).join(".")
       );
     } else if (this.autoBind === true) {
       element.setAttribute(MODEL_KEY, [this.chain, index].join("."));
