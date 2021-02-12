@@ -8,5 +8,8 @@
   grid-template-columns: auto 1fr;
 }
 
-:host([layout=mobile]) {}
-:host([layout=horizontal]) {}
+:host([layout=mobile]),
+:host([layout=horizontal]) {
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
