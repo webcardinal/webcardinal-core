@@ -21,7 +21,7 @@ export class WccFor {
 
   @Prop({ attribute: "data-model" }) chain: string = "";
 
-  @Prop() autoBind: boolean = true;
+  @Prop() autoBind: boolean = false;
 
   @Event({
     eventName: "webcardinal:model:get",
@@ -34,6 +34,7 @@ export class WccFor {
   private template = [];
   private controller;
   private model;
+
   private bindRelativeModel = (element, index) => {
     let tag = element.tagName.toLowerCase();
     let chainSuffix = extractChain(element);
