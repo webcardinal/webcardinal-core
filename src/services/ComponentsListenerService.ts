@@ -1,7 +1,8 @@
 import {
-  MODEL_CHAIN_PREFIX,
+  EVENT_MODEL_GET,
+  EVENT_ROUTING_GET,
   EVENT_TAGS_GET,
-  EVENT_MODEL_GET
+  MODEL_CHAIN_PREFIX
 } from "../constants";
 
 function extractCallback(event) {
@@ -21,25 +22,33 @@ function extractCallback(event) {
 }
 
 interface ComponentsListenerServiceOptions {
-  model?: any,
+  model?: any
   tags?: any
+  routing?: any
 }
 
 class ComponentsListenerService {
   private readonly host: HTMLElement;
   private readonly model: any;
   private readonly tags: any;
+  private readonly routing: any;
   private listeners: {
-    [key: string]: (event: CustomEvent) => void
+    [key in 'getModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void
+  } = {
+    getModel: () => null,
+    getTags: () => null,
+    getRouting: () => null,
   };
 
-  constructor(host: HTMLElement, { model, tags }: ComponentsListenerServiceOptions) {
+  constructor(host: HTMLElement, {
+    model,
+    tags,
+    routing
+  }: ComponentsListenerServiceOptions) {
     this.host = host;
-    this.model = model;
-    this.tags = tags;
-    this.listeners = {};
 
     if (model) {
+      this.model = model;
       this.listeners.getModel = (event: CustomEvent) => {
         event.stopImmediatePropagation();
 
@@ -66,6 +75,7 @@ class ComponentsListenerService {
     }
 
     if (tags) {
+      this.tags = tags;
       this.listeners.getTags = (event: CustomEvent) => {
         event.stopImmediatePropagation();
 
@@ -77,6 +87,18 @@ class ComponentsListenerService {
         }
 
         callback(undefined, this.tags);
+      }
+    }
+
+    if (routing) {
+      this.routing = routing;
+      this.listeners.getRouting = (event: CustomEvent) => {
+        event.stopImmediatePropagation();
+
+        const callback = extractCallback(event);
+        if (!callback) return;
+
+        callback(undefined, this.routing);
       }
     }
   }
@@ -99,6 +121,17 @@ class ComponentsListenerService {
     return ({
       add: () => this.host.addEventListener(eventName, this.listeners.getTags),
       remove: () => this.host.removeEventListener(eventName, this.listeners.getTags),
+      eventName
+    });
+  }
+
+  get getRouting() {
+    if (!this.routing) return;
+
+    const eventName = EVENT_ROUTING_GET;
+    return ({
+      add: () => this.host.addEventListener(eventName, this.listeners.getRouting),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getRouting),
       eventName
     });
   }
