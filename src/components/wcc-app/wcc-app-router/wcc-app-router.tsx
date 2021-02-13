@@ -102,23 +102,18 @@ export class WccAppRouter {
         this._renderRoutes(this.routes),
         this._renderFallback(this.fallbackPage)
       ];
+      const skinsPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname)
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,
         routing: {
           basePath: this.basePath,
           pagesPath: this.pagesPath,
+          skinsPath,
           mapping: this.mapping
         }
       });
       this.listeners.getTags.add();
       this.listeners.getRouting.add();
-      console.log({
-        routing: {
-          basePath: this.basePath,
-          pagesPath: this.pagesPath,
-          mapping: this.mapping
-        }
-      })
     } catch (error) {
       console.error(error);
     }

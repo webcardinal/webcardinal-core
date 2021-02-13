@@ -145,6 +145,8 @@ export namespace Components {
     }
     interface WccSpinner {
     }
+    interface WebcSkin {
+    }
 }
 declare global {
     interface HTMLWccAppContainerElement extends Components.WccAppContainer, HTMLStencilElement {
@@ -237,6 +239,12 @@ declare global {
         prototype: HTMLWccSpinnerElement;
         new (): HTMLWccSpinnerElement;
     };
+    interface HTMLWebcSkinElement extends Components.WebcSkin, HTMLStencilElement {
+    }
+    var HTMLWebcSkinElement: {
+        prototype: HTMLWebcSkinElement;
+        new (): HTMLWebcSkinElement;
+    };
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
         "wcc-app-error-toast": HTMLWccAppErrorToastElement;
@@ -253,6 +261,7 @@ declare global {
         "wcc-link": HTMLWccLinkElement;
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
+        "webc-skin": HTMLWebcSkinElement;
     }
 }
 declare namespace LocalJSX {
@@ -397,6 +406,8 @@ declare namespace LocalJSX {
     }
     interface WccSpinner {
     }
+    interface WebcSkin {
+    }
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
         "wcc-app-error-toast": WccAppErrorToast;
@@ -413,6 +424,7 @@ declare namespace LocalJSX {
         "wcc-link": WccLink;
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
+        "webc-skin": WebcSkin;
     }
 }
 export { LocalJSX as JSX };
@@ -434,6 +446,7 @@ declare module "@stencil/core" {
             "wcc-link": LocalJSX.WccLink & JSXBase.HTMLAttributes<HTMLWccLinkElement>;
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
+            "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
         }
     }
 }

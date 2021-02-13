@@ -175,8 +175,8 @@ export default class ApplicationController {
       return fallback;
     }
 
-    const getPagesPathname = () => {
-      return '/' + this._trimPathname(getRaw('pagesPathname'));
+    const getPathname = (source) => {
+      return '/' + this._trimPathname(getRaw(source));
     };
 
     const getLogLevel = () => {
@@ -192,7 +192,8 @@ export default class ApplicationController {
         baseURL: getBaseURL(),
         pages: getPages(),
         pagesFallback: getPagesFallback(),
-        pagesPathname: getPagesPathname(),
+        pagesPathname: getPathname('pagesPathname'),
+        skinsPathname: getPathname('skinsPathname')
       },
       logLevel: getLogLevel(),
       coreType: 'webcardinal'
