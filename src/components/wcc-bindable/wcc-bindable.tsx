@@ -1,13 +1,15 @@
-import { Component, h, Method, Prop } from '@stencil/core';
+import { Component, EventEmitter, h, Method, Prop, Event } from '@stencil/core';
 import { RouterHistory, injectHistory } from '@stencil/router';
 import { HostElement } from '../../decorators';
 import {
   ComponentListenersService,
   ControllerRegistryService,
-  ControllerBindingService
+  ControllerBindingService,
+  ControllerTranslationService
 } from '../../services'
 
 import DefaultController from '../../../base/controllers/Controller.js';
+import { promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: "wcc-bindable"
@@ -19,11 +21,22 @@ export class WccBindable {
 
   @Prop() history: RouterHistory;
 
+  @Event({
+    eventName: "webcardinal:routing:get",
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getRoutingEvent: EventEmitter;
+
   private controller;
   private model;
   private listeners: ComponentListenersService;
 
   async componentWillLoad() {
+    const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
+    await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
+
     // load controller
     if (typeof this.controllerName === 'string') {
       try {

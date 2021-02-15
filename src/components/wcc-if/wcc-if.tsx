@@ -1,7 +1,19 @@
-import { Component, h, Prop, State, Element, Watch } from "@stencil/core";
+import {
+  Component,
+  h,
+  Prop,
+  State,
+  Element,
+  Watch,
+  Event,
+  EventEmitter,
+} from "@stencil/core";
 import { MODEL_CHAIN_PREFIX } from "../../constants";
-import { ControllerBindingService } from "../../services";
-import { getClosestParentElement } from "../../utils";
+import {
+  ControllerBindingService,
+  ControllerTranslationBindingService,
+} from "../../services";
+import { promisifyEventEmit } from "../../utils";
 
 import { getSlotContent } from "./wcc-if-utils";
 
@@ -19,10 +31,10 @@ export class WccIf {
   condition: any | undefined = undefined;
 
   /**
-   * An optional modal that will be used to check the condition;
+   * An optional model that will be used to check the condition;
    * if not provided, then the component will find the closes wcc-bindable element and take the model from there
    */
-  @Prop({ attribute: 'data-model' })
+  @Prop({ attribute: "data-model" })
   model: any | undefined = undefined;
 
   private falseSlot = null;
@@ -32,9 +44,28 @@ export class WccIf {
   localModel: any;
 
   @State()
+  translationModel: any;
+
+  @State()
   conditionValue: boolean = false;
 
   @Element() host: HTMLElement;
+
+  @Event({
+    eventName: "webcardinal:model:get",
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getModelEvent: EventEmitter;
+
+  @Event({
+    eventName: "webcardinal:translationModel:get",
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationModelEvent: EventEmitter;
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
@@ -51,6 +82,24 @@ export class WccIf {
     }
 
     this.host.innerHTML = "";
+
+    if (this.model) {
+      this.localModel = this.model;
+    } else {
+      try {
+        this.localModel = await promisifyEventEmit(this.getModelEvent);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    try {
+      this.translationModel = await promisifyEventEmit(
+        this.getTranslationModelEvent
+      );
+    } catch (error) {
+      console.error(error);
+    }
 
     this.updateConditionValue();
   }
@@ -73,6 +122,10 @@ export class WccIf {
 
       ControllerBindingService.bindModel(target, model);
       ControllerBindingService.bindAttributes(target, model);
+      ControllerTranslationBindingService.bindRecursive(
+        target,
+        this.translationModel
+      );
 
       if (target.children) {
         this.bindModelToVisibleSlot(target, model);
@@ -81,29 +134,13 @@ export class WccIf {
   }
 
   private async updateConditionValue() {
-    let mustSubscribeToChanges = false;
-    if (!this.model) {
-      // no model was specified via Props so we must find the closes wcc-bindable
-      const wccBindable = getClosestParentElement(
-        this.host,
-        "wcc-bindable"
-      ) as any;
-      if (wccBindable) {
-        const model = await wccBindable.getModel();
-        mustSubscribeToChanges = !this.localModel || this.localModel != model;
-        this.localModel = model;
-      }
-    }
-
     if (this.condition && this.condition.startsWith(MODEL_CHAIN_PREFIX)) {
       const conditionChain = this.condition.slice(1);
       this.conditionValue = this.localModel.getChainValue(conditionChain);
 
-      if (mustSubscribeToChanges) {
-        this.localModel.onChange(conditionChain, (_) => {
-          this.conditionValue = this.localModel.getChainValue(conditionChain);
-        });
-      }
+      this.localModel.onChange(conditionChain, (_) => {
+        this.conditionValue = this.localModel.getChainValue(conditionChain);
+      });
     }
   }
 

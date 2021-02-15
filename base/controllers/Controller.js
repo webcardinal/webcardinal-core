@@ -29,6 +29,26 @@ const ControllerHelper = {
       `);
     }
   },
+  getTranslationModel: () => {
+    const { language, translations } = window.WebCardinal;
+    const currentTranslations = translations[language];
+
+    if (!currentTranslations) {
+      console.log(`No translations found for current language ${language}`);
+      return null;
+    }
+
+    const { pathname } = window.location;
+    const currentPageTranslations = currentTranslations[pathname];
+    if (!currentPageTranslations) {
+      console.warn(
+        `No translations found for language ${language} and page ${pathname}`
+      );
+      return null;
+    }
+
+    return currentPageTranslations;
+  },
 };
 
 class Controller {
@@ -42,6 +62,10 @@ class Controller {
     this.tagEventListeners = [];
 
     this.setLegacyGetModelEventListener();
+
+    this.translationModel = PskBindableModel.setModel(
+      ControllerHelper.getTranslationModel() || {}
+    );
   }
 
   createElement(elementName, props) {
@@ -146,7 +170,9 @@ class Controller {
   navigateToTag(tag, state) {
     this.element.dispatchEvent(
       new CustomEvent("webcardinal:tags:get", {
-        bubbles: true, composed: true, cancelable: true,
+        bubbles: true,
+        composed: true,
+        cancelable: true,
         detail: {
           tag,
           callback: (error, path) => {
@@ -163,7 +189,9 @@ class Controller {
 
   send(eventName, detail, options = {}) {
     let eventOptions = {
-      bubbles: true, cancelable: true, composed: true,
+      bubbles: true,
+      cancelable: true,
+      composed: true,
       detail,
       ...options,
     };
@@ -198,6 +226,28 @@ class Controller {
 
       callback(new Error("No callback provided"));
     });
+  }
+
+  t(translationKey) {
+    const { language } = window.WebCardinal;
+    const { pathname } = window.location;
+
+    if (!this.translationModel) {
+      console.warn(
+        `No translations found for language ${language} and page ${pathname}`
+      );
+      return translationKey;
+    }
+
+    const translatedString = this.translationModel[translationKey];
+    if (!translatedString) {
+      console.warn(
+        `No translations found for language ${language}, page ${pathname} and key ${translationKey}`
+      );
+      return translationKey;
+    }
+
+    return translatedString;
   }
 }
 

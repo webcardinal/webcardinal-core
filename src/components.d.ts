@@ -69,7 +69,7 @@ export namespace Components {
          */
         "condition": any | undefined;
         /**
-          * An optional modal that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+          * An optional model that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
          */
         "model": any | undefined;
     }
@@ -144,6 +144,11 @@ export namespace Components {
         "text": string;
     }
     interface WccSpinner {
+    }
+    interface WebcPage {
+        "controllerName": string | null;
+        "getModel": () => Promise<any>;
+        "history": RouterHistory;
     }
 }
 declare global {
@@ -237,6 +242,12 @@ declare global {
         prototype: HTMLWccSpinnerElement;
         new (): HTMLWccSpinnerElement;
     };
+    interface HTMLWebcPageElement extends Components.WebcPage, HTMLStencilElement {
+    }
+    var HTMLWebcPageElement: {
+        prototype: HTMLWebcPageElement;
+        new (): HTMLWebcPageElement;
+    };
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
         "wcc-app-error-toast": HTMLWccAppErrorToastElement;
@@ -253,6 +264,7 @@ declare global {
         "wcc-link": HTMLWccLinkElement;
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
+        "webc-page": HTMLWebcPageElement;
     }
 }
 declare namespace LocalJSX {
@@ -302,6 +314,7 @@ declare namespace LocalJSX {
     interface WccBindable {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
+        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WccContainer {
         "controllerName"?: string | null;
@@ -313,6 +326,7 @@ declare namespace LocalJSX {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
     interface WccIf {
         /**
@@ -320,9 +334,11 @@ declare namespace LocalJSX {
          */
         "condition"?: any | undefined;
         /**
-          * An optional modal that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+          * An optional model that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
          */
         "model"?: any | undefined;
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
     interface WccLink {
         "href"?: string | null;
@@ -397,6 +413,11 @@ declare namespace LocalJSX {
     }
     interface WccSpinner {
     }
+    interface WebcPage {
+        "controllerName"?: string | null;
+        "history"?: RouterHistory;
+        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
+    }
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
         "wcc-app-error-toast": WccAppErrorToast;
@@ -413,6 +434,7 @@ declare namespace LocalJSX {
         "wcc-link": WccLink;
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
+        "webc-page": WebcPage;
     }
 }
 export { LocalJSX as JSX };
@@ -434,6 +456,7 @@ declare module "@stencil/core" {
             "wcc-link": LocalJSX.WccLink & JSXBase.HTMLAttributes<HTMLWccLinkElement>;
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
+            "webc-page": LocalJSX.WebcPage & JSXBase.HTMLAttributes<HTMLWebcPageElement>;
         }
     }
 }

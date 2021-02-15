@@ -1,3 +1,11 @@
+import {
+  MODEL_CHAIN_PREFIX,
+  MODEL_KEY,
+  PSK_CARDINAL_PREFIX,
+  SKIP_BINDING_FOR_COMPONENTS,
+  SKIP_BINDING_FOR_PROPERTIES,
+} from "../constants";
+
 export function getClosestParentElement(
   element: HTMLElement,
   selector: string,
@@ -14,4 +22,141 @@ export function getClosestParentElement(
     element = element.parentElement;
   }
   return closestParent;
+}
+
+function isNativeProperty(key) {
+  // these values are not visible as attributes over the HTMLElement
+  return ["value", "innerText", "innerHTML"].includes(key);
+}
+
+function shortcutToProperty(key) {
+  switch (key) {
+    case "model":
+      return "data-model";
+    case "tag":
+      return "data-tag";
+    case "text":
+      return "innerText";
+    case "html":
+      return "innerHTML";
+    default:
+      return key;
+  }
+}
+
+export function setElementValue(element, { key, value }) {
+  if (SKIP_BINDING_FOR_PROPERTIES.includes(key)) {
+    return;
+  }
+
+  if (["innerHTML", "innerText"].includes(key)) {
+    console.warn(
+      `Model property "${key}" can be short handed, try "${key
+        .substr(5)
+        .toLowerCase()}" instead!\n`,
+      `target element:`,
+      element
+    );
+  }
+  if (["data-tag", "data-model"].includes(key)) {
+    console.warn(
+      `Model property "${key}" can be shorthanded, try "${key.substr(
+        5
+      )}" instead!\n`,
+      `target model:`,
+      element.getAttribute("data-model")
+    );
+  }
+
+  key = shortcutToProperty(key);
+
+  if (isNativeProperty(key)) {
+    element[key] = value;
+    return;
+  }
+
+  if (key === "class") {
+    if (value === "") {
+      element.className = "";
+      return;
+    }
+
+    if (typeof value === "string") {
+      element.classList.add(value);
+      return;
+    }
+
+    if (typeof value === "object") {
+      for (const [className, active] of Object.entries(value)) {
+        if (active) {
+          element.classList.add(className);
+        } else {
+          element.classList.remove(className);
+        }
+      }
+      return;
+    }
+
+    return;
+  }
+
+  if (typeof value === "boolean") {
+    if (value) {
+      element.setAttribute(key, "");
+    } else {
+      element.removeAttribute(key);
+    }
+    return;
+  }
+
+  if (typeof value === "string") {
+    element.setAttribute(key, value);
+    return;
+  }
+
+  if (typeof value === "object") {
+    element[key] = value;
+    return;
+  }
+}
+
+/**
+ * @description - Binds all attributes for an Element
+ * @param element
+ * @param model - Object in which the specified chain (<attribute>="@chain") is searched
+ */
+export function bindElementAttributes(
+  element: Element,
+  model,
+  chainPrefix = MODEL_CHAIN_PREFIX
+) {
+  // for some wcc-<components> binding is managed by component itself
+  if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
+    return;
+  }
+
+  // for psk-<components> @BindModel decorator is design for this task
+  if (element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
+    return;
+  }
+
+  for (let i = 0; i < element.attributes.length; i++) {
+    let key = element.attributes[i].nodeName;
+    let chain = element.attributes[i].nodeValue;
+
+    if (key === MODEL_KEY) {
+      continue;
+    }
+
+    if (!chain.startsWith(chainPrefix)) {
+      continue;
+    }
+    chain = chain.slice(1);
+
+    setElementValue(element, { key, value: model.getChainValue(chain) });
+
+    model.onChange(chain, (_) => {
+      setElementValue(element, { key, value: model.getChainValue(chain) });
+    });
+  }
 }

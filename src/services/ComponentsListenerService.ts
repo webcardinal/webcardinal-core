@@ -2,7 +2,9 @@ import {
   EVENT_MODEL_GET,
   EVENT_ROUTING_GET,
   EVENT_TAGS_GET,
-  MODEL_CHAIN_PREFIX
+  EVENT_TRANSLATION_MODEL_GET,
+  MODEL_CHAIN_PREFIX,
+  TRANSLATION_CHAIN_PREFIX
 } from "../constants";
 
 function extractCallback(event) {
@@ -23,6 +25,7 @@ function extractCallback(event) {
 
 interface ComponentsListenerServiceOptions {
   model?: any
+  translationModel?: any
   tags?: any
   routing?: any
 }
@@ -30,18 +33,21 @@ interface ComponentsListenerServiceOptions {
 class ComponentsListenerService {
   private readonly host: HTMLElement;
   private readonly model: any;
+  private readonly translationModel: any;
   private readonly tags: any;
   private readonly routing: any;
   private listeners: {
-    [key in 'getModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void
+    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void
   } = {
     getModel: () => null,
+    getTranslationModel: () => null,
     getTags: () => null,
     getRouting: () => null,
   };
 
   constructor(host: HTMLElement, {
     model,
+    translationModel,
     tags,
     routing
   }: ComponentsListenerServiceOptions) {
@@ -71,6 +77,33 @@ class ComponentsListenerService {
         }
 
         callback(undefined, model);
+      }
+    }
+
+    if (translationModel) {
+      this.translationModel = translationModel;
+      this.listeners.getTranslationModel = (event: CustomEvent) => {
+        event.stopImmediatePropagation();
+
+        const callback = extractCallback(event);
+        if (!callback) return;
+
+        if (event.detail.chain) {
+          let chain = event.detail.chain;
+          if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
+            console.warn([
+              `Invalid chain found for ${event} (chain: "${chain}")!`,
+              `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`
+            ].join('\n'));
+            callback(undefined, translationModel);
+            return;
+          }
+          chain = chain.slice(1);
+          callback(undefined, translationModel.getChainValue(chain));
+          return;
+        }
+
+        callback(undefined, translationModel);
       }
     }
 
@@ -110,6 +143,17 @@ class ComponentsListenerService {
     return ({
       add: () => this.host.addEventListener(eventName, this.listeners.getModel),
       remove: () => this.host.removeEventListener(eventName, this.listeners.getModel),
+      eventName
+    });
+  }
+
+  get getTranslationModel() {
+    if (!this.translationModel) return;
+
+    const eventName = EVENT_TRANSLATION_MODEL_GET;
+    return ({
+      add: () => this.host.addEventListener(eventName, this.listeners.getTranslationModel),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getTranslationModel),
       eventName
     });
   }

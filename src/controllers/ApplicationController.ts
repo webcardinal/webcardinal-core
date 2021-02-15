@@ -265,7 +265,9 @@ export default class ApplicationController {
 
       window.WebCardinal = {
         controllers,
-        basePath: this.basePath
+        basePath: this.basePath,
+        language: "en",
+        translations: {}
       }
 
       while (this.pendingRequests.length) {

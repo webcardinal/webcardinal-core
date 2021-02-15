@@ -1,104 +1,9 @@
 import {
   MODEL_KEY,
   MODEL_CHAIN_PREFIX,
-  SKIP_BINDING_FOR_PROPERTIES,
   SKIP_BINDING_FOR_COMPONENTS,
-  PSK_CARDINAL_PREFIX
-} from '../constants';
-
-function isNativeProperty(key) {
-  // these values are not visible as attributes over the HTMLElement
-  return [
-    'value',
-    'innerText',
-    'innerHTML'
-  ].includes(key);
-}
-
-function shortcutToProperty(key) {
-  switch (key) {
-    case 'model':
-      return 'data-model';
-    case 'tag':
-      return 'data-tag';
-    case 'text':
-      return 'innerText';
-    case 'html':
-      return 'innerHTML';
-    default:
-      return key;
-  }
-}
-
-function setElementValue(element, { key, value }) {
-  if (SKIP_BINDING_FOR_PROPERTIES.includes(key)) {
-    return;
-  }
-
-  if (['innerHTML', 'innerText'].includes(key)) {
-    console.warn(
-      `Model property "${key}" can be short handed, try "${key.substr(5).toLowerCase()}" instead!\n`,
-      `target element:`, element
-    );
-  }
-  if (['data-tag', 'data-model'].includes(key)) {
-    console.warn(
-      `Model property "${key}" can be shorthanded, try "${key.substr(5)}" instead!\n`,
-      `target model:`, element.getAttribute('data-model')
-    );
-  }
-
-  key = shortcutToProperty(key);
-
-  if (isNativeProperty(key)) {
-    element[key] = value;
-    return;
-  }
-
-  if (key === 'class') {
-    if (value === '') {
-      element.className = '';
-      return;
-    }
-
-    if (typeof value === 'string') {
-      element.classList.add(value);
-      return;
-    }
-
-    if (typeof value === 'object') {
-      for (const [className, active] of Object.entries(value)) {
-        if (active) {
-          element.classList.add(className);
-        } else {
-          element.classList.remove(className);
-        }
-      }
-      return;
-    }
-
-    return;
-  }
-
-  if (typeof value === 'boolean') {
-    if (value) {
-      element.setAttribute(key, '');
-    } else {
-      element.removeAttribute(key);
-    }
-    return;
-  }
-
-  if (typeof value === 'string') {
-    element.setAttribute(key, value);
-    return;
-  }
-
-  if (typeof value === 'object') {
-    element[key] = value;
-    return;
-  }
-}
+} from "../constants";
+import { bindElementAttributes, setElementValue } from "../utils";
 
 function setElementModel(element, model, chain) {
   // model
@@ -117,10 +22,19 @@ function setElementModel(element, model, chain) {
         }
       }
 
-      model.setChainValue(chain, {
-        ...targetModel,
-        getElement: () => element
-      });
+      const getElement = model.getChainValue(`${chain}.getElement`);
+      if(!getElement) {        
+        model.setChainValue(chain, {
+          ...targetModel,
+          getElement: () => element,
+        });
+      }
+
+        //   model.setChainValue(chain, {
+        //     ...targetModel,
+        //     getElement: () => element,
+        //   });
+        // model.setChainValue(`${chain}.getElement`, () => element);
     }
   }
 
@@ -185,7 +99,8 @@ const ControllerBindingService = {
       console.warn(
         `Invalid chain found! (chain: "${chain}")!\n`,
         `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
-        `target element:`, element
+        `target element:`,
+        element
       );
       return;
     }
@@ -199,45 +114,19 @@ const ControllerBindingService = {
 
     // onChangeExpressionChain
     if (model.hasExpression(chain)) {
-      model.onChangeExpressionChain(chain, _ => setElementModel(element, model, chain));
+      model.onChangeExpressionChain(chain, (_) =>
+        setElementModel(element, model, chain)
+      );
     }
   },
 
-  /**
+   /**
    * @description - Binds all attributes for an Element
    * @param element
    * @param model - Object in which the specified chain (<attribute>="@chain") is searched
    */
   bindAttributes: (element: Element, model) => {
-    // for some wcc-<components> binding is managed by component itself
-    if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
-      return;
-    }
-
-    // for psk-<components> @BindModel decorator is design for this task
-    if (element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
-      return;
-    }
-
-    for (let i = 0; i < element.attributes.length; i++) {
-      let key = element.attributes[i].nodeName;
-      let chain = element.attributes[i].nodeValue;
-
-      if (key === MODEL_KEY) {
-        continue;
-      }
-
-      if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-        continue;
-      }
-      chain = chain.slice(1);
-
-      setElementValue(element, { key, value: model.getChainValue(chain) });
-
-      model.onChange(chain, _ => {
-        setElementValue(element, { key, value: model.getChainValue(chain) });
-      });
-    }
+    bindElementAttributes(element, model);
   }
 };
 

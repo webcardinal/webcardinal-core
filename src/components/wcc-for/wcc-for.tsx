@@ -5,6 +5,7 @@ import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from "../../constants";
 import {
   ControllerBindingService,
   ControllerRegistryService,
+  ControllerTranslationBindingService,
 } from "../../services";
 import { promisifyEventEmit, extractChain } from "../../utils";
 
@@ -31,9 +32,18 @@ export class WccFor {
   })
   getModelEvent: EventEmitter;
 
+  @Event({
+    eventName: "webcardinal:translationModel:get",
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationModelEvent: EventEmitter;
+
   private template = [];
   private controller;
   private model;
+  private translationModel;
 
   private bindRelativeModel = (element, index) => {
     let tag = element.tagName.toLowerCase();
@@ -54,6 +64,7 @@ export class WccFor {
 
     ControllerBindingService.bindModel(element, this.model);
     ControllerBindingService.bindAttributes(element, this.model);
+    ControllerTranslationBindingService.bindRecursive(element, this.translationModel);
 
     if (element.children) {
       Array.from(element.children).forEach((child) =>
@@ -112,6 +123,9 @@ export class WccFor {
           if (this.controller.model) {
             this.model = this.controller.model;
           }
+          if (this.controller.translationModel) {
+            this.translationModel = this.controller.translationModel;
+          }
         }
       } catch (error) {
         console.error(error);
@@ -119,6 +133,7 @@ export class WccFor {
     } else {
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
+        this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
       } catch (error) {
         console.error(error);
       }
