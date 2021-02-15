@@ -5,7 +5,8 @@ import {
   ComponentListenersService,
   ControllerRegistryService,
   ControllerBindingService,
-  ControllerTranslationService
+  ControllerTranslationService,
+  ControllerTranslationBindingService
 } from '../../services'
 
 import DefaultController from '../../../base/controllers/Controller.js';
@@ -31,6 +32,7 @@ export class WccBindable {
 
   private controller;
   private model;
+  private translationModel;
   private listeners: ComponentListenersService;
 
   async componentWillLoad() {
@@ -52,25 +54,50 @@ export class WccBindable {
       this.controller = new DefaultController(this.host, this.history);
     }
 
+    let { model, translationModel } = this.controller;
+    if (translationModel) {
+      this.translationModel = translationModel;
+
+      // bind nodes with translation model
+      ControllerTranslationBindingService.bindRecursive(
+        this.host,
+        this.translationModel
+      );
+    }
+
     // get the model
-    if (this.controller.model) {
-      this.model = this.controller.model;
+    if (model) {
+      this.model = model;
 
       // bind nodes
       ControllerBindingService.bindRecursive(this.host, this.model);
+    }
 
-      // serve model
-      this.listeners = new ComponentListenersService(this.host, { model: this.model });
-      this.listeners.getModel.add();
+    if (translationModel || model) {
+      // serve models
+      this.listeners = new ComponentListenersService(this.host, {
+        model,
+        translationModel,
+      });
+      model && this.listeners.getModel.add();
+      translationModel && this.listeners.getTranslationModel.add();
     }
   }
 
   connectedCallback() {
-    this.listeners && this.listeners.getModel.add();
+    if (this.listeners) {
+      let { getModel, getTranslationModel } = this.listeners;
+      getModel && getModel.add();
+      getTranslationModel && getTranslationModel.add();
+    }
   }
 
   disconnectedCallback() {
-    this.listeners && this.listeners.getModel.remove();
+    if (this.listeners) {
+      let { getModel, getTranslationModel } = this.listeners;
+      getModel && getModel.remove();
+      getTranslationModel && getTranslationModel.remove();
+    }
   }
 
   @Method()
