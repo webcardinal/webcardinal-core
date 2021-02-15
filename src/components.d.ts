@@ -148,7 +148,10 @@ export namespace Components {
     interface WebcPage {
         "controllerName": string | null;
         "getModel": () => Promise<any>;
+        "getTranslationModel": () => Promise<any>;
         "history": RouterHistory;
+    }
+    interface WebcSkin {
     }
 }
 declare global {
@@ -248,6 +251,12 @@ declare global {
         prototype: HTMLWebcPageElement;
         new (): HTMLWebcPageElement;
     };
+    interface HTMLWebcSkinElement extends Components.WebcSkin, HTMLStencilElement {
+    }
+    var HTMLWebcSkinElement: {
+        prototype: HTMLWebcSkinElement;
+        new (): HTMLWebcSkinElement;
+    };
     interface HTMLElementTagNameMap {
         "wcc-app-container": HTMLWccAppContainerElement;
         "wcc-app-error-toast": HTMLWccAppErrorToastElement;
@@ -265,6 +274,7 @@ declare global {
         "wcc-modal": HTMLWccModalElement;
         "wcc-spinner": HTMLWccSpinnerElement;
         "webc-page": HTMLWebcPageElement;
+        "webc-skin": HTMLWebcSkinElement;
     }
 }
 declare namespace LocalJSX {
@@ -418,6 +428,8 @@ declare namespace LocalJSX {
         "history"?: RouterHistory;
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
+    interface WebcSkin {
+    }
     interface IntrinsicElements {
         "wcc-app-container": WccAppContainer;
         "wcc-app-error-toast": WccAppErrorToast;
@@ -435,6 +447,7 @@ declare namespace LocalJSX {
         "wcc-modal": WccModal;
         "wcc-spinner": WccSpinner;
         "webc-page": WebcPage;
+        "webc-skin": WebcSkin;
     }
 }
 export { LocalJSX as JSX };
@@ -457,6 +470,7 @@ declare module "@stencil/core" {
             "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
             "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
             "webc-page": LocalJSX.WebcPage & JSXBase.HTMLAttributes<HTMLWebcPageElement>;
+            "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
         }
     }
 }

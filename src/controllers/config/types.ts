@@ -14,6 +14,8 @@ export type Page = {
   children?: Array<Page>
 }
 
-export type PagePathname = string
+export type PagesPathname = string
+
+export type SkinsPathname = string
 
 export type LogLevel = 'none' | 'warn' | 'error'
