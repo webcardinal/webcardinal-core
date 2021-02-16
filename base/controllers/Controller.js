@@ -98,7 +98,7 @@ class Controller {
 
   onReady() {}
 
-  onTag(tag, eventName, listener, options) {
+  onTagEvent(tag, eventName, listener, options) {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
@@ -135,7 +135,7 @@ class Controller {
     }
   }
 
-  offTag(tag, eventName, listener, options) {
+  offTagEvent(tag, eventName, listener, options) {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
@@ -156,11 +156,11 @@ class Controller {
   }
 
   onTagClick(tag, listener, options) {
-    this.onTag(tag, "click", listener, options);
+    this.onTagEvent(tag, "click", listener, options);
   }
 
   offTagClick(tag, listener, options) {
-    this.offTag(tag, "click", listener, options);
+    this.offTagEvent(tag, "click", listener, options);
   }
 
   navigateToUrl(url, state) {
