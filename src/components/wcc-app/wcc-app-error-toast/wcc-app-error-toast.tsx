@@ -69,7 +69,7 @@ export class WccAppErrorToast {
 
   addToast(toastType: string, content: string) {
     const toast = document.createElement("div");
-    toast.className = `toast ${toastType}`;
+    toast.className = `wcc-toast ${toastType}`;
     toast.innerHTML = content;
 
     this.host.append(toast);
