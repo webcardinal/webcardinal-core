@@ -219,16 +219,16 @@ export class WccModal {
 
     return (
       <div
-        class="modal fade show"
+        class="wcc-modal fade show"
         tabindex="-1"
         role="dialog"
         onClick={this.handleBackdropClick.bind(this)}
       >
         <div
-          class={`modal-dialog ${this.centered ? "centered" : ""} `}
+          class={`wcc-modal-dialog ${this.centered ? "centered" : ""} `}
           role="document"
         >
-          <div class="modal-content">
+          <div class="wcc-modal-content">
             <div class="modal-header">
               {this.getTitleContent()}
 
@@ -246,12 +246,12 @@ export class WccModal {
             </div>
 
             {this.isLoading ? (
-              <div class="modal-body">
+              <div class="wcc-modal-body">
                 <wcc-spinner />
               </div>
             ) : (
               <Fragment>
-                <div class="modal-body">
+                <div class="wcc-modal-body">
                   {this.modalName ? (
                     <slot />
                   ) : (
@@ -260,7 +260,7 @@ export class WccModal {
                 </div>
 
                 {this.showFooter && (
-                  <div class="modal-footer">{this.getFooterContent()}</div>
+                  <div class="wcc-modal-footer">{this.getFooterContent()}</div>
                 )}
               </Fragment>
             )}
