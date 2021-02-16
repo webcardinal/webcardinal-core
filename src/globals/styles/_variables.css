@@ -1,120 +1,120 @@
 html {
-  /* <wcc-app-menu> */
-  --wcc-app-menu-gap: 0.75rem;
-  --wcc-app-menu-color: #f1f1f1;
-  --wcc-app-menu-items-gap: calc(0.75rem / 2);
-  --wcc-app-menu-z-index: 999;
-  --wcc-app-menu-mode: vertical;
-  --wcc-app-menu-disable-identity: false;
+  /* <webc-app-menu> */
+  --webc-app-menu-gap: 0.75rem;
+  --webc-app-menu-color: #f1f1f1;
+  --webc-app-menu-items-gap: calc(0.75rem / 2);
+  --webc-app-menu-z-index: 999;
+  --webc-app-menu-mode: vertical;
+  --webc-app-menu-disable-identity: false;
 
-  /* <wcc-app-menu> only vertical mode */
-  --wcc-app-menu-vertical-color: var(--wcc-app-menu-color);
-  --wcc-app-menu-vertical-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
-  --wcc-app-menu-vertical-border-color: rgba(255, 255, 255, 0.3);
-  --wcc-app-menu-vertical-min-width: 220px;
-  --wcc-app-menu-vertical-max-width: 100%;
-  --wcc-app-menu-vertical-padding: 1.8rem 1.5rem;
-  --wcc-app-menu-vertical-items-padding: 0.35rem 0;
-  --wcc-app-menu-vertical-dropdown-margin: 0 0 0 1rem;
-  --wcc-app-menu-vertical-dropdown-gap: 0.2rem;
-  --wcc-app-menu-vertical-dropdown-items-padding: 0;
+  /* <webc-app-menu> only vertical mode */
+  --webc-app-menu-vertical-color: var(--webc-app-menu-color);
+  --webc-app-menu-vertical-background: linear-gradient(180deg, #5E7FE1 30%, #354F9B 100%);
+  --webc-app-menu-vertical-border-color: rgba(255, 255, 255, 0.3);
+  --webc-app-menu-vertical-min-width: 220px;
+  --webc-app-menu-vertical-max-width: 100%;
+  --webc-app-menu-vertical-padding: 1.8rem 1.5rem;
+  --webc-app-menu-vertical-items-padding: 0.35rem 0;
+  --webc-app-menu-vertical-dropdown-margin: 0 0 0 1rem;
+  --webc-app-menu-vertical-dropdown-gap: 0.2rem;
+  --webc-app-menu-vertical-dropdown-items-padding: 0;
 
-  /* <wcc-app-menu> only horizontal mode */
-  --wcc-app-menu-horizontal-color: var(--wcc-app-menu-color);
-  --wcc-app-menu-horizontal-background: #354F9B;
-  --wcc-app-menu-horizontal-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-  --wcc-app-menu-horizontal-height: 80px;
-  --wcc-app-menu-horizontal-padding: 0.35rem 1rem;
-  --wcc-app-menu-horizontal-triangle-size: 5px;
-  --wcc-app-menu-horizontal-items-padding: 0.3rem 0;
-  --wcc-app-menu-horizontal-dropdown-color: #212121;
-  --wcc-app-menu-horizontal-dropdown-background: #f1f1f1;
-  --wcc-app-menu-horizontal-dropdown-margin: 0 0 0 0.75rem;
-  --wcc-app-menu-horizontal-dropdown-padding: 0.5rem 0.75rem;
-  --wcc-app-menu-horizontal-dropdown-width: max-content;
-  --wcc-app-menu-horizontal-dropdown-radius: 3px;
-  --wcc-app-menu-horizontal-dropdown-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-  --wcc-app-menu-horizontal-dropdown-items-padding: 0.2rem 0;
+  /* <webc-app-menu> only horizontal mode */
+  --webc-app-menu-horizontal-color: var(--webc-app-menu-color);
+  --webc-app-menu-horizontal-background: #354F9B;
+  --webc-app-menu-horizontal-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  --webc-app-menu-horizontal-height: 80px;
+  --webc-app-menu-horizontal-padding: 0.35rem 1rem;
+  --webc-app-menu-horizontal-triangle-size: 5px;
+  --webc-app-menu-horizontal-items-padding: 0.3rem 0;
+  --webc-app-menu-horizontal-dropdown-color: #212121;
+  --webc-app-menu-horizontal-dropdown-background: #f1f1f1;
+  --webc-app-menu-horizontal-dropdown-margin: 0 0 0 0.75rem;
+  --webc-app-menu-horizontal-dropdown-padding: 0.5rem 0.75rem;
+  --webc-app-menu-horizontal-dropdown-width: max-content;
+  --webc-app-menu-horizontal-dropdown-radius: 3px;
+  --webc-app-menu-horizontal-dropdown-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  --webc-app-menu-horizontal-dropdown-items-padding: 0.2rem 0;
 
-  /* <wcc-app-menu> only mobile mode */
-  --wcc-app-menu-mobile-backdrop-transition-duration: 150ms;
-  --wcc-app-menu-mobile-background: #354F9B;
-  --wcc-app-menu-mobile-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
-  --wcc-app-menu-mobile-breakpoint: 960px;
-  --wcc-app-menu-mobile-burger-color: var(--wcc-app-menu-color);
-  --wcc-app-menu-mobile-burger-transition-duration: 150ms;
-  --wcc-app-menu-mobile-color: var(--wcc-app-menu-color);
-  --wcc-app-menu-mobile-dropdown-gap: 0.2rem;
-  --wcc-app-menu-mobile-dropdown-items-padding: 0;
-  --wcc-app-menu-mobile-dropdown-margin: 0 0 0 1rem;
-  --wcc-app-menu-mobile-items-border-color: rgba(255, 255, 255, 0.3);
-  --wcc-app-menu-mobile-items-padding: 0.5rem;
-  --wcc-app-menu-mobile-height: 80px;
-  --wcc-app-menu-mobile-padding: 0.35rem 1rem;
+  /* <webc-app-menu> only mobile mode */
+  --webc-app-menu-mobile-backdrop-transition-duration: 150ms;
+  --webc-app-menu-mobile-background: #354F9B;
+  --webc-app-menu-mobile-box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+  --webc-app-menu-mobile-breakpoint: 960px;
+  --webc-app-menu-mobile-burger-color: var(--webc-app-menu-color);
+  --webc-app-menu-mobile-burger-transition-duration: 150ms;
+  --webc-app-menu-mobile-color: var(--webc-app-menu-color);
+  --webc-app-menu-mobile-dropdown-gap: 0.2rem;
+  --webc-app-menu-mobile-dropdown-items-padding: 0;
+  --webc-app-menu-mobile-dropdown-margin: 0 0 0 1rem;
+  --webc-app-menu-mobile-items-border-color: rgba(255, 255, 255, 0.3);
+  --webc-app-menu-mobile-items-padding: 0.5rem;
+  --webc-app-menu-mobile-height: 80px;
+  --webc-app-menu-mobile-padding: 0.35rem 1rem;
 
-  /* <wcc-app-identity> */
-  --wcc-app-identity-color: #f1f1f1;
-  --wcc-app-identity-avatar-width: 3.3rem;
-  --wcc-app-identity-avatar-radius: 100%;
-  --wcc-app-identity-row-gap: 0.3rem;
-  --wcc-app-identity-column-gap: 0.5rem;
-  --wcc-app-identity-name-font-size: 1.2rem;
-  --wcc-app-identity-email-font-size: 0.9rem;
+  /* <webc-app-identity> */
+  --webc-app-identity-color: #f1f1f1;
+  --webc-app-identity-avatar-width: 3.3rem;
+  --webc-app-identity-avatar-radius: 100%;
+  --webc-app-identity-row-gap: 0.3rem;
+  --webc-app-identity-column-gap: 0.5rem;
+  --webc-app-identity-name-font-size: 1.2rem;
+  --webc-app-identity-email-font-size: 0.9rem;
 
-  /* <wcc-app-container> */
-  --wcc-app-container-gap: 0.75em;
-  --wcc-app-container-background: #f1f1f1;
+  /* <webc-app-container> */
+  --webc-app-container-gap: 0.75em;
+  --webc-app-container-background: #f1f1f1;
 
-  /* <wcc-spinner> */
-  --wcc-spinner-width: 35px;
-  --wcc-spinner-height: 35px;
-  --wcc-spinner-radius: 100%;
-  --wcc-spinner-dot-size: 6px;
-  --wcc-spinner-dot-radius: 100%;
-  --wcc-spinner-color: #354f9b;
-  --wcc-spinner-background: trasparent;
-  --wcc-spinner-border: 0.25em solid transparent;
-  --wcc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-  --wcc-spinner-animation: 1s;
-  --wcc-spinner-animation-delay: 1.2s;
+  /* <webc-spinner> */
+  --webc-spinner-width: 35px;
+  --webc-spinner-height: 35px;
+  --webc-spinner-radius: 100%;
+  --webc-spinner-dot-size: 6px;
+  --webc-spinner-dot-radius: 100%;
+  --webc-spinner-color: #354f9b;
+  --webc-spinner-background: trasparent;
+  --webc-spinner-border: 0.25em solid transparent;
+  --webc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  --webc-spinner-animation: 1s;
+  --webc-spinner-animation-delay: 1.2s;
 
-  /* <wcc-modal> */
-  --wcc-modal-z-index: 1;
-  --wcc-modal-dialog-margin: 1rem auto;
-  --wcc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
-  --wcc-modal-border-radius: 0.3rem;
-  --wcc-modal-inner-padding: 1rem;
-  --wcc-modal-header-padding: 1rem;
-  --wcc-modal-header-title-color: black;
-  --wcc-modal-header-title-line-height: 1rem;
-  --wcc-modal-header-border-width: 1px;
-  --wcc-modal-header-border-color: black;
-  --wcc-modal-content-color: null;
-  --wcc-modal-content-background: white;
-  --wcc-modal-content-border-width: 1px;
-  --wcc-modal-content-border-color: black;
-  --wcc-modal-content-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --wcc-modal-body-color: black;
-  --wcc-modal-footer-margin-between: 0.5rem;
-  --wcc-modal-footer-border-width: 1px;
-  --wcc-modal-footer-border-color: #e9ecef;
-  --wcc-modal-footer-button-color: black;
-  --wcc-modal-footer-button-background-color: white;
-  --wcc-modal-footer-button-border: 1px solid black;
-  --wcc-modal-footer-button-border-radius: 5px;
-  --wcc-modal-footer-button-padding: 5px 10px;
-  --wcc-modal-footer-cancel-button-color: black;
-  --wcc-modal-footer-cancel-button-background-color: white;
-  --wcc-modal-footer-confirm-button-color: white;
-  --wcc-modal-footer-confirm-button-background-color: #5e7fe1;
+  /* <webc-modal> */
+  --webc-modal-z-index: 1;
+  --webc-modal-dialog-margin: 1rem auto;
+  --webc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
+  --webc-modal-border-radius: 0.3rem;
+  --webc-modal-inner-padding: 1rem;
+  --webc-modal-header-padding: 1rem;
+  --webc-modal-header-title-color: black;
+  --webc-modal-header-title-line-height: 1rem;
+  --webc-modal-header-border-width: 1px;
+  --webc-modal-header-border-color: black;
+  --webc-modal-content-color: null;
+  --webc-modal-content-background: white;
+  --webc-modal-content-border-width: 1px;
+  --webc-modal-content-border-color: black;
+  --webc-modal-content-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+  --webc-modal-body-color: black;
+  --webc-modal-footer-margin-between: 0.5rem;
+  --webc-modal-footer-border-width: 1px;
+  --webc-modal-footer-border-color: #e9ecef;
+  --webc-modal-footer-button-color: black;
+  --webc-modal-footer-button-background-color: white;
+  --webc-modal-footer-button-border: 1px solid black;
+  --webc-modal-footer-button-border-radius: 5px;
+  --webc-modal-footer-button-padding: 5px 10px;
+  --webc-modal-footer-cancel-button-color: black;
+  --webc-modal-footer-cancel-button-background-color: white;
+  --webc-modal-footer-confirm-button-color: white;
+  --webc-modal-footer-confirm-button-background-color: #5e7fe1;
 
-  /* <wcc-app-error-toast> */
-  --wcc-app-error-toast-warning-color: #fff;
-  --wcc-app-error-toast-warning-background-color: #ffa900;
-  --wcc-app-error-toast-error-color: #fff;
-  --wcc-app-error-toast-error-background-color: #ed441b;
+  /* <webc-app-error-toast> */
+  --webc-app-error-toast-warning-color: #fff;
+  --webc-app-error-toast-warning-background-color: #ffa900;
+  --webc-app-error-toast-error-color: #fff;
+  --webc-app-error-toast-error-background-color: #ed441b;
 }
 
 body {
-  font-family: var(--wcc-font-family);
+  font-family: var(--webc-font-family);
 }

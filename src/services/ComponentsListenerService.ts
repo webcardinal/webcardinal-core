@@ -4,8 +4,8 @@ import {
   EVENT_TAGS_GET,
   EVENT_TRANSLATION_MODEL_GET,
   MODEL_CHAIN_PREFIX,
-  TRANSLATION_CHAIN_PREFIX
-} from "../constants";
+  TRANSLATION_CHAIN_PREFIX,
+} from '../constants';
 
 function extractCallback(event) {
   let callback;
@@ -24,10 +24,10 @@ function extractCallback(event) {
 }
 
 interface ComponentsListenerServiceOptions {
-  model?: any
-  translationModel?: any
-  tags?: any
-  routing?: any
+  model?: any;
+  translationModel?: any;
+  tags?: any;
+  routing?: any;
 }
 
 class ComponentsListenerService {
@@ -37,7 +37,9 @@ class ComponentsListenerService {
   private readonly tags: any;
   private readonly routing: any;
   private listeners: {
-    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void
+    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (
+      event: CustomEvent,
+    ) => void;
   } = {
     getModel: () => null,
     getTranslationModel: () => null,
@@ -45,12 +47,15 @@ class ComponentsListenerService {
     getRouting: () => null,
   };
 
-  constructor(host: HTMLElement, {
-    model,
-    translationModel,
-    tags,
-    routing
-  }: ComponentsListenerServiceOptions) {
+  constructor(
+    host: HTMLElement,
+    {
+      model,
+      translationModel,
+      tags,
+      routing,
+    }: ComponentsListenerServiceOptions,
+  ) {
     this.host = host;
 
     if (model) {
@@ -64,10 +69,12 @@ class ComponentsListenerService {
         if (event.detail.chain) {
           let chain = event.detail.chain;
           if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-            console.warn([
-              `Invalid chain found for ${event} (chain: "${chain}")!`,
-              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`
-            ].join('\n'));
+            console.warn(
+              [
+                `Invalid chain found for ${event} (chain: "${chain}")!`,
+                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
+              ].join('\n'),
+            );
             callback(undefined, model);
             return;
           }
@@ -77,7 +84,7 @@ class ComponentsListenerService {
         }
 
         callback(undefined, model);
-      }
+      };
     }
 
     if (translationModel) {
@@ -91,10 +98,12 @@ class ComponentsListenerService {
         if (event.detail.chain) {
           let chain = event.detail.chain;
           if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
-            console.warn([
-              `Invalid chain found for ${event} (chain: "${chain}")!`,
-              `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`
-            ].join('\n'));
+            console.warn(
+              [
+                `Invalid chain found for ${event} (chain: "${chain}")!`,
+                `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
+              ].join('\n'),
+            );
             callback(undefined, translationModel);
             return;
           }
@@ -104,7 +113,7 @@ class ComponentsListenerService {
         }
 
         callback(undefined, translationModel);
-      }
+      };
     }
 
     if (tags) {
@@ -116,11 +125,14 @@ class ComponentsListenerService {
         if (!callback) return;
 
         if (event.detail.tag) {
-          callback(undefined, event.detail.tag ? this.tags[event.detail.tag] : null);
+          callback(
+            undefined,
+            event.detail.tag ? this.tags[event.detail.tag] : null,
+          );
         }
 
         callback(undefined, this.tags);
-      }
+      };
     }
 
     if (routing) {
@@ -132,7 +144,7 @@ class ComponentsListenerService {
         if (!callback) return;
 
         callback(undefined, this.routing);
-      }
+      };
     }
   }
 
@@ -140,44 +152,56 @@ class ComponentsListenerService {
     if (!this.model) return;
 
     const eventName = EVENT_MODEL_GET;
-    return ({
+    return {
       add: () => this.host.addEventListener(eventName, this.listeners.getModel),
-      remove: () => this.host.removeEventListener(eventName, this.listeners.getModel),
-      eventName
-    });
+      remove: () =>
+        this.host.removeEventListener(eventName, this.listeners.getModel),
+      eventName,
+    };
   }
 
   get getTranslationModel() {
     if (!this.translationModel) return;
 
     const eventName = EVENT_TRANSLATION_MODEL_GET;
-    return ({
-      add: () => this.host.addEventListener(eventName, this.listeners.getTranslationModel),
-      remove: () => this.host.removeEventListener(eventName, this.listeners.getTranslationModel),
-      eventName
-    });
+    return {
+      add: () =>
+        this.host.addEventListener(
+          eventName,
+          this.listeners.getTranslationModel,
+        ),
+      remove: () =>
+        this.host.removeEventListener(
+          eventName,
+          this.listeners.getTranslationModel,
+        ),
+      eventName,
+    };
   }
 
   get getTags() {
     if (!this.tags) return;
 
     const eventName = EVENT_TAGS_GET;
-    return ({
+    return {
       add: () => this.host.addEventListener(eventName, this.listeners.getTags),
-      remove: () => this.host.removeEventListener(eventName, this.listeners.getTags),
-      eventName
-    });
+      remove: () =>
+        this.host.removeEventListener(eventName, this.listeners.getTags),
+      eventName,
+    };
   }
 
   get getRouting() {
     if (!this.routing) return;
 
     const eventName = EVENT_ROUTING_GET;
-    return ({
-      add: () => this.host.addEventListener(eventName, this.listeners.getRouting),
-      remove: () => this.host.removeEventListener(eventName, this.listeners.getRouting),
-      eventName
-    });
+    return {
+      add: () =>
+        this.host.addEventListener(eventName, this.listeners.getRouting),
+      remove: () =>
+        this.host.removeEventListener(eventName, this.listeners.getRouting),
+      eventName,
+    };
   }
 }
 

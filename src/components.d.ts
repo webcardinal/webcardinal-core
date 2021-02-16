@@ -7,27 +7,27 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { RouterHistory } from "@stencil/router";
 export namespace Components {
-    interface WccAppContainer {
+    interface WebcAppContainer {
     }
-    interface WccAppErrorToast {
+    interface WebcAppErrorToast {
     }
-    interface WccAppIdentity {
+    interface WebcAppIdentity {
         "avatar": string | null;
         "email": string | null;
         "name": string | null;
     }
-    interface WccAppLoader {
+    interface WebcAppLoader {
         "src": string;
         "type": string;
     }
-    interface WccAppMenu {
+    interface WebcAppMenu {
         "basePath": string;
         "disableIdentity": boolean;
         "history": RouterHistory;
         "items": any[];
         "mode": string;
     }
-    interface WccAppMenuItem {
+    interface WebcAppMenuItem {
         "activate": () => Promise<void>;
         "basePath": string;
         "deactivate": () => Promise<void>;
@@ -38,46 +38,46 @@ export namespace Components {
         "name": string;
         "url": string | null;
     }
-    interface WccAppRoot {
+    interface WebcAppRoot {
         "history": RouterHistory;
         "loaderName": string;
     }
-    interface WccAppRouter {
+    interface WebcAppRouter {
         "basePath": string;
         "fallbackPage": null;
         "pagesPath": string;
         "routes": any[];
     }
-    interface WccBindable {
+    interface WebcBindable {
         "controllerName": string | null;
         "getModel": () => Promise<any>;
         "history": RouterHistory;
     }
-    interface WccContainer {
+    interface WebcContainer {
         "controllerName": string | null;
         "history": RouterHistory;
     }
-    interface WccFor {
+    interface WebcFor {
         "autoBind": boolean;
         "chain": string;
         "controllerName": string | null;
         "history": RouterHistory;
     }
-    interface WccIf {
+    interface WebcIf {
         /**
           * The condition that will be evaluated in order to check which slots will be visible
          */
         "condition": any | undefined;
         /**
-          * An optional model that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+          * An optional model that will be used to check the condition; if not provided, then the component will find the closes webc-bindable element and take the model from there
          */
         "model": any | undefined;
     }
-    interface WccLink {
+    interface WebcLink {
         "href": string | null;
         "tag": string | null;
     }
-    interface WccModal {
+    interface WebcModal {
         /**
           * Sets if the modal will automatically close when the user clicks outside of it
          */
@@ -143,8 +143,6 @@ export namespace Components {
          */
         "text": string;
     }
-    interface WccSpinner {
-    }
     interface WebcPage {
         "controllerName": string | null;
         "enableTranslations": boolean;
@@ -154,97 +152,93 @@ export namespace Components {
     }
     interface WebcSkin {
     }
+    interface WebcSpinner {
+    }
 }
 declare global {
-    interface HTMLWccAppContainerElement extends Components.WccAppContainer, HTMLStencilElement {
+    interface HTMLWebcAppContainerElement extends Components.WebcAppContainer, HTMLStencilElement {
     }
-    var HTMLWccAppContainerElement: {
-        prototype: HTMLWccAppContainerElement;
-        new (): HTMLWccAppContainerElement;
+    var HTMLWebcAppContainerElement: {
+        prototype: HTMLWebcAppContainerElement;
+        new (): HTMLWebcAppContainerElement;
     };
-    interface HTMLWccAppErrorToastElement extends Components.WccAppErrorToast, HTMLStencilElement {
+    interface HTMLWebcAppErrorToastElement extends Components.WebcAppErrorToast, HTMLStencilElement {
     }
-    var HTMLWccAppErrorToastElement: {
-        prototype: HTMLWccAppErrorToastElement;
-        new (): HTMLWccAppErrorToastElement;
+    var HTMLWebcAppErrorToastElement: {
+        prototype: HTMLWebcAppErrorToastElement;
+        new (): HTMLWebcAppErrorToastElement;
     };
-    interface HTMLWccAppIdentityElement extends Components.WccAppIdentity, HTMLStencilElement {
+    interface HTMLWebcAppIdentityElement extends Components.WebcAppIdentity, HTMLStencilElement {
     }
-    var HTMLWccAppIdentityElement: {
-        prototype: HTMLWccAppIdentityElement;
-        new (): HTMLWccAppIdentityElement;
+    var HTMLWebcAppIdentityElement: {
+        prototype: HTMLWebcAppIdentityElement;
+        new (): HTMLWebcAppIdentityElement;
     };
-    interface HTMLWccAppLoaderElement extends Components.WccAppLoader, HTMLStencilElement {
+    interface HTMLWebcAppLoaderElement extends Components.WebcAppLoader, HTMLStencilElement {
     }
-    var HTMLWccAppLoaderElement: {
-        prototype: HTMLWccAppLoaderElement;
-        new (): HTMLWccAppLoaderElement;
+    var HTMLWebcAppLoaderElement: {
+        prototype: HTMLWebcAppLoaderElement;
+        new (): HTMLWebcAppLoaderElement;
     };
-    interface HTMLWccAppMenuElement extends Components.WccAppMenu, HTMLStencilElement {
+    interface HTMLWebcAppMenuElement extends Components.WebcAppMenu, HTMLStencilElement {
     }
-    var HTMLWccAppMenuElement: {
-        prototype: HTMLWccAppMenuElement;
-        new (): HTMLWccAppMenuElement;
+    var HTMLWebcAppMenuElement: {
+        prototype: HTMLWebcAppMenuElement;
+        new (): HTMLWebcAppMenuElement;
     };
-    interface HTMLWccAppMenuItemElement extends Components.WccAppMenuItem, HTMLStencilElement {
+    interface HTMLWebcAppMenuItemElement extends Components.WebcAppMenuItem, HTMLStencilElement {
     }
-    var HTMLWccAppMenuItemElement: {
-        prototype: HTMLWccAppMenuItemElement;
-        new (): HTMLWccAppMenuItemElement;
+    var HTMLWebcAppMenuItemElement: {
+        prototype: HTMLWebcAppMenuItemElement;
+        new (): HTMLWebcAppMenuItemElement;
     };
-    interface HTMLWccAppRootElement extends Components.WccAppRoot, HTMLStencilElement {
+    interface HTMLWebcAppRootElement extends Components.WebcAppRoot, HTMLStencilElement {
     }
-    var HTMLWccAppRootElement: {
-        prototype: HTMLWccAppRootElement;
-        new (): HTMLWccAppRootElement;
+    var HTMLWebcAppRootElement: {
+        prototype: HTMLWebcAppRootElement;
+        new (): HTMLWebcAppRootElement;
     };
-    interface HTMLWccAppRouterElement extends Components.WccAppRouter, HTMLStencilElement {
+    interface HTMLWebcAppRouterElement extends Components.WebcAppRouter, HTMLStencilElement {
     }
-    var HTMLWccAppRouterElement: {
-        prototype: HTMLWccAppRouterElement;
-        new (): HTMLWccAppRouterElement;
+    var HTMLWebcAppRouterElement: {
+        prototype: HTMLWebcAppRouterElement;
+        new (): HTMLWebcAppRouterElement;
     };
-    interface HTMLWccBindableElement extends Components.WccBindable, HTMLStencilElement {
+    interface HTMLWebcBindableElement extends Components.WebcBindable, HTMLStencilElement {
     }
-    var HTMLWccBindableElement: {
-        prototype: HTMLWccBindableElement;
-        new (): HTMLWccBindableElement;
+    var HTMLWebcBindableElement: {
+        prototype: HTMLWebcBindableElement;
+        new (): HTMLWebcBindableElement;
     };
-    interface HTMLWccContainerElement extends Components.WccContainer, HTMLStencilElement {
+    interface HTMLWebcContainerElement extends Components.WebcContainer, HTMLStencilElement {
     }
-    var HTMLWccContainerElement: {
-        prototype: HTMLWccContainerElement;
-        new (): HTMLWccContainerElement;
+    var HTMLWebcContainerElement: {
+        prototype: HTMLWebcContainerElement;
+        new (): HTMLWebcContainerElement;
     };
-    interface HTMLWccForElement extends Components.WccFor, HTMLStencilElement {
+    interface HTMLWebcForElement extends Components.WebcFor, HTMLStencilElement {
     }
-    var HTMLWccForElement: {
-        prototype: HTMLWccForElement;
-        new (): HTMLWccForElement;
+    var HTMLWebcForElement: {
+        prototype: HTMLWebcForElement;
+        new (): HTMLWebcForElement;
     };
-    interface HTMLWccIfElement extends Components.WccIf, HTMLStencilElement {
+    interface HTMLWebcIfElement extends Components.WebcIf, HTMLStencilElement {
     }
-    var HTMLWccIfElement: {
-        prototype: HTMLWccIfElement;
-        new (): HTMLWccIfElement;
+    var HTMLWebcIfElement: {
+        prototype: HTMLWebcIfElement;
+        new (): HTMLWebcIfElement;
     };
-    interface HTMLWccLinkElement extends Components.WccLink, HTMLStencilElement {
+    interface HTMLWebcLinkElement extends Components.WebcLink, HTMLStencilElement {
     }
-    var HTMLWccLinkElement: {
-        prototype: HTMLWccLinkElement;
-        new (): HTMLWccLinkElement;
+    var HTMLWebcLinkElement: {
+        prototype: HTMLWebcLinkElement;
+        new (): HTMLWebcLinkElement;
     };
-    interface HTMLWccModalElement extends Components.WccModal, HTMLStencilElement {
+    interface HTMLWebcModalElement extends Components.WebcModal, HTMLStencilElement {
     }
-    var HTMLWccModalElement: {
-        prototype: HTMLWccModalElement;
-        new (): HTMLWccModalElement;
-    };
-    interface HTMLWccSpinnerElement extends Components.WccSpinner, HTMLStencilElement {
-    }
-    var HTMLWccSpinnerElement: {
-        prototype: HTMLWccSpinnerElement;
-        new (): HTMLWccSpinnerElement;
+    var HTMLWebcModalElement: {
+        prototype: HTMLWebcModalElement;
+        new (): HTMLWebcModalElement;
     };
     interface HTMLWebcPageElement extends Components.WebcPage, HTMLStencilElement {
     }
@@ -258,42 +252,48 @@ declare global {
         prototype: HTMLWebcSkinElement;
         new (): HTMLWebcSkinElement;
     };
+    interface HTMLWebcSpinnerElement extends Components.WebcSpinner, HTMLStencilElement {
+    }
+    var HTMLWebcSpinnerElement: {
+        prototype: HTMLWebcSpinnerElement;
+        new (): HTMLWebcSpinnerElement;
+    };
     interface HTMLElementTagNameMap {
-        "wcc-app-container": HTMLWccAppContainerElement;
-        "wcc-app-error-toast": HTMLWccAppErrorToastElement;
-        "wcc-app-identity": HTMLWccAppIdentityElement;
-        "wcc-app-loader": HTMLWccAppLoaderElement;
-        "wcc-app-menu": HTMLWccAppMenuElement;
-        "wcc-app-menu-item": HTMLWccAppMenuItemElement;
-        "wcc-app-root": HTMLWccAppRootElement;
-        "wcc-app-router": HTMLWccAppRouterElement;
-        "wcc-bindable": HTMLWccBindableElement;
-        "wcc-container": HTMLWccContainerElement;
-        "wcc-for": HTMLWccForElement;
-        "wcc-if": HTMLWccIfElement;
-        "wcc-link": HTMLWccLinkElement;
-        "wcc-modal": HTMLWccModalElement;
-        "wcc-spinner": HTMLWccSpinnerElement;
+        "webc-app-container": HTMLWebcAppContainerElement;
+        "webc-app-error-toast": HTMLWebcAppErrorToastElement;
+        "webc-app-identity": HTMLWebcAppIdentityElement;
+        "webc-app-loader": HTMLWebcAppLoaderElement;
+        "webc-app-menu": HTMLWebcAppMenuElement;
+        "webc-app-menu-item": HTMLWebcAppMenuItemElement;
+        "webc-app-root": HTMLWebcAppRootElement;
+        "webc-app-router": HTMLWebcAppRouterElement;
+        "webc-bindable": HTMLWebcBindableElement;
+        "webc-container": HTMLWebcContainerElement;
+        "webc-for": HTMLWebcForElement;
+        "webc-if": HTMLWebcIfElement;
+        "webc-link": HTMLWebcLinkElement;
+        "webc-modal": HTMLWebcModalElement;
         "webc-page": HTMLWebcPageElement;
         "webc-skin": HTMLWebcSkinElement;
+        "webc-spinner": HTMLWebcSpinnerElement;
     }
 }
 declare namespace LocalJSX {
-    interface WccAppContainer {
+    interface WebcAppContainer {
     }
-    interface WccAppErrorToast {
+    interface WebcAppErrorToast {
     }
-    interface WccAppIdentity {
+    interface WebcAppIdentity {
         "avatar"?: string | null;
         "email"?: string | null;
         "name"?: string | null;
         "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
     }
-    interface WccAppLoader {
+    interface WebcAppLoader {
         "src"?: string;
         "type"?: string;
     }
-    interface WccAppMenu {
+    interface WebcAppMenu {
         "basePath"?: string;
         "disableIdentity"?: boolean;
         "history"?: RouterHistory;
@@ -301,7 +301,7 @@ declare namespace LocalJSX {
         "mode"?: string;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
     }
-    interface WccAppMenuItem {
+    interface WebcAppMenuItem {
         "basePath"?: string;
         "item"?: { path: string; children: any; };
         "level"?: number;
@@ -310,28 +310,28 @@ declare namespace LocalJSX {
         "name"?: string;
         "url"?: string | null;
     }
-    interface WccAppRoot {
+    interface WebcAppRoot {
         "history"?: RouterHistory;
         "loaderName"?: string;
         "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
     }
-    interface WccAppRouter {
+    interface WebcAppRouter {
         "basePath"?: string;
         "fallbackPage"?: null;
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
         "pagesPath"?: string;
         "routes"?: any[];
     }
-    interface WccBindable {
+    interface WebcBindable {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
-    interface WccContainer {
+    interface WebcContainer {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
     }
-    interface WccFor {
+    interface WebcFor {
         "autoBind"?: boolean;
         "chain"?: string;
         "controllerName"?: string | null;
@@ -339,24 +339,24 @@ declare namespace LocalJSX {
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
-    interface WccIf {
+    interface WebcIf {
         /**
           * The condition that will be evaluated in order to check which slots will be visible
          */
         "condition"?: any | undefined;
         /**
-          * An optional model that will be used to check the condition; if not provided, then the component will find the closes wcc-bindable element and take the model from there
+          * An optional model that will be used to check the condition; if not provided, then the component will find the closes webc-bindable element and take the model from there
          */
         "model"?: any | undefined;
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
-    interface WccLink {
+    interface WebcLink {
         "href"?: string | null;
         "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
         "tag"?: string | null;
     }
-    interface WccModal {
+    interface WebcModal {
         /**
           * Sets if the modal will automatically close when the user clicks outside of it
          */
@@ -422,8 +422,6 @@ declare namespace LocalJSX {
          */
         "text"?: string;
     }
-    interface WccSpinner {
-    }
     interface WebcPage {
         "controllerName"?: string | null;
         "enableTranslations"?: boolean;
@@ -432,47 +430,49 @@ declare namespace LocalJSX {
     }
     interface WebcSkin {
     }
+    interface WebcSpinner {
+    }
     interface IntrinsicElements {
-        "wcc-app-container": WccAppContainer;
-        "wcc-app-error-toast": WccAppErrorToast;
-        "wcc-app-identity": WccAppIdentity;
-        "wcc-app-loader": WccAppLoader;
-        "wcc-app-menu": WccAppMenu;
-        "wcc-app-menu-item": WccAppMenuItem;
-        "wcc-app-root": WccAppRoot;
-        "wcc-app-router": WccAppRouter;
-        "wcc-bindable": WccBindable;
-        "wcc-container": WccContainer;
-        "wcc-for": WccFor;
-        "wcc-if": WccIf;
-        "wcc-link": WccLink;
-        "wcc-modal": WccModal;
-        "wcc-spinner": WccSpinner;
+        "webc-app-container": WebcAppContainer;
+        "webc-app-error-toast": WebcAppErrorToast;
+        "webc-app-identity": WebcAppIdentity;
+        "webc-app-loader": WebcAppLoader;
+        "webc-app-menu": WebcAppMenu;
+        "webc-app-menu-item": WebcAppMenuItem;
+        "webc-app-root": WebcAppRoot;
+        "webc-app-router": WebcAppRouter;
+        "webc-bindable": WebcBindable;
+        "webc-container": WebcContainer;
+        "webc-for": WebcFor;
+        "webc-if": WebcIf;
+        "webc-link": WebcLink;
+        "webc-modal": WebcModal;
         "webc-page": WebcPage;
         "webc-skin": WebcSkin;
+        "webc-spinner": WebcSpinner;
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "wcc-app-container": LocalJSX.WccAppContainer & JSXBase.HTMLAttributes<HTMLWccAppContainerElement>;
-            "wcc-app-error-toast": LocalJSX.WccAppErrorToast & JSXBase.HTMLAttributes<HTMLWccAppErrorToastElement>;
-            "wcc-app-identity": LocalJSX.WccAppIdentity & JSXBase.HTMLAttributes<HTMLWccAppIdentityElement>;
-            "wcc-app-loader": LocalJSX.WccAppLoader & JSXBase.HTMLAttributes<HTMLWccAppLoaderElement>;
-            "wcc-app-menu": LocalJSX.WccAppMenu & JSXBase.HTMLAttributes<HTMLWccAppMenuElement>;
-            "wcc-app-menu-item": LocalJSX.WccAppMenuItem & JSXBase.HTMLAttributes<HTMLWccAppMenuItemElement>;
-            "wcc-app-root": LocalJSX.WccAppRoot & JSXBase.HTMLAttributes<HTMLWccAppRootElement>;
-            "wcc-app-router": LocalJSX.WccAppRouter & JSXBase.HTMLAttributes<HTMLWccAppRouterElement>;
-            "wcc-bindable": LocalJSX.WccBindable & JSXBase.HTMLAttributes<HTMLWccBindableElement>;
-            "wcc-container": LocalJSX.WccContainer & JSXBase.HTMLAttributes<HTMLWccContainerElement>;
-            "wcc-for": LocalJSX.WccFor & JSXBase.HTMLAttributes<HTMLWccForElement>;
-            "wcc-if": LocalJSX.WccIf & JSXBase.HTMLAttributes<HTMLWccIfElement>;
-            "wcc-link": LocalJSX.WccLink & JSXBase.HTMLAttributes<HTMLWccLinkElement>;
-            "wcc-modal": LocalJSX.WccModal & JSXBase.HTMLAttributes<HTMLWccModalElement>;
-            "wcc-spinner": LocalJSX.WccSpinner & JSXBase.HTMLAttributes<HTMLWccSpinnerElement>;
+            "webc-app-container": LocalJSX.WebcAppContainer & JSXBase.HTMLAttributes<HTMLWebcAppContainerElement>;
+            "webc-app-error-toast": LocalJSX.WebcAppErrorToast & JSXBase.HTMLAttributes<HTMLWebcAppErrorToastElement>;
+            "webc-app-identity": LocalJSX.WebcAppIdentity & JSXBase.HTMLAttributes<HTMLWebcAppIdentityElement>;
+            "webc-app-loader": LocalJSX.WebcAppLoader & JSXBase.HTMLAttributes<HTMLWebcAppLoaderElement>;
+            "webc-app-menu": LocalJSX.WebcAppMenu & JSXBase.HTMLAttributes<HTMLWebcAppMenuElement>;
+            "webc-app-menu-item": LocalJSX.WebcAppMenuItem & JSXBase.HTMLAttributes<HTMLWebcAppMenuItemElement>;
+            "webc-app-root": LocalJSX.WebcAppRoot & JSXBase.HTMLAttributes<HTMLWebcAppRootElement>;
+            "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
+            "webc-bindable": LocalJSX.WebcBindable & JSXBase.HTMLAttributes<HTMLWebcBindableElement>;
+            "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
+            "webc-for": LocalJSX.WebcFor & JSXBase.HTMLAttributes<HTMLWebcForElement>;
+            "webc-if": LocalJSX.WebcIf & JSXBase.HTMLAttributes<HTMLWebcIfElement>;
+            "webc-link": LocalJSX.WebcLink & JSXBase.HTMLAttributes<HTMLWebcLinkElement>;
+            "webc-modal": LocalJSX.WebcModal & JSXBase.HTMLAttributes<HTMLWebcModalElement>;
             "webc-page": LocalJSX.WebcPage & JSXBase.HTMLAttributes<HTMLWebcPageElement>;
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
+            "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
         }
     }
 }

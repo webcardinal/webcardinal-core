@@ -1,12 +1,12 @@
-import { Component, h } from "@stencil/core";
-import { HostElement } from "../../decorators";
-import { StylingService } from "../../services";
+import { Component, h } from '@stencil/core';
+
+import { HostElement } from '../../decorators';
+import { StylingService } from '../../services';
 
 @Component({
-  tag: 'webc-skin'
+  tag: 'webc-skin',
 })
 export class WebcSkin {
-
   @HostElement() host: HTMLElement;
 
   private stylingService: StylingService;

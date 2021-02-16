@@ -1,1 +1,1 @@
-export { default as ApplicationController } from "./ApplicationController";
+export { default as ApplicationController } from './ApplicationController';

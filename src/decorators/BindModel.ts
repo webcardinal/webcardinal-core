@@ -1,56 +1,56 @@
-import { getElement, ComponentInterface } from '@stencil/core';
+import type { ComponentInterface } from '@stencil/core';
+import { getElement } from '@stencil/core';
 
-const ATTRIBUTE = "attr";
-const PROPERTY = "prop";
+const ATTRIBUTE = 'attr';
+const PROPERTY = 'prop';
 
-function normalizeModelChain(chain){
-  if(typeof chain !== "string"){
-    throw new Error("Invalid model chain");
+function normalizeModelChain(chain) {
+  if (typeof chain !== 'string') {
+    throw new Error('Invalid model chain');
   }
-  return chain.split("@").join("");
+  return chain.split('@').join('');
 }
 
-function dashToCamelCase( str ) {
-  return str.replace(/-([a-z])/g, function (g) { return g[1].toUpperCase(); });
+function dashToCamelCase(str) {
+  return str.replace(/-([a-z])/g, function (g) {
+    return g[1].toUpperCase();
+  });
 }
 
 function hasChainSignature(property) {
-  if (property === null || typeof property !== "string") {
+  if (property === null || typeof property !== 'string') {
     return false;
   }
-  if (!property.startsWith("@")) {
+  if (!property.startsWith('@')) {
     return false;
   }
   return property.length >= 1;
 }
 
 function attributeHasValidChain(attr, attrValue, properties) {
-  if (!hasChainSignature(attrValue)){
+  if (!hasChainSignature(attrValue)) {
     return false;
   }
 
-  if(typeof properties[dashToCamelCase(attr)] !== "undefined"){
+  if (typeof properties[dashToCamelCase(attr)] !== 'undefined') {
     return false;
   }
 
-  return attr !== "view-model";
-
+  return attr !== 'view-model';
 }
 
-function getUpdateHandler(type, model){
-
+function getUpdateHandler(type, model) {
   switch (type) {
     case ATTRIBUTE:
-      return function (attr, boundedChain){
-        this.setAttribute(attr, model.getChainValue(boundedChain))
+      return function (attr, boundedChain) {
+        this.setAttribute(attr, model.getChainValue(boundedChain));
       };
     default:
-      return function (property, boundedChain){
-        let newValue = model.getChainValue(boundedChain);
-        if(Array.isArray(this[property])){
+      return function (property, boundedChain) {
+        const newValue = model.getChainValue(boundedChain);
+        if (Array.isArray(this[property])) {
           this[property] = [...newValue];
-        }
-        else{
+        } else {
           this[property] = newValue;
         }
       };
@@ -58,9 +58,7 @@ function getUpdateHandler(type, model){
 }
 
 function BoundedModel(updateHandler, model) {
-
   this.createBoundedModel = function (property, boundedChain) {
-
     boundedChain = normalizeModelChain(boundedChain);
 
     model.onChange(boundedChain, () => {
@@ -70,59 +68,67 @@ function BoundedModel(updateHandler, model) {
     updateHandler(property, boundedChain);
 
     return {
-      updateModel: (value) => {
+      updateModel: value => {
         model.setChainValue(boundedChain, value);
-      }
-    }
-  }
+      },
+    };
+  };
 }
 
 function bindComponentProps(element, propsData, callback) {
+  const { properties, hasViewModel, instanceName } = propsData;
 
-  let {properties, hasViewModel, instanceName} = propsData;
-
-  let modelReceived = (err, model) => {
+  const modelReceived = (err, model) => {
     if (err) {
       console.error(err);
     }
 
     let viewModelParentChain;
-    let boundedProperties = {};
+    const boundedProperties = {};
 
-    const bindSingleProperty = (prop) => {
-      if(!boundedProperties[prop]) {
-        let instance = properties[prop].type === ATTRIBUTE ? element : this;
-        let handler = getUpdateHandler.call(instance, properties[prop].type, model);
-        let propViewModel = new BoundedModel(handler.bind(instance), model);
-        boundedProperties[prop] = propViewModel.createBoundedModel(prop, properties[prop].value);
+    const bindSingleProperty = prop => {
+      if (!boundedProperties[prop]) {
+        const instance = properties[prop].type === ATTRIBUTE ? element : this;
+        const handler = getUpdateHandler.call(
+          instance,
+          properties[prop].type,
+          model,
+        );
+        const propViewModel = new BoundedModel(handler.bind(instance), model);
+        boundedProperties[prop] = propViewModel.createBoundedModel(
+          prop,
+          properties[prop].value,
+        );
       }
-    }
+    };
 
     const bindProperties = () => {
-      for (let prop in properties) {
+      for (const prop in properties) {
         bindSingleProperty(prop);
       }
-    }
+    };
 
     /**
      * if view-model is defined, construct the property dictionary but do not overwrite existing
      * properties
      */
     if (hasViewModel) {
-      viewModelParentChain = element.getAttribute("view-model");
+      viewModelParentChain = element.getAttribute('view-model');
       viewModelParentChain = normalizeModelChain(viewModelParentChain);
 
       const updateProperties = () => {
-        let propertiesData = model.getChainValue(viewModelParentChain);
-        for (let prop in propertiesData) {
+        const propertiesData = model.getChainValue(viewModelParentChain);
+        for (const prop in propertiesData) {
           if (!properties[prop]) {
             properties[prop] = {
-              value: viewModelParentChain ? viewModelParentChain + "." + prop : prop,
-              type:PROPERTY
+              value: viewModelParentChain
+                ? viewModelParentChain + '.' + prop
+                : prop,
+              type: PROPERTY,
             };
           }
         }
-      }
+      };
 
       updateProperties();
 
@@ -138,73 +144,75 @@ function bindComponentProps(element, propsData, callback) {
 
     bindProperties();
 
-    if (typeof this[instanceName] !== "undefined") {
-      throw new Error(`BindModel decorator received a wrong argument as instance name: [${instanceName}]`);
-    }
-    else {
+    if (typeof this[instanceName] !== 'undefined') {
+      throw new Error(
+        `BindModel decorator received a wrong argument as instance name: [${instanceName}]`,
+      );
+    } else {
       this[instanceName] = {
         updateModel: (prop, value) => {
-          if(!properties[prop]) {
+          if (!properties[prop]) {
             properties[prop] = {
-              value: viewModelParentChain ? viewModelParentChain + "." + prop : prop,
-              type:PROPERTY
+              value: viewModelParentChain
+                ? viewModelParentChain + '.' + prop
+                : prop,
+              type: PROPERTY,
             };
             bindSingleProperty(prop);
           }
 
           boundedProperties[prop].updateModel(value);
-        }
+        },
       };
     }
     callback();
   };
 
-  element.dispatchEvent(new CustomEvent("getModelEvent", {
-    bubbles: true,
-    composed: true,
-    detail: {callback: modelReceived}
-  }))
+  element.dispatchEvent(
+    new CustomEvent('getModelEvent', {
+      bubbles: true,
+      composed: true,
+      detail: { callback: modelReceived },
+    }),
+  );
 }
 
 export default function BindModel() {
   return (proto: ComponentInterface, instanceName?) => {
-    let {componentWillLoad} = proto;
+    const { componentWillLoad } = proto;
 
     proto.componentWillLoad = function () {
-      let componentInstance = this.__proto__;
-      let self = this;
-      let element: HTMLElement = getElement(self);
+      const componentInstance = this.__proto__;
+      const self = this;
+      const element: HTMLElement = getElement(self);
 
-      let callComponentWillLoad = (promise?) => {
-
-        if(!promise){
+      const callComponentWillLoad = (promise?) => {
+        if (!promise) {
           return componentWillLoad && componentWillLoad.call(self);
-        }
-
-        else{
-          return new Promise((resolve => {
+        } else {
+          return new Promise(resolve => {
             promise.then(() => {
-              resolve(componentWillLoad && componentWillLoad.call(self))
+              resolve(componentWillLoad && componentWillLoad.call(self));
             });
-          }));
+          });
         }
       };
 
       if (element.isConnected) {
-        let componentProperties = Object.keys(componentInstance);
-        let elementAttributes = element.getAttributeNames();
-        let properties = {};
+        const componentProperties = Object.keys(componentInstance);
+        const elementAttributes = element.getAttributeNames();
+        const properties = {};
 
         /**
          * iterate through component properties and search for model chains
          */
         for (let i = 0; i < componentProperties.length; i++) {
-          let prop = componentProperties[i];
+          const prop = componentProperties[i];
           if (hasChainSignature(this[prop])) {
             properties[prop] = {
               value: this[prop],
-              type: PROPERTY
-            }
+              type: PROPERTY,
+            };
           }
         }
 
@@ -212,12 +220,12 @@ export default function BindModel() {
          * iterate through component attributes and search for model chains
          */
         for (let i = 0; i < elementAttributes.length; i++) {
-          let attr = elementAttributes[i];
-          let attrValue = element.getAttribute(attr);
+          const attr = elementAttributes[i];
+          const attrValue = element.getAttribute(attr);
           if (attributeHasValidChain(attr, attrValue, properties)) {
             properties[attr] = {
               value: attrValue,
-              type: ATTRIBUTE
+              type: ATTRIBUTE,
             };
           }
         }
@@ -225,16 +233,18 @@ export default function BindModel() {
         /**
          * check for existing view-model attribute
          */
-        let hasViewModel = element.hasAttribute("view-model");
+        const hasViewModel = element.hasAttribute('view-model');
         if (Object.keys(properties).length > 0 || hasViewModel) {
-          return callComponentWillLoad(new Promise((resolve) => {
-            let propsData = {
-              properties: properties,
-              hasViewModel: hasViewModel,
-              instanceName: instanceName
-            };
-            bindComponentProps.call(self, element, propsData, resolve);
-          }))
+          return callComponentWillLoad(
+            new Promise(resolve => {
+              const propsData = {
+                properties: properties,
+                hasViewModel: hasViewModel,
+                instanceName: instanceName,
+              };
+              bindComponentProps.call(self, element, propsData, resolve);
+            }),
+          );
         }
       }
       return callComponentWillLoad();

@@ -1,0 +1,23 @@
+webc-app-menu {
+  display: grid;
+  padding: var(--webc-app-menu-padding);
+  z-index: var(--webc-app-menu-z-index);
+
+  .container {
+    // bootstrap override
+    max-width: 100%; padding: 0;
+  }
+
+  & webc-app-menu-item {
+    display: flex;
+
+    & .item {
+      cursor: pointer;
+
+      &, & a {
+        color: var(--webc-app-menu-color);
+        text-decoration: none;
+      }
+    }
+  }
+}

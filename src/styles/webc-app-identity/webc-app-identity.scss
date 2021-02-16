@@ -1,0 +1,40 @@
+:host {
+  display: grid;
+  color: var(--webc-app-identity-color);
+  row-gap: var(--webc-app-identity-row-gap);
+  place-content: center;
+  justify-content: stretch;
+
+  & > img {
+    border-radius: var(--webc-app-identity-avatar-radius);
+  }
+
+  & > .name {
+    font-size: var(--webc-app-identity-name-font-size);
+  }
+
+  & > .email {
+    font-size: var(--webc-app-identity-email-font-size);
+  }
+}
+
+:host(.has-avatar) {
+  grid-template-columns: var(--webc-app-identity-avatar-width) 1fr;
+  column-gap: var(--webc-app-identity-column-gap);
+
+  & > img {
+    width: 100%;
+    grid-column: 1 / 2;
+    grid-row: 1 / 3;
+    align-self: center;
+  }
+
+  & > .email,
+  & > .name {
+    grid-column: 2 / 3;
+  }
+
+  & > .name {
+    align-self: end;
+  }
+}

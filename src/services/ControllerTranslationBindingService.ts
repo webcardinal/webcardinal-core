@@ -1,8 +1,8 @@
 import {
   TRANSLATION_CHAIN_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
-} from "../constants";
-import { bindElementAttributes } from "../utils";
+} from '../constants';
+import { bindElementAttributes } from '../utils';
 
 const ControllerTranslationBindingService = {
   /**
@@ -16,7 +16,7 @@ const ControllerTranslationBindingService = {
       console.warn(`No model found for ${tagName}!`);
       return;
     }
-    // for some wcc-<components> binding is managed by component itself
+    // for some webc-<components> binding is managed by component itself
     if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
       return;
     }

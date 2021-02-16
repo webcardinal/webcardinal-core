@@ -2,14 +2,14 @@ import {
   MODEL_KEY,
   MODEL_CHAIN_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
-} from "../constants";
-import { bindElementAttributes, setElementValue } from "../utils";
+} from '../constants';
+import { bindElementAttributes, setElementValue } from '../utils';
 
 function setElementModel(element, model, chain) {
   // model
   const targetModel = model.getChainValue(chain);
   if (targetModel) {
-    for (let [key, value] of Object.entries(targetModel)) {
+    for (const [key, value] of Object.entries(targetModel)) {
       setElementValue(element, { key, value });
     }
 
@@ -17,7 +17,7 @@ function setElementModel(element, model, chain) {
       // ensure that each of element's methods have the correct context attached,
       // because the model proxy doesn't set the context accordingly
       for (const property in element) {
-        if (typeof element[property] === "function") {
+        if (typeof element[property] === 'function') {
           element[property] = element[property].bind(element);
         }
       }
@@ -36,7 +36,7 @@ function setElementModel(element, model, chain) {
   // expressions
   if (model.hasExpression(chain)) {
     const targetModel = model.evaluateExpression(chain);
-    for (let [key, value] of Object.entries(targetModel)) {
+    for (const [key, value] of Object.entries(targetModel)) {
       setElementValue(element, { key, value });
     }
   }
@@ -54,7 +54,7 @@ const ControllerBindingService = {
       console.warn(`No model found for ${tagName}!`);
       return;
     }
-    // for some wcc-<components> binding is managed by component itself
+    // for some webc-<components> binding is managed by component itself
     if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
       return;
     }
@@ -80,7 +80,7 @@ const ControllerBindingService = {
    * @param model - Object in which the specified chain (model="@chain") is searched
    */
   bindModel: (element: Element, model) => {
-    // for some wcc-<components> binding is managed by component itself
+    // for some webc-<components> binding is managed by component itself
     if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
       return;
     }
@@ -95,7 +95,7 @@ const ControllerBindingService = {
         `Invalid chain found! (chain: "${chain}")!\n`,
         `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
         `target element:`,
-        element
+        element,
       );
       return;
     }
@@ -109,8 +109,8 @@ const ControllerBindingService = {
 
     // onChangeExpressionChain
     if (model.hasExpression(chain)) {
-      model.onChangeExpressionChain(chain, (_) =>
-        setElementModel(element, model, chain)
+      model.onChangeExpressionChain(chain, _ =>
+        setElementModel(element, model, chain),
       );
     }
   },

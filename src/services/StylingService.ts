@@ -1,5 +1,5 @@
-import { promisifyEventDispatch } from "../utils";
-import { EVENT_ROUTING_GET } from "../constants";
+import { EVENT_ROUTING_GET } from '../constants';
+import { promisifyEventDispatch } from '../utils';
 
 export default class StylingService {
   private readonly host: HTMLElement;
@@ -16,7 +16,7 @@ export default class StylingService {
       return;
     }
 
-    let routing = await this.getRouting();
+    const routing = await this.getRouting();
 
     if (!routing) {
       return;
@@ -31,10 +31,12 @@ export default class StylingService {
       console.error('Unknown source', source);
       return;
     }
-    source = this.routing.skinsPath + `/${this.language + source.substr(0, source.length - 4)}css`;
+    source =
+      this.routing.skinsPath +
+      `/${this.language + source.substr(0, source.length - 4)}css`;
 
     console.log({ routing: this.routing });
-    console.log({ source })
+    console.log({ source });
 
     // let styleSheet = new CSSStyleSheet();
     let styleText = await StylingService.fetchSource(source);
@@ -52,7 +54,10 @@ export default class StylingService {
   public async getRouting() {
     if (!this.routing) {
       try {
-        this.routing = await promisifyEventDispatch(EVENT_ROUTING_GET, this.host);
+        this.routing = await promisifyEventDispatch(
+          EVENT_ROUTING_GET,
+          this.host,
+        );
       } catch (error) {
         console.error(error);
         return;
@@ -73,6 +78,6 @@ export default class StylingService {
   }
 
   private static removeComments(css: string) {
-    return css.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g,'').trim();
+    return css.replace(/\/\*[\s\S]*?\*\/|\/\/.*/g, '').trim();
   }
 }

@@ -4,12 +4,12 @@ import {
   PSK_CARDINAL_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
   SKIP_BINDING_FOR_PROPERTIES,
-} from "../constants";
+} from '../constants';
 
 export function getClosestParentElement(
   element: HTMLElement,
   selector: string,
-  stopSelector?: string
+  stopSelector?: string,
 ): HTMLElement {
   let closestParent = null;
   while (element) {
@@ -26,19 +26,19 @@ export function getClosestParentElement(
 
 function isNativeProperty(key) {
   // these values are not visible as attributes over the HTMLElement
-  return ["value", "innerText", "innerHTML"].includes(key);
+  return ['value', 'innerText', 'innerHTML'].includes(key);
 }
 
 function shortcutToProperty(key) {
   switch (key) {
-    case "model":
-      return "data-model";
-    case "tag":
-      return "data-tag";
-    case "text":
-      return "innerText";
-    case "html":
-      return "innerHTML";
+    case 'model':
+      return 'data-model';
+    case 'tag':
+      return 'data-tag';
+    case 'text':
+      return 'innerText';
+    case 'html':
+      return 'innerHTML';
     default:
       return key;
   }
@@ -49,22 +49,22 @@ export function setElementValue(element, { key, value }) {
     return;
   }
 
-  if (["innerHTML", "innerText"].includes(key)) {
+  if (['innerHTML', 'innerText'].includes(key)) {
     console.warn(
       `Model property "${key}" can be short handed, try "${key
         .substr(5)
         .toLowerCase()}" instead!\n`,
       `target element:`,
-      element
+      element,
     );
   }
-  if (["data-tag", "data-model"].includes(key)) {
+  if (['data-tag', 'data-model'].includes(key)) {
     console.warn(
       `Model property "${key}" can be shorthanded, try "${key.substr(
-        5
+        5,
       )}" instead!\n`,
       `target model:`,
-      element.getAttribute("data-model")
+      element.getAttribute('data-model'),
     );
   }
 
@@ -75,18 +75,18 @@ export function setElementValue(element, { key, value }) {
     return;
   }
 
-  if (key === "class") {
-    if (value === "") {
-      element.className = "";
+  if (key === 'class') {
+    if (value === '') {
+      element.className = '';
       return;
     }
 
-    if (typeof value === "string") {
+    if (typeof value === 'string') {
       element.classList.add(value);
       return;
     }
 
-    if (typeof value === "object") {
+    if (typeof value === 'object') {
       for (const [className, active] of Object.entries(value)) {
         if (active) {
           element.classList.add(className);
@@ -100,21 +100,21 @@ export function setElementValue(element, { key, value }) {
     return;
   }
 
-  if (typeof value === "boolean") {
+  if (typeof value === 'boolean') {
     if (value) {
-      element.setAttribute(key, "");
+      element.setAttribute(key, '');
     } else {
       element.removeAttribute(key);
     }
     return;
   }
 
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     element.setAttribute(key, value);
     return;
   }
 
-  if (typeof value === "object") {
+  if (typeof value === 'object') {
     element[key] = value;
     return;
   }
@@ -128,9 +128,9 @@ export function setElementValue(element, { key, value }) {
 export function bindElementAttributes(
   element: Element,
   model,
-  chainPrefix = MODEL_CHAIN_PREFIX
+  chainPrefix = MODEL_CHAIN_PREFIX,
 ) {
-  // for some wcc-<components> binding is managed by component itself
+  // for some webc-<components> binding is managed by component itself
   if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
     return;
   }
@@ -141,7 +141,7 @@ export function bindElementAttributes(
   }
 
   for (let i = 0; i < element.attributes.length; i++) {
-    let key = element.attributes[i].nodeName;
+    const key = element.attributes[i].nodeName;
     let chain = element.attributes[i].nodeValue;
 
     if (key === MODEL_KEY) {
@@ -155,7 +155,7 @@ export function bindElementAttributes(
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
 
-    model.onChange(chain, (_) => {
+    model.onChange(chain, _ => {
       setElementValue(element, { key, value: model.getChainValue(chain) });
     });
   }

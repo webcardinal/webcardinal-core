@@ -1,5 +1,5 @@
 export function convertCSSTimeToMs(time) {
-  let num = parseFloat(time);
+  const num = parseFloat(time);
   let unit = time.match(/m?s/);
   let milliseconds;
 

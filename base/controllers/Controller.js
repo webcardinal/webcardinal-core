@@ -1,16 +1,16 @@
-import DSUStorage from "../libs/DSUStorage";
-import PskBindableModel from "../libs/bindableModel.js";
+import DSUStorage from '../libs/DSUStorage';
+import PskBindableModel from '../libs/bindableModel.js';
 
 const ControllerHelper = {
   checkEventListener: (eventName, listener, options) => {
-    if (typeof eventName !== "string" || eventName.trim().length === 0) {
+    if (typeof eventName !== 'string' || eventName.trim().length === 0) {
       throw Error(`
         Argument eventName is not valid. It must be a non-empty string.
         Provided value: ${eventName}
       `);
     }
 
-    if (typeof listener !== "function") {
+    if (typeof listener !== 'function') {
       throw Error(`
         Argument listener is not valid, it must be a function.
         Provided value: ${listener}
@@ -19,8 +19,8 @@ const ControllerHelper = {
 
     if (
       options &&
-      typeof options !== "boolean" &&
-      typeof options !== "object"
+      typeof options !== 'boolean' &&
+      typeof options !== 'object'
     ) {
       throw Error(`
         Argument options is not valid, it must a boolean (true/false) in case of capture, or an options object.
@@ -42,7 +42,7 @@ const ControllerHelper = {
     const currentPageTranslations = currentTranslations[pathname];
     if (!currentPageTranslations) {
       console.warn(
-        `No translations found for language ${language} and page ${pathname}`
+        `No translations found for language ${language} and page ${pathname}`,
       );
       return null;
     }
@@ -64,7 +64,7 @@ class Controller {
     this.setLegacyGetModelEventListener();
 
     this.translationModel = PskBindableModel.setModel(
-      ControllerHelper.getTranslationModel() || {}
+      ControllerHelper.getTranslationModel() || {},
     );
   }
 
@@ -102,18 +102,18 @@ class Controller {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
-      const eventListener = (event) => {
+      const eventListener = event => {
         let target = event.target;
         while (target && target !== this.element) {
-          const targetTag = target.getAttribute("data-tag");
+          const targetTag = target.getAttribute('data-tag');
           if (targetTag === tag) {
             event.preventDefault(); // Cancel the native event
             event.stopPropagation(); // Don't bubble/capture the event any further
 
             console.log(
-              `Found listener for event ${eventName} for tag: ${targetTag}`
+              `Found listener for event ${eventName} for tag: ${targetTag}`,
             );
-            const dataModelChain = target.getAttribute("data-model");
+            const dataModelChain = target.getAttribute('data-model');
             const attachedModel = dataModelChain
               ? this.model.toObject(dataModelChain.slice(1))
               : undefined;
@@ -141,13 +141,13 @@ class Controller {
 
       this.tagEventListeners
         .filter(
-          (x) =>
+          x =>
             x.tag === tag &&
             x.eventName === eventName &&
             x.listener === listener &&
-            x.options === options
+            x.options === options,
         )
-        .forEach((x) => {
+        .forEach(x => {
           this.element.removeEventListener(eventName, x.eventListener, options);
         });
     } catch (err) {
@@ -156,11 +156,11 @@ class Controller {
   }
 
   onTagClick(tag, listener, options) {
-    this.onTagEvent(tag, "click", listener, options);
+    this.onTagEvent(tag, 'click', listener, options);
   }
 
   offTagClick(tag, listener, options) {
-    this.offTagEvent(tag, "click", listener, options);
+    this.offTagEvent(tag, 'click', listener, options);
   }
 
   navigateToUrl(url, state) {
@@ -169,7 +169,7 @@ class Controller {
 
   navigateToTag(tag, state) {
     this.element.dispatchEvent(
-      new CustomEvent("webcardinal:tags:get", {
+      new CustomEvent('webcardinal:tags:get', {
         bubbles: true,
         composed: true,
         cancelable: true,
@@ -183,7 +183,7 @@ class Controller {
             this.history.push(path, state);
           },
         },
-      })
+      }),
     );
   }
 
@@ -214,17 +214,17 @@ class Controller {
       }
     };
 
-    this.element.addEventListener("getModelEvent", (e) => {
+    this.element.addEventListener('getModelEvent', e => {
       e.preventDefault();
       e.stopImmediatePropagation();
 
       let { bindValue, callback } = e.detail;
 
-      if (typeof callback === "function") {
+      if (typeof callback === 'function') {
         return dispatchModel(bindValue, this.model, callback);
       }
 
-      callback(new Error("No callback provided"));
+      callback(new Error('No callback provided'));
     });
   }
 
@@ -234,7 +234,7 @@ class Controller {
 
     if (!this.translationModel) {
       console.warn(
-        `No translations found for language ${language} and page ${pathname}`
+        `No translations found for language ${language} and page ${pathname}`,
       );
       return translationKey;
     }
@@ -242,7 +242,7 @@ class Controller {
     const translatedString = this.translationModel[translationKey];
     if (!translatedString) {
       console.warn(
-        `No translations found for language ${language}, page ${pathname} and key ${translationKey}`
+        `No translations found for language ${language}, page ${pathname} and key ${translationKey}`,
       );
       return translationKey;
     }

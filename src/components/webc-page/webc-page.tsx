@@ -1,31 +1,33 @@
-import { Component, EventEmitter, h, Method, Prop, Event } from "@stencil/core";
-import { RouterHistory, injectHistory } from "@stencil/router";
-import { HostElement } from "../../decorators";
+import type { EventEmitter } from '@stencil/core';
+import { Component, h, Method, Prop, Event } from '@stencil/core';
+import type { RouterHistory } from '@stencil/router';
+import { injectHistory } from '@stencil/router';
+
+import DefaultController from '../../../base/controllers/Controller.js';
+import { HostElement } from '../../decorators';
 import {
   ComponentListenersService,
   ControllerRegistryService,
   ControllerBindingService,
   ControllerTranslationService,
   ControllerTranslationBindingService,
-} from "../../services";
-
-import DefaultController from "../../../base/controllers/Controller.js";
-import { promisifyEventEmit } from "../../utils";
+} from '../../services';
+import { promisifyEventEmit } from '../../utils';
 
 @Component({
-  tag: "webc-page",
+  tag: 'webc-page',
 })
 export class WebcPage {
   @HostElement() private host: HTMLElement;
 
-  @Prop({ attribute: "controller" }) controllerName: string | null;
+  @Prop({ attribute: 'controller' }) controllerName: string | null;
 
   @Prop() history: RouterHistory;
 
   @Prop() enableTranslations = false;
 
   @Event({
-    eventName: "webcardinal:routing:get",
+    eventName: 'webcardinal:routing:get',
     bubbles: true,
     composed: true,
     cancelable: true,
@@ -42,15 +44,15 @@ export class WebcPage {
 
     if (this.enableTranslations) {
       await ControllerTranslationService.loadAndSetTranslationForPage(
-        routingEvent
+        routingEvent,
       );
     }
 
     // load controller
-    if (typeof this.controllerName === "string") {
+    if (typeof this.controllerName === 'string') {
       try {
         const Controller = await ControllerRegistryService.getController(
-          this.controllerName
+          this.controllerName,
         );
         if (this.host.isConnected) {
           this.controller = new Controller(this.host, this.history);
@@ -63,7 +65,7 @@ export class WebcPage {
       this.controller = new DefaultController(this.host, this.history);
     }
 
-    let { model, translationModel } = this.controller;
+    const { model, translationModel } = this.controller;
     if (translationModel) {
       this.translationModel = translationModel;
 
@@ -71,7 +73,7 @@ export class WebcPage {
         // bind nodes with translation model
         ControllerTranslationBindingService.bindRecursive(
           this.host,
-          this.translationModel
+          this.translationModel,
         );
       }
     }
@@ -97,7 +99,7 @@ export class WebcPage {
 
   connectedCallback() {
     if (this.listeners) {
-      let { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel } = this.listeners;
       getModel && getModel.add();
       getTranslationModel && getTranslationModel.add();
     }
@@ -105,7 +107,7 @@ export class WebcPage {
 
   disconnectedCallback() {
     if (this.listeners) {
-      let { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel } = this.listeners;
       getModel && getModel.remove();
       getTranslationModel && getTranslationModel.remove();
     }

@@ -1,13 +1,14 @@
-import defaultConfig from './config/default';
+import controllers from '../../base/controllers';
+import fetch from '../../base/utils/fetch.js';
 import {
   LOG_LEVEL,
   EVENT_CONFIG_GET_ROUTING,
   EVENT_CONFIG_GET_IDENTITY,
   EVENT_CONFIG_GET_LOG_LEVEL,
-  EVENT_CONFIG_GET_CORE_TYPE
+  EVENT_CONFIG_GET_CORE_TYPE,
 } from '../constants';
-import controllers from '../../base/controllers';
-import fetch from '../../base/utils/fetch.js';
+
+import defaultConfig from './config/default';
 
 const CONFIG_PATH = 'webcardinal.json';
 
@@ -15,11 +16,11 @@ export default class ApplicationController {
   private readonly baseURL: URL;
   private readonly basePath: URL;
   private readonly configURL: URL;
-  private config: {};
+  private config: Record<string, unknown>;
   private isConfigLoaded: boolean;
   private pendingRequests: [any?];
 
-  private _trimPathname = (path) => {
+  private _trimPathname = path => {
     if (path.startsWith('/')) {
       path = path.slice(1);
     }
@@ -31,11 +32,15 @@ export default class ApplicationController {
 
   private _initBaseURL() {
     const getBaseElementHref = () => {
-      let baseElement = document.querySelector('base');
-      if (!baseElement) { return null; }
+      const baseElement = document.querySelector('base');
+      if (!baseElement) {
+        return null;
+      }
 
-      let href = baseElement.getAttribute('href');
-      if (!href || href === '/') { return null; }
+      const href = baseElement.getAttribute('href');
+      if (!href || href === '/') {
+        return null;
+      }
 
       return this._trimPathname(href);
     };
@@ -43,10 +48,12 @@ export default class ApplicationController {
       return this._trimPathname(window.location.origin);
     };
 
-    let windowLocation = getWindowLocation();
-    let baseHref = getBaseElementHref();
+    const windowLocation = getWindowLocation();
+    const baseHref = getBaseElementHref();
 
-    return baseHref ? new URL(baseHref, windowLocation) : new URL(windowLocation);
+    return baseHref
+      ? new URL(baseHref, windowLocation)
+      : new URL(windowLocation);
   }
 
   private _initBasePath() {
@@ -55,16 +62,20 @@ export default class ApplicationController {
   }
 
   private _initResourceURL(resource) {
-    return new URL(this._trimPathname(this.baseURL.href) + '/' + this._trimPathname(resource));
+    return new URL(
+      this._trimPathname(this.baseURL.href) +
+        '/' +
+        this._trimPathname(resource),
+    );
   }
 
   private _readConfiguration(callback) {
-    const fetchJSON = async(path) => {
-      let response = await fetch(path);
+    const fetchJSON = async path => {
+      const response = await fetch(path);
       return response.json();
     };
 
-    const loadConfiguration = async() => {
+    const loadConfiguration = async () => {
       try {
         return fetchJSON(this.configURL.href);
       } catch (error) {
@@ -74,11 +85,11 @@ export default class ApplicationController {
 
     loadConfiguration()
       .then(data => callback(null, data))
-      .catch(error => callback(error))
+      .catch(error => callback(error));
   }
 
   private _prepareConfiguration(rawConfig) {
-    const getRaw = (item) => {
+    const getRaw = item => {
       return rawConfig[item] ? rawConfig[item] : defaultConfig[item];
     };
 
@@ -97,23 +108,28 @@ export default class ApplicationController {
 
     const getPages = (
       baseURL = this.baseURL.href,
-      rawPages = getRaw('pages')
+      rawPages = getRaw('pages'),
     ) => {
-      let pages = [];
-      for (let rawPage of rawPages) {
-        let page: any = {};
+      const pages = [];
+      for (const rawPage of rawPages) {
+        const page: any = {};
 
         // page name
         if (typeof rawPage.name !== 'string') {
-          console.warn(`An invalid page detected (in "${CONFIG_PATH}")`, rawPage);
+          console.warn(
+            `An invalid page detected (in "${CONFIG_PATH}")`,
+            rawPage,
+          );
           continue;
         }
         if (rawPage.name.includes('/')) {
-          console.warn(`Page name must not include '/' (in "${rawPages.name}")`);
+          console.warn(
+            `Page name must not include '/' (in "${rawPages.name}")`,
+          );
           continue;
         }
         page.name = rawPage.name;
-        let target = page.name.replace(/\s+/g, '-').toLowerCase();
+        const target = page.name.replace(/\s+/g, '-').toLowerCase();
 
         // page indexed
         if (typeof rawPage.indexed === 'boolean') {
@@ -126,16 +142,20 @@ export default class ApplicationController {
         if (typeof rawPage.path === 'string') {
           page.path = rawPage.path;
         } else {
-          let path = '/' + target;
+          const path = '/' + target;
           try {
             page.path = '.' + new URL(path, baseURL).pathname;
           } catch (error) {
-            console.error(`Pathname "${path}" for "${page.name} can not be converted into a URL!\n`, error);
+            console.error(
+              `Pathname "${path}" for "${page.name} can not be converted into a URL!\n`,
+              error,
+            );
             continue;
           }
         }
 
-        let hasChildren = Array.isArray(rawPage.children) && rawPage.children.length > 0
+        const hasChildren =
+          Array.isArray(rawPage.children) && rawPage.children.length > 0;
 
         // page src
         if (typeof rawPage.src === 'string') {
@@ -143,12 +163,15 @@ export default class ApplicationController {
         } else {
           let src = '/' + target;
           if (!hasChildren) {
-            src += '.html'
+            src += '.html';
           }
           try {
             page.src = '.' + new URL(src, baseURL).pathname;
           } catch (error) {
-            console.error(`Source "${src}" for "${page.name} can not be converted into a URL!\n`, error);
+            console.error(
+              `Source "${src}" for "${page.name} can not be converted into a URL!\n`,
+              error,
+            );
             continue;
           }
         }
@@ -169,20 +192,24 @@ export default class ApplicationController {
     };
 
     const getPagesFallback = () => {
-      let fallback = getPages(this.baseURL.href, [getRaw('pagesFallback')])[0];
+      const fallback = getPages(this.baseURL.href, [
+        getRaw('pagesFallback'),
+      ])[0];
       delete fallback.path;
       delete fallback.indexed;
       return fallback;
-    }
+    };
 
-    const getPathname = (source) => {
+    const getPathname = source => {
       return '/' + this._trimPathname(getRaw(source));
     };
 
     const getLogLevel = () => {
       const logLevel = getRaw('logLevel');
-      return Object.values(LOG_LEVEL).includes(logLevel) ? logLevel : defaultConfig.logLevel;
-    }
+      return Object.values(LOG_LEVEL).includes(logLevel)
+        ? logLevel
+        : defaultConfig.logLevel;
+    };
 
     const config: any = {
       identity: getIdentity(),
@@ -193,10 +220,10 @@ export default class ApplicationController {
         pages: getPages(),
         pagesFallback: getPagesFallback(),
         pagesPathname: getPathname('pagesPathname'),
-        skinsPathname: getPathname('skinsPathname')
+        skinsPathname: getPathname('skinsPathname'),
       },
       logLevel: getLogLevel(),
-      coreType: 'webcardinal'
+      coreType: 'webcardinal',
     };
 
     return config;
@@ -243,7 +270,7 @@ export default class ApplicationController {
       } else {
         this.pendingRequests.push({ configKey: key, callback });
       }
-    }
+    };
   }
 
   constructor(element) {
@@ -267,20 +294,32 @@ export default class ApplicationController {
       window.WebCardinal = {
         controllers,
         basePath: this.basePath,
-        language: "en",
-        translations: {}
-      }
+        language: 'en',
+        translations: {},
+      };
 
       while (this.pendingRequests.length) {
-        let request = this.pendingRequests.pop();
+        const request = this.pendingRequests.pop();
         this._provideConfiguration(request.configKey, request.callback);
       }
     });
 
-    element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
-    element.addEventListener(EVENT_CONFIG_GET_IDENTITY, this._registerListener('identity'));
-    element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
-    element.addEventListener(EVENT_CONFIG_GET_CORE_TYPE, this._registerListener('coreType'));
+    element.addEventListener(
+      EVENT_CONFIG_GET_ROUTING,
+      this._registerListener('routing'),
+    );
+    element.addEventListener(
+      EVENT_CONFIG_GET_IDENTITY,
+      this._registerListener('identity'),
+    );
+    element.addEventListener(
+      EVENT_CONFIG_GET_LOG_LEVEL,
+      this._registerListener('logLevel'),
+    );
+    element.addEventListener(
+      EVENT_CONFIG_GET_CORE_TYPE,
+      this._registerListener('coreType'),
+    );
 
     // TODO: production version
     // element.addEventListener(EVENTS.GET_THEME, this._registerListener('theme'));
