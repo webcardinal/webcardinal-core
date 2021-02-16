@@ -15,6 +15,14 @@ class WccController extends Controller {
     });
   }
 
+  showModalFromTemplate(modalName, onConfirm, onClose) {
+    return this.createWccModal({
+      modalName,
+      onConfirm,
+      onClose,
+    });
+  }
+
   showErrorModal(error, title, onConfirm, onClose) {
     let modalTitle = title ? title : "Error";
     let text;
@@ -71,6 +79,7 @@ class WccController extends Controller {
 
   createWccModal({
     modalTitle,
+    modalName,
     text,
     canClose,
     showCancelButton,
@@ -84,20 +93,22 @@ class WccController extends Controller {
 
     const modal = this.createAndAddElement("wcc-modal", {
       modalTitle,
+      modalName,
       text,
       canClose,
       showFooter,
       showCancelButton,
     });
 
-    modal.addEventListener("confirmed", () => {
-      onConfirm && onConfirm();
+    modal.addEventListener("confirmed", (e) => {
+      onConfirm && onConfirm(e);
       modal.remove();
     });
-    modal.addEventListener("closed", () => {
-      onClose && onClose();
+    modal.addEventListener("closed", (e) => {
+      onClose && onClose(e);
       modal.remove();
     });
+    return modal;
   }
 
   hideModal() {

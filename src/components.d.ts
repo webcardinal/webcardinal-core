@@ -147,6 +147,7 @@ export namespace Components {
     }
     interface WebcPage {
         "controllerName": string | null;
+        "enableTranslations": boolean;
         "getModel": () => Promise<any>;
         "getTranslationModel": () => Promise<any>;
         "history": RouterHistory;
@@ -425,6 +426,7 @@ declare namespace LocalJSX {
     }
     interface WebcPage {
         "controllerName"?: string | null;
+        "enableTranslations"?: boolean;
         "history"?: RouterHistory;
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }

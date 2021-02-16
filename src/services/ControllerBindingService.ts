@@ -22,19 +22,14 @@ function setElementModel(element, model, chain) {
         }
       }
 
-      const getElement = model.getChainValue(`${chain}.getElement`);
-      if(!getElement) {        
+      if (!targetModel.getElement) {
+        // we first the getElement function only on the initialization step in order to not generate useless model change events
+        // which can lead to infinite loops
         model.setChainValue(chain, {
           ...targetModel,
           getElement: () => element,
         });
       }
-
-        //   model.setChainValue(chain, {
-        //     ...targetModel,
-        //     getElement: () => element,
-        //   });
-        // model.setChainValue(`${chain}.getElement`, () => element);
     }
   }
 
@@ -120,14 +115,14 @@ const ControllerBindingService = {
     }
   },
 
-   /**
+  /**
    * @description - Binds all attributes for an Element
    * @param element
    * @param model - Object in which the specified chain (<attribute>="@chain") is searched
    */
   bindAttributes: (element: Element, model) => {
     bindElementAttributes(element, model);
-  }
+  },
 };
 
 export default ControllerBindingService;

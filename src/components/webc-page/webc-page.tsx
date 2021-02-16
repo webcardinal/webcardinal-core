@@ -6,7 +6,7 @@ import {
   ControllerRegistryService,
   ControllerBindingService,
   ControllerTranslationService,
-  ControllerTranslationBindingService
+  ControllerTranslationBindingService,
 } from "../../services";
 
 import DefaultController from "../../../base/controllers/Controller.js";
@@ -21,6 +21,8 @@ export class WebcPage {
   @Prop({ attribute: "controller" }) controllerName: string | null;
 
   @Prop() history: RouterHistory;
+
+  @Prop() enableTranslations = false;
 
   @Event({
     eventName: "webcardinal:routing:get",
@@ -38,9 +40,11 @@ export class WebcPage {
   async componentWillLoad() {
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
 
-    await ControllerTranslationService.loadAndSetTranslationForPage(
-      routingEvent
-    );
+    if (this.enableTranslations) {
+      await ControllerTranslationService.loadAndSetTranslationForPage(
+        routingEvent
+      );
+    }
 
     // load controller
     if (typeof this.controllerName === "string") {
@@ -63,11 +67,13 @@ export class WebcPage {
     if (translationModel) {
       this.translationModel = translationModel;
 
-      // bind nodes with translation model
-      ControllerTranslationBindingService.bindRecursive(
-        this.host,
-        this.translationModel
-      );
+      if (this.enableTranslations) {
+        // bind nodes with translation model
+        ControllerTranslationBindingService.bindRecursive(
+          this.host,
+          this.translationModel
+        );
+      }
     }
 
     // get the model

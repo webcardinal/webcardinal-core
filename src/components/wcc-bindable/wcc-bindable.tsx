@@ -5,12 +5,10 @@ import {
   ComponentListenersService,
   ControllerRegistryService,
   ControllerBindingService,
-  ControllerTranslationService,
   ControllerTranslationBindingService
 } from '../../services'
 
 import DefaultController from '../../../base/controllers/Controller.js';
-import { promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: "wcc-bindable"
@@ -36,9 +34,6 @@ export class WccBindable {
   private listeners: ComponentListenersService;
 
   async componentWillLoad() {
-    const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
-    await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
-
     // load controller
     if (typeof this.controllerName === 'string') {
       try {

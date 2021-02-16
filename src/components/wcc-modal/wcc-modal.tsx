@@ -165,7 +165,7 @@ export class WccModal {
   handleConfirm(e: MouseEvent) {
     e.preventDefault();
     e.stopImmediatePropagation();
-    this.confirmed.emit();
+    this.confirmed.emit({ modal: this.host, event: e });
   }
 
   hasSlot(slotName) {
