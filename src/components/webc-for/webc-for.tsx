@@ -66,7 +66,7 @@ export class WebcFor {
 
     ControllerBindingService.bindModel(element, this.model);
     ControllerBindingService.bindAttributes(element, this.model);
-    ControllerTranslationBindingService.bindRecursive(
+    ControllerTranslationBindingService.bindAttributes(
       element,
       this.translationModel,
     );

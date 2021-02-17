@@ -154,6 +154,13 @@ export namespace Components {
     }
     interface WebcSpinner {
     }
+    interface WebcTemplate {
+        "chain": string;
+        /**
+          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+         */
+        "templateName": string;
+    }
 }
 declare global {
     interface HTMLWebcAppContainerElement extends Components.WebcAppContainer, HTMLStencilElement {
@@ -258,6 +265,12 @@ declare global {
         prototype: HTMLWebcSpinnerElement;
         new (): HTMLWebcSpinnerElement;
     };
+    interface HTMLWebcTemplateElement extends Components.WebcTemplate, HTMLStencilElement {
+    }
+    var HTMLWebcTemplateElement: {
+        prototype: HTMLWebcTemplateElement;
+        new (): HTMLWebcTemplateElement;
+    };
     interface HTMLElementTagNameMap {
         "webc-app-container": HTMLWebcAppContainerElement;
         "webc-app-error-toast": HTMLWebcAppErrorToastElement;
@@ -276,6 +289,7 @@ declare global {
         "webc-page": HTMLWebcPageElement;
         "webc-skin": HTMLWebcSkinElement;
         "webc-spinner": HTMLWebcSpinnerElement;
+        "webc-template": HTMLWebcTemplateElement;
     }
 }
 declare namespace LocalJSX {
@@ -432,6 +446,15 @@ declare namespace LocalJSX {
     }
     interface WebcSpinner {
     }
+    interface WebcTemplate {
+        "chain"?: string;
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+         */
+        "templateName"?: string;
+    }
     interface IntrinsicElements {
         "webc-app-container": WebcAppContainer;
         "webc-app-error-toast": WebcAppErrorToast;
@@ -450,6 +473,7 @@ declare namespace LocalJSX {
         "webc-page": WebcPage;
         "webc-skin": WebcSkin;
         "webc-spinner": WebcSpinner;
+        "webc-template": WebcTemplate;
     }
 }
 export { LocalJSX as JSX };
@@ -473,6 +497,7 @@ declare module "@stencil/core" {
             "webc-page": LocalJSX.WebcPage & JSXBase.HTMLAttributes<HTMLWebcPageElement>;
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
             "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
+            "webc-template": LocalJSX.WebcTemplate & JSXBase.HTMLAttributes<HTMLWebcTemplateElement>;
         }
     }
 }

@@ -123,7 +123,7 @@ export class WebcIf {
 
       ControllerBindingService.bindModel(target, model);
       ControllerBindingService.bindAttributes(target, model);
-      ControllerTranslationBindingService.bindRecursive(
+      ControllerTranslationBindingService.bindAttributes(
         target,
         this.translationModel,
       );

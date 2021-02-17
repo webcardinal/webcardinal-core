@@ -12,6 +12,9 @@ export const getModalContent = async modalName => {
   try {
     const response = await fetch(modalPath);
     const content = await response.text();
+    if (!response.ok) {
+      throw new Error(content);
+    }
     modals[modalName] = content;
     return content;
   } catch (error) {

@@ -25,12 +25,21 @@ const ControllerTranslationBindingService = {
       const target = element.children[i];
 
       // bind attributes
-      bindElementAttributes(target, model, TRANSLATION_CHAIN_PREFIX);
+      ControllerTranslationBindingService.bindAttributes(target, model);
 
       if (target.children) {
         ControllerTranslationBindingService.bindRecursive(target, model);
       }
     }
+  },
+
+   /**
+   * @description - Binds all attributes for an Element
+   * @param element
+   * @param model - Object in which the specified chain (<attribute>="$chain") is searched
+   */
+  bindAttributes: (element: Element, model) => {
+    bindElementAttributes(element, model, TRANSLATION_CHAIN_PREFIX);
   },
 };
 

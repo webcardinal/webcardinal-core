@@ -8,7 +8,7 @@ export const MODEL_KEY = 'data-model';
 export const MODEL_CHAIN_PREFIX = '@';
 export const TRANSLATION_CHAIN_PREFIX = '$';
 export const SKIP_BINDING_FOR_PROPERTIES = ['_saveElement'];
-export const SKIP_BINDING_FOR_COMPONENTS = ['webc-for', 'webc-if'];
+export const SKIP_BINDING_FOR_COMPONENTS = ['webc-for', 'webc-if', 'webc-template'];
 export const PSK_CARDINAL_PREFIX = 'psk-';
 
 // others
