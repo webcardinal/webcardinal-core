@@ -167,7 +167,7 @@ class Controller {
     this.history.push(url, state);
   }
 
-  navigateToTag(tag, state) {
+  navigateToPageTag(tag, state) {
     this.element.dispatchEvent(
       new CustomEvent('webcardinal:tags:get', {
         bubbles: true,
