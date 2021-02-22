@@ -294,7 +294,10 @@ export default class ApplicationController {
       window.WebCardinal = {
         controllers,
         basePath: this.basePath,
-        language: 'en',
+        language:
+          'localStorage' in window
+            ? window.localStorage.getItem('language') || 'en'
+            : 'en',
         translations: {},
       };
 

@@ -6,6 +6,7 @@ import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { HostElement } from '../../decorators';
 import {
   ControllerBindingService,
+    ControllerNodeValueBindingService,
   ControllerRegistryService,
   ControllerTranslationBindingService,
 } from '../../services';
@@ -70,6 +71,7 @@ export class WebcFor {
       element,
       this.translationModel,
     );
+    ControllerNodeValueBindingService.bindNodeValue(element, this.model, this.translationModel);
 
     if (element.children) {
       Array.from(element.children).forEach(child =>

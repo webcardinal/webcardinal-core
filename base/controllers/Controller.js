@@ -66,6 +66,12 @@ class Controller {
     this.translationModel = PskBindableModel.setModel(
       ControllerHelper.getTranslationModel() || {},
     );
+
+    // will need to be called when the controller will be removed
+    this.disconnectedCallback = () => {
+      this.removeAllTagEventListeners();
+      this.onDisconnectedCallback();
+    };
   }
 
   createElement(elementName, props) {
@@ -98,6 +104,14 @@ class Controller {
 
   onReady() {}
 
+  onDisconnectedCallback() {}
+
+  removeAllTagEventListeners() {
+    this.tagEventListeners.forEach(x => {
+      this.element.removeEventListener(x.eventName, x.eventListener, x.options);
+    });
+  }
+
   onTagEvent(tag, eventName, listener, options) {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
@@ -126,7 +140,13 @@ class Controller {
         }
       };
 
-      const tagEventListener = { tag, eventName, listener, eventListener };
+      const tagEventListener = {
+        tag,
+        eventName,
+        listener,
+        eventListener,
+        options,
+      };
       this.tagEventListeners.push(tagEventListener);
 
       this.element.addEventListener(eventName, eventListener, options);
@@ -139,17 +159,30 @@ class Controller {
     try {
       ControllerHelper.checkEventListener(eventName, listener, options);
 
+      const tagEventListenerIndexesToRemove = [];
       this.tagEventListeners
-        .filter(
-          x =>
+        .filter((x, index) => {
+          const isMatch =
             x.tag === tag &&
             x.eventName === eventName &&
             x.listener === listener &&
-            x.options === options,
-        )
+            x.options === options;
+          if (isMatch) {
+            tagEventListenerIndexesToRemove.push(index);
+          }
+          return isMatch;
+        })
         .forEach(x => {
           this.element.removeEventListener(eventName, x.eventListener, options);
         });
+
+      // remove the listeners also  from this.tagEventListeners
+      if (tagEventListenerIndexesToRemove.length) {
+        tagEventListenerIndexesToRemove.reverse();
+        tagEventListenerIndexesToRemove.forEach(indexToRemove => {
+          this.tagEventListeners.splice(indexToRemove, 1);
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -228,7 +261,7 @@ class Controller {
     });
   }
 
-  t(translationKey) {
+  translate(translationKey) {
     const { language } = window.WebCardinal;
     const { pathname } = window.location;
 
@@ -248,6 +281,13 @@ class Controller {
     }
 
     return translatedString;
+  }
+
+  setLanguage(language) {
+    if ('localStorage' in window) {
+      window.localStorage.setItem('language', language);
+    }
+    window.location.reload();
   }
 }
 

@@ -11,6 +11,7 @@ import {
   ControllerBindingService,
   ControllerTranslationService,
   ControllerTranslationBindingService,
+  ControllerNodeValueBindingService,
 } from '../../services';
 import { promisifyEventEmit } from '../../utils';
 
@@ -84,6 +85,7 @@ export class WebcPage {
 
       // bind nodes
       ControllerBindingService.bindRecursive(this.host, this.model);
+      ControllerNodeValueBindingService.bindRecursive(this.host, this.model, this.translationModel);
     }
 
     if (translationModel || model) {
@@ -100,17 +102,18 @@ export class WebcPage {
   connectedCallback() {
     if (this.listeners) {
       const { getModel, getTranslationModel } = this.listeners;
-      getModel && getModel.add();
-      getTranslationModel && getTranslationModel.add();
+      getModel?.add();
+      getTranslationModel?.add();
     }
   }
 
   disconnectedCallback() {
     if (this.listeners) {
       const { getModel, getTranslationModel } = this.listeners;
-      getModel && getModel.remove();
-      getTranslationModel && getTranslationModel.remove();
+      getModel?.remove();
+      getTranslationModel?.remove();
     }
+    this.controller?.disconnectedCallback();
   }
 
   @Method()

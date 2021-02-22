@@ -12,6 +12,7 @@ import {
 import { MODEL_CHAIN_PREFIX } from '../../constants';
 import {
   ControllerBindingService,
+  ControllerNodeValueBindingService,
   ControllerTranslationBindingService,
 } from '../../services';
 import { promisifyEventEmit } from '../../utils';
@@ -118,24 +119,27 @@ export class WebcIf {
   }
 
   private bindModelToVisibleSlot(element: Element, model: any) {
-    for (let i = 0; i < element.children.length; i++) {
-      const target = element.children[i];
-
+    Array.from(element.children).forEach(target => {
       ControllerBindingService.bindModel(target, model);
       ControllerBindingService.bindAttributes(target, model);
       ControllerTranslationBindingService.bindAttributes(
         target,
         this.translationModel,
       );
+      ControllerNodeValueBindingService.bindNodeValue(
+        element,
+        this.model,
+        this.translationModel,
+      );
 
       if (target.children) {
         this.bindModelToVisibleSlot(target, model);
       }
-    }
+    });
   }
 
   private async updateConditionValue() {
-    if (this.condition && this.condition.startsWith(MODEL_CHAIN_PREFIX)) {
+    if (this.condition?.startsWith(MODEL_CHAIN_PREFIX)) {
       const conditionChain = this.condition.slice(1);
       this.conditionValue = this.localModel.getChainValue(conditionChain);
 

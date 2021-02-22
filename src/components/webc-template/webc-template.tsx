@@ -5,6 +5,7 @@ import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { HostElement } from '../../decorators';
 import {
   ControllerBindingService,
+  ControllerNodeValueBindingService,
   ControllerTranslationBindingService,
 } from '../../services';
 import { promisifyEventEmit, extractChain } from '../../utils';
@@ -65,6 +66,11 @@ export class WebcTemplate {
     ControllerBindingService.bindAttributes(element, this.model);
     ControllerTranslationBindingService.bindAttributes(
       element,
+      this.translationModel,
+    );
+    ControllerNodeValueBindingService.bindNodeValue(
+      element,
+      this.model,
       this.translationModel,
     );
 
