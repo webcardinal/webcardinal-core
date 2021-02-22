@@ -1,4 +1,4 @@
-# webc-container
+# webc-bindable
 
 
 
@@ -13,6 +13,26 @@
 | `history`        | --           |             | `RouterHistory` | `undefined` |
 
 
+## Events
+
+| Event                     | Description | Type               |
+| ------------------------- | ----------- | ------------------ |
+| `webcardinal:routing:get` |             | `CustomEvent<any>` |
+
+
+## Methods
+
+### `getModel() => Promise<any>`
+
+
+
+#### Returns
+
+Type: `Promise<any>`
+
+
+
+
 ----------------------------------------------
 
-*Built with [StencilJS](https://stenciljs.com/)*
+*Made by [WebCardinal](https://github.com/webcardinal) contributors.*

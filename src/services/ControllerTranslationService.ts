@@ -1,6 +1,6 @@
 const ControllerTranslationService = {
   loadAndSetTranslationForPage: async routingEvent => {
-    const { mapping, basePath } = routingEvent;
+    const { mapping, skinsPath } = routingEvent;
     const { pathname } = window.location;
     const { language, translations } = window.WebCardinal;
 
@@ -34,7 +34,7 @@ const ControllerTranslationService = {
             pathWithoutExtension.lastIndexOf('/') + 1,
           );
 
-    const requestedPath = `${basePath}/skins/${language}${pathWithoutExtension}/${translationFilePrefix}.translate.json`;
+    const requestedPath = `${skinsPath}/${language}${pathWithoutExtension}/${translationFilePrefix}.translate.json`;
     try {
       const response = await fetch(requestedPath);
       const translationFile = await response.json();

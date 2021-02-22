@@ -1,4 +1,4 @@
-# psk-condition
+# webc-if
 
 
 
@@ -23,4 +23,4 @@
 
 ----------------------------------------------
 
-*Built with [StencilJS](https://stenciljs.com/)*
+*Made by [WebCardinal](https://github.com/webcardinal) contributors.*

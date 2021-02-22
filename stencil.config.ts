@@ -1,6 +1,7 @@
 import type { Config as StencilConfig } from '@stencil/core';
 import { sass } from '@stencil/sass';
 
+
 export const config: StencilConfig = {
   namespace: 'webcardinal',
   globalScript: './src/globals/mode.ts',
@@ -10,7 +11,14 @@ export const config: StencilConfig = {
       type: 'dist',
       dir: 'build/dist',
     },
-    { type: 'docs-readme' },
+    {
+      type: 'docs-readme',
+      dir: 'docs/readme',
+      // strict: true,
+      footer: '*Made by [WebCardinal](https://github.com/webcardinal) contributors.*'
+    }
   ],
-  plugins: [sass()],
+  plugins: [
+    sass()
+  ]
 };

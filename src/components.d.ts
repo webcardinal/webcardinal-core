@@ -151,6 +151,7 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface WebcSkin {
+        "href": string;
     }
     interface WebcSpinner {
     }
@@ -443,6 +444,7 @@ declare namespace LocalJSX {
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcSkin {
+        "href"?: string;
     }
     interface WebcSpinner {
     }
