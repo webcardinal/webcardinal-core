@@ -1,0 +1,76 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-if",
+  "filePath": "./src/components/webc-if/webc-if.tsx",
+  "fileName": "webc-if.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-if/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-if/usage",
+  "tag": "webc-if",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "condition",
+      "type": "any",
+      "mutable": false,
+      "attr": "condition",
+      "reflectToAttr": false,
+      "docs": "The condition that will be evaluated in order to check which slots will be visible",
+      "docsTags": [],
+      "default": "undefined",
+      "values": [
+        {
+          "type": "any"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "model",
+      "type": "any",
+      "mutable": false,
+      "attr": "data-model",
+      "reflectToAttr": false,
+      "docs": "An optional model that will be used to check the condition;\r\nif not provided, then the component will find the closes webc-bindable element and take the model from there",
+      "docsTags": [],
+      "default": "undefined",
+      "values": [
+        {
+          "type": "any"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:model:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    },
+    {
+      "event": "webcardinal:translationModel:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

@@ -1,0 +1,76 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable",
+  "filePath": "./src/components/webc-bindable/webc-bindable.tsx",
+  "fileName": "webc-bindable.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable/usage",
+  "tag": "webc-bindable",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "controllerName",
+      "type": "string",
+      "mutable": false,
+      "attr": "controller",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "history",
+      "type": "RouterHistory",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "RouterHistory"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [
+    {
+      "name": "getModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getModel() => Promise<any>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "events": [
+    {
+      "event": "webcardinal:routing:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

@@ -1,0 +1,41 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast",
+  "filePath": "./src/components/webc-app/webc-app-error-toast/webc-app-error-toast.tsx",
+  "fileName": "webc-app-error-toast.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast/usage",
+  "tag": "webc-app-error-toast",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [
+    "webc-app-root"
+  ],
+  "dependencies": [],
+  "dependencyGraph": {
+    "webc-app-root": [
+      "webc-app-error-toast"
+    ]
+  },
+  "props": [],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": [
+    {
+      "event": "webcAppWarning",
+      "target": "window",
+      "capture": false,
+      "passive": false
+    },
+    {
+      "event": "webcAppError",
+      "target": "window",
+      "capture": false,
+      "passive": false
+    }
+  ]
+}

@@ -1,0 +1,132 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-menu/webc-app-menu",
+  "filePath": "./src/components/webc-app/webc-app-menu/webc-app-menu/webc-app-menu.tsx",
+  "fileName": "webc-app-menu.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-menu/webc-app-menu/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-menu/webc-app-menu/usage",
+  "tag": "webc-app-menu",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [
+    "webc-app-root"
+  ],
+  "dependencies": [
+    "webc-app-menu-item",
+    "webc-app-identity"
+  ],
+  "dependencyGraph": {
+    "webc-app-menu": [
+      "webc-app-menu-item",
+      "webc-app-identity"
+    ],
+    "webc-app-menu-item": [
+      "webc-app-menu-item",
+      "stencil-route-link"
+    ],
+    "webc-app-root": [
+      "webc-app-menu"
+    ]
+  },
+  "props": [
+    {
+      "name": "basePath",
+      "type": "string",
+      "mutable": true,
+      "attr": "base-path",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "''",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableIdentity",
+      "type": "boolean",
+      "mutable": true,
+      "attr": "disable-identity",
+      "reflectToAttr": true,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "history",
+      "type": "RouterHistory",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "RouterHistory"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "items",
+      "type": "any[]",
+      "mutable": true,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "[]",
+      "values": [
+        {
+          "type": "any[]"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "mode",
+      "type": "string",
+      "mutable": true,
+      "attr": "mode",
+      "reflectToAttr": true,
+      "docs": "",
+      "docsTags": [],
+      "default": "this.defaultMode",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:config:getRouting",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}
