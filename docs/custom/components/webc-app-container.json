@@ -1,0 +1,38 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container",
+  "filePath": "./src/components/webc-app/webc-app-container/webc-app-container.tsx",
+  "fileName": "webc-app-container.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container/usage",
+  "tag": "webc-app-container",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [
+    "webc-app-root"
+  ],
+  "dependencies": [
+    "webc-app-router"
+  ],
+  "dependencyGraph": {
+    "webc-app-container": [
+      "webc-app-router"
+    ],
+    "webc-app-router": [
+      "stencil-route",
+      "stencil-router",
+      "stencil-route-switch"
+    ],
+    "webc-app-root": [
+      "webc-app-container"
+    ]
+  },
+  "props": [],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

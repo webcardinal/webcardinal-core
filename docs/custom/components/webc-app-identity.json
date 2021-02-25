@@ -1,0 +1,87 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-identity",
+  "filePath": "./src/components/webc-app/webc-app-identity/webc-app-identity.tsx",
+  "fileName": "webc-app-identity.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-identity/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-identity/usage",
+  "tag": "webc-app-identity",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [
+    "webc-app-menu"
+  ],
+  "dependencies": [],
+  "dependencyGraph": {
+    "webc-app-menu": [
+      "webc-app-identity"
+    ]
+  },
+  "props": [
+    {
+      "name": "avatar",
+      "type": "string",
+      "mutable": true,
+      "attr": "avatar",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "mutable": true,
+      "attr": "email",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "mutable": true,
+      "attr": "name",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:config:getIdentity",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

@@ -1,0 +1,104 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-page",
+  "filePath": "./src/components/webc-page/webc-page.tsx",
+  "fileName": "webc-page.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-page/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-page/usage",
+  "tag": "webc-page",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "controllerName",
+      "type": "string",
+      "mutable": false,
+      "attr": "controller",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "enableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "enable-translations",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "history",
+      "type": "RouterHistory",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "RouterHistory"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [
+    {
+      "name": "getModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getModel() => Promise<any>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    },
+    {
+      "name": "getTranslationModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getTranslationModel() => Promise<any>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "events": [
+    {
+      "event": "webcardinal:routing:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

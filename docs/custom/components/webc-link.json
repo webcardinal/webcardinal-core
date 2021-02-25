@@ -1,0 +1,71 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link",
+  "filePath": "./src/components/webc-link/webc-link.tsx",
+  "fileName": "webc-link.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link/usage",
+  "tag": "webc-link",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [
+    "stencil-route-link"
+  ],
+  "dependencyGraph": {
+    "webc-link": [
+      "stencil-route-link"
+    ]
+  },
+  "props": [
+    {
+      "name": "href",
+      "type": "string",
+      "mutable": true,
+      "attr": "href",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "tag",
+      "type": "string",
+      "mutable": false,
+      "attr": "tag",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:tags:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

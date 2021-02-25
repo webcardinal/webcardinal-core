@@ -1,0 +1,28 @@
+{
+  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-spinner",
+  "filePath": "./src/components/webc-spinner/webc-spinner.tsx",
+  "fileName": "webc-spinner.tsx",
+  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-spinner/readme.md",
+  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-spinner/usage",
+  "tag": "webc-spinner",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [
+    "webc-modal"
+  ],
+  "dependencies": [],
+  "dependencyGraph": {
+    "webc-modal": [
+      "webc-spinner"
+    ]
+  },
+  "props": [],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

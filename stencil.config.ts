@@ -1,6 +1,6 @@
 import type { Config as StencilConfig } from '@stencil/core';
 import { sass } from '@stencil/sass';
-
+import { generator } from './docs/generator';
 
 export const config: StencilConfig = {
   namespace: 'webcardinal',
@@ -16,6 +16,10 @@ export const config: StencilConfig = {
       dir: 'docs/readme',
       // strict: true,
       footer: '*Made by [WebCardinal](https://github.com/webcardinal) contributors.*'
+    },
+    {
+      type: 'docs-custom',
+      generator
     }
   ],
   plugins: [
