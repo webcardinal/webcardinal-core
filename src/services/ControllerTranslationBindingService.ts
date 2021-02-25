@@ -1,7 +1,4 @@
-import {
-  TRANSLATION_CHAIN_PREFIX,
-  SKIP_BINDING_FOR_COMPONENTS,
-} from '../constants';
+import { TRANSLATION_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS } from '../constants';
 import { bindElementAttributes } from '../utils';
 
 const ControllerTranslationBindingService = {
@@ -21,19 +18,17 @@ const ControllerTranslationBindingService = {
       return;
     }
 
-    for (let i = 0; i < element.children.length; i++) {
-      const target = element.children[i];
-
+    Array.from(element.children).forEach(target => {
       // bind attributes
       ControllerTranslationBindingService.bindAttributes(target, model);
 
       if (target.children) {
         ControllerTranslationBindingService.bindRecursive(target, model);
       }
-    }
+    });
   },
 
-   /**
+  /**
    * @description - Binds all attributes for an Element
    * @param element
    * @param model - Object in which the specified chain (<attribute>="$chain") is searched

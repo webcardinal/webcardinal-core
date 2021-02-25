@@ -1,13 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
-import {
-  Component,
-  h,
-  Prop,
-  State,
-  Element,
-  Watch,
-  Event,
-} from '@stencil/core';
+import { Component, h, Prop, State, Element, Watch, Event } from '@stencil/core';
 
 import { MODEL_CHAIN_PREFIX } from '../../constants';
 import {
@@ -96,9 +88,7 @@ export class WebcIf {
     }
 
     try {
-      this.translationModel = await promisifyEventEmit(
-        this.getTranslationModelEvent,
-      );
+      this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
     } catch (error) {
       console.error(error);
     }
@@ -119,18 +109,14 @@ export class WebcIf {
   }
 
   private bindModelToVisibleSlot(element: Element, model: any) {
+    Array.from(element.childNodes).forEach(child => {
+      ControllerNodeValueBindingService.bindNodeValue(child, model, this.translationModel);
+    });
+
     Array.from(element.children).forEach(target => {
       ControllerBindingService.bindModel(target, model);
       ControllerBindingService.bindAttributes(target, model);
-      ControllerTranslationBindingService.bindAttributes(
-        target,
-        this.translationModel,
-      );
-      ControllerNodeValueBindingService.bindNodeValue(
-        element,
-        this.model,
-        this.translationModel,
-      );
+      ControllerTranslationBindingService.bindAttributes(target, this.translationModel);
 
       if (target.children) {
         this.bindModelToVisibleSlot(target, model);
@@ -140,18 +126,25 @@ export class WebcIf {
 
   private async updateConditionValue() {
     if (this.condition?.startsWith(MODEL_CHAIN_PREFIX)) {
+      const { localModel } = this;
       const conditionChain = this.condition.slice(1);
-      this.conditionValue = this.localModel.getChainValue(conditionChain);
+      this.conditionValue = localModel.getChainValue(conditionChain);
 
-      this.localModel.onChange(conditionChain, _ => {
-        this.conditionValue = this.localModel.getChainValue(conditionChain);
+      localModel.onChange(conditionChain, () => {
+        this.conditionValue = localModel.getChainValue(conditionChain);
       });
+
+      if (localModel.hasExpression(conditionChain)) {
+        this.conditionValue = localModel.evaluateExpression(conditionChain);
+
+        localModel.onChangeExpressionChain(conditionChain, () => {
+          this.conditionValue = localModel.evaluateExpression(conditionChain);
+        });
+      }
     }
   }
 
   render() {
-    return (
-      <div innerHTML={this.conditionValue ? this.trueSlot : this.falseSlot} />
-    );
+    return <div innerHTML={this.conditionValue ? this.trueSlot : this.falseSlot} />;
   }
 }

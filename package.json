@@ -62,6 +62,5 @@
     "ignorePatterns": [
       "base/libs/*"
     ]
-  },
-  "prettier": "@ionic/prettier-config"
+  }
 }
