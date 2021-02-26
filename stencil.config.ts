@@ -1,8 +1,13 @@
 import type { Config as StencilConfig } from '@stencil/core';
 import { sass } from '@stencil/sass';
-import { generator } from './docs/generator';
+import { generator } from '@webcardinal/internals';
 
-export const config: StencilConfig = {
+export interface WebCardinalConfig extends StencilConfig {
+  readonly component: string
+}
+
+export const config: WebCardinalConfig = {
+  component: '@webcardinal/core',
   namespace: 'webcardinal',
   globalScript: './src/globals/mode.ts',
   globalStyle: './src/globals/main.css',

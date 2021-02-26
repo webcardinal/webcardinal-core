@@ -17,7 +17,7 @@
     "build": "stencil build --prod",
     "dev": "stencil build --dev",
     "generate": "stencil generate",
-    "docs": "stencil build --docs-custom",
+    "docs": "stencil build --docs",
     "lint": "npm run eslint && npm run prettier -- --check",
     "fmt": "npm run eslint -- --fix && npm run prettier -- --write",
     "prettier": "prettier \"./{src,base}/**/*.{js,ts,tsx}\" \"!base/libs/**\" \"!src/components.d.ts\"",
