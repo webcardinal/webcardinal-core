@@ -1,8 +1,4 @@
-import {
-  MODEL_KEY,
-  MODEL_CHAIN_PREFIX,
-  SKIP_BINDING_FOR_COMPONENTS,
-} from '../constants';
+import { MODEL_KEY, MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS } from '../constants';
 import { bindElementAttributes, setElementValue } from '../utils';
 
 function setElementModel(element, model, chain) {
@@ -59,9 +55,7 @@ const ControllerBindingService = {
       return;
     }
 
-    for (let i = 0; i < element.children.length; i++) {
-      const target = element.children[i];
-
+    Array.from(element.children).forEach(target => {
       // bind model
       ControllerBindingService.bindModel(target, model);
 
@@ -71,7 +65,7 @@ const ControllerBindingService = {
       if (target.children) {
         ControllerBindingService.bindRecursive(target, model);
       }
-    }
+    });
   },
 
   /**
@@ -109,9 +103,7 @@ const ControllerBindingService = {
 
     // onChangeExpressionChain
     if (model.hasExpression(chain)) {
-      model.onChangeExpressionChain(chain, _ =>
-        setElementModel(element, model, chain),
-      );
+      model.onChangeExpressionChain(chain, () => setElementModel(element, model, chain));
     }
   },
 

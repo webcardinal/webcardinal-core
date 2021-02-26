@@ -44,17 +44,13 @@ export class WebcPage {
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
 
     if (this.enableTranslations) {
-      await ControllerTranslationService.loadAndSetTranslationForPage(
-        routingEvent,
-      );
+      await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
     }
 
     // load controller
     if (typeof this.controllerName === 'string') {
       try {
-        const Controller = await ControllerRegistryService.getController(
-          this.controllerName,
-        );
+        const Controller = await ControllerRegistryService.getController(this.controllerName);
         if (this.host.isConnected) {
           this.controller = new Controller(this.host, this.history);
         }
@@ -72,10 +68,7 @@ export class WebcPage {
 
       if (this.enableTranslations) {
         // bind nodes with translation model
-        ControllerTranslationBindingService.bindRecursive(
-          this.host,
-          this.translationModel,
-        );
+        ControllerTranslationBindingService.bindRecursive(this.host, this.translationModel);
       }
     }
 
@@ -113,7 +106,14 @@ export class WebcPage {
       getModel?.remove();
       getTranslationModel?.remove();
     }
-    this.controller?.disconnectedCallback();
+
+    // disconnectedCallback can be called multiple times
+    // there is no way to listen to a OnDestroy like event so we check if the host is still attached to the DOM
+    setTimeout(() => {
+      if (!document.body.contains(this.host)) {
+        this.controller?.disconnectedCallback();
+      }
+    }, 100);
   }
 
   @Method()

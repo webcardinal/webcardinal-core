@@ -6,7 +6,7 @@ import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { HostElement } from '../../decorators';
 import {
   ControllerBindingService,
-    ControllerNodeValueBindingService,
+  ControllerNodeValueBindingService,
   ControllerRegistryService,
   ControllerTranslationBindingService,
 } from '../../services';
@@ -53,10 +53,7 @@ export class WebcFor {
     let chainSuffix = extractChain(element);
     if (chainSuffix) {
       chainSuffix = chainSuffix.slice(1);
-      element.setAttribute(
-        MODEL_KEY,
-        [this.chain, index, chainSuffix].filter(String).join('.'),
-      );
+      element.setAttribute(MODEL_KEY, [this.chain, index, chainSuffix].filter(String).join('.'));
     } else if (this.autoBind === true) {
       element.setAttribute(MODEL_KEY, [this.chain, index].join('.'));
     }
@@ -67,16 +64,15 @@ export class WebcFor {
 
     ControllerBindingService.bindModel(element, this.model);
     ControllerBindingService.bindAttributes(element, this.model);
-    ControllerTranslationBindingService.bindAttributes(
-      element,
-      this.translationModel,
-    );
-    ControllerNodeValueBindingService.bindNodeValue(element, this.model, this.translationModel);
+    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
 
-    if (element.children) {
-      Array.from(element.children).forEach(child =>
-        this.bindRelativeModel(child, index),
+    if (element.childNodes) {
+      Array.from(element.childNodes).forEach(child =>
+        ControllerNodeValueBindingService.bindNodeValue(child as ChildNode, this.model, this.translationModel),
       );
+    }
+    if (element.children) {
+      Array.from(element.children).forEach(child => this.bindRelativeModel(child, index));
     }
   };
 
@@ -87,18 +83,15 @@ export class WebcFor {
 
       const model = this.model.getChainValue(chain);
       if (!Array.isArray(model)) {
-        console.error(
-          `Attribute "${MODEL_KEY}" must be an array in the model!`,
-        );
+        console.error(`Attribute "${MODEL_KEY}" must be an array in the model!`);
         return;
       }
 
       for (let i = 0; i < model.length; i++) {
         for (const node of this.template) {
           const element = node.cloneNode(true) as HTMLElement;
-          this.bindRelativeModel(element, i);
-
           this.host.appendChild(element);
+          this.bindRelativeModel(element, i);
         }
       }
     };
@@ -109,6 +102,13 @@ export class WebcFor {
       this.host.innerHTML = '';
       renderTemplate();
     });
+
+    if (this.model.hasExpression(chain)) {
+      this.model.onChangeExpressionChain(chain, () => {
+        this.host.innerHTML = '';
+        renderTemplate();
+      });
+    }
   }
 
   async componentWillLoad() {
@@ -122,9 +122,7 @@ export class WebcFor {
     // get specific model (from controller or parent node)
     if (typeof this.controllerName === 'string') {
       try {
-        const Controller = await ControllerRegistryService.getController(
-          this.controllerName,
-        );
+        const Controller = await ControllerRegistryService.getController(this.controllerName);
         if (this.host.isConnected) {
           this.controller = new Controller(this.host, this.history);
           if (this.controller.model) {
@@ -140,9 +138,7 @@ export class WebcFor {
     } else {
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
-        this.translationModel = await promisifyEventEmit(
-          this.getTranslationModelEvent,
-        );
+        this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
       } catch (error) {
         console.error(error);
       }

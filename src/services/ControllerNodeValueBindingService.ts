@@ -1,21 +1,4 @@
-import {
-  MODEL_CHAIN_PREFIX,
-  SKIP_BINDING_FOR_COMPONENTS,
-  TRANSLATION_CHAIN_PREFIX,
-} from '../constants';
-
-function bindRecursive(element: ChildNode, model: any, translationModel: any) {
-  Array.from(element.childNodes).forEach(childNode => {
-    ControllerNodeValueBindingService.bindNodeValue(
-      childNode,
-      model,
-      translationModel,
-    );
-    if (childNode.hasChildNodes()) {
-      bindRecursive(childNode, model, translationModel);
-    }
-  });
-}
+import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS, TRANSLATION_CHAIN_PREFIX } from '../constants';
 
 const ControllerNodeValueBindingService = {
   /**
@@ -38,7 +21,12 @@ const ControllerNodeValueBindingService = {
       return;
     }
 
-    bindRecursive(element, model, translationModel);
+    Array.from(element.childNodes).forEach(childNode => {
+      ControllerNodeValueBindingService.bindNodeValue(childNode, model, translationModel);
+      if (childNode.hasChildNodes()) {
+        ControllerNodeValueBindingService.bindRecursive(childNode, model, translationModel);
+      }
+    });
   },
 
   bindNodeValue: (node: ChildNode, model: any, translationModel: any) => {
@@ -47,18 +35,12 @@ const ControllerNodeValueBindingService = {
       return;
     }
 
-    if (
-      node.nodeType !== Node.TEXT_NODE ||
-      !node.nodeValue ||
-      !node.nodeValue.trim()
-    ) {
+    if (node.nodeType !== Node.TEXT_NODE || !node.nodeValue || !node.nodeValue.trim()) {
       // the current node is either not a text node or has an empty value
       return;
     }
 
-    const bindingExpressionTexts = [
-      ...node.nodeValue.matchAll(/\{\{\s*([^\s}}]+)\s*\}\}/g),
-    ];
+    const bindingExpressionTexts = [...node.nodeValue.matchAll(/\{\{\s*([^\s}}]+)\s*\}\}/g)];
     if (!bindingExpressionTexts.length) {
       // no binding expressions were found
       return;
@@ -72,15 +54,10 @@ const ControllerNodeValueBindingService = {
         };
       })
       .filter(({ chainWithPrefix }) => {
-        return (
-          chainWithPrefix.startsWith(MODEL_CHAIN_PREFIX) ||
-          chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX)
-        );
+        return chainWithPrefix.startsWith(MODEL_CHAIN_PREFIX) || chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX);
       })
       .map(expression => {
-        const isTranslation = expression.chainWithPrefix.startsWith(
-          TRANSLATION_CHAIN_PREFIX,
-        );
+        const isTranslation = expression.chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX);
         const chain = expression.chainWithPrefix.slice(1);
         const currentModel = isTranslation ? translationModel : model;
         return {
@@ -88,6 +65,8 @@ const ControllerNodeValueBindingService = {
           chain,
           isTranslation,
           isModel: !isTranslation,
+          isModelExpression: currentModel.hasExpression(chain),
+          evaluateModelExpression: () => currentModel.evaluateExpression(chain),
           model: currentModel,
           getChainValue: () => {
             let value = currentModel.getChainValue(chain);
@@ -95,9 +74,7 @@ const ControllerNodeValueBindingService = {
               const { language } = window.WebCardinal;
               const { pathname } = window.location;
 
-              console.warn(
-                `No translations found for language ${language}, page ${pathname} and key ${chain}`,
-              );
+              console.warn(`No translations found for language ${language}, page ${pathname} and key ${chain}`);
 
               // we have a translation for a missing key, so we return the translation key (chain)
               value = chain;
@@ -116,11 +93,12 @@ const ControllerNodeValueBindingService = {
 
     const updateNodeValue = () => {
       let updatedNodeValue = originalNodeValue;
-      bindingExpressions.forEach(({ expression, getChainValue }) => {
-        updatedNodeValue = updatedNodeValue.replace(
-          expression,
-          getChainValue(),
-        );
+      bindingExpressions.forEach(({ expression, getChainValue, isModelExpression, evaluateModelExpression }) => {
+        let value = getChainValue();
+        if (!value && isModelExpression) {
+          value = isModelExpression ? evaluateModelExpression() : '';
+        }
+        updatedNodeValue = updatedNodeValue.replace(expression, value || '');
       });
       node.nodeValue = updatedNodeValue;
     };
@@ -129,10 +107,16 @@ const ControllerNodeValueBindingService = {
 
     bindingExpressions
       .filter(x => x.isModel)
-      .forEach(({ chain }) => {
+      .forEach(({ model, chain, isModelExpression }) => {
         model.onChange(chain, () => {
           updateNodeValue();
         });
+
+        if (isModelExpression) {
+          model.onChangeExpressionChain(chain, () => {
+            updateNodeValue();
+          });
+        }
       });
   },
 };

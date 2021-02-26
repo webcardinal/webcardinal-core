@@ -14,7 +14,7 @@ export class WebcAppErrorToast {
 
   @Listen('webcAppWarning', { target: 'window' })
   handleAppWarning(event: CustomEvent<any[]>) {
-    if (event.detail && event.detail.length) {
+    if (event.detail?.length) {
       this.addToast('warning', this.getWarningToastContent([...event.detail]));
     }
   }

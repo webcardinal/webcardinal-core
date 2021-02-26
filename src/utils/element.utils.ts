@@ -6,11 +6,7 @@ import {
   SKIP_BINDING_FOR_PROPERTIES,
 } from '../constants';
 
-export function getClosestParentElement(
-  element: HTMLElement,
-  selector: string,
-  stopSelector?: string,
-): HTMLElement {
+export function getClosestParentElement(element: HTMLElement, selector: string, stopSelector?: string): HTMLElement {
   let closestParent = null;
   while (element) {
     if (element.matches(selector)) {
@@ -51,18 +47,14 @@ export function setElementValue(element, { key, value }) {
 
   if (['innerHTML', 'innerText'].includes(key)) {
     console.warn(
-      `Model property "${key}" can be short handed, try "${key
-        .substr(5)
-        .toLowerCase()}" instead!\n`,
+      `Model property "${key}" can be short handed, try "${key.substr(5).toLowerCase()}" instead!\n`,
       `target element:`,
       element,
     );
   }
   if (['data-tag', 'data-model'].includes(key)) {
     console.warn(
-      `Model property "${key}" can be shorthanded, try "${key.substr(
-        5,
-      )}" instead!\n`,
+      `Model property "${key}" can be shorthanded, try "${key.substr(5)}" instead!\n`,
       `target model:`,
       element.getAttribute('data-model'),
     );
@@ -125,11 +117,7 @@ export function setElementValue(element, { key, value }) {
  * @param element
  * @param model - Object in which the specified chain (<attribute>="@chain") is searched
  */
-export function bindElementAttributes(
-  element: Element,
-  model,
-  chainPrefix = MODEL_CHAIN_PREFIX,
-) {
+export function bindElementAttributes(element: Element, model, chainPrefix = MODEL_CHAIN_PREFIX) {
   // for some webc-<components> binding is managed by component itself
   if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
     return;
@@ -140,16 +128,16 @@ export function bindElementAttributes(
     return;
   }
 
-  for (let i = 0; i < element.attributes.length; i++) {
-    const key = element.attributes[i].nodeName;
-    let chain = element.attributes[i].nodeValue;
+  Array.from(element.attributes).forEach(attribute => {
+    const key = attribute.nodeName;
+    let chain = attribute.nodeValue;
 
     if (key === MODEL_KEY) {
-      continue;
+      return;
     }
 
     if (!chain.startsWith(chainPrefix)) {
-      continue;
+      return;
     }
     chain = chain.slice(1);
 
@@ -158,5 +146,12 @@ export function bindElementAttributes(
     model.onChange(chain, _ => {
       setElementValue(element, { key, value: model.getChainValue(chain) });
     });
-  }
+
+    if (model.hasExpression(chain)) {
+      setElementValue(element, { key, value: model.evaluateExpression(chain) });
+      model.onChangeExpressionChain(chain, _ => {
+        setElementValue(element, { key, value: model.evaluateExpression(chain) });
+      });
+    }
+  });
 }
