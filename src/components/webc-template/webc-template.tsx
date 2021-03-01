@@ -46,14 +46,12 @@ export class WebcTemplate {
   private model;
   private translationModel;
 
-  private bindRelativeModel = element => {
+  private bindRelativeModel = (element: Element) => {
     const tag = element.tagName.toLowerCase();
     const chainSuffix = extractChain(element);
     if (chainSuffix) {
       const newChain =
-        this.chain.length !== 1
-          ? [this.chain, chainSuffix.slice(1)].filter(String).join('.')
-          : chainSuffix;
+        this.chain.length !== 1 ? [this.chain, chainSuffix.slice(1)].filter(String).join('.') : chainSuffix;
 
       element.setAttribute(MODEL_KEY, newChain);
     }
@@ -64,21 +62,12 @@ export class WebcTemplate {
 
     ControllerBindingService.bindModel(element, this.model);
     ControllerBindingService.bindAttributes(element, this.model);
-    ControllerTranslationBindingService.bindAttributes(
-      element,
-      this.translationModel,
-    );
-    ControllerNodeValueBindingService.bindNodeValue(
-      element,
-      this.model,
-      this.translationModel,
-    );
+    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
 
-    if (element.children) {
-      Array.from(element.children).forEach(child =>
-        this.bindRelativeModel(child),
-      );
-    }
+    Array.from(element.childNodes).forEach(child => {
+      ControllerNodeValueBindingService.bindNodeValue(child, this.model, this.translationModel);
+    });
+    Array.from(element.children).forEach(child => this.bindRelativeModel(child));
   };
 
   async componentWillLoad() {
@@ -94,18 +83,18 @@ export class WebcTemplate {
     if (this.chain) {
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
-        this.translationModel = await promisifyEventEmit(
-          this.getTranslationModelEvent,
-        );
+        this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
       } catch (error) {
         console.error(error);
       }
 
-      if (this.host.children) {
-        Array.from(this.host.children).forEach(child =>
-          this.bindRelativeModel(child),
-        );
-      }
+      Array.from(this.host.childNodes).forEach(child => {
+        ControllerNodeValueBindingService.bindNodeValue(child, this.model, this.translationModel);
+      });
+
+      Array.from(this.host.children).forEach(child => {
+        this.bindRelativeModel(child);
+      });
     }
   }
 
