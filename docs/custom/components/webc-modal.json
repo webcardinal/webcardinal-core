@@ -1,9 +1,6 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-modal",
   "filePath": "./src/components/webc-modal/wcc-modal.tsx",
   "fileName": "wcc-modal.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-modal/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-modal/usage",
   "tag": "webc-modal",
   "usage": {},
   "docs": "",

@@ -1,9 +1,6 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container",
   "filePath": "./src/components/webc-app/webc-app-container/webc-app-container.tsx",
   "fileName": "webc-app-container.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-container/usage",
   "tag": "webc-app-container",
   "usage": {},
   "docs": "",

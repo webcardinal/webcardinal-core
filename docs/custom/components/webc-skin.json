@@ -1,9 +1,6 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-skin",
   "filePath": "./src/components/webc-skin/webc-skin.tsx",
   "fileName": "webc-skin.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-skin/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-skin/usage",
   "tag": "webc-skin",
   "usage": {},
   "docs": "",

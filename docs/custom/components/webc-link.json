@@ -1,14 +1,11 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link",
   "filePath": "./src/components/webc-link/webc-link.tsx",
   "fileName": "webc-link.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-link/usage",
   "tag": "webc-link",
   "usage": {},
   "docs": "",
   "docsTags": [],
-  "encapsulation": "shadow",
+  "encapsulation": "none",
   "dependents": [],
   "dependencies": [
     "stencil-route-link"

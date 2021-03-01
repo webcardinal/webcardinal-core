@@ -125,9 +125,14 @@ class ComponentsListenerService {
         if (!callback) return;
 
         if (event.detail.tag) {
+          if (!this.tags[event.detail.tag]) {
+            callback(`There is no page tag "${event.detail.tag}" registered in webcardinal.json`)
+            return;
+          }
+
           callback(
             undefined,
-            event.detail.tag ? this.tags[event.detail.tag] : null,
+            this.tags[event.detail.tag]
           );
         }
 
