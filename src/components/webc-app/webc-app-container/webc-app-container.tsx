@@ -1,7 +1,13 @@
 import { Component, h } from '@stencil/core';
-
 import { HostElement } from '../../../decorators';
 
+/**
+ * This web component is a wrapper over your application, more precise over <code>webc-app-router</code>.
+ *
+ * @slot - your content or if nothing, your routing point <code>webc-app-router</code>;
+ * @slot before - content that goes behind this component in the DOM;
+ * @slot after - place for final content;
+ */
 @Component({
   tag: 'webc-app-container',
   styleUrls: {
@@ -37,9 +43,7 @@ export class WebcAppContainer {
           <slot name="before" />
         </div>
       ) : null,
-      <div class="container app-container">
-        {this.slots.unnamed ? <slot /> : <webc-app-router />}
-      </div>,
+      <div class="container app-container">{this.slots.unnamed ? <slot /> : <webc-app-router />}</div>,
       this.slots.after ? (
         <div class="container after">
           <slot name="after" />

@@ -1,4 +1,8 @@
 webc-app-container {
+  /**
+   * @prop --webc-app-container-gap: Background of the button
+   */
+
   width: 100%; height: 100%;
   display: grid;
   grid-template-columns: 1fr;
