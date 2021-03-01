@@ -117,7 +117,12 @@ export function setElementValue(element, { key, value }) {
  * @param element
  * @param model - Object in which the specified chain (<attribute>="@chain") is searched
  */
-export function bindElementAttributes(element: Element, model, chainPrefix = MODEL_CHAIN_PREFIX) {
+export function bindElementAttributes(
+  element: Element,
+  model,
+  chainPrefix = MODEL_CHAIN_PREFIX,
+  modelChainPrefix: string = null,
+) {
   // for some webc-<components> binding is managed by component itself
   if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
     return;
@@ -140,6 +145,11 @@ export function bindElementAttributes(element: Element, model, chainPrefix = MOD
       return;
     }
     chain = chain.slice(1);
+
+    if (modelChainPrefix) {
+      // prepend the modelChainPrefix
+      chain = [chain, modelChainPrefix].filter(String).join('.');
+    }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
 

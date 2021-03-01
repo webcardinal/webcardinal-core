@@ -112,8 +112,8 @@ const ControllerBindingService = {
    * @param element
    * @param model - Object in which the specified chain (<attribute>="@chain") is searched
    */
-  bindAttributes: (element: Element, model) => {
-    bindElementAttributes(element, model);
+  bindAttributes: (element: Element, model, modelChainPrefix: string = null) => {
+    bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, modelChainPrefix);
   },
 };
 

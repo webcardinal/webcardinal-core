@@ -17,11 +17,7 @@ const ControllerHelper = {
       `);
     }
 
-    if (
-      options &&
-      typeof options !== 'boolean' &&
-      typeof options !== 'object'
-    ) {
+    if (options && typeof options !== 'boolean' && typeof options !== 'object') {
       throw Error(`
         Argument options is not valid, it must a boolean (true/false) in case of capture, or an options object.
         If no options are needed, this argument can be left empty.
@@ -34,16 +30,14 @@ const ControllerHelper = {
     const currentTranslations = translations[language];
 
     if (!currentTranslations) {
-      console.log(`No translations found for current language ${language}`);
+      console.warn(`No translations found for current language ${language}`);
       return null;
     }
 
     const { pathname } = window.location;
     const currentPageTranslations = currentTranslations[pathname];
     if (!currentPageTranslations) {
-      console.warn(
-        `No translations found for language ${language} and page ${pathname}`,
-      );
+      console.warn(`No translations found for language ${language} and page ${pathname}`);
       return null;
     }
 
@@ -63,9 +57,7 @@ class Controller {
 
     this.setLegacyGetModelEventListener();
 
-    this.translationModel = PskBindableModel.setModel(
-      ControllerHelper.getTranslationModel() || {},
-    );
+    this.translationModel = PskBindableModel.setModel(ControllerHelper.getTranslationModel() || {});
 
     // will need to be called when the controller will be removed
     this.disconnectedCallback = () => {
@@ -124,13 +116,8 @@ class Controller {
             event.preventDefault(); // Cancel the native event
             event.stopPropagation(); // Don't bubble/capture the event any further
 
-            console.log(
-              `Found listener for event ${eventName} for tag: ${targetTag}`,
-            );
             const dataModelChain = target.getAttribute('data-model');
-            const attachedModel = dataModelChain
-              ? this.model.toObject(dataModelChain.slice(1))
-              : undefined;
+            const attachedModel = dataModelChain ? this.model.toObject(dataModelChain.slice(1)) : undefined;
 
             listener(attachedModel, target, event);
             break;
@@ -163,10 +150,7 @@ class Controller {
       this.tagEventListeners
         .filter((x, index) => {
           const isMatch =
-            x.tag === tag &&
-            x.eventName === eventName &&
-            x.listener === listener &&
-            x.options === options;
+            x.tag === tag && x.eventName === eventName && x.listener === listener && x.options === options;
           if (isMatch) {
             tagEventListenerIndexesToRemove.push(index);
           }
@@ -266,17 +250,13 @@ class Controller {
     const { pathname } = window.location;
 
     if (!this.translationModel) {
-      console.warn(
-        `No translations found for language ${language} and page ${pathname}`,
-      );
+      console.warn(`No translations found for language ${language} and page ${pathname}`);
       return translationKey;
     }
 
     const translatedString = this.translationModel[translationKey];
     if (!translatedString) {
-      console.warn(
-        `No translations found for language ${language}, page ${pathname} and key ${translationKey}`,
-      );
+      console.warn(`No translations found for language ${language}, page ${pathname} and key ${translationKey}`);
       return translationKey;
     }
 

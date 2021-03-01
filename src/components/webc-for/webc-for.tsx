@@ -62,8 +62,10 @@ export class WebcFor {
       return;
     }
 
+    const modelChainPrefix = [this.chain, index].join('.');
+
     ControllerBindingService.bindModel(element, this.model);
-    ControllerBindingService.bindAttributes(element, this.model);
+    ControllerBindingService.bindAttributes(element, this.model, modelChainPrefix);
     ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
 
     if (element.childNodes) {
