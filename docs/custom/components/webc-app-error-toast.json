@@ -1,9 +1,6 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast",
   "filePath": "./src/components/webc-app/webc-app-error-toast/webc-app-error-toast.tsx",
   "fileName": "webc-app-error-toast.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-app/webc-app-error-toast/usage",
   "tag": "webc-app-error-toast",
   "usage": {},
   "docs": "",

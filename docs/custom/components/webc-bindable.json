@@ -1,9 +1,6 @@
 {
-  "dirPath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable",
   "filePath": "./src/components/webc-bindable/webc-bindable.tsx",
   "fileName": "webc-bindable.tsx",
-  "readmePath": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable/readme.md",
-  "usagesDir": "D:/Work/webcardinal-app-starter/.webcardinal/components/webcardinal-core/src/components/webc-bindable/usage",
   "tag": "webc-bindable",
   "usage": {},
   "docs": "",
