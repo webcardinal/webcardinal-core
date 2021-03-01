@@ -41,6 +41,10 @@ export class WebcPage {
   private listeners: ComponentListenersService;
 
   async componentWillLoad() {
+    if (!this.host.isConnected) {
+      return;
+    }
+    
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
 
     if (this.enableTranslations) {
