@@ -5,6 +5,22 @@
 <!-- Auto Generated Below -->
 
 
+## Slots
+
+| Slot       | Description                                                                  |
+| ---------- | ---------------------------------------------------------------------------- |
+|            | your content or if nothing, your routing point <code>webc-app-router</code>; |
+| `"after"`  | place for final content;                                                     |
+| `"before"` | content that goes behind this component in the DOM;                          |
+
+
+## CSS Custom Properties
+
+| Name                       | Description              |
+| -------------------------- | ------------------------ |
+| `--webc-app-container-gap` | Background of the button |
+
+
 ## Dependencies
 
 ### Used by

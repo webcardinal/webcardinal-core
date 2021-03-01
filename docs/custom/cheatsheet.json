@@ -39,6 +39,10 @@
     "source": "@webcardinal/core",
     "path": "components/webc-container.json"
   },
+  "webc-docs": {
+    "source": "@webcardinal/core",
+    "path": "components/webc-docs.json"
+  },
   "webc-for": {
     "source": "@webcardinal/core",
     "path": "components/webc-for.json"
