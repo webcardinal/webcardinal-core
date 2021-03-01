@@ -5,8 +5,7 @@ import { HostElement } from '../../decorators';
 import { promisifyEventEmit } from '../../utils';
 
 @Component({
-  tag: 'webc-link',
-  shadow: true,
+  tag: 'webc-link'
 })
 export class WebcLink {
   @HostElement() host: HTMLElement;
