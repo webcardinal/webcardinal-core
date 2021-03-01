@@ -13,12 +13,15 @@ import { HostElement } from '../../decorators';
 
 import { getModalContent } from './webc-modal-utils';
 
+/**
+ * This component should be used when a modal is needed in your application.
+ */
 @Component({
   tag: 'webc-modal',
   styleUrls: {
     default: '../../styles/webc-modal/webc-modal.scss',
   },
-  shadow: true,
+  shadow: true
 })
 export class WebcModal {
   @HostElement() private host: HTMLElement;

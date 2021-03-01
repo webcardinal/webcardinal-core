@@ -1,0 +1,44 @@
+section {
+  margin: 2rem 0;
+}
+
+table {
+  width: 100%;
+}
+
+thead {
+  border: 1px solid #CDCDCD;
+
+}
+
+thead th {
+  padding-top: 2rem;
+  padding-left: 0.5rem;
+  font-size: 1.4rem;
+}
+
+tbody {
+  border: 1px solid #CDCDCD;
+}
+
+tbody td {
+  width: 100%;
+}
+
+tbody th,
+tbody td {
+  padding: 0.15rem 0.5rem;
+}
+
+.tag {
+  margin-top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tag .encapsulation {
+  border: 1px solid #CDCDCD;
+  padding: 0.25rem 0.5rem;
+  border-radius: 100px;
+}

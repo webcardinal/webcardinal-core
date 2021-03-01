@@ -1,7 +1,7 @@
 {
-  "filePath": "./src/components/webc-container/webc-container.tsx",
-  "fileName": "webc-container.tsx",
-  "tag": "webc-container",
+  "filePath": "./src/components/webc-docs/webc-docs.tsx",
+  "fileName": "webc-docs.tsx",
+  "tag": "webc-docs",
   "usage": {},
   "docs": "",
   "docsTags": [],
@@ -11,10 +11,10 @@
   "dependencyGraph": {},
   "props": [
     {
-      "name": "controllerName",
+      "name": "for",
       "type": "string",
       "mutable": false,
-      "attr": "controller",
+      "attr": "for",
       "reflectToAttr": false,
       "docs": "",
       "docsTags": [],
@@ -27,19 +27,17 @@
       "required": false
     },
     {
-      "name": "history",
-      "type": "RouterHistory",
+      "name": "local",
+      "type": "boolean",
       "mutable": false,
+      "attr": "local",
       "reflectToAttr": false,
       "docs": "",
-      "docsTags": [
-        {
-          "name": "disabled"
-        }
-      ],
+      "docsTags": [],
+      "default": "false",
       "values": [
         {
-          "type": "RouterHistory"
+          "type": "boolean"
         }
       ],
       "optional": false,

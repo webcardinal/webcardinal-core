@@ -3,8 +3,21 @@
   "fileName": "webc-app-container.tsx",
   "tag": "webc-app-container",
   "usage": {},
-  "docs": "",
-  "docsTags": [],
+  "docs": "This web component is a wrapper over your application, more precise over <code>webc-app-router</code>.",
+  "docsTags": [
+    {
+      "text": "- your content or if nothing, your routing point <code>webc-app-router</code>;",
+      "name": "slot"
+    },
+    {
+      "text": "before - content that goes behind this component in the DOM;",
+      "name": "slot"
+    },
+    {
+      "text": "after - place for final content;",
+      "name": "slot"
+    }
+  ],
   "encapsulation": "none",
   "dependents": [
     "webc-app-root"
@@ -28,8 +41,27 @@
   "props": [],
   "methods": [],
   "events": [],
-  "styles": [],
-  "slots": [],
+  "styles": [
+    {
+      "name": "--webc-app-container-gap",
+      "annotation": "prop",
+      "docs": "Background of the button"
+    }
+  ],
+  "slots": [
+    {
+      "name": "",
+      "docs": "your content or if nothing, your routing point <code>webc-app-router</code>;"
+    },
+    {
+      "name": "after",
+      "docs": "place for final content;"
+    },
+    {
+      "name": "before",
+      "docs": "content that goes behind this component in the DOM;"
+    }
+  ],
   "parts": [],
   "listeners": []
 }

@@ -57,6 +57,10 @@ export namespace Components {
         "controllerName": string | null;
         "history": RouterHistory;
     }
+    interface WebcDocs {
+        "for": string;
+        "local": boolean;
+    }
     interface WebcFor {
         "autoBind": boolean;
         "chain": string;
@@ -224,6 +228,12 @@ declare global {
         prototype: HTMLWebcContainerElement;
         new (): HTMLWebcContainerElement;
     };
+    interface HTMLWebcDocsElement extends Components.WebcDocs, HTMLStencilElement {
+    }
+    var HTMLWebcDocsElement: {
+        prototype: HTMLWebcDocsElement;
+        new (): HTMLWebcDocsElement;
+    };
     interface HTMLWebcForElement extends Components.WebcFor, HTMLStencilElement {
     }
     var HTMLWebcForElement: {
@@ -283,6 +293,7 @@ declare global {
         "webc-app-router": HTMLWebcAppRouterElement;
         "webc-bindable": HTMLWebcBindableElement;
         "webc-container": HTMLWebcContainerElement;
+        "webc-docs": HTMLWebcDocsElement;
         "webc-for": HTMLWebcForElement;
         "webc-if": HTMLWebcIfElement;
         "webc-link": HTMLWebcLinkElement;
@@ -345,6 +356,10 @@ declare namespace LocalJSX {
     interface WebcContainer {
         "controllerName"?: string | null;
         "history"?: RouterHistory;
+    }
+    interface WebcDocs {
+        "for"?: string;
+        "local"?: boolean;
     }
     interface WebcFor {
         "autoBind"?: boolean;
@@ -468,6 +483,7 @@ declare namespace LocalJSX {
         "webc-app-router": WebcAppRouter;
         "webc-bindable": WebcBindable;
         "webc-container": WebcContainer;
+        "webc-docs": WebcDocs;
         "webc-for": WebcFor;
         "webc-if": WebcIf;
         "webc-link": WebcLink;
@@ -492,6 +508,7 @@ declare module "@stencil/core" {
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
             "webc-bindable": LocalJSX.WebcBindable & JSXBase.HTMLAttributes<HTMLWebcBindableElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
+            "webc-docs": LocalJSX.WebcDocs & JSXBase.HTMLAttributes<HTMLWebcDocsElement>;
             "webc-for": LocalJSX.WebcFor & JSXBase.HTMLAttributes<HTMLWebcForElement>;
             "webc-if": LocalJSX.WebcIf & JSXBase.HTMLAttributes<HTMLWebcIfElement>;
             "webc-link": LocalJSX.WebcLink & JSXBase.HTMLAttributes<HTMLWebcLinkElement>;
