@@ -1,44 +1,81 @@
-section {
-  margin: 2rem 0;
+.psk-card .card-body div {
+  padding: 0 !important;
 }
 
-table {
-  width: 100%;
+.docs-section article {
+  padding-bottom: 1.5rem !important;
 }
 
-thead {
-  border: 1px solid #CDCDCD;
-
+.docs-section article > h3,
+.docs-section .table > h3 {
+  margin: 0 0 0.15rem 0 !important;
+  padding: 2rem 0.65rem 0.4rem 0.4rem !important;
+  font-size: 1.15rem;
+  font-weight: bolder;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
-thead th {
-  padding-top: 2rem;
-  padding-left: 0.5rem;
-  font-size: 1.4rem;
+.docs-section .psk-card .card-body .table {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 0.4rem 1rem;
 }
 
-tbody {
-  border: 1px solid #CDCDCD;
+.docs-section .psk-card .card-body article .table {
+  padding: 0 0.4rem !important;
+  gap: 0.35rem 1.5rem;
 }
 
-tbody td {
-  width: 100%;
+.docs-section .table > span {
+  font-size: 0.9rem;
+  font-weight: lighter;
 }
 
-tbody th,
-tbody td {
-  padding: 0.15rem 0.5rem;
+.docs-section .table > div {
+  font-size: 1rem;
+  text-align: left;
 }
 
-.tag {
-  margin-top: 0;
+.docs-section .table code {
+  background: whitesmoke;
+  padding: 2px 5px;
+  border-radius: 3px;
+  color: #212121;
+  font-size: 0.9rem;
+}
+
+.docs-section .table > span > code,
+.docs-section .table > div > code {
+  color: #008A64;
+}
+
+.docs-section .table.table-with-head {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+}
+
+.docs-section.tag {
+  margin-top: 0.65rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.tag .encapsulation {
-  border: 1px solid #CDCDCD;
+.docs-section.tag h1 {
+  font-size: 1.65rem;
+}
+
+.docs-section.tag .encapsulation {
+  border: 1px solid whitesmoke;
   padding: 0.25rem 0.5rem;
   border-radius: 100px;
+}
+
+.docs-section.description p {
+  padding-top: 0;
+  font-size: 1.1rem;
 }

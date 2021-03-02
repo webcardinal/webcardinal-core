@@ -62,9 +62,9 @@ export class WebcContainer {
     const { tag, encapsulation } = this.docs;
 
     this.content.push(
-      <section class="tag">
+      <section class="docs-section tag">
         <h1>
-          <code>{tag}</code>
+          <code>{`<${tag}/>`}</code>
         </h1>
         {encapsulation !== 'none' ? <span class="encapsulation">{encapsulation}</span> : null}
       </section>,
@@ -78,10 +78,9 @@ export class WebcContainer {
     }
 
     this.content.push(
-      <section class="description">
-        <h2>Description</h2>
+      <psk-description class="docs-section description" title="Description">
         <p innerHTML={docs} />
-      </section>,
+      </psk-description>,
     );
   }
 
@@ -92,52 +91,43 @@ export class WebcContainer {
     }
 
     const describeProp = ({ name, docs, attr, type, required, ...rest }) => {
-      return [
-        <thead>
-          <tr>
-            <th colSpan={2}>{name}</th>
-          </tr>
-        </thead>,
-        <tbody>
-          <tr>
-            <th>Description</th>
-            <td>{docs}</td>
-          </tr>
-          <tr>
-            <th>Attribute</th>
-            <td>
-              <code>{attr}</code>
-            </td>
-          </tr>
-          <tr>
-            <th>Type</th>
-            <td>
+      return (
+        <article class="property" data-docs-attribute={attr}>
+          <h3>{name}</h3>
+          <div class="table">
+            <span>Description</span>
+            <div innerHTML={docs} />
+            <span>Attribute</span>
+            <div>
+              <code>
+                <strong>{attr}</strong>
+              </code>
+            </div>
+            <span>Type</span>
+            <div>
               <code>{type}</code>
-            </td>
-          </tr>
-          <tr>
-            <th>Required</th>
-            <td>
+            </div>
+            <span>Required</span>
+            <div>
               <code>{`${required}`}</code>
-            </td>
-          </tr>
-          {rest.default ? (
-            <tr>
-              <th>Default</th>
-              <td>
-                <code>{`${rest.default}`}</code>
-              </td>
-            </tr>
-          ) : null}
-        </tbody>,
-      ];
+            </div>
+            {rest.default
+              ? [
+                  <span>Default</span>,
+                  <div>
+                    <code>{rest.default}</code>
+                  </div>,
+                ]
+              : null}
+          </div>
+        </article>
+      );
     };
 
     this.content.push(
-      <section class="properties">
-        <h2>Properties</h2>
-        <table>{props.map(prop => describeProp(prop))}</table>
-      </section>,
+      <psk-chapter class="docs-section properties" title="Properties">
+        {props.map(prop => describeProp(prop))}
+      </psk-chapter>,
     );
   }
 
@@ -148,26 +138,21 @@ export class WebcContainer {
     }
 
     const describeEvent = ({ event, docs }) => {
-      return [
-        <thead>
-          <tr>
-            <th colSpan={2}>{event}</th>
-          </tr>
-        </thead>,
-        <tbody>
-          <tr>
-            <th>Description</th>
-            <td>{docs}</td>
-          </tr>
-        </tbody>,
-      ];
+      return (
+        <article class="event" data-docs-event={event}>
+          <h3>{event}</h3>
+          <div class="table">
+            <span>Description</span>
+            <div innerHTML={docs} />
+          </div>
+        </article>
+      );
     };
 
     this.content.push(
-      <section class="events">
-        <h2>Events</h2>
-        <table>{events.map(event => describeEvent(event))}</table>
-      </section>,
+      <psk-chapter class="docs-section events" title="Events">
+        {events.map(event => describeEvent(event))}
+      </psk-chapter>,
     );
   }
 
@@ -178,32 +163,25 @@ export class WebcContainer {
     }
 
     const describeMethod = ({ name, docs, signature }) => {
-      return [
-        <thead>
-          <tr>
-            <th colSpan={2}>{name}</th>
-          </tr>
-        </thead>,
-        <tbody>
-          <tr>
-            <th>Description</th>
-            <td>{docs}</td>
-          </tr>
-          <tr>
-            <th>Signature</th>
-            <td>
+      return (
+        <article class="method" data-docs-method={name}>
+          <h3>{name}</h3>
+          <div class="table">
+            <span>Description</span>
+            <div innerHTML={docs} />
+            <span>Signature</span>
+            <div>
               <code>{signature}</code>
-            </td>
-          </tr>
-        </tbody>,
-      ];
+            </div>
+          </div>
+        </article>
+      );
     };
 
     this.content.push(
-      <section class="methods">
-        <h2>Methods</h2>
-        <table>{methods.map(method => describeMethod(method))}</table>
-      </section>,
+      <psk-chapter class="docs-section methods" title="Methods">
+        {methods.map(method => describeMethod(method))}
+      </psk-chapter>,
     );
   }
 
@@ -214,31 +192,17 @@ export class WebcContainer {
     }
 
     const describeSlots = ({ name, docs }) => {
-      return [
-        <tbody>
-          <tr>
-            <th>
-              <code>{name}</code>
-            </th>
-            <td innerHTML={docs} />
-          </tr>
-        </tbody>,
-      ];
+      return [<div data-docs-slot={name}>{name ? <code>{name}</code> : null}</div>, <div innerHTML={docs} />];
     };
 
     this.content.push(
-      <section class="slots">
-        <h2>Slots</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
+      <psk-chapter class="docs-section slots" title="Slots">
+        <div class="table table-with-head">
+          <h3>Name</h3>
+          <h3>Description</h3>
           {slots.map(slot => describeSlots(slot))}
-        </table>
-      </section>,
+        </div>
+      </psk-chapter>,
     );
   }
 
@@ -250,30 +214,21 @@ export class WebcContainer {
 
     const describeStyle = ({ name, docs }) => {
       return [
-        <tbody>
-          <tr>
-            <th>
-              <code style={{ whiteSpace: 'nowrap' }}>{name}</code>
-            </th>
-            <td innerHTML={docs} />
-          </tr>
-        </tbody>,
+        <div data-docs-style={name}>
+          <code>{name}</code>
+        </div>,
+        <div innerHTML={docs} />,
       ];
     };
 
     this.content.push(
-      <section class="styles">
-        <h2>CSS Variables</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
+      <psk-chapter class="docs-section styles" title="CSS Variables">
+        <div class="table table-with-head">
+          <h3>Name</h3>
+          <h3>Description</h3>
           {styles.map(slot => slot.annotation === 'prop' && describeStyle(slot))}
-        </table>
-      </section>,
+        </div>
+      </psk-chapter>,
     );
   }
 
