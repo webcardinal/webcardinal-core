@@ -10,7 +10,9 @@ import {
   ControllerRegistryService,
   ControllerTranslationBindingService,
 } from '../../services';
-import { promisifyEventEmit, extractChain } from '../../utils';
+import { promisifyEventEmit, extractChain, removeSlotInfoFromElement } from '../../utils';
+
+const NO_DATA_SLOT_NAME = 'no-data';
 
 @Component({
   tag: 'webc-for',
@@ -44,6 +46,7 @@ export class WebcFor {
   getTranslationModelEvent: EventEmitter;
 
   private template = [];
+  private noDatatemplate = [];
   private controller;
   private model;
   private translationModel;
@@ -87,6 +90,18 @@ export class WebcFor {
       if (!Array.isArray(model)) {
         console.error(`Attribute "${MODEL_KEY}" must be an array in the model!`);
         return;
+      }
+
+      if (!model.length) {
+        this.noDatatemplate.forEach(template => {
+          const element = template.cloneNode(true) as HTMLElement;
+          // when nesting mutiple webc-fors, the inner slots will have the hidden property set automatically
+          removeSlotInfoFromElement(element);
+
+          this.host.appendChild(element);
+          this.bindRelativeModel(element, '');
+          return;
+        });
       }
 
       for (let i = 0; i < model.length; i++) {
@@ -148,8 +163,14 @@ export class WebcFor {
 
     // save the template for each item of array
     while (this.host.children.length > 0) {
-      this.template.push(this.host.children[0]);
-      this.host.children[0].remove();
+      const firstChild = this.host.children[0];
+      if (firstChild.getAttribute('slot') === NO_DATA_SLOT_NAME) {
+        this.noDatatemplate.push(firstChild);
+      } else {
+        this.template.push(firstChild);
+      }
+
+      firstChild.remove();
     }
 
     this._handleTemplate();

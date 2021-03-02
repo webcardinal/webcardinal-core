@@ -586,6 +586,10 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                                 return true;
                             }
 
+                            if(obj instanceof Promise && typeof obj[prop] === "function") {
+                                return obj[prop].bind(obj);
+                            }
+
                             return obj[prop];
                         },
                         set: makeSetter(parentChain),

@@ -1,15 +1,15 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, h, Prop, State, Element, Watch, Event } from '@stencil/core';
 
-import { MODEL_CHAIN_PREFIX } from '../../constants';
+import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import {
   ControllerBindingService,
   ControllerNodeValueBindingService,
   ControllerTranslationBindingService,
 } from '../../services';
-import { promisifyEventEmit } from '../../utils';
+import { promisifyEventEmit, removeSlotInfoFromElement } from '../../utils';
 
-import { getSlotContent } from './webc-if-utils';
+import { getSlots, removeElementChildren } from './webc-if-utils';
 
 const TRUE_CONDITION_SLOT_NAME = 'true';
 const FALSE_CONDITION_SLOT_NAME = 'false';
@@ -31,8 +31,8 @@ export class WebcIf {
   @Prop({ attribute: 'data-model' })
   model: any | undefined = undefined;
 
-  private falseSlot = null;
-  private trueSlot = null;
+  private falseSlotElements = [];
+  private trueSlotElements = [];
 
   @State()
   localModel: any;
@@ -42,6 +42,9 @@ export class WebcIf {
 
   @State()
   conditionValue = false;
+
+  @State()
+  content: string;
 
   @Element() host: HTMLWebcIfElement;
 
@@ -68,14 +71,14 @@ export class WebcIf {
 
     const children = Array.from(this.host.children);
 
-    this.trueSlot = getSlotContent(children, TRUE_CONDITION_SLOT_NAME);
-    this.falseSlot = getSlotContent(children, FALSE_CONDITION_SLOT_NAME);
+    this.trueSlotElements = getSlots(children, TRUE_CONDITION_SLOT_NAME);
+    this.falseSlotElements = getSlots(children, FALSE_CONDITION_SLOT_NAME);
 
-    if (!this.trueSlot && !this.falseSlot) {
-      this.trueSlot = children.map(child => child.outerHTML).join('');
+    if (!this.trueSlotElements.length && !this.falseSlotElements.length) {
+      this.trueSlotElements = children;
     }
 
-    this.host.innerHTML = '';
+    removeElementChildren(this.host);
 
     if (this.model) {
       this.localModel = this.model;
@@ -96,55 +99,91 @@ export class WebcIf {
     this.updateConditionValue();
   }
 
-  async componentDidRender() {
-    if (this.localModel) {
-      this.bindModelToVisibleSlot(this.host, this.localModel);
-    }
-  }
-
   @Watch('model')
   modelWatchHandler(newValue: any) {
     this.localModel = newValue;
     this.updateConditionValue();
   }
 
+  @Watch('conditionValue')
+  conditionValueWatchHandler() {
+    this.setVisibleContent();
+  }
+
+  private setVisibleContent() {
+    const visibleSlots = this.conditionValue ? this.trueSlotElements : this.falseSlotElements;
+    removeElementChildren(this.host);
+    visibleSlots.forEach(slot => {
+      const element = slot.cloneNode(true) as HTMLElement;
+
+      // when nesting mutiple webc-ifs, the inner slots will have the hidden property set automatically
+      removeSlotInfoFromElement(element);
+
+      this.host.appendChild(element);
+      this.bindModelToVisibleSlot(element, this.localModel);
+    });
+  }
+
   private bindModelToVisibleSlot(element: Element, model: any) {
+    const tag = element.tagName.toLowerCase();
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
+      return;
+    }
+
+    ControllerBindingService.bindModel(element, model);
+    ControllerBindingService.bindAttributes(element, model);
+    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
+
     Array.from(element.childNodes).forEach(child => {
       ControllerNodeValueBindingService.bindNodeValue(child, model, this.translationModel);
     });
 
     Array.from(element.children).forEach(target => {
-      ControllerBindingService.bindModel(target, model);
-      ControllerBindingService.bindAttributes(target, model);
-      ControllerTranslationBindingService.bindAttributes(target, this.translationModel);
-
-      if (target.children) {
-        this.bindModelToVisibleSlot(target, model);
-      }
+      this.bindModelToVisibleSlot(target, model);
     });
   }
 
   private async updateConditionValue() {
-    if (this.condition?.startsWith(MODEL_CHAIN_PREFIX)) {
-      const { localModel } = this;
-      const conditionChain = this.condition.slice(1);
-      this.conditionValue = localModel.getChainValue(conditionChain);
+    if (this.condition) {
+      if (this.condition.startsWith(MODEL_CHAIN_PREFIX)) {
+        const { localModel } = this;
+        const conditionChain = this.condition.slice(1);
+        this.setExtractedConditionValue(localModel.getChainValue(conditionChain));
 
-      localModel.onChange(conditionChain, () => {
-        this.conditionValue = localModel.getChainValue(conditionChain);
-      });
-
-      if (localModel.hasExpression(conditionChain)) {
-        this.conditionValue = localModel.evaluateExpression(conditionChain);
-
-        localModel.onChangeExpressionChain(conditionChain, () => {
-          this.conditionValue = localModel.evaluateExpression(conditionChain);
+        localModel.onChange(conditionChain, () => {
+          this.setExtractedConditionValue(localModel.getChainValue(conditionChain));
         });
+
+        if (localModel.hasExpression(conditionChain)) {
+          this.setExtractedConditionValue(localModel.evaluateExpression(conditionChain));
+
+          localModel.onChangeExpressionChain(conditionChain, () => {
+            this.setExtractedConditionValue(localModel.evaluateExpression(conditionChain));
+          });
+        }
       }
+    } else {
+      this.conditionValue = false;
     }
+    this.setVisibleContent();
+  }
+
+  private async setExtractedConditionValue(conditionValue) {
+    let value;
+    if (conditionValue instanceof Promise) {
+      try {
+        value = await conditionValue;
+      } catch (error) {
+        console.error('webc-if condition promise failed', error);
+        value = false;
+      }
+    } else {
+      value = conditionValue;
+    }
+    this.conditionValue = value;
   }
 
   render() {
-    return <div innerHTML={this.conditionValue ? this.trueSlot : this.falseSlot} />;
+    return <slot />;
   }
 }

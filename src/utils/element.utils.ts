@@ -165,3 +165,10 @@ export function bindElementAttributes(
     }
   });
 }
+
+export function removeSlotInfoFromElement(element: Element) {
+  // when nesting mutiple components that handle binding, the inner slots will have the hidden property set automatically
+  // so we make sure to remove both the slot and hidden attributes
+  element.removeAttribute('slot');
+  element.removeAttribute('hidden');
+}
