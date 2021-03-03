@@ -152,6 +152,9 @@ export function bindElementAttributes(
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
+    if (chainPrefix === MODEL_CHAIN_PREFIX && key === 'value') {
+      bindElementChangeToModelProperty(element, model, chain);
+    }
 
     model.onChange(chain, _ => {
       setElementValue(element, { key, value: model.getChainValue(chain) });
@@ -159,6 +162,10 @@ export function bindElementAttributes(
 
     if (model.hasExpression(chain)) {
       setElementValue(element, { key, value: model.evaluateExpression(chain) });
+      if (chainPrefix === MODEL_CHAIN_PREFIX && key === 'value') {
+        bindElementChangeToModelProperty(element, model, chain);
+      }
+
       model.onChangeExpressionChain(chain, _ => {
         setElementValue(element, { key, value: model.evaluateExpression(chain) });
       });
@@ -171,4 +178,26 @@ export function removeSlotInfoFromElement(element: Element) {
   // so we make sure to remove both the slot and hidden attributes
   element.removeAttribute('slot');
   element.removeAttribute('hidden');
+}
+
+export function bindElementChangeToModelProperty(element, model, propertyChain) {
+  const tagName = element.tagName.toLowerCase();
+  if (!['input', 'textarea'].includes(tagName)) {
+    return;
+  }
+
+  element.addEventListener('input', e => {
+    const updatedValue = e.target.value;
+    model.setChainValue(propertyChain, updatedValue);
+  });
+}
+
+export function bindElementChangeToModel(element, model, chain) {
+  const targetModel = model.getChainValue(chain);
+  if (!targetModel) {
+    return;
+  }
+
+  const propertyChain = `${chain}.value`;
+  bindElementChangeToModelProperty(element, model, propertyChain);
 }

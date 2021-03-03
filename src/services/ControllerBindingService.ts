@@ -1,5 +1,5 @@
 import { MODEL_KEY, MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS } from '../constants';
-import { bindElementAttributes, setElementValue } from '../utils';
+import { bindElementAttributes, bindElementChangeToModel, setElementValue } from '../utils';
 
 function setElementModel(element, model, chain) {
   // model
@@ -97,6 +97,7 @@ const ControllerBindingService = {
 
     // initial binding
     setElementModel(element, model, chain);
+    bindElementChangeToModel(element, model, chain);
 
     // onChange
     model.onChange(chain, () => setElementModel(element, model, chain));

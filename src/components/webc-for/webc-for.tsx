@@ -12,6 +12,8 @@ import {
 } from '../../services';
 import { promisifyEventEmit, extractChain, removeSlotInfoFromElement } from '../../utils';
 
+import { createDOMMap, diff } from './webc-for-utils';
+
 const NO_DATA_SLOT_NAME = 'no-data';
 
 @Component({
@@ -50,6 +52,7 @@ export class WebcFor {
   private controller;
   private model;
   private translationModel;
+  private existingNodes = [];
 
   private bindRelativeModel = (element, index) => {
     const tag = element.tagName.toLowerCase();
@@ -105,24 +108,47 @@ export class WebcFor {
       }
 
       for (let i = 0; i < model.length; i++) {
+        const updatedNodes = [];
+
         for (const node of this.template) {
           const element = node.cloneNode(true) as HTMLElement;
-          this.host.appendChild(element);
           this.bindRelativeModel(element, i);
+
+          updatedNodes.push(element);
         }
+
+        if (this.existingNodes[i]) {
+          // we have existing nodes that we need to update
+          updatedNodes.forEach((element, index) => {
+            const updatedElement = document.createElement('div');
+            updatedElement.appendChild(element);
+
+            const existingElement = document.createElement('div');
+            existingElement.appendChild(this.existingNodes[i][index].cloneNode(true) as HTMLElement);
+
+            const templateMap = createDOMMap(updatedElement);
+            const domMap = createDOMMap(existingElement);
+            diff(templateMap, domMap, this.existingNodes[i][index]);
+          });
+        } else {
+          updatedNodes.forEach(element => {
+            this.host.appendChild(element);
+          });
+        }
+
+        this.existingNodes[i] = updatedNodes;
       }
     };
 
     renderTemplate();
 
     this.model.onChange(chain, () => {
-      this.host.innerHTML = '';
+      // todo: further optimize the rendering by checking exactly which element of the array triggered the change
       renderTemplate();
     });
 
     if (this.model.hasExpression(chain)) {
       this.model.onChangeExpressionChain(chain, () => {
-        this.host.innerHTML = '';
         renderTemplate();
       });
     }
