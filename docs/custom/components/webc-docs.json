@@ -4,7 +4,12 @@
   "tag": "webc-docs",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "- Content that goes immediately after \"Tag\" section and before \"Properties\" section.",
+      "name": "slot"
+    }
+  ],
   "encapsulation": "none",
   "dependents": [],
   "dependencies": [],
@@ -16,7 +21,7 @@
       "mutable": false,
       "attr": "for",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "The desired component tag name (in lowercase).",
       "docsTags": [],
       "values": [
         {
@@ -32,7 +37,7 @@
       "mutable": false,
       "attr": "local",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your\nlocal workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -40,14 +45,29 @@
           "type": "boolean"
         }
       ],
-      "optional": false,
+      "optional": true,
       "required": false
     }
   ],
   "methods": [],
-  "events": [],
+  "events": [
+    {
+      "event": "webcardinal:config:getDocsSource",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Gets the docs source for current component.<br>\nIn <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>,\nall webc-docs components will be configured for local docs.<br>\nDefault value for <code>docsSource</code> is <code>'github'</code>.",
+      "docsTags": []
+    }
+  ],
   "styles": [],
-  "slots": [],
+  "slots": [
+    {
+      "name": "",
+      "docs": "Content that goes immediately after \"Tag\" section and before \"Properties\" section."
+    }
+  ],
   "parts": [],
   "listeners": []
 }

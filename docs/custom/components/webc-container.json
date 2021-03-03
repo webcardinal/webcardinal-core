@@ -27,16 +27,29 @@
       "required": false
     },
     {
+      "name": "enableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "enable-translations",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "history",
       "type": "RouterHistory",
       "mutable": false,
       "reflectToAttr": false,
       "docs": "",
-      "docsTags": [
-        {
-          "name": "disabled"
-        }
-      ],
+      "docsTags": [],
       "values": [
         {
           "type": "RouterHistory"
@@ -46,8 +59,41 @@
       "required": false
     }
   ],
-  "methods": [],
-  "events": [],
+  "methods": [
+    {
+      "name": "getModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getModel() => Promise<any>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    },
+    {
+      "name": "getTranslationModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getTranslationModel() => Promise<any>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "events": [
+    {
+      "event": "webcardinal:routing:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
+      "docsTags": []
+    }
+  ],
   "styles": [],
   "slots": [],
   "parts": [],

@@ -6,6 +6,7 @@ import {
   EVENT_CONFIG_GET_IDENTITY,
   EVENT_CONFIG_GET_LOG_LEVEL,
   EVENT_CONFIG_GET_CORE_TYPE,
+  EVENT_CONFIG_GET_DOCS_SOURCE,
 } from '../constants';
 
 import defaultConfig from './config/default';
@@ -51,9 +52,7 @@ export default class ApplicationController {
     const windowLocation = getWindowLocation();
     const baseHref = getBaseElementHref();
 
-    return baseHref
-      ? new URL(baseHref, windowLocation)
-      : new URL(windowLocation);
+    return baseHref ? new URL(baseHref, windowLocation) : new URL(windowLocation);
   }
 
   private _initBasePath() {
@@ -62,11 +61,7 @@ export default class ApplicationController {
   }
 
   private _initResourceURL(resource) {
-    return new URL(
-      this._trimPathname(this.baseURL.href) +
-        '/' +
-        this._trimPathname(resource),
-    );
+    return new URL(this._trimPathname(this.baseURL.href) + '/' + this._trimPathname(resource));
   }
 
   private _readConfiguration(callback) {
@@ -106,26 +101,18 @@ export default class ApplicationController {
       return this._trimPathname(this.baseURL.href);
     };
 
-    const getPages = (
-      baseURL = this.baseURL.href,
-      rawPages = getRaw('pages'),
-    ) => {
+    const getPages = (baseURL = this.baseURL.href, rawPages = getRaw('pages')) => {
       const pages = [];
       for (const rawPage of rawPages) {
         const page: any = {};
 
         // page name
         if (typeof rawPage.name !== 'string') {
-          console.warn(
-            `An invalid page detected (in "${CONFIG_PATH}")`,
-            rawPage,
-          );
+          console.warn(`An invalid page detected (in "${CONFIG_PATH}")`, rawPage);
           continue;
         }
         if (rawPage.name.includes('/')) {
-          console.warn(
-            `Page name must not include '/' (in "${rawPages.name}")`,
-          );
+          console.warn(`Page name must not include '/' (in "${rawPages.name}")`);
           continue;
         }
         page.name = rawPage.name;
@@ -146,16 +133,12 @@ export default class ApplicationController {
           try {
             page.path = '.' + new URL(path, baseURL).pathname;
           } catch (error) {
-            console.error(
-              `Pathname "${path}" for "${page.name} can not be converted into a URL!\n`,
-              error,
-            );
+            console.error(`Pathname "${path}" for "${page.name} can not be converted into a URL!\n`, error);
             continue;
           }
         }
 
-        const hasChildren =
-          Array.isArray(rawPage.children) && rawPage.children.length > 0;
+        const hasChildren = Array.isArray(rawPage.children) && rawPage.children.length > 0;
 
         // page src
         if (typeof rawPage.src === 'string') {
@@ -168,10 +151,7 @@ export default class ApplicationController {
           try {
             page.src = '.' + new URL(src, baseURL).pathname;
           } catch (error) {
-            console.error(
-              `Source "${src}" for "${page.name} can not be converted into a URL!\n`,
-              error,
-            );
+            console.error(`Source "${src}" for "${page.name} can not be converted into a URL!\n`, error);
             continue;
           }
         }
@@ -192,9 +172,7 @@ export default class ApplicationController {
     };
 
     const getPagesFallback = () => {
-      const fallback = getPages(this.baseURL.href, [
-        getRaw('pagesFallback'),
-      ])[0];
+      const fallback = getPages(this.baseURL.href, [getRaw('pagesFallback')])[0];
       delete fallback.path;
       delete fallback.indexed;
       return fallback;
@@ -206,15 +184,11 @@ export default class ApplicationController {
 
     const getLogLevel = () => {
       const logLevel = getRaw('logLevel');
-      return Object.values(LOG_LEVEL).includes(logLevel)
-        ? logLevel
-        : defaultConfig.logLevel;
+      return Object.values(LOG_LEVEL).includes(logLevel) ? logLevel : defaultConfig.logLevel;
     };
 
     const config: any = {
       identity: getIdentity(),
-      version: getRaw('version'),
-      theme: getRaw('theme'),
       routing: {
         baseURL: getBaseURL(),
         pages: getPages(),
@@ -223,6 +197,9 @@ export default class ApplicationController {
         skinsPathname: getPathname('skinsPathname'),
       },
       logLevel: getLogLevel(),
+      docsSource: getRaw('docsSource'),
+      theme: getRaw('theme'),
+      version: getRaw('version'),
       coreType: 'webcardinal',
     };
 
@@ -294,10 +271,7 @@ export default class ApplicationController {
       window.WebCardinal = {
         controllers,
         basePath: this.basePath,
-        language:
-          'localStorage' in window
-            ? window.localStorage.getItem('language') || 'en'
-            : 'en',
+        language: 'localStorage' in window ? window.localStorage.getItem('language') || 'en' : 'en',
         translations: {},
       };
 
@@ -307,30 +281,15 @@ export default class ApplicationController {
       }
     });
 
-    element.addEventListener(
-      EVENT_CONFIG_GET_ROUTING,
-      this._registerListener('routing'),
-    );
-    element.addEventListener(
-      EVENT_CONFIG_GET_IDENTITY,
-      this._registerListener('identity'),
-    );
-    element.addEventListener(
-      EVENT_CONFIG_GET_LOG_LEVEL,
-      this._registerListener('logLevel'),
-    );
-    element.addEventListener(
-      EVENT_CONFIG_GET_CORE_TYPE,
-      this._registerListener('coreType'),
-    );
+    // @webcardinal/core
+    element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
+    element.addEventListener(EVENT_CONFIG_GET_IDENTITY, this._registerListener('identity'));
+    element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
+    element.addEventListener(EVENT_CONFIG_GET_CORE_TYPE, this._registerListener('coreType'));
+    element.addEventListener(EVENT_CONFIG_GET_DOCS_SOURCE, this._registerListener('docsSource'));
 
-    // TODO: production version
-    // element.addEventListener(EVENTS.GET_THEME, this._registerListener('theme'));
-
-    // TODO: development progress
-    element.addEventListener('getThemeConfig', this._registerListener('theme'));
-
-    // const t_debugger = [
+    // @cardinal/core
+    // const cardinal_core_events = [
     //   'getAppVersion',
     //   'needRoutes',
     //   'needMenuItems',
@@ -342,6 +301,8 @@ export default class ApplicationController {
     //   'validateUrl',
     //   'getCustomLandingPage'
     // ];
-    // for (const t of t_debugger) element.addEventListener(t, (e) => console.log(e, t))
+
+    // Necessary legacy events
+    element.addEventListener('getThemeConfig', this._registerListener('theme'));
   }
 }

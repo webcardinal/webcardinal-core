@@ -7,18 +7,19 @@
 
 ## Slots
 
-| Slot       | Description                                                                  |
-| ---------- | ---------------------------------------------------------------------------- |
-|            | your content or if nothing, your routing point <code>webc-app-router</code>; |
-| `"after"`  | place for final content;                                                     |
-| `"before"` | content that goes behind this component in the DOM;                          |
+| Slot       | Description                                                                                                                                        |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+|            | Your content or if nothing, your routing point <code>webc-app-router</code>.<br>   Using this slot you can wrap all pages with a custom component; |
+| `"after"`  | Place for final content.<br>         A "footer" can be easily implemented using this slot;                                                         |
+| `"before"` | Content that goes behind this component in the DOM.<br>          A "header" can be easily implemented using this slot;                             |
 
 
 ## CSS Custom Properties
 
-| Name                       | Description              |
-| -------------------------- | ------------------------ |
-| `--webc-app-container-gap` | Background of the button |
+| Name                              | Description                    |
+| --------------------------------- | ------------------------------ |
+| `--webc-app-container-background` | Background for all your pages. |
+| `--webc-app-container-gap`        | Gap between slots.             |
 
 
 ## Dependencies

@@ -3,6 +3,9 @@ import { Component, h, Host, Method, Prop } from '@stencil/core';
 import { HostElement } from '../../../../decorators';
 import { URLHelper } from '../../webc-app-utils';
 
+/**
+ * @disable cheatsheet
+ */
 @Component({
   tag: 'webc-app-menu-item',
 })

@@ -2,11 +2,12 @@ import { Component, h } from '@stencil/core';
 import { HostElement } from '../../../decorators';
 
 /**
- * This web component is a wrapper over your application, more precise over <code>webc-app-router</code>.
- *
- * @slot - your content or if nothing, your routing point <code>webc-app-router</code>;
- * @slot before - content that goes behind this component in the DOM;
- * @slot after - place for final content;
+ * @slot - Your content or if nothing, your routing point <code>webc-app-router</code>.<br>
+ *         Using this slot you can wrap all pages with a custom component;
+ * @slot before - Content that goes behind this component in the DOM.<br>
+ *                A "header" can be easily implemented using this slot;
+ * @slot after - Place for final content.<br>
+ *               A "footer" can be easily implemented using this slot;
  */
 @Component({
   tag: 'webc-app-container',

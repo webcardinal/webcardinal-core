@@ -1,6 +1,10 @@
-import { Component, Host, h, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, Host, h, Prop } from '@stencil/core';
 import { HostElement } from '../../decorators';
+import { promisifyEventEmit } from '../../utils';
 
+/**
+ * @slot - Content that goes immediately after "Tag" section and before "Properties" section.
+ */
 @Component({
   tag: 'webc-docs',
   styleUrls: {
@@ -10,9 +14,30 @@ import { HostElement } from '../../decorators';
 export class WebcContainer {
   @HostElement() private host: HTMLElement;
 
+  /**
+   * The desired component tag name (in lowercase).
+   */
   @Prop() for: string;
 
-  @Prop() local: boolean = false;
+  /**
+   * If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your
+   * local workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.
+   */
+  @Prop() local?: boolean = false;
+
+  /**
+   * Gets the docs source for current component.<br>
+   * In <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>,
+   * all webc-docs components will be configured for local docs.<br>
+   * Default value for <code>docsSource</code> is <code>'github'</code>.
+   */
+  @Event({
+    eventName: 'webcardinal:config:getDocsSource',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getDocsSourceConfigEvent: EventEmitter;
 
   private cheatsheet;
   private docs;
@@ -20,6 +45,16 @@ export class WebcContainer {
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
+      return;
+    }
+
+    try {
+      const docsSource = await promisifyEventEmit(this.getDocsSourceConfigEvent);
+      if (docsSource === 'local') {
+        this.local = true;
+      }
+    } catch (error) {
+      console.error(`"docsSource" can not be obtained from "webcardinal.json"!\n`, error);
       return;
     }
 
@@ -71,6 +106,12 @@ export class WebcContainer {
     );
   }
 
+  appendSlot() {
+    if (this.host.childNodes.length > 0) {
+      this.content.push(<slot />);
+    }
+  }
+
   appendDescription() {
     const { docs } = this.docs;
     if (!docs) {
@@ -95,14 +136,17 @@ export class WebcContainer {
         <article class="property" data-docs-attribute={attr}>
           <h3>{name}</h3>
           <div class="table">
-            <span>Description</span>
-            <div innerHTML={docs} />
-            <span>Attribute</span>
-            <div>
-              <code>
-                <strong>{attr}</strong>
-              </code>
-            </div>
+            {docs ? [<span>Description</span>, <div innerHTML={docs} />] : null}
+            {attr
+              ? [
+                  <span>Attribute</span>,
+                  <div>
+                    <code>
+                      <strong>{attr}</strong>
+                    </code>
+                  </div>,
+                ]
+              : null}
             <span>Type</span>
             <div>
               <code>{type}</code>
@@ -141,10 +185,12 @@ export class WebcContainer {
       return (
         <article class="event" data-docs-event={event}>
           <h3>{event}</h3>
-          <div class="table">
-            <span>Description</span>
-            <div innerHTML={docs} />
-          </div>
+          {docs ? (
+            <div class="table">
+              <span>Description</span>
+              <div innerHTML={docs} />
+            </div>
+          ) : null}
         </article>
       );
     };
@@ -167,8 +213,7 @@ export class WebcContainer {
         <article class="method" data-docs-method={name}>
           <h3>{name}</h3>
           <div class="table">
-            <span>Description</span>
-            <div innerHTML={docs} />
+            {docs ? [<span>Description</span>, <div innerHTML={docs} />] : null}
             <span>Signature</span>
             <div>
               <code>{signature}</code>
@@ -238,6 +283,7 @@ export class WebcContainer {
     }
 
     this.appendTagAndEncapsulation();
+    this.appendSlot();
     this.appendDescription();
     this.appendProps();
     this.appendEvents();
