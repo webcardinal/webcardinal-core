@@ -12,8 +12,17 @@ export namespace Components {
     interface WebcAppErrorToast {
     }
     interface WebcAppIdentity {
-        "avatar": string | null;
+        /**
+          * Path or URL to an image.
+         */
+        "avatar"?: string | null;
+        /**
+          * Email of your brand or organization.
+         */
         "email": string | null;
+        /**
+          * Name of your brand or organization.
+         */
         "name": string | null;
     }
     interface WebcAppLoader {
@@ -40,26 +49,45 @@ export namespace Components {
     }
     interface WebcAppRoot {
         "history": RouterHistory;
+        /**
+          * Component tag name (in lowercase) for a UI loader.
+         */
         "loaderName": string;
     }
     interface WebcAppRouter {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+         */
         "basePath": string;
-        "fallbackPage": null;
+        /**
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+         */
+        "fallbackPage": any;
+        /**
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+         */
         "pagesPath": string;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "routes": any[];
-    }
-    interface WebcBindable {
-        "controllerName": string | null;
-        "getModel": () => Promise<any>;
-        "history": RouterHistory;
     }
     interface WebcContainer {
         "controllerName": string | null;
+        "enableTranslations": boolean;
+        "getModel": () => Promise<any>;
+        "getTranslationModel": () => Promise<any>;
         "history": RouterHistory;
     }
     interface WebcDocs {
+        /**
+          * Component tag name (in lowercase) for which documentation is desired.
+         */
         "for": string;
-        "local": boolean;
+        /**
+          * If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your local workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.
+         */
+        "local"?: boolean;
     }
     interface WebcFor {
         "autoBind": boolean;
@@ -216,12 +244,6 @@ declare global {
         prototype: HTMLWebcAppRouterElement;
         new (): HTMLWebcAppRouterElement;
     };
-    interface HTMLWebcBindableElement extends Components.WebcBindable, HTMLStencilElement {
-    }
-    var HTMLWebcBindableElement: {
-        prototype: HTMLWebcBindableElement;
-        new (): HTMLWebcBindableElement;
-    };
     interface HTMLWebcContainerElement extends Components.WebcContainer, HTMLStencilElement {
     }
     var HTMLWebcContainerElement: {
@@ -291,7 +313,6 @@ declare global {
         "webc-app-menu-item": HTMLWebcAppMenuItemElement;
         "webc-app-root": HTMLWebcAppRootElement;
         "webc-app-router": HTMLWebcAppRouterElement;
-        "webc-bindable": HTMLWebcBindableElement;
         "webc-container": HTMLWebcContainerElement;
         "webc-docs": HTMLWebcDocsElement;
         "webc-for": HTMLWebcForElement;
@@ -310,9 +331,21 @@ declare namespace LocalJSX {
     interface WebcAppErrorToast {
     }
     interface WebcAppIdentity {
+        /**
+          * Path or URL to an image.
+         */
         "avatar"?: string | null;
+        /**
+          * Email of your brand or organization.
+         */
         "email"?: string | null;
+        /**
+          * Name of your brand or organization.
+         */
         "name"?: string | null;
+        /**
+          * All properties enumerated before are automatically filled by webc-app-identity when this event is fired from <code>ApplicationController</code>.
+         */
         "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppLoader {
@@ -338,28 +371,56 @@ declare namespace LocalJSX {
     }
     interface WebcAppRoot {
         "history"?: RouterHistory;
+        /**
+          * Component tag name (in lowercase) for a UI loader.
+         */
         "loaderName"?: string;
+        /**
+          * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
+         */
         "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppRouter {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+         */
         "basePath"?: string;
-        "fallbackPage"?: null;
+        /**
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+         */
+        "fallbackPage"?: any;
+        /**
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals.
+         */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        /**
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+         */
         "pagesPath"?: string;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "routes"?: any[];
-    }
-    interface WebcBindable {
-        "controllerName"?: string | null;
-        "history"?: RouterHistory;
-        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcContainer {
         "controllerName"?: string | null;
+        "enableTranslations"?: boolean;
         "history"?: RouterHistory;
+        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcDocs {
+        /**
+          * Component tag name (in lowercase) for which documentation is desired.
+         */
         "for"?: string;
+        /**
+          * If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your local workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.
+         */
         "local"?: boolean;
+        /**
+          * Gets the docs source for current component.<br> In <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>, all webc-docs components will be configured for local docs.<br> Default value for <code>docsSource</code> is <code>'github'</code>.
+         */
+        "onWebcardinal:config:getDocsSource"?: (event: CustomEvent<any>) => void;
     }
     interface WebcFor {
         "autoBind"?: boolean;
@@ -481,7 +542,6 @@ declare namespace LocalJSX {
         "webc-app-menu-item": WebcAppMenuItem;
         "webc-app-root": WebcAppRoot;
         "webc-app-router": WebcAppRouter;
-        "webc-bindable": WebcBindable;
         "webc-container": WebcContainer;
         "webc-docs": WebcDocs;
         "webc-for": WebcFor;
@@ -506,7 +566,6 @@ declare module "@stencil/core" {
             "webc-app-menu-item": LocalJSX.WebcAppMenuItem & JSXBase.HTMLAttributes<HTMLWebcAppMenuItemElement>;
             "webc-app-root": LocalJSX.WebcAppRoot & JSXBase.HTMLAttributes<HTMLWebcAppRootElement>;
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
-            "webc-bindable": LocalJSX.WebcBindable & JSXBase.HTMLAttributes<HTMLWebcBindableElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
             "webc-docs": LocalJSX.WebcDocs & JSXBase.HTMLAttributes<HTMLWebcDocsElement>;
             "webc-for": LocalJSX.WebcFor & JSXBase.HTMLAttributes<HTMLWebcForElement>;

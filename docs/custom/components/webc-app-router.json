@@ -31,7 +31,7 @@
       "mutable": true,
       "attr": "base-path",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "There is the possibility to change the base path of your application, using <code>base</code> HTML Element:\n<psk-example>\n   <psk-code>\n    <base href=\"/my-custom-base\">\n   </psk-code>\n</psk-example>",
       "docsTags": [],
       "default": "''",
       "values": [
@@ -44,14 +44,15 @@
     },
     {
       "name": "fallbackPage",
-      "type": "null",
+      "type": "any",
       "mutable": true,
+      "attr": "fallback-page",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.",
       "docsTags": [],
       "values": [
         {
-          "type": "null"
+          "type": "any"
         }
       ],
       "optional": false,
@@ -63,9 +64,9 @@
       "mutable": true,
       "attr": "pages-path",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Path to <code>/pages</code> folder.<br>\nThis folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.",
       "docsTags": [],
-      "default": "''",
+      "default": "'/pages'",
       "values": [
         {
           "type": "string"
@@ -79,7 +80,7 @@
       "type": "any[]",
       "mutable": true,
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "This Array is received from <code>ApplicationController</code>.",
       "docsTags": [],
       "default": "[]",
       "values": [
@@ -99,7 +100,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "Routing configuration received from <code>ApplicationController</code>.<br>\nThis configuration includes different settings for pages, skins, modals.",
       "docsTags": []
     }
   ],

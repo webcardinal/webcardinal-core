@@ -4,7 +4,12 @@
   "tag": "webc-app-menu-item",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    }
+  ],
   "encapsulation": "none",
   "dependents": [
     "webc-app-menu",
@@ -47,7 +52,7 @@
       "reflectToAttr": false,
       "docs": "",
       "docsTags": [],
-      "default": "{\r\n    path: '',\r\n    children: null,\r\n  }",
+      "default": "{\n    path: '',\n    children: null,\n  }",
       "values": [
         {
           "type": "{ path: string; children: any; }"

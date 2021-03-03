@@ -22,14 +22,14 @@
       "mutable": true,
       "attr": "avatar",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Path or URL to an image.",
       "docsTags": [],
       "values": [
         {
           "type": "string"
         }
       ],
-      "optional": false,
+      "optional": true,
       "required": false
     },
     {
@@ -38,7 +38,7 @@
       "mutable": true,
       "attr": "email",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Email of your brand or organization.",
       "docsTags": [],
       "values": [
         {
@@ -54,7 +54,7 @@
       "mutable": true,
       "attr": "name",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Name of your brand or organization.",
       "docsTags": [],
       "values": [
         {
@@ -73,11 +73,47 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "All properties enumerated before are automatically filled by webc-app-identity when this event is fired from\n<code>ApplicationController</code>.",
       "docsTags": []
     }
   ],
-  "styles": [],
+  "styles": [
+    {
+      "name": "--webc-app-identity-avatar-radius",
+      "annotation": "prop",
+      "docs": "Picture radius."
+    },
+    {
+      "name": "--webc-app-identity-avatar-width",
+      "annotation": "prop",
+      "docs": "Size of the picture."
+    },
+    {
+      "name": "--webc-app-identity-color",
+      "annotation": "prop",
+      "docs": "Color of all text elements."
+    },
+    {
+      "name": "--webc-app-identity-column-gap",
+      "annotation": "prop",
+      "docs": "Horizontal space."
+    },
+    {
+      "name": "--webc-app-identity-email-font-size",
+      "annotation": "prop",
+      "docs": "Size of font for \"email\"."
+    },
+    {
+      "name": "--webc-app-identity-name-font-size",
+      "annotation": "prop",
+      "docs": "Size of font for \"name\"."
+    },
+    {
+      "name": "--webc-app-identity-row-gap",
+      "annotation": "prop",
+      "docs": "Vertical space between \"name\" and \"email\"."
+    }
+  ],
   "slots": [],
   "parts": [],
   "listeners": []

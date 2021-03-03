@@ -5,6 +5,7 @@ import type {
   PagesPathname,
   SkinsPathname,
   LogLevel,
+  DocsSource
 } from './types';
 
 export default {
@@ -24,4 +25,5 @@ export default {
   skinsPathname: 'skins' as SkinsPathname,
   logLevel: 'error' as LogLevel,
   version: '1.0.0' as Version,
+  docsSource: 'github' as DocsSource
 };

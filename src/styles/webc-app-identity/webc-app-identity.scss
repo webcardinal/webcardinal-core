@@ -1,9 +1,23 @@
 :host {
+  /**
+   * @prop --webc-app-identity-color: Color of all text elements.
+   * @prop --webc-app-identity-avatar-width: Size of the picture.
+   * @prop --webc-app-identity-avatar-radius: Picture radius.
+   * @prop --webc-app-identity-row-gap: Vertical space between "name" and "email".
+   * @prop --webc-app-identity-column-gap: Horizontal space.
+   * @prop --webc-app-identity-name-font-size: Size of font for "name".
+   * @prop --webc-app-identity-email-font-size: Size of font for "email".
+   */
+
   display: grid;
-  color: var(--webc-app-identity-color);
   row-gap: var(--webc-app-identity-row-gap);
   place-content: center;
   justify-content: stretch;
+
+  a {
+    color: var(--webc-app-identity-color);
+    text-decoration: none;
+  }
 
   & > img {
     border-radius: var(--webc-app-identity-avatar-radius);

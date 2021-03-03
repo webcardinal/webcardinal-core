@@ -57,7 +57,7 @@
       "mutable": false,
       "attr": "loader",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Component tag name (in lowercase) for a UI loader.",
       "docsTags": [],
       "default": "'webc-spinner'",
       "values": [
@@ -77,7 +77,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>",
       "docsTags": []
     }
   ],

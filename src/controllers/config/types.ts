@@ -19,3 +19,5 @@ export type PagesPathname = string;
 export type SkinsPathname = string;
 
 export type LogLevel = 'none' | 'warn' | 'error';
+
+export type DocsSource = 'github' | 'local';

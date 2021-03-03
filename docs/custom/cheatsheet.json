@@ -1,78 +1,53 @@
 {
   "webc-app-container": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-container.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-error-toast": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-error-toast.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-identity": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-identity.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-loader": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-loader.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-menu": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-menu.json"
-  },
-  "webc-app-menu-item": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-menu-item.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-root": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-root.json"
+    "source": "@webcardinal/core"
   },
   "webc-app-router": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-app-router.json"
-  },
-  "webc-bindable": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-bindable.json"
+    "source": "@webcardinal/core"
   },
   "webc-container": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-container.json"
+    "source": "@webcardinal/core"
   },
   "webc-docs": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-docs.json"
+    "source": "@webcardinal/core"
   },
   "webc-for": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-for.json"
+    "source": "@webcardinal/core"
   },
   "webc-if": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-if.json"
+    "source": "@webcardinal/core"
   },
   "webc-link": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-link.json"
+    "source": "@webcardinal/core"
   },
   "webc-modal": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-modal.json"
+    "source": "@webcardinal/core"
   },
   "webc-page": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-page.json"
+    "source": "@webcardinal/core"
   },
   "webc-skin": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-skin.json"
+    "source": "@webcardinal/core"
   },
   "webc-spinner": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-spinner.json"
+    "source": "@webcardinal/core"
   },
   "webc-template": {
-    "source": "@webcardinal/core",
-    "path": "components/webc-template.json"
+    "source": "@webcardinal/core"
   }
 }

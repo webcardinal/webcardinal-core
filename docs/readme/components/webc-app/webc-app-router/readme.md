@@ -7,19 +7,19 @@
 
 ## Properties
 
-| Property       | Attribute    | Description | Type     | Default     |
-| -------------- | ------------ | ----------- | -------- | ----------- |
-| `basePath`     | `base-path`  |             | `string` | `''`        |
-| `fallbackPage` | --           |             | `null`   | `undefined` |
-| `pagesPath`    | `pages-path` |             | `string` | `''`        |
-| `routes`       | --           |             | `any[]`  | `[]`        |
+| Property       | Attribute       | Description                                                                                                                                                                                             | Type     | Default     |
+| -------------- | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| `basePath`     | `base-path`     | There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example> | `string` | `''`        |
+| `fallbackPage` | `fallback-page` | Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.                                                                                         | `any`    | `undefined` |
+| `pagesPath`    | `pages-path`    | Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.                                                            | `string` | `'/pages'`  |
+| `routes`       | --              | This Array is received from <code>ApplicationController</code>.                                                                                                                                         | `any[]`  | `[]`        |
 
 
 ## Events
 
-| Event                           | Description | Type               |
-| ------------------------------- | ----------- | ------------------ |
-| `webcardinal:config:getRouting` |             | `CustomEvent<any>` |
+| Event                           | Description                                                                                                                                          | Type               |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `webcardinal:config:getRouting` | Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals. | `CustomEvent<any>` |
 
 
 ## Dependencies

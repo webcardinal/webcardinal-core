@@ -1,6 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, Event, Host, h, Prop } from '@stencil/core';
-
 import { promisifyEventEmit } from '../../../utils';
 
 @Component({
@@ -11,12 +10,25 @@ import { promisifyEventEmit } from '../../../utils';
   shadow: true,
 })
 export class WebcAppIdentity {
-  @Prop({ mutable: true }) avatar: string | null;
+  /**
+   * Path or URL to an image.
+   */
+  @Prop({ mutable: true }) avatar?: string | null;
 
+  /**
+   * Email of your brand or organization.
+   */
   @Prop({ mutable: true }) email: string | null;
 
+  /**
+   * Name of your brand or organization.
+   */
   @Prop({ mutable: true }) name: string | null;
 
+  /**
+   * All properties enumerated before are automatically filled by webc-app-identity when this event is fired from
+   * <code>ApplicationController</code>.
+   */
   @Event({
     eventName: 'webcardinal:config:getIdentity',
     bubbles: true,
@@ -46,8 +58,12 @@ export class WebcAppIdentity {
     return (
       <Host {...attributes}>
         {this.avatar ? <img src={this.avatar} alt={this.name} /> : null}
-        <div class="name">{this.name}</div>
-        <div class="email">{this.email}</div>
+        <a href="/" class="name">
+          {this.name}
+        </a>
+        <a href={`mailto:${this.email}`} class="email">
+          {this.email}
+        </a>
       </Host>
     );
   }

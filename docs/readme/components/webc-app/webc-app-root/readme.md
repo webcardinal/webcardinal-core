@@ -7,17 +7,17 @@
 
 ## Properties
 
-| Property     | Attribute | Description | Type            | Default          |
-| ------------ | --------- | ----------- | --------------- | ---------------- |
-| `history`    | --        |             | `RouterHistory` | `undefined`      |
-| `loaderName` | `loader`  |             | `string`        | `'webc-spinner'` |
+| Property     | Attribute | Description                                        | Type            | Default          |
+| ------------ | --------- | -------------------------------------------------- | --------------- | ---------------- |
+| `history`    | --        |                                                    | `RouterHistory` | `undefined`      |
+| `loaderName` | `loader`  | Component tag name (in lowercase) for a UI loader. | `string`        | `'webc-spinner'` |
 
 
 ## Events
 
-| Event                            | Description | Type               |
-| -------------------------------- | ----------- | ------------------ |
-| `webcardinal:config:getLogLevel` |             | `CustomEvent<any>` |
+| Event                            | Description                                                                                              | Type               |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------ |
+| `webcardinal:config:getLogLevel` | LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br> | `CustomEvent<any>` |
 
 
 ## Dependencies
