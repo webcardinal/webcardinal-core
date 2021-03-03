@@ -15,7 +15,7 @@ export class WebcContainer {
   @HostElement() private host: HTMLElement;
 
   /**
-   * The desired component tag name (in lowercase).
+   * Component tag name (in lowercase) for which documentation is desired.
    */
   @Prop() for: string;
 
@@ -112,14 +112,14 @@ export class WebcContainer {
     }
   }
 
-  appendDescription() {
+  appendSummary() {
     const { docs } = this.docs;
     if (!docs) {
       return;
     }
 
     this.content.push(
-      <psk-description class="docs-section description" title="Description">
+      <psk-description class="docs-section description" title="Summary">
         <p innerHTML={docs} />
       </psk-description>,
     );
@@ -151,10 +151,10 @@ export class WebcContainer {
             <div>
               <code>{type}</code>
             </div>
-            <span>Required</span>
-            <div>
-              <code>{`${required}`}</code>
-            </div>
+            {/*<span>Required</span>*/}
+            {/*<div>*/}
+            {/*  <code>{`${required}`}</code>*/}
+            {/*</div>*/}
             {rest.default
               ? [
                   <span>Default</span>,
@@ -283,8 +283,8 @@ export class WebcContainer {
     }
 
     this.appendTagAndEncapsulation();
+    this.appendSummary();
     this.appendSlot();
-    this.appendDescription();
     this.appendProps();
     this.appendEvents();
     this.appendMethods();

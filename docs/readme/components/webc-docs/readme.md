@@ -9,7 +9,7 @@
 
 | Property | Attribute | Description                                                                                                                                                                                                                 | Type      | Default     |
 | -------- | --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `for`    | `for`     | The desired component tag name (in lowercase).                                                                                                                                                                              | `string`  | `undefined` |
+| `for`    | `for`     | Component tag name (in lowercase) for which documentation is desired.                                                                                                                                                       | `string`  | `undefined` |
 | `local`  | `local`   | If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your local workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>. | `boolean` | `false`     |
 
 

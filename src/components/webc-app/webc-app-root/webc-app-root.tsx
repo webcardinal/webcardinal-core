@@ -19,10 +19,16 @@ import { subscribeToLogs } from './webc-app-root-utils';
 export class WebcAppRoot {
   @HostElement() host: HTMLElement;
 
+  /**
+   * Component tag name (in lowercase) for a UI loader.
+   */
   @Prop({ attribute: 'loader' }) loaderName = 'webc-spinner';
 
   @Prop() history: RouterHistory;
 
+  /**
+   * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
+   */
   @Event({
     eventName: 'webcardinal:config:getLogLevel',
     bubbles: true,

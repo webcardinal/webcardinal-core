@@ -21,7 +21,7 @@
       "mutable": false,
       "attr": "for",
       "reflectToAttr": false,
-      "docs": "The desired component tag name (in lowercase).",
+      "docs": "Component tag name (in lowercase) for which documentation is desired.",
       "docsTags": [],
       "values": [
         {

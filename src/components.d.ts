@@ -12,8 +12,17 @@ export namespace Components {
     interface WebcAppErrorToast {
     }
     interface WebcAppIdentity {
-        "avatar": string | null;
+        /**
+          * Path or URL to an image.
+         */
+        "avatar"?: string | null;
+        /**
+          * Email of your brand or organization.
+         */
         "email": string | null;
+        /**
+          * Name of your brand or organization.
+         */
         "name": string | null;
     }
     interface WebcAppLoader {
@@ -40,12 +49,27 @@ export namespace Components {
     }
     interface WebcAppRoot {
         "history": RouterHistory;
+        /**
+          * Component tag name (in lowercase) for a UI loader.
+         */
         "loaderName": string;
     }
     interface WebcAppRouter {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+         */
         "basePath": string;
-        "fallbackPage": null;
+        /**
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+         */
+        "fallbackPage": any;
+        /**
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+         */
         "pagesPath": string;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "routes": any[];
     }
     interface WebcContainer {
@@ -57,7 +81,7 @@ export namespace Components {
     }
     interface WebcDocs {
         /**
-          * The desired component tag name (in lowercase).
+          * Component tag name (in lowercase) for which documentation is desired.
          */
         "for": string;
         /**
@@ -307,9 +331,21 @@ declare namespace LocalJSX {
     interface WebcAppErrorToast {
     }
     interface WebcAppIdentity {
+        /**
+          * Path or URL to an image.
+         */
         "avatar"?: string | null;
+        /**
+          * Email of your brand or organization.
+         */
         "email"?: string | null;
+        /**
+          * Name of your brand or organization.
+         */
         "name"?: string | null;
+        /**
+          * All properties enumerated before are automatically filled by webc-app-identity when this event is fired from <code>ApplicationController</code>.
+         */
         "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppLoader {
@@ -335,14 +371,35 @@ declare namespace LocalJSX {
     }
     interface WebcAppRoot {
         "history"?: RouterHistory;
+        /**
+          * Component tag name (in lowercase) for a UI loader.
+         */
         "loaderName"?: string;
+        /**
+          * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
+         */
         "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppRouter {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+         */
         "basePath"?: string;
-        "fallbackPage"?: null;
+        /**
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+         */
+        "fallbackPage"?: any;
+        /**
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals.
+         */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        /**
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+         */
         "pagesPath"?: string;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "routes"?: any[];
     }
     interface WebcContainer {
@@ -353,7 +410,7 @@ declare namespace LocalJSX {
     }
     interface WebcDocs {
         /**
-          * The desired component tag name (in lowercase).
+          * Component tag name (in lowercase) for which documentation is desired.
          */
         "for"?: string;
         /**

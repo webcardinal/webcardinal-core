@@ -1,6 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
-
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
 import { promisifyEventEmit } from '../../../utils';
@@ -17,14 +16,36 @@ interface RoutesPayload {
 export class WebcAppRouter {
   @HostElement() host: HTMLElement;
 
+  /**
+   * This Array is received from <code>ApplicationController</code>.
+   */
   @Prop({ mutable: true }) routes = [];
 
-  @Prop({ mutable: true }) fallbackPage: null;
+  /**
+   * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+   */
+  @Prop({ mutable: true }) fallbackPage;
 
+  /**
+   * There is the possibility to change the base path of your application, using <code>base</code> HTML Element:
+   * <psk-example>
+   *   <psk-code>
+   *    <base href="/my-custom-base">
+   *   </psk-code>
+   * </psk-example>
+   */
   @Prop({ mutable: true }) basePath = '';
 
-  @Prop({ mutable: true }) pagesPath = '';
+  /**
+   * Path to <code>/pages</code> folder.<br>
+   * This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+   */
+  @Prop({ mutable: true }) pagesPath = '/pages';
 
+  /**
+   * Routing configuration received from <code>ApplicationController</code>.<br>
+   * This configuration includes different settings for pages, skins, modals.
+   */
   @Event({
     eventName: 'webcardinal:config:getRouting',
     bubbles: true,
@@ -73,10 +94,7 @@ export class WebcAppRouter {
           payload.src = URLHelper.join(this.pagesPath, payload.src).pathname;
         }
 
-        this.mapping[payload.path] = payload.src.replace(
-          this.pagesPathRegExp,
-          '',
-        );
+        this.mapping[payload.path] = payload.src.replace(this.pagesPathRegExp, '');
 
         if (route.tag) {
           this.tags[route.tag] = payload.path;
@@ -103,19 +121,10 @@ export class WebcAppRouter {
       this.routes = routing.pages;
       this.fallbackPage = routing.pagesFallback;
       this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
-      this.pagesPath = URLHelper.trimEnd(
-        new URL(routing.baseURL + routing.pagesPathname).pathname,
-      );
-      this.pagesPathRegExp = new RegExp(
-        `^(${this.pagesPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`,
-      );
-      this.content = [
-        this._renderRoutes(this.routes),
-        this._renderFallback(this.fallbackPage),
-      ];
-      const skinsPath = URLHelper.trimEnd(
-        new URL(routing.baseURL + routing.skinsPathname).pathname,
-      );
+      this.pagesPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.pagesPathname).pathname);
+      this.pagesPathRegExp = new RegExp(`^(${this.pagesPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
+      this.content = [this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage)];
+      const skinsPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname);
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,
         routing: {
@@ -135,9 +144,7 @@ export class WebcAppRouter {
   render() {
     return (
       <stencil-router root={this.basePath + '/'}>
-        <stencil-route-switch scrollTopOffset={0}>
-          {...this.content}
-        </stencil-route-switch>
+        <stencil-route-switch scrollTopOffset={0}>{...this.content}</stencil-route-switch>
       </stencil-router>
     );
   }
