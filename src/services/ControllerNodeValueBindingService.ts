@@ -29,7 +29,7 @@ const ControllerNodeValueBindingService = {
     });
   },
 
-  bindNodeValue: (node: ChildNode, model: any, translationModel: any) => {
+  bindNodeValue: (node: ChildNode, model: any, translationModel: any, modelChainPrefix: string = null) => {
     // for some webc-<components> binding is managed by component itself
     if (SKIP_BINDING_FOR_COMPONENTS.includes(node.nodeName.toLowerCase())) {
       return;
@@ -57,8 +57,15 @@ const ControllerNodeValueBindingService = {
         return chainWithPrefix.startsWith(MODEL_CHAIN_PREFIX) || chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX);
       })
       .map(expression => {
-        const isTranslation = expression.chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX);
-        const chain = expression.chainWithPrefix.slice(1);
+        let { chainWithPrefix } = expression;
+        const isTranslation = chainWithPrefix.startsWith(TRANSLATION_CHAIN_PREFIX);
+        let chain = expression.chainWithPrefix.slice(1);
+        if (!isTranslation && modelChainPrefix) {
+          // prepend the modelChainPrefix
+          chain = [modelChainPrefix, chain].filter(String).join('.');
+          chainWithPrefix = `${MODEL_CHAIN_PREFIX}${chain}`;
+        }
+
         const currentModel = isTranslation ? translationModel : model;
         return {
           ...expression,

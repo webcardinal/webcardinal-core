@@ -148,7 +148,7 @@ export function bindElementAttributes(
 
     if (modelChainPrefix) {
       // prepend the modelChainPrefix
-      chain = [chain, modelChainPrefix].filter(String).join('.');
+      chain = [modelChainPrefix, chain].filter(String).join('.');
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
