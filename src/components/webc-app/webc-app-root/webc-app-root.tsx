@@ -1,5 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop } from '@stencil/core';
+import { Component, Event, h, Prop, State } from '@stencil/core';
 import type { RouterHistory } from '@stencil/router';
 import { injectHistory } from '@stencil/router';
 
@@ -24,7 +24,7 @@ export class WebcAppRoot {
    */
   @Prop({ attribute: 'loader' }) loaderName = 'webc-spinner';
 
-  @Prop() history: RouterHistory;
+  @State() history: RouterHistory;
 
   /**
    * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>

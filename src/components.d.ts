@@ -30,9 +30,17 @@ export namespace Components {
         "type": string;
     }
     interface WebcAppMenu {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+         */
         "basePath": string;
+        /**
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+         */
         "disableIdentity": boolean;
-        "history": RouterHistory;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "items": any[];
         "mode": string;
     }
@@ -48,7 +56,6 @@ export namespace Components {
         "url": string | null;
     }
     interface WebcAppRoot {
-        "history": RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -56,15 +63,15 @@ export namespace Components {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath": string;
         /**
-          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown. This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
          */
         "fallbackPage": any;
         /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
          */
         "pagesPath": string;
         /**
@@ -183,6 +190,9 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface WebcSkin {
+        /**
+          * Path to a stylesheet.
+         */
         "href": string;
     }
     interface WebcSpinner {
@@ -353,11 +363,22 @@ declare namespace LocalJSX {
         "type"?: string;
     }
     interface WebcAppMenu {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+         */
         "basePath"?: string;
+        /**
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+         */
         "disableIdentity"?: boolean;
-        "history"?: RouterHistory;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "items"?: any[];
         "mode"?: string;
+        /**
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
+         */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppMenuItem {
@@ -370,7 +391,6 @@ declare namespace LocalJSX {
         "url"?: string | null;
     }
     interface WebcAppRoot {
-        "history"?: RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -382,19 +402,19 @@ declare namespace LocalJSX {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath"?: string;
         /**
-          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown. This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
          */
         "fallbackPage"?: any;
         /**
-          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals.
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
         /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
          */
         "pagesPath"?: string;
         /**
@@ -520,6 +540,9 @@ declare namespace LocalJSX {
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcSkin {
+        /**
+          * Path to a stylesheet.
+         */
         "href"?: string;
     }
     interface WebcSpinner {

@@ -1,5 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop } from '@stencil/core';
+import { Component, Event, h, Prop, State } from '@stencil/core';
 import type { RouterHistory } from '@stencil/router';
 import { injectHistory } from '@stencil/router';
 
@@ -19,13 +19,30 @@ import { URLHelper } from '../../webc-app-utils';
 export class WebcAppMenu {
   @HostElement() host: HTMLElement;
 
+  /**
+   * This Array is received from <code>ApplicationController</code>.
+   */
   @Prop({ mutable: true }) items = [];
 
+  /**
+   * There is the possibility to change the base path of your application, using <code>base</code> HTML Element:
+   * <psk-example>
+   *   <psk-code>
+   *    <base href="/my-custom-base">
+   *   </psk-code>
+   * </psk-example>
+   *
+   * Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+   */
   @Prop({ mutable: true }) basePath = '';
 
+  /**
+   * Decides if <code>webc-app-identity</code> is rendered.<br>
+   * This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+   */
   @Prop({ mutable: true, reflect: true }) disableIdentity = false;
 
-  @Prop() history: RouterHistory;
+  @State() history: RouterHistory;
 
   private slots = {
     before: false,
@@ -37,6 +54,10 @@ export class WebcAppMenu {
 
   @Prop({ reflect: true, mutable: true }) mode = this.defaultMode;
 
+  /**
+   * Routing configuration received from <code>ApplicationController</code>.<br>
+   * This configuration includes different settings for pages, skins, modals, etc.;
+   */
   @Event({
     eventName: 'webcardinal:config:getRouting',
     bubbles: true,

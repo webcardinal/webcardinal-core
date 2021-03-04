@@ -41,6 +41,7 @@ export class WebcContainer {
 
   private cheatsheet;
   private docs;
+  private origin;
   private content = [];
 
   async componentWillLoad() {
@@ -76,13 +77,13 @@ export class WebcContainer {
     let library = this.cheatsheet[component].source;
     library = library.substr(1).replace('/', '-');
 
-    let origin = `https://raw.githubusercontent.com/webcardinal/${library}/master`;
+    this.origin = `https://raw.githubusercontent.com/webcardinal/${library}/master`;
     if (this.local) {
-      origin = new URL(`/.webcardinal/components/${library}`, window.location.origin).href;
+      this.origin = new URL(`/.webcardinal/components/${library}`, window.location.origin).href;
       console.warn(`Local docs is active!`);
     }
 
-    let source = `${origin}/docs/custom/components/${component}.json`;
+    let source = `${this.origin}/docs/custom/components/${component}.json`;
     try {
       let componentDocsPath = new URL(source).href;
       const response = await fetch(componentDocsPath);
@@ -258,11 +259,12 @@ export class WebcContainer {
     }
 
     const describeStyle = ({ name, docs }) => {
+      const style = { gridColumn: !docs ? '1 / -1' : null };
       return [
-        <div data-docs-style={name}>
+        <div data-docs-style={name} style={style}>
           <code>{name}</code>
         </div>,
-        <div innerHTML={docs} />,
+        docs ? <div innerHTML={docs} /> : null,
       ];
     };
 
@@ -273,6 +275,13 @@ export class WebcContainer {
           <h3>Description</h3>
           {styles.map(slot => slot.annotation === 'prop' && describeStyle(slot))}
         </div>
+        <p>
+          Check{' '}
+          <a href={`${this.origin}/src/globals/styles/_variables.css`}>
+            the list with all <code style={{ color: 'currentColor' }}>--webc-custom-properties</code>
+          </a>
+          .
+        </p>
       </psk-chapter>,
     );
   }
@@ -291,6 +300,6 @@ export class WebcContainer {
     this.appendSlots();
     this.appendCSSVariables();
 
-    return <Host class="webc-docs">{this.content}</Host>;
+    return <Host class="webc-docs"> {this.content}</Host>;
   }
 }

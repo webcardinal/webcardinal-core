@@ -7,10 +7,9 @@
 
 ## Properties
 
-| Property     | Attribute | Description                                        | Type            | Default          |
-| ------------ | --------- | -------------------------------------------------- | --------------- | ---------------- |
-| `history`    | --        |                                                    | `RouterHistory` | `undefined`      |
-| `loaderName` | `loader`  | Component tag name (in lowercase) for a UI loader. | `string`        | `'webc-spinner'` |
+| Property     | Attribute | Description                                        | Type     | Default          |
+| ------------ | --------- | -------------------------------------------------- | -------- | ---------------- |
+| `loaderName` | `loader`  | Component tag name (in lowercase) for a UI loader. | `string` | `'webc-spinner'` |
 
 
 ## Events
