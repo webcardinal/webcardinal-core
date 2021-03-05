@@ -16,9 +16,8 @@
       "mutable": false,
       "attr": "src",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Source path for a HTML page.",
       "docsTags": [],
-      "default": "null",
       "values": [
         {
           "type": "string"
@@ -29,15 +28,24 @@
     },
     {
       "name": "type",
-      "type": "string",
+      "type": "\"default\" | \"iframe\" | \"object\"",
       "mutable": true,
       "attr": "type",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Fetch a HTML file and loads inside as normal children or in a wrapped manner.",
       "docsTags": [],
-      "default": "this.defaults.type",
+      "default": "'default'",
       "values": [
         {
+          "value": "default",
+          "type": "string"
+        },
+        {
+          "value": "iframe",
+          "type": "string"
+        },
+        {
+          "value": "object",
           "type": "string"
         }
       ],

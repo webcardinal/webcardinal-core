@@ -1,10 +1,26 @@
-:host {
+webc-spinner {
+  /**
+   * @prop --webc-spinner-width
+   * @prop --webc-spinner-height
+   * @prop --webc-spinner-radius
+   * @prop --webc-spinner-dot-size
+   * @prop --webc-spinner-dot-radius
+   * @prop --webc-spinner-color
+   * @prop --webc-spinner-background;
+   * @prop --webc-spinner-border
+   * @prop --webc-spinner-box-shadow
+   * @prop --webc-spinner-animation
+   * @prop --webc-spinner-animation-delay
+   * @prop --webc-spinner-z-index
+   */
+
   position: absolute;
   top: 0; right: 0; bottom: 0; left: 0;
   pointer-events: none;
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: var(--webc-spinner-z-index);
 
   & > .circle-fade {
     position: relative;

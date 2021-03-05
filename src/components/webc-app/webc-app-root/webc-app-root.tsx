@@ -111,7 +111,12 @@ export class WebcAppRoot {
   }
 
   async componentDidLoad() {
-    this._loaderElement.remove();
+    if (this._loaderElement) {
+      // this._loaderElement.remove();
+      this._loaderElement.hidden = true;
+      window.WebCardinal.root = this.host;
+      window.WebCardinal.loader = this._loaderElement;
+    }
   }
 
   render() {

@@ -5,6 +5,16 @@
 <!-- Auto Generated Below -->
 
 
+## CSS Custom Properties
+
+| Name                                              | Description                  |
+| ------------------------------------------------- | ---------------------------- |
+| `--webc-app-error-toast-error-background-color`   | Background for error toast   |
+| `--webc-app-error-toast-error-color`              | Color for error toast        |
+| `--webc-app-error-toast-warning-background-color` | Background for warning toast |
+| `--webc-app-error-toast-warning-color`            | Color for warning toast      |
+
+
 ## Dependencies
 
 ### Used by

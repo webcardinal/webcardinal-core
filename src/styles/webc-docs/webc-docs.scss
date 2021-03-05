@@ -39,6 +39,7 @@
   text-align: left;
 }
 
+.docs-section.listeners code,
 .docs-section .table code {
   background: whitesmoke;
   padding: 2px 5px;
@@ -78,3 +79,16 @@
 .docs-section.description p {
   padding-top: 0;
 }
+
+.docs-section.styles .table.table-with-head {
+  grid-template-columns: 1fr auto;
+}
+
+.docs-section.listeners p {
+  display: inline-block;
+  padding-right: 0.25rem;
+}
+.docs-section.listeners code {
+  margin: 0 0.25rem;
+}
+

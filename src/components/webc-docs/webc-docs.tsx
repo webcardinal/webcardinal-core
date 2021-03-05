@@ -176,6 +176,34 @@ export class WebcContainer {
     );
   }
 
+  appendMethods() {
+    const { methods } = this.docs;
+    if (!methods || methods.length === 0) {
+      return;
+    }
+
+    const describeMethod = ({ name, docs, signature }) => {
+      return (
+        <article class="method" data-docs-method={name}>
+          <h3>{name}</h3>
+          <div class="table">
+            {docs ? [<span>Description</span>, <div innerHTML={docs} />] : null}
+            <span>Signature</span>
+            <div>
+              <code>{signature}</code>
+            </div>
+          </div>
+        </article>
+      );
+    };
+
+    this.content.push(
+      <psk-chapter class="docs-section methods" title="Methods">
+        {methods.map(method => describeMethod(method))}
+      </psk-chapter>,
+    );
+  }
+
   appendEvents() {
     const { events } = this.docs;
     if (!events || events.length === 0) {
@@ -203,30 +231,24 @@ export class WebcContainer {
     );
   }
 
-  appendMethods() {
-    const { methods } = this.docs;
-    if (!methods || methods.length === 0) {
+  appendListeners() {
+    const { listeners } = this.docs;
+    if (!listeners || listeners.length === 0) {
       return;
     }
 
-    const describeMethod = ({ name, docs, signature }) => {
+    const describeListener = ({ event }) => {
       return (
-        <article class="method" data-docs-method={name}>
-          <h3>{name}</h3>
-          <div class="table">
-            {docs ? [<span>Description</span>, <div innerHTML={docs} />] : null}
-            <span>Signature</span>
-            <div>
-              <code>{signature}</code>
-            </div>
-          </div>
-        </article>
+        <code class="listener" data-docs-event={event}>
+          {event}
+        </code>
       );
     };
 
     this.content.push(
-      <psk-chapter class="docs-section methods" title="Methods">
-        {methods.map(method => describeMethod(method))}
+      <psk-chapter class="docs-section listeners" title="Listeners">
+        {listeners && listeners.length > 0 ? <p>To the following events: </p> : null}
+        {listeners.map(listener => describeListener(listener))}
       </psk-chapter>,
     );
   }
@@ -258,6 +280,11 @@ export class WebcContainer {
       return;
     }
 
+    let found = false;
+    for (let style of styles) {
+      if (style.docs) found = true;
+    }
+
     const describeStyle = ({ name, docs }) => {
       const style = { gridColumn: !docs ? '1 / -1' : null };
       return [
@@ -272,7 +299,7 @@ export class WebcContainer {
       <psk-chapter class="docs-section styles" title="CSS Variables">
         <div class="table table-with-head">
           <h3>Name</h3>
-          <h3>Description</h3>
+          {found ? <h3>Description</h3> : null}
           {styles.map(slot => slot.annotation === 'prop' && describeStyle(slot))}
         </div>
         <p>
@@ -295,8 +322,9 @@ export class WebcContainer {
     this.appendSummary();
     this.appendSlot();
     this.appendProps();
-    this.appendEvents();
     this.appendMethods();
+    this.appendEvents();
+    this.appendListeners();
     this.appendSlots();
     this.appendCSSVariables();
 

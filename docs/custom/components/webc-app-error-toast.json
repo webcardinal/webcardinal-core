@@ -18,7 +18,28 @@
   "props": [],
   "methods": [],
   "events": [],
-  "styles": [],
+  "styles": [
+    {
+      "name": "--webc-app-error-toast-error-background-color",
+      "annotation": "prop",
+      "docs": "Background for error toast"
+    },
+    {
+      "name": "--webc-app-error-toast-error-color",
+      "annotation": "prop",
+      "docs": "Color for error toast"
+    },
+    {
+      "name": "--webc-app-error-toast-warning-background-color",
+      "annotation": "prop",
+      "docs": "Background for warning toast"
+    },
+    {
+      "name": "--webc-app-error-toast-warning-color",
+      "annotation": "prop",
+      "docs": "Color for warning toast"
+    }
+  ],
   "slots": [],
   "parts": [],
   "listeners": [

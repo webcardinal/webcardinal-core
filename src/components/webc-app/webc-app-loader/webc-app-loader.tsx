@@ -1,25 +1,27 @@
 import { Component, h, Host, Prop, State } from '@stencil/core';
 
 import { HostElement } from '../../../decorators';
-
-const LOADER_TYPES = ['default', 'iframe', 'object'];
+import { WebcAppLoaderType } from '../../../interfaces';
 
 @Component({
   tag: 'webc-app-loader',
   shadow: true,
 })
 export class WebcAppLoader {
-  private defaults = {
-    type: LOADER_TYPES[0],
-  };
-
   @HostElement() host: HTMLElement;
 
-  @Prop() src: string = null;
+  /**
+   * Source path for a HTML page.
+   */
+  @Prop() src: string;
 
-  @Prop({ mutable: true }) type: string = this.defaults.type;
+  /**
+   * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+   */
+  @Prop({ mutable: true }) type: WebcAppLoaderType = 'default';
 
   @State() content: string = null;
+
   private error = false;
 
   private async _getContent() {
@@ -30,13 +32,6 @@ export class WebcAppLoader {
     } catch (error) {
       this.error = true;
       throw error;
-    }
-  }
-
-  async componentWillLoad() {
-    this.type = this.type.toLowerCase();
-    if (!LOADER_TYPES.includes(this.type)) {
-      this.type = this.defaults.type;
     }
   }
 

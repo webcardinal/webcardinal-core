@@ -5,7 +5,7 @@
   "usage": {},
   "docs": "",
   "docsTags": [],
-  "encapsulation": "shadow",
+  "encapsulation": "none",
   "dependents": [
     "webc-modal"
   ],
@@ -18,7 +18,68 @@
   "props": [],
   "methods": [],
   "events": [],
-  "styles": [],
+  "styles": [
+    {
+      "name": "--webc-spinner-animation",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-animation-delay",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-background;",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-border",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-box-shadow",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-dot-radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-dot-size",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-height",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-width",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--webc-spinner-z-index",
+      "annotation": "prop",
+      "docs": ""
+    }
+  ],
   "slots": [],
   "parts": [],
   "listeners": []

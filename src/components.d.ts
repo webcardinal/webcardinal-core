@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { WebcAppLoaderType } from "./interfaces";
 import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface WebcAppContainer {
@@ -26,8 +27,14 @@ export namespace Components {
         "name": string | null;
     }
     interface WebcAppLoader {
+        /**
+          * Source path for a HTML page.
+         */
         "src": string;
-        "type": string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "type": WebcAppLoaderType;
     }
     interface WebcAppMenu {
         /**
@@ -114,15 +121,18 @@ export namespace Components {
     }
     interface WebcLink {
         "href": string | null;
+        /**
+          * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
+         */
         "tag": string | null;
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it
+          * Sets if the modal will automatically close when the user clicks outside of it.
          */
         "autoClose": boolean;
         /**
-          * Sets if the modal will automatically show when the element is constructed
+          * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow": boolean;
         /**
@@ -130,15 +140,15 @@ export namespace Components {
          */
         "canClose": boolean;
         /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "cancelButtonText": string;
         /**
-          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen.
          */
         "centered": boolean;
         /**
-          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "confirmButtonText": string;
         /**
@@ -154,11 +164,11 @@ export namespace Components {
          */
         "modalFooterContent": string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
          */
         "modalName": string;
         /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
          */
         "modalTitle": string;
         /**
@@ -170,15 +180,15 @@ export namespace Components {
          */
         "show": () => Promise<void>;
         /**
-          * Sets if the close button will be shown or not
+          * Sets if the close button will be shown or not.
          */
         "showCancelButton": boolean;
         /**
-          * Sets if the modal has the footer displayed
+          * Sets if the modal has the footer displayed.
          */
         "showFooter": boolean;
         /**
-          * The content that will be shown in the modal body, if modalName is not provided
+          * The content that will be shown in the modal body, if modalName is not provided.
          */
         "text": string;
     }
@@ -359,8 +369,14 @@ declare namespace LocalJSX {
         "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppLoader {
+        /**
+          * Source path for a HTML page.
+         */
         "src"?: string;
-        "type"?: string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "type"?: WebcAppLoaderType;
     }
     interface WebcAppMenu {
         /**
@@ -464,16 +480,22 @@ declare namespace LocalJSX {
     }
     interface WebcLink {
         "href"?: string | null;
+        /**
+          * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-root</code>.
+         */
         "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
+         */
         "tag"?: string | null;
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it
+          * Sets if the modal will automatically close when the user clicks outside of it.
          */
         "autoClose"?: boolean;
         /**
-          * Sets if the modal will automatically show when the element is constructed
+          * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow"?: boolean;
         /**
@@ -481,15 +503,15 @@ declare namespace LocalJSX {
          */
         "canClose"?: boolean;
         /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "cancelButtonText"?: string;
         /**
-          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen.
          */
         "centered"?: boolean;
         /**
-          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "confirmButtonText"?: string;
         /**
@@ -497,11 +519,11 @@ declare namespace LocalJSX {
          */
         "modalFooterContent"?: string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
          */
         "modalName"?: string;
         /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
          */
         "modalTitle"?: string;
         /**
@@ -513,23 +535,23 @@ declare namespace LocalJSX {
          */
         "onClosed"?: (event: CustomEvent<boolean>) => void;
         /**
-          * Event that fires when the confirm button is pressed (only when the default footer is shown)
+          * Event that fires when the confirm button is pressed (only when the default footer is shown).
          */
         "onConfirmed"?: (event: CustomEvent<any>) => void;
         /**
-          * Event that fires when the modal is initialised (after the modal content was successfully loaded)
+          * Event that fires when the modal is initialised (after the modal content was successfully loaded).
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
         /**
-          * Sets if the close button will be shown or not
+          * Sets if the close button will be shown or not.
          */
         "showCancelButton"?: boolean;
         /**
-          * Sets if the modal has the footer displayed
+          * Sets if the modal has the footer displayed.
          */
         "showFooter"?: boolean;
         /**
-          * The content that will be shown in the modal body, if modalName is not provided
+          * The content that will be shown in the modal body, if modalName is not provided.
          */
         "text"?: string;
     }
