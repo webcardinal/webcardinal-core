@@ -15,9 +15,9 @@
 
 ## Events
 
-| Event                  | Description                                                                                     | Type               |
-| ---------------------- | ----------------------------------------------------------------------------------------------- | ------------------ |
-| `webcardinal:tags:get` | Through this event a mapping (tag-page) with all tags is taken from <code>webc-app-root</code>. | `CustomEvent<any>` |
+| Event                  | Description                                                                                          | Type               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- | ------------------ |
+| `webcardinal:tags:get` | Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>. | `CustomEvent<any>` |
 
 
 ## Dependencies

@@ -87,9 +87,21 @@ export namespace Components {
         "routes": any[];
     }
     interface WebcContainer {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
         "controllerName": string | null;
+        /**
+          * If this property is true, internationalization (i18n) will be enabled.
+         */
         "enableTranslations": boolean;
+        /**
+          * The model from controller is exposed by this method.
+         */
         "getModel": () => Promise<any>;
+        /**
+          * The translation model from controller is exposed by this method.
+         */
         "getTranslationModel": () => Promise<any>;
         "history": RouterHistory;
     }
@@ -210,7 +222,7 @@ export namespace Components {
     interface WebcTemplate {
         "chain": string;
         /**
-          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
         "templateName": string;
     }
@@ -439,9 +451,18 @@ declare namespace LocalJSX {
         "routes"?: any[];
     }
     interface WebcContainer {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
         "controllerName"?: string | null;
+        /**
+          * If this property is true, internationalization (i18n) will be enabled.
+         */
         "enableTranslations"?: boolean;
         "history"?: RouterHistory;
+        /**
+          * Routing configuration received from <code>webc-app-router</code>.
+         */
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcDocs {
@@ -481,7 +502,7 @@ declare namespace LocalJSX {
     interface WebcLink {
         "href"?: string | null;
         /**
-          * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-root</code>.
+          * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.
          */
         "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
         /**
@@ -571,10 +592,16 @@ declare namespace LocalJSX {
     }
     interface WebcTemplate {
         "chain"?: string;
+        /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event translation model is received.
+         */
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         /**
-          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
         "templateName"?: string;
     }

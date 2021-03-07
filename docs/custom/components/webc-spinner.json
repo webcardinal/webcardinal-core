@@ -30,7 +30,7 @@
       "docs": ""
     },
     {
-      "name": "--webc-spinner-background;",
+      "name": "--webc-spinner-background",
       "annotation": "prop",
       "docs": ""
     },

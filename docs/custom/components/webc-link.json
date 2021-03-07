@@ -57,7 +57,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Through this event a mapping (tag-page) with all tags is taken from <code>webc-app-root</code>.",
+      "docs": "Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.",
       "docsTags": []
     }
   ],

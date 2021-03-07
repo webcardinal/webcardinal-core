@@ -16,7 +16,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "values": [
         {
@@ -32,7 +32,7 @@
       "mutable": false,
       "attr": "enable-translations",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "If this property is true, internationalization (i18n) will be enabled.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -68,7 +68,7 @@
       },
       "signature": "getModel() => Promise<any>",
       "parameters": [],
-      "docs": "",
+      "docs": "The model from controller is exposed by this method.",
       "docsTags": []
     },
     {
@@ -79,7 +79,7 @@
       },
       "signature": "getTranslationModel() => Promise<any>",
       "parameters": [],
-      "docs": "",
+      "docs": "The translation model from controller is exposed by this method.",
       "docsTags": []
     }
   ],
@@ -90,7 +90,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "Routing configuration received from <code>webc-app-router</code>.",
       "docsTags": []
     }
   ],

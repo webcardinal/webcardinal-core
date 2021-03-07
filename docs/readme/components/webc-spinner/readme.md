@@ -11,7 +11,7 @@
 | -------------------------------- | ----------- |
 | `--webc-spinner-animation`       |             |
 | `--webc-spinner-animation-delay` |             |
-| `--webc-spinner-background;`     |             |
+| `--webc-spinner-background`      |             |
 | `--webc-spinner-border`          |             |
 | `--webc-spinner-box-shadow`      |             |
 | `--webc-spinner-color`           |             |

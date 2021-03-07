@@ -33,7 +33,7 @@
       "mutable": false,
       "attr": "template-name",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html",
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -52,7 +52,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).",
       "docsTags": []
     },
     {
@@ -61,7 +61,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "Through this event translation model is received.",
       "docsTags": []
     }
   ],

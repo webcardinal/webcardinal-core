@@ -4,11 +4,21 @@
   "tag": "webc-page",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    },
+    {
+      "text": "use webc-container instead",
+      "name": "deprecated"
+    }
+  ],
   "encapsulation": "none",
   "dependents": [],
   "dependencies": [],
   "dependencyGraph": {},
+  "deprecation": "use webc-container instead",
   "props": [
     {
       "name": "controllerName",

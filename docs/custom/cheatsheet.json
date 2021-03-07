@@ -43,7 +43,8 @@
     "source": "@webcardinal/core"
   },
   "webc-page": {
-    "source": "@webcardinal/core"
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
   },
   "webc-skin": {
     "source": "@webcardinal/core"
