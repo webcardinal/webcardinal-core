@@ -8,7 +8,10 @@ import { StylingService } from '../../services';
 export class WebcSkin {
   @HostElement() host: HTMLElement;
 
-  @Prop() href: string
+  /**
+   * Path to a stylesheet.
+   */
+  @Prop() href: string;
 
   private stylingService: StylingService;
 
@@ -18,7 +21,7 @@ export class WebcSkin {
     }
 
     let isValid = false;
-    this.stylingService = new StylingService(this.host.parentElement, this.host)
+    this.stylingService = new StylingService(this.host.parentElement, this.host);
 
     if (this.href) {
       await this.stylingService.applyFromHref(this.href);
@@ -35,8 +38,9 @@ export class WebcSkin {
       console.warn(
         `${this.host.tagName.toLowerCase()} is not used properly\n`,
         `You must set attribute "href"!\n`,
-        `target element:`, this.host
-      )
+        `target element:`,
+        this.host,
+      );
     }
   }
 

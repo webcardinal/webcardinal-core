@@ -7,9 +7,9 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `href`   | `href`    |             | `string` | `undefined` |
+| Property | Attribute | Description           | Type     | Default     |
+| -------- | --------- | --------------------- | -------- | ----------- |
+| `href`   | `href`    | Path to a stylesheet. | `string` | `undefined` |
 
 
 ----------------------------------------------

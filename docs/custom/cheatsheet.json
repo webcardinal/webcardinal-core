@@ -14,6 +14,10 @@
   "webc-app-menu": {
     "source": "@webcardinal/core"
   },
+  "webc-app-menu-item": {
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
+  },
   "webc-app-root": {
     "source": "@webcardinal/core"
   },
@@ -39,7 +43,8 @@
     "source": "@webcardinal/core"
   },
   "webc-page": {
-    "source": "@webcardinal/core"
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
   },
   "webc-skin": {
     "source": "@webcardinal/core"

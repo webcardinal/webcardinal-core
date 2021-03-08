@@ -3,7 +3,7 @@
   "fileName": "webc-modal.tsx",
   "tag": "webc-modal",
   "usage": {},
-  "docs": "This component should be used when a modal is needed in your application.",
+  "docs": "",
   "docsTags": [],
   "encapsulation": "shadow",
   "dependents": [],
@@ -22,7 +22,7 @@
       "mutable": false,
       "attr": "auto-close",
       "reflectToAttr": true,
-      "docs": "Sets if the modal will automatically close when the user clicks outside of it",
+      "docs": "Sets if the modal will automatically close when the user clicks outside of it.",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -39,7 +39,7 @@
       "mutable": true,
       "attr": "auto-show",
       "reflectToAttr": true,
-      "docs": "Sets if the modal will automatically show when the element is constructed",
+      "docs": "Sets if the modal will automatically show when the element is constructed.",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -73,7 +73,7 @@
       "mutable": false,
       "attr": "cancel-button-text",
       "reflectToAttr": true,
-      "docs": "The text that will appear on the footer close button\n(if neither the \"footer\" slot nor modalFooterContent are provided)",
+      "docs": "The text that will appear on the footer close button, if neither the \"footer\" slot nor modalFooterContent are provided.",
       "docsTags": [],
       "default": "'Close'",
       "values": [
@@ -90,7 +90,7 @@
       "mutable": false,
       "attr": "centered",
       "reflectToAttr": true,
-      "docs": "Sets if the popup is centered on the screen or if it appear at the top of the screen",
+      "docs": "Sets if the popup is centered on the screen or if it appear at the top of the screen.",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -107,7 +107,7 @@
       "mutable": false,
       "attr": "confirm-button-text",
       "reflectToAttr": true,
-      "docs": "The text that will appear on the footer confirm button\n(if neither the \"footer\" slot nor modalFooterContent are provided)",
+      "docs": "The text that will appear on the footer confirm button, if neither the \"footer\" slot nor modalFooterContent are provided.",
       "docsTags": [],
       "default": "'Ok'",
       "values": [
@@ -140,7 +140,7 @@
       "mutable": false,
       "attr": "modal-name",
       "reflectToAttr": true,
-      "docs": "The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html",
+      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -156,7 +156,7 @@
       "mutable": false,
       "attr": "modal-title",
       "reflectToAttr": true,
-      "docs": "The text that will be shown in the modal's header, if neither the \"title\" slot nor modalTitleContent are provided",
+      "docs": "The text that will be shown in the modal's header, if neither the \"title\" slot nor modalTitleContent are provided.",
       "docsTags": [],
       "values": [
         {
@@ -188,7 +188,7 @@
       "mutable": false,
       "attr": "show-cancel-button",
       "reflectToAttr": true,
-      "docs": "Sets if the close button will be shown or not",
+      "docs": "Sets if the close button will be shown or not.",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -205,7 +205,7 @@
       "mutable": false,
       "attr": "show-footer",
       "reflectToAttr": true,
-      "docs": "Sets if the modal has the footer displayed",
+      "docs": "Sets if the modal has the footer displayed.",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -222,7 +222,7 @@
       "mutable": false,
       "attr": "text",
       "reflectToAttr": true,
-      "docs": "The content that will be shown in the modal body, if modalName is not provided",
+      "docs": "The content that will be shown in the modal body, if modalName is not provided.",
       "docsTags": [],
       "values": [
         {
@@ -284,7 +284,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the confirm button is pressed (only when the default footer is shown)",
+      "docs": "Event that fires when the confirm button is pressed (only when the default footer is shown).",
       "docsTags": []
     },
     {
@@ -293,7 +293,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the modal is initialised (after the modal content was successfully loaded)",
+      "docs": "Event that fires when the modal is initialised (after the modal content was successfully loaded).",
       "docsTags": []
     }
   ],

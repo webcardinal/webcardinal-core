@@ -5,6 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { WebcAppLoaderType } from "./interfaces";
 import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface WebcAppContainer {
@@ -26,13 +27,27 @@ export namespace Components {
         "name": string | null;
     }
     interface WebcAppLoader {
+        /**
+          * Source path for a HTML page.
+         */
         "src": string;
-        "type": string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "type": WebcAppLoaderType;
     }
     interface WebcAppMenu {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+         */
         "basePath": string;
+        /**
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+         */
         "disableIdentity": boolean;
-        "history": RouterHistory;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "items": any[];
         "mode": string;
     }
@@ -48,7 +63,6 @@ export namespace Components {
         "url": string | null;
     }
     interface WebcAppRoot {
-        "history": RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -56,15 +70,15 @@ export namespace Components {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath": string;
         /**
-          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown. This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
          */
         "fallbackPage": any;
         /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
          */
         "pagesPath": string;
         /**
@@ -73,9 +87,21 @@ export namespace Components {
         "routes": any[];
     }
     interface WebcContainer {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
         "controllerName": string | null;
+        /**
+          * If this property is true, internationalization (i18n) will be enabled.
+         */
         "enableTranslations": boolean;
+        /**
+          * The model from controller is exposed by this method.
+         */
         "getModel": () => Promise<any>;
+        /**
+          * The translation model from controller is exposed by this method.
+         */
         "getTranslationModel": () => Promise<any>;
         "history": RouterHistory;
     }
@@ -107,15 +133,18 @@ export namespace Components {
     }
     interface WebcLink {
         "href": string | null;
+        /**
+          * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
+         */
         "tag": string | null;
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it
+          * Sets if the modal will automatically close when the user clicks outside of it.
          */
         "autoClose": boolean;
         /**
-          * Sets if the modal will automatically show when the element is constructed
+          * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow": boolean;
         /**
@@ -123,15 +152,15 @@ export namespace Components {
          */
         "canClose": boolean;
         /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "cancelButtonText": string;
         /**
-          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen.
          */
         "centered": boolean;
         /**
-          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "confirmButtonText": string;
         /**
@@ -147,11 +176,11 @@ export namespace Components {
          */
         "modalFooterContent": string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
          */
         "modalName": string;
         /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
          */
         "modalTitle": string;
         /**
@@ -163,15 +192,15 @@ export namespace Components {
          */
         "show": () => Promise<void>;
         /**
-          * Sets if the close button will be shown or not
+          * Sets if the close button will be shown or not.
          */
         "showCancelButton": boolean;
         /**
-          * Sets if the modal has the footer displayed
+          * Sets if the modal has the footer displayed.
          */
         "showFooter": boolean;
         /**
-          * The content that will be shown in the modal body, if modalName is not provided
+          * The content that will be shown in the modal body, if modalName is not provided.
          */
         "text": string;
     }
@@ -183,6 +212,9 @@ export namespace Components {
         "history": RouterHistory;
     }
     interface WebcSkin {
+        /**
+          * Path to a stylesheet.
+         */
         "href": string;
     }
     interface WebcSpinner {
@@ -190,7 +222,7 @@ export namespace Components {
     interface WebcTemplate {
         "chain": string;
         /**
-          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
         "templateName": string;
     }
@@ -349,15 +381,32 @@ declare namespace LocalJSX {
         "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppLoader {
+        /**
+          * Source path for a HTML page.
+         */
         "src"?: string;
-        "type"?: string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "type"?: WebcAppLoaderType;
     }
     interface WebcAppMenu {
+        /**
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+         */
         "basePath"?: string;
+        /**
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+         */
         "disableIdentity"?: boolean;
-        "history"?: RouterHistory;
+        /**
+          * This Array is received from <code>ApplicationController</code>.
+         */
         "items"?: any[];
         "mode"?: string;
+        /**
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
+         */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
     }
     interface WebcAppMenuItem {
@@ -370,7 +419,6 @@ declare namespace LocalJSX {
         "url"?: string | null;
     }
     interface WebcAppRoot {
-        "history"?: RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -382,19 +430,19 @@ declare namespace LocalJSX {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath"?: string;
         /**
-          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+          * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown. This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
          */
         "fallbackPage"?: any;
         /**
-          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals.
+          * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
         /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
          */
         "pagesPath"?: string;
         /**
@@ -403,9 +451,18 @@ declare namespace LocalJSX {
         "routes"?: any[];
     }
     interface WebcContainer {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
         "controllerName"?: string | null;
+        /**
+          * If this property is true, internationalization (i18n) will be enabled.
+         */
         "enableTranslations"?: boolean;
         "history"?: RouterHistory;
+        /**
+          * Routing configuration received from <code>webc-app-router</code>.
+         */
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcDocs {
@@ -444,16 +501,22 @@ declare namespace LocalJSX {
     }
     interface WebcLink {
         "href"?: string | null;
+        /**
+          * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.
+         */
         "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
+         */
         "tag"?: string | null;
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it
+          * Sets if the modal will automatically close when the user clicks outside of it.
          */
         "autoClose"?: boolean;
         /**
-          * Sets if the modal will automatically show when the element is constructed
+          * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow"?: boolean;
         /**
@@ -461,15 +524,15 @@ declare namespace LocalJSX {
          */
         "canClose"?: boolean;
         /**
-          * The text that will appear on the footer close button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "cancelButtonText"?: string;
         /**
-          * Sets if the popup is centered on the screen or if it appear at the top of the screen
+          * Sets if the popup is centered on the screen or if it appear at the top of the screen.
          */
         "centered"?: boolean;
         /**
-          * The text that will appear on the footer confirm button (if neither the "footer" slot nor modalFooterContent are provided)
+          * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
          */
         "confirmButtonText"?: string;
         /**
@@ -477,11 +540,11 @@ declare namespace LocalJSX {
          */
         "modalFooterContent"?: string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
          */
         "modalName"?: string;
         /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
          */
         "modalTitle"?: string;
         /**
@@ -493,23 +556,23 @@ declare namespace LocalJSX {
          */
         "onClosed"?: (event: CustomEvent<boolean>) => void;
         /**
-          * Event that fires when the confirm button is pressed (only when the default footer is shown)
+          * Event that fires when the confirm button is pressed (only when the default footer is shown).
          */
         "onConfirmed"?: (event: CustomEvent<any>) => void;
         /**
-          * Event that fires when the modal is initialised (after the modal content was successfully loaded)
+          * Event that fires when the modal is initialised (after the modal content was successfully loaded).
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
         /**
-          * Sets if the close button will be shown or not
+          * Sets if the close button will be shown or not.
          */
         "showCancelButton"?: boolean;
         /**
-          * Sets if the modal has the footer displayed
+          * Sets if the modal has the footer displayed.
          */
         "showFooter"?: boolean;
         /**
-          * The content that will be shown in the modal body, if modalName is not provided
+          * The content that will be shown in the modal body, if modalName is not provided.
          */
         "text"?: string;
     }
@@ -520,16 +583,25 @@ declare namespace LocalJSX {
         "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcSkin {
+        /**
+          * Path to a stylesheet.
+         */
         "href"?: string;
     }
     interface WebcSpinner {
     }
     interface WebcTemplate {
         "chain"?: string;
+        /**
+          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+         */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event translation model is received.
+         */
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         /**
-          * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
         "templateName"?: string;
     }

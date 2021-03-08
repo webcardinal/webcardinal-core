@@ -16,7 +16,7 @@
       "mutable": false,
       "attr": "href",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "Path to a stylesheet.",
       "docsTags": [],
       "values": [
         {

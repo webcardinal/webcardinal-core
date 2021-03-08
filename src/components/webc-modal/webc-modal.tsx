@@ -1,27 +1,16 @@
 import type { EventEmitter } from '@stencil/core';
-import {
-  Component,
-  h,
-  Prop,
-  Event,
-  Fragment,
-  State,
-  Method,
-} from '@stencil/core';
+import { Component, h, Prop, Event, Fragment, State, Method } from '@stencil/core';
 
 import { HostElement } from '../../decorators';
 
 import { getModalContent } from './webc-modal-utils';
 
-/**
- * This component should be used when a modal is needed in your application.
- */
 @Component({
   tag: 'webc-modal',
   styleUrls: {
     default: '../../styles/webc-modal/webc-modal.scss',
   },
-  shadow: true
+  shadow: true,
 })
 export class WebcModal {
   @HostElement() private host: HTMLElement;
@@ -31,12 +20,12 @@ export class WebcModal {
   @State() content: string;
 
   /**
-   * The name of the model that will be loaded. The generated path will have the format ${basePath}/modals/${modalName}.html
+   * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
    */
   @Prop({ reflect: true }) modalName: string;
 
   /**
-   * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided
+   * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
    */
   @Prop({ reflect: true }) modalTitle: string;
 
@@ -46,7 +35,7 @@ export class WebcModal {
   @Prop({ reflect: true }) modalTitleContent: string;
 
   /**
-   * The content that will be shown in the modal body, if modalName is not provided
+   * The content that will be shown in the modal body, if modalName is not provided.
    */
   @Prop({ reflect: true }) text: string;
 
@@ -56,34 +45,32 @@ export class WebcModal {
   @Prop({ reflect: true }) modalFooterContent: string;
 
   /**
-   * Sets if the close button will be shown or not
+   * Sets if the close button will be shown or not.
    */
   @Prop({ reflect: true }) showCancelButton = true;
 
   /**
-   * The text that will appear on the footer close button
-   * (if neither the "footer" slot nor modalFooterContent are provided)
+   * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
    */
   @Prop({ reflect: true }) cancelButtonText = 'Close';
 
   /**
-   * The text that will appear on the footer confirm button
-   * (if neither the "footer" slot nor modalFooterContent are provided)
+   * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
    */
   @Prop({ reflect: true }) confirmButtonText = 'Ok';
 
   /**
-   * Sets if the popup is centered on the screen or if it appear at the top of the screen
+   * Sets if the popup is centered on the screen or if it appear at the top of the screen.
    */
   @Prop({ reflect: true }) centered = true;
 
   /**
-   * Sets if the modal will automatically show when the element is constructed
+   * Sets if the modal will automatically show when the element is constructed.
    */
   @Prop({ reflect: true, mutable: true }) autoShow = true;
 
   /**
-   * Sets if the modal will automatically close when the user clicks outside of it
+   * Sets if the modal will automatically close when the user clicks outside of it.
    */
   @Prop({ reflect: true }) autoClose = true;
 
@@ -93,17 +80,17 @@ export class WebcModal {
   @Prop({ reflect: true }) canClose = true;
 
   /**
-   * Sets if the modal has the footer displayed
+   * Sets if the modal has the footer displayed.
    */
   @Prop({ reflect: true }) showFooter = true;
 
   /**
-   * Event that fires when the modal is initialised (after the modal content was successfully loaded)
+   * Event that fires when the modal is initialised (after the modal content was successfully loaded).
    */
   @Event() initialised: EventEmitter<HTMLElement>;
 
   /**
-   * Event that fires when the confirm button is pressed (only when the default footer is shown)
+   * Event that fires when the confirm button is pressed (only when the default footer is shown).
    */
   @Event() confirmed: EventEmitter<any>;
 
@@ -186,32 +173,22 @@ export class WebcModal {
 
   private getTitleContent() {
     if (this.hasSlot('title')) return <slot name="title" />;
-    if (this.modalTitleContent)
-      return <div innerHTML={this.modalTitleContent}></div>;
+    if (this.modalTitleContent) return <div innerHTML={this.modalTitleContent} />;
     return <h2 class="modal-title">{this.modalTitle}</h2>;
   }
 
   private getFooterContent() {
     if (this.hasSlot('footer')) return <slot name="footer" />;
-    if (this.modalFooterContent)
-      return <div innerHTML={this.modalFooterContent}></div>;
+    if (this.modalFooterContent) return <div innerHTML={this.modalFooterContent} />;
     return (
       <Fragment>
         {this.showCancelButton && (
-          <button
-            type="button"
-            class="cancel"
-            onClick={this.handleClose.bind(this)}
-          >
+          <button type="button" class="cancel" onClick={this.handleClose.bind(this)}>
             {this.cancelButtonText}
           </button>
         )}
 
-        <button
-          type="button"
-          class="confirm"
-          onClick={this.handleConfirm.bind(this)}
-        >
+        <button type="button" class="confirm" onClick={this.handleConfirm.bind(this)}>
           {this.confirmButtonText}
         </button>
       </Fragment>
@@ -222,16 +199,8 @@ export class WebcModal {
     if (!this.isVisible) return null;
 
     return (
-      <div
-        class="webc-modal fade show"
-        tabindex="-1"
-        role="dialog"
-        onClick={this.handleBackdropClick.bind(this)}
-      >
-        <div
-          class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `}
-          role="document"
-        >
+      <div class="webc-modal fade show" tabindex="-1" role="dialog" onClick={this.handleBackdropClick.bind(this)}>
+        <div class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `} role="document">
           <div class="webc-modal-content">
             <div class="modal-header">
               {this.getTitleContent()}
@@ -256,16 +225,10 @@ export class WebcModal {
             ) : (
               <Fragment>
                 <div class="webc-modal-body">
-                  {this.modalName ? (
-                    <slot />
-                  ) : (
-                    <div class="text-content">{this.text}</div>
-                  )}
+                  {this.modalName ? <slot /> : <div class="text-content">{this.text}</div>}
                 </div>
 
-                {this.showFooter && (
-                  <div class="webc-modal-footer">{this.getFooterContent()}</div>
-                )}
+                {this.showFooter && <div class="webc-modal-footer">{this.getFooterContent()}</div>}
               </Fragment>
             )}
           </div>

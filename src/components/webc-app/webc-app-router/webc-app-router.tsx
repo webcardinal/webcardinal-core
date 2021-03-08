@@ -23,6 +23,7 @@ export class WebcAppRouter {
 
   /**
    * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.
+   * This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
    */
   @Prop({ mutable: true }) fallbackPage;
 
@@ -33,18 +34,20 @@ export class WebcAppRouter {
    *    <base href="/my-custom-base">
    *   </psk-code>
    * </psk-example>
+   *
+   * Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
    */
   @Prop({ mutable: true }) basePath = '';
 
   /**
    * Path to <code>/pages</code> folder.<br>
-   * This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code> key.
+   * This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
    */
   @Prop({ mutable: true }) pagesPath = '/pages';
 
   /**
    * Routing configuration received from <code>ApplicationController</code>.<br>
-   * This configuration includes different settings for pages, skins, modals.
+   * This configuration includes different settings for pages, skins, modals, etc.;
    */
   @Event({
     eventName: 'webcardinal:config:getRouting',

@@ -37,21 +37,6 @@
   },
   "props": [
     {
-      "name": "history",
-      "type": "RouterHistory",
-      "mutable": false,
-      "reflectToAttr": false,
-      "docs": "",
-      "docsTags": [],
-      "values": [
-        {
-          "type": "RouterHistory"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
       "name": "loaderName",
       "type": "string",
       "mutable": false,

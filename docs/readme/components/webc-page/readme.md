@@ -5,6 +5,8 @@
 <!-- Auto Generated Below -->
 
 
+> **[DEPRECATED]** use webc-container instead
+
 ## Properties
 
 | Property             | Attribute             | Description | Type            | Default     |

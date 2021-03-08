@@ -38,7 +38,7 @@
       "mutable": false,
       "attr": "tag",
       "reflectToAttr": false,
-      "docs": "",
+      "docs": "A unique identifier for each page, which was previously set in <code>webcardinal.json</code>",
       "docsTags": [],
       "values": [
         {
@@ -57,7 +57,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "",
+      "docs": "Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.",
       "docsTags": []
     }
   ],

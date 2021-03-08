@@ -31,11 +31,7 @@ export class WebcAppErrorToast {
     if (!isScriptError) {
       detailsSection = `
             <div class="see-more-content">${
-              error
-                ? error.stack
-                    .replace(/(?:\r\n|\r|\n)/g, '<br>')
-                    .replace(/ /g, '\u00a0')
-                : ''
+              error ? error.stack.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/ /g, '\u00a0') : ''
             }</div>
             <div class="details">
                 URL: ${url}<br />
@@ -44,7 +40,7 @@ export class WebcAppErrorToast {
         `;
     }
 
-    const content = `
+    return `
         <div class="title">
             <button type="button" class="close">
                 <span aria-hidden="true">&times;</span>
@@ -53,11 +49,10 @@ export class WebcAppErrorToast {
         </div>
         ${detailsSection}
     `;
-    return content;
   }
 
   getWarningToastContent(params: any[]) {
-    const content = `
+    return `
         <div class="title">
             <button type="button" class="close">
                 <span aria-hidden="true">&times;</span>
@@ -65,7 +60,6 @@ export class WebcAppErrorToast {
             <div class="message">${params.join('<br/>')}</div>
         </div>
     `;
-    return content;
   }
 
   addToast(toastType: string, content: string) {

@@ -20,12 +20,16 @@ export class WebcTemplate {
   @HostElement() host: HTMLElement;
 
   /**
-   * The name of the template that will be loaded. The generated path will have the format ${basePath}/templates/${templateName}.html
+   * The name of the template that will be loaded.
+   * The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
    */
   @Prop({ reflect: true }) templateName: string;
 
   @Prop({ attribute: 'data-model', mutable: true }) chain = '';
 
+  /**
+   * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+   */
   @Event({
     eventName: 'webcardinal:model:get',
     bubbles: true,
@@ -34,6 +38,9 @@ export class WebcTemplate {
   })
   getModelEvent: EventEmitter;
 
+  /**
+   * Through this event translation model is received.
+   */
   @Event({
     eventName: 'webcardinal:translationModel:get',
     bubbles: true,

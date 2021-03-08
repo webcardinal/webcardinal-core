@@ -4,8 +4,7 @@ import { Component, h } from '@stencil/core';
   tag: 'webc-spinner',
   styleUrls: {
     default: '../../styles/webc-spinner/webc-spinner.scss',
-  },
-  shadow: true,
+  }
 })
 export class WebcSpinner {
   render() {

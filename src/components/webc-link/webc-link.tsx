@@ -5,15 +5,21 @@ import { HostElement } from '../../decorators';
 import { promisifyEventEmit } from '../../utils';
 
 @Component({
-  tag: 'webc-link'
+  tag: 'webc-link',
 })
 export class WebcLink {
   @HostElement() host: HTMLElement;
 
   @Prop({ mutable: true }) href: string | null;
 
+  /**
+   * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
+   */
   @Prop() tag: string | null;
 
+  /**
+   * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.
+   */
   @Event({
     eventName: 'webcardinal:tags:get',
     bubbles: true,

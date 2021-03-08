@@ -7,17 +7,17 @@
 
 ## Properties
 
-| Property | Attribute | Description | Type     | Default     |
-| -------- | --------- | ----------- | -------- | ----------- |
-| `href`   | `href`    |             | `string` | `undefined` |
-| `tag`    | `tag`     |             | `string` | `undefined` |
+| Property | Attribute | Description                                                                                  | Type     | Default     |
+| -------- | --------- | -------------------------------------------------------------------------------------------- | -------- | ----------- |
+| `href`   | `href`    |                                                                                              | `string` | `undefined` |
+| `tag`    | `tag`     | A unique identifier for each page, which was previously set in <code>webcardinal.json</code> | `string` | `undefined` |
 
 
 ## Events
 
-| Event                  | Description | Type               |
-| ---------------------- | ----------- | ------------------ |
-| `webcardinal:tags:get` |             | `CustomEvent<any>` |
+| Event                  | Description                                                                                          | Type               |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- | ------------------ |
+| `webcardinal:tags:get` | Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>. | `CustomEvent<any>` |
 
 
 ## Dependencies

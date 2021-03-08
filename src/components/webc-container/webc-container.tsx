@@ -19,12 +19,22 @@ import { promisifyEventEmit } from '../../utils';
 export class WebcContainer {
   @HostElement() private host: HTMLElement;
 
+  /**
+   * This property is a string that will permit the developer to choose his own controller.
+   * If no value is set then the null default value will be taken and the component will use the basic Controller.
+   */
   @Prop({ attribute: 'controller' }) controllerName: string | null;
 
   @Prop() history: RouterHistory;
 
+  /**
+   * If this property is true, internationalization (i18n) will be enabled.
+   */
   @Prop() enableTranslations = false;
 
+  /**
+   * Routing configuration received from <code>webc-app-router</code>.
+   */
   @Event({
     eventName: 'webcardinal:routing:get',
     bubbles: true,
@@ -116,6 +126,9 @@ export class WebcContainer {
     }, 100);
   }
 
+  /**
+   * The model from controller is exposed by this method.
+   */
   @Method()
   async getModel() {
     if (this.controller) {
@@ -124,6 +137,9 @@ export class WebcContainer {
     return undefined;
   }
 
+  /**
+   * The translation model from controller is exposed by this method.
+   */
   @Method()
   async getTranslationModel() {
     if (this.controller) {

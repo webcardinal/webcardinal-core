@@ -13,7 +13,10 @@ import {
 } from '../../services';
 import { promisifyEventEmit } from '../../utils';
 
-// Depracted: use webc-container instead
+/**
+ * @disable cheatsheet
+ * @deprecated use webc-container instead
+ */
 @Component({
   tag: 'webc-page',
 })
