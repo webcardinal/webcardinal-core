@@ -2,19 +2,10 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
 import type { RouterHistory } from '@stencil/router';
 
-import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
+import { DATA_FOR_NO_DATA_SLOT_NAME, MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { HostElement } from '../../decorators';
-import {
-  ControllerBindingService,
-  ControllerNodeValueBindingService,
-  ControllerRegistryService,
-  ControllerTranslationBindingService,
-} from '../../services';
-import { promisifyEventEmit, extractChain, removeSlotInfoFromElement } from '../../utils';
-
-import { createDOMMap, diff } from './webc-for-utils';
-
-const NO_DATA_SLOT_NAME = 'no-data';
+import { BindingService, ControllerRegistryService } from '../../services';
+import { promisifyEventEmit, extractChain, removeSlotInfoFromElement, createDomMap, diffDomMap } from '../../utils';
 
 @Component({
   tag: 'webc-for',
@@ -56,32 +47,19 @@ export class WebcFor {
 
   private bindRelativeModel = (element, index) => {
     const tag = element.tagName.toLowerCase();
-    let chainSuffix = extractChain(element);
-    if (chainSuffix) {
-      chainSuffix = chainSuffix.slice(1);
-      element.setAttribute(MODEL_KEY, [this.chain, index, chainSuffix].filter(String).join('.'));
-    } else if (this.autoBind === true) {
-      element.setAttribute(MODEL_KEY, [this.chain, index].join('.'));
-    }
 
     if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
       return;
     }
 
     const modelChainPrefix = [this.chain.slice(1), index].join('.');
-
-    ControllerBindingService.bindModel(element, this.model);
-    ControllerBindingService.bindAttributes(element, this.model, modelChainPrefix);
-    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
-
-    if (element.childNodes) {
-      Array.from(element.childNodes).forEach(child =>
-        ControllerNodeValueBindingService.bindNodeValue(child as ChildNode, this.model, this.translationModel, modelChainPrefix),
-      );
-    }
-    if (element.children) {
-      Array.from(element.children).forEach(child => this.bindRelativeModel(child, index));
-    }
+    BindingService.bindElement(element, {
+      model: this.model,
+      translationModel: this.translationModel,
+      recursive: true,
+      enableTranslations: true,
+      chainPrefix: modelChainPrefix,
+    });
   };
 
   private _handleTemplate() {
@@ -126,9 +104,9 @@ export class WebcFor {
             const existingElement = document.createElement('div');
             existingElement.appendChild(this.existingNodes[i][index].cloneNode(true) as HTMLElement);
 
-            const templateMap = createDOMMap(updatedElement);
-            const domMap = createDOMMap(existingElement);
-            diff(templateMap, domMap, this.existingNodes[i][index]);
+            const templateMap = createDomMap(updatedElement);
+            const domMap = createDomMap(existingElement);
+            diffDomMap(templateMap, domMap, this.existingNodes[i][index]);
           });
         } else {
           updatedNodes.forEach(element => {
@@ -190,7 +168,7 @@ export class WebcFor {
     // save the template for each item of array
     while (this.host.children.length > 0) {
       const firstChild = this.host.children[0];
-      if (firstChild.getAttribute('slot') === NO_DATA_SLOT_NAME) {
+      if (firstChild.getAttribute('slot') === DATA_FOR_NO_DATA_SLOT_NAME) {
         this.noDatatemplate.push(firstChild);
       } else {
         this.template.push(firstChild);

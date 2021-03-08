@@ -5,3 +5,4 @@ export { default as ControllerNodeValueBindingService } from './ControllerNodeVa
 export { default as ControllerTranslationBindingService } from './ControllerTranslationBindingService';
 export { default as ControllerTranslationService } from './ControllerTranslationService';
 export { default as StylingService } from './StylingService';
+export { default as BindingService } from './BindingService';

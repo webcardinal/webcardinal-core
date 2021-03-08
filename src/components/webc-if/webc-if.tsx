@@ -1,18 +1,13 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, h, Prop, State, Element, Watch, Event } from '@stencil/core';
 
-import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import {
-  ControllerBindingService,
-  ControllerNodeValueBindingService,
-  ControllerTranslationBindingService,
-} from '../../services';
-import { promisifyEventEmit, removeSlotInfoFromElement } from '../../utils';
-
-import { getSlots, removeElementChildren } from './webc-if-utils';
-
-const TRUE_CONDITION_SLOT_NAME = 'true';
-const FALSE_CONDITION_SLOT_NAME = 'false';
+  DATA_IF_FALSE_CONDITION_SLOT_NAME,
+  DATA_IF_TRUE_CONDITION_SLOT_NAME,
+  MODEL_CHAIN_PREFIX,
+} from '../../constants';
+import { BindingService } from '../../services';
+import { promisifyEventEmit, removeSlotInfoFromElement, getSlots, removeElementChildren } from '../../utils';
 
 @Component({
   tag: 'webc-if',
@@ -71,8 +66,8 @@ export class WebcIf {
 
     const children = Array.from(this.host.children);
 
-    this.trueSlotElements = getSlots(children, TRUE_CONDITION_SLOT_NAME);
-    this.falseSlotElements = getSlots(children, FALSE_CONDITION_SLOT_NAME);
+    this.trueSlotElements = getSlots(children, DATA_IF_TRUE_CONDITION_SLOT_NAME);
+    this.falseSlotElements = getSlots(children, DATA_IF_FALSE_CONDITION_SLOT_NAME);
 
     if (!this.trueSlotElements.length && !this.falseSlotElements.length) {
       this.trueSlotElements = children;
@@ -120,26 +115,12 @@ export class WebcIf {
       removeSlotInfoFromElement(element);
 
       this.host.appendChild(element);
-      this.bindModelToVisibleSlot(element, this.localModel);
-    });
-  }
-
-  private bindModelToVisibleSlot(element: Element, model: any) {
-    const tag = element.tagName.toLowerCase();
-    if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
-      return;
-    }
-
-    ControllerBindingService.bindModel(element, model);
-    ControllerBindingService.bindAttributes(element, model);
-    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
-
-    Array.from(element.childNodes).forEach(child => {
-      ControllerNodeValueBindingService.bindNodeValue(child, model, this.translationModel);
-    });
-
-    Array.from(element.children).forEach(target => {
-      this.bindModelToVisibleSlot(target, model);
+      BindingService.bindElement(element, {
+        model: this.localModel,
+        translationModel: this.translationModel,
+        recursive: true,
+        enableTranslations: true,
+      });
     });
   }
 

@@ -8,10 +8,8 @@ import { HostElement } from '../../decorators';
 import {
   ComponentListenersService,
   ControllerRegistryService,
-  ControllerBindingService,
   ControllerTranslationService,
-  ControllerTranslationBindingService,
-  ControllerNodeValueBindingService,
+  BindingService,
 } from '../../services';
 import { promisifyEventEmit } from '../../utils';
 
@@ -44,7 +42,7 @@ export class WebcContainer {
     if (!this.host.isConnected) {
       return;
     }
-    
+
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
 
     if (this.enableTranslations) {
@@ -69,20 +67,18 @@ export class WebcContainer {
     const { model, translationModel } = this.controller;
     if (translationModel) {
       this.translationModel = translationModel;
-
-      if (this.enableTranslations) {
-        // bind nodes with translation model
-        ControllerTranslationBindingService.bindRecursive(this.host, this.translationModel);
-      }
     }
 
     // get the model
     if (model) {
       this.model = model;
 
-      // bind nodes
-      ControllerBindingService.bindRecursive(this.host, this.model);
-      ControllerNodeValueBindingService.bindRecursive(this.host, this.model, this.translationModel);
+      BindingService.bindElement(this.host, {
+        model: this.model,
+        translationModel: this.translationModel,
+        enableTranslations: this.enableTranslations,
+        recursive: true,
+      });
     }
 
     if (translationModel || model) {

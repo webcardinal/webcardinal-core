@@ -112,6 +112,14 @@ export function setElementValue(element, { key, value }) {
   }
 }
 
+function isAttributeForModelChange(element: Element, attribute: string) {
+  const tagName = element.tagName.toLowerCase();
+  if (tagName === 'input' && element.getAttribute('type') === 'checkbox' && attribute === 'checked') {
+    return true;
+  }
+  return attribute === 'value';
+}
+
 /**
  * @description - Binds all attributes for an Element
  * @param element
@@ -152,7 +160,7 @@ export function bindElementAttributes(
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
-    if (chainPrefix === MODEL_CHAIN_PREFIX && key === 'value') {
+    if (chainPrefix === MODEL_CHAIN_PREFIX && isAttributeForModelChange(element, key)) {
       bindElementChangeToModelProperty(element, model, chain);
     }
 
@@ -162,7 +170,7 @@ export function bindElementAttributes(
 
     if (model.hasExpression(chain)) {
       setElementValue(element, { key, value: model.evaluateExpression(chain) });
-      if (chainPrefix === MODEL_CHAIN_PREFIX && key === 'value') {
+      if (chainPrefix === MODEL_CHAIN_PREFIX && isAttributeForModelChange(element, key)) {
         bindElementChangeToModelProperty(element, model, chain);
       }
 
@@ -176,28 +184,75 @@ export function bindElementAttributes(
 export function removeSlotInfoFromElement(element: Element) {
   // when nesting mutiple components that handle binding, the inner slots will have the hidden property set automatically
   // so we make sure to remove both the slot and hidden attributes
+  if (element.nodeType !== Node.ELEMENT_NODE) {
+    return;
+  }
   element.removeAttribute('slot');
   element.removeAttribute('hidden');
 }
 
-export function bindElementChangeToModelProperty(element, model, propertyChain) {
+export function bindElementChangeToModelProperty(element: Element, model, propertyChain) {
   const tagName = element.tagName.toLowerCase();
-  if (!['input', 'textarea'].includes(tagName)) {
-    return;
+  if (['input', 'textarea'].includes(tagName)) {
+    element.addEventListener('input', e => {
+      const target = e.target as any;
+      if (tagName === 'input' && element.getAttribute('type') === 'checkbox') {
+        model.setChainValue(propertyChain, target.checked);
+      } else {
+        const updatedValue = target.value;
+        model.setChainValue(propertyChain, updatedValue);
+      }
+    });
+  } else if (tagName === 'select') {
+    element.addEventListener('change', e => {
+      const target = e.target as any;
+      const updatedValue = target.value;
+      model.setChainValue(propertyChain, updatedValue);
+    });
   }
-
-  element.addEventListener('input', e => {
-    const updatedValue = e.target.value;
-    model.setChainValue(propertyChain, updatedValue);
-  });
 }
 
-export function bindElementChangeToModel(element, model, chain) {
+export function bindElementChangeToModel(element: Element, model, chain) {
   const targetModel = model.getChainValue(chain);
   if (!targetModel) {
     return;
   }
 
-  const propertyChain = `${chain}.value`;
+  const tagName = element.tagName.toLowerCase();
+  const propertyChainSuffix = tagName === 'input' && element.getAttribute('type') === 'checkbox' ? 'checked' : 'value';
+
+  const propertyChain = `${chain}.${propertyChainSuffix}`;
   bindElementChangeToModelProperty(element, model, propertyChain);
+}
+
+export function isAttributePresentOnElement(element: Element, attributeName: string) {
+  return Array.from(element.attributes).some(attribute => attribute.nodeName === attributeName);
+}
+
+export function getSlots(elements: Element[], slotName: string) {
+  const validElements = elements.filter(child => {
+    return child.getAttribute('slot') === slotName;
+  });
+
+  return validElements;
+}
+
+export function getSlotContent(elements: Element[], slotName: string) {
+  return getSlots(elements, slotName)
+    .map(slotElement => {
+      return slotElement.outerHTML;
+    })
+    .join('');
+}
+
+export function removeElementChildren(element: Element) {
+  while (element.children.length > 0) {
+    element.children[0].remove();
+  }
+}
+
+export function removeElementChildNodes(element: Element) {
+  while (element.childNodes.length > 0) {
+    element.childNodes[0].remove();
+  }
 }
