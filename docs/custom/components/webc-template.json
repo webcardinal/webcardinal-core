@@ -31,9 +31,9 @@
       "name": "templateName",
       "type": "string",
       "mutable": false,
-      "attr": "template-name",
+      "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
+      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
       "docsTags": [],
       "values": [
         {

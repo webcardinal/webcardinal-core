@@ -7,10 +7,10 @@
 
 ## Properties
 
-| Property       | Attribute       | Description                                                                                                                                    | Type     | Default     |
-| -------------- | --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
-| `chain`        | `data-model`    |                                                                                                                                                | `string` | `''`        |
-| `templateName` | `template-name` | The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>. | `string` | `undefined` |
+| Property       | Attribute    | Description                                                                                                                                    | Type     | Default     |
+| -------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------- |
+| `chain`        | `data-model` |                                                                                                                                                | `string` | `''`        |
+| `templateName` | `template`   | The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>. | `string` | `undefined` |
 
 
 ## Events
