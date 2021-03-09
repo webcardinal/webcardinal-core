@@ -1,13 +1,8 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
 
-import { MODEL_KEY, SKIP_BINDING_FOR_COMPONENTS } from '../../constants';
 import { HostElement } from '../../decorators';
-import {
-  ControllerBindingService,
-  ControllerNodeValueBindingService,
-  ControllerTranslationBindingService,
-} from '../../services';
+import { BindingService } from '../../services';
 import { promisifyEventEmit, extractChain } from '../../utils';
 
 import { getTemplateContent } from './webc-template-utils';
@@ -23,7 +18,7 @@ export class WebcTemplate {
    * The name of the template that will be loaded.
    * The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
    */
-  @Prop({ reflect: true }) templateName: string;
+  @Prop({ attribute: 'template', reflect: true }) templateName: string;
 
   @Prop({ attribute: 'data-model', mutable: true }) chain = '';
 
@@ -53,30 +48,6 @@ export class WebcTemplate {
   private model;
   private translationModel;
 
-  private bindRelativeModel = (element: Element) => {
-    const tag = element.tagName.toLowerCase();
-    const chainSuffix = extractChain(element);
-    if (chainSuffix) {
-      const newChain =
-        this.chain.length !== 1 ? [this.chain, chainSuffix.slice(1)].filter(String).join('.') : chainSuffix;
-
-      element.setAttribute(MODEL_KEY, newChain);
-    }
-
-    if (SKIP_BINDING_FOR_COMPONENTS.includes(tag)) {
-      return;
-    }
-
-    ControllerBindingService.bindModel(element, this.model);
-    ControllerBindingService.bindAttributes(element, this.model);
-    ControllerTranslationBindingService.bindAttributes(element, this.translationModel);
-
-    Array.from(element.childNodes).forEach(child => {
-      ControllerNodeValueBindingService.bindNodeValue(child, this.model, this.translationModel);
-    });
-    Array.from(element.children).forEach(child => this.bindRelativeModel(child));
-  };
-
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -96,11 +67,13 @@ export class WebcTemplate {
       }
 
       Array.from(this.host.childNodes).forEach(child => {
-        ControllerNodeValueBindingService.bindNodeValue(child, this.model, this.translationModel);
-      });
-
-      Array.from(this.host.children).forEach(child => {
-        this.bindRelativeModel(child);
+        BindingService.bindElement(child, {
+          model: this.model,
+          translationModel: this.translationModel,
+          recursive: true,
+          enableTranslations: true,
+          chainPrefix: this.chain ? this.chain.slice(1) : null,
+        });
       });
     }
   }

@@ -20,10 +20,10 @@ import {
   removeElementChildNodes,
   removeSlotInfoFromElement,
 } from '../../utils';
-import ControllerNodeValueBindingService from '../ControllerNodeValueBindingService';
 
 import type { BindElementOptions } from './binding-service-utils';
 import { isElementNode, isTextNode, setElementModel } from './binding-service-utils';
+import { bindNodeValue } from './node-value-binding-utils';
 
 function handleDataIfAttributePresence(
   element: Element,
@@ -153,8 +153,27 @@ function handleDataForAttributePresence(
     firstChild.remove();
   }
 
-  const existingNodes = [];
+  let existingNodes = [];
   const renderTemplate = () => {
+    if (!dataForAttributeModelValue.length) {
+      removeElementChildNodes(element);
+      noDataTemplates.forEach(templateNode => {
+        const childElement = templateNode.cloneNode(true) as HTMLElement;
+        // when nesting mutiple webc-fors, the inner slots will have the hidden property set automatically
+        removeSlotInfoFromElement(childElement);
+
+        element.appendChild(childElement);
+        BindingService.bindElement(childElement, {
+          model,
+          translationModel,
+          chainPrefix: chainPrefix,
+          enableTranslations,
+          recursive: true,
+        });
+      });
+      return;
+    }
+
     dataForAttributeModelValue.forEach((_modelElement, modelElementIndex) => {
       const updatedNodes = [];
 
@@ -195,6 +214,24 @@ function handleDataForAttributePresence(
     });
   };
 
+  const updateAndRenderTemplate = newValue => {
+    if (!Array.isArray(newValue)) {
+      console.error(`Attribute "${DATA_FOR_ATTRIBUTE}" must be an array in the model!`);
+      newValue = [];
+    }
+
+    newValue = newValue || [];
+
+    const hasContentTypeChanged =
+      (dataForAttributeModelValue.length === 0 && newValue.length !== 0) ||
+      (dataForAttributeModelValue.length !== 0 && newValue.length === 0);
+    if (hasContentTypeChanged) {
+      removeElementChildNodes(element);
+      existingNodes = [];
+    }
+    renderTemplate();
+  };
+
   renderTemplate();
 
   // initial binding
@@ -206,19 +243,19 @@ function handleDataForAttributePresence(
 
   model.onChange(completeChain, () => {
     // todo: further optimize the rendering by checking exactly which element of the array triggered the change
-    renderTemplate();
+    updateAndRenderTemplate(model.getChainValue(completeChain));
   });
 
   if (model.hasExpression(completeChain)) {
     model.onChangeExpressionChain(completeChain, () => {
-      renderTemplate();
+      updateAndRenderTemplate(model.evaluateExpression(completeChain));
     });
   }
 }
 
 const BindingService = {
   bindElement: (
-    element: Element,
+    elementOrChildNode: Element | ChildNode,
     options: BindElementOptions = {
       model: null,
       translationModel: null,
@@ -226,76 +263,81 @@ const BindingService = {
   ) => {
     const { model, translationModel, chainPrefix, enableTranslations = false, recursive = false } = options;
     if (!model) {
-      const tagName = isElementNode(element) ? element.tagName.toLowerCase() : 'text node';
+      const tagName = isElementNode(elementOrChildNode)
+        ? (elementOrChildNode as Element).tagName.toLowerCase()
+        : 'text node';
       console.warn(`No model found for: ${tagName}!`);
       return;
     }
 
-    if (isTextNode(element)) {
-      ControllerNodeValueBindingService.bindNodeValue(element, model, translationModel, chainPrefix);
+    if (isTextNode(elementOrChildNode)) {
+      bindNodeValue(elementOrChildNode, model, translationModel, chainPrefix);
       return;
     }
 
-    if (isElementNode(element)) {
+    if (isElementNode(elementOrChildNode)) {
+      const element = elementOrChildNode as Element;
       // for some webc-<components> binding is managed by component itself
       if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
         return;
       }
 
-      if (isAttributePresentOnElement(element, DATA_IF_ATTRIBUTE)) {
+      const hasDataIfAttribute = isAttributePresentOnElement(element, DATA_IF_ATTRIBUTE);
+      const hasDataForAttribute = isAttributePresentOnElement(element, DATA_FOR_ATTRIBUTE);
+      if (hasDataIfAttribute && hasDataForAttribute) {
+        console.error('Cannot use both data-if and data-for attributes on the same element', element);
+      } else if (hasDataIfAttribute) {
         handleDataIfAttributePresence(element, options);
-        return;
-      } else if (isAttributePresentOnElement(element, DATA_FOR_ATTRIBUTE)) {
+      } else if (hasDataForAttribute) {
         handleDataForAttributePresence(element, options);
-        return;
-      }
+      } else {
+        // for psk-<components> @BindModel decorator is design for this task
+        if (!element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
+          if (element.getAttribute(MODEL_KEY)) {
+            let chain = element.getAttribute(MODEL_KEY);
+            if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
+              chain = chain.slice(1);
+              const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
 
-      // for psk-<components> @BindModel decorator is design for this task
-      if (!element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
-        if (element.getAttribute(MODEL_KEY)) {
-          let chain = element.getAttribute(MODEL_KEY);
-          if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-            console.warn(
-              `Invalid chain found! (chain: "${chain}")!\n`,
-              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
-              `target element:`,
-              element,
-            );
-            return;
+              // initial binding
+              setElementModel(element, model, completeChain);
+              bindElementChangeToModel(element, model, completeChain);
+
+              // onChange
+              model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+
+              // onChangeExpressionChain
+              if (model.hasExpression(completeChain)) {
+                model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+              }
+            } else {
+              console.warn(
+                `Invalid chain found! (chain: "${chain}")!\n`,
+                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
+                `target element:`,
+                element,
+              );
+            }
           }
-          chain = chain.slice(1);
-          const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
 
-          // initial binding
-          setElementModel(element, model, completeChain);
-          bindElementChangeToModel(element, model, completeChain);
-
-          // onChange
-          model.onChange(completeChain, () => setElementModel(element, model, completeChain));
-
-          // onChangeExpressionChain
-          if (model.hasExpression(completeChain)) {
-            model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
-          }
+          bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
         }
 
-        bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
-      }
+        if (enableTranslations) {
+          bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
+        }
 
-      if (enableTranslations) {
-        bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
-      }
+        Array.from(element.childNodes)
+          .filter(isTextNode)
+          .forEach(node => {
+            bindNodeValue(node, model, translationModel, chainPrefix);
+          });
 
-      Array.from(element.childNodes)
-        .filter(isTextNode)
-        .forEach(node => {
-          ControllerNodeValueBindingService.bindNodeValue(node, model, translationModel, chainPrefix);
-        });
-
-      if (recursive) {
-        Array.from(element.children).forEach(child => {
-          BindingService.bindElement(child, options);
-        });
+        if (recursive) {
+          Array.from(element.children).forEach(child => {
+            BindingService.bindElement(child, options);
+          });
+        }
       }
     }
   },
