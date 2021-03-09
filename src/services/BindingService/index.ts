@@ -291,35 +291,35 @@ const BindingService = {
       } else if (hasDataForAttribute) {
         handleDataForAttributePresence(element, options);
       } else {
+        if (element.getAttribute(MODEL_KEY)) {
+          let chain = element.getAttribute(MODEL_KEY);
+          if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
+            chain = chain.slice(1);
+            const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
+
+            // initial binding
+            setElementModel(element, model, completeChain);
+            bindElementChangeToModel(element, model, completeChain);
+
+            // onChange
+            model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+
+            // onChangeExpressionChain
+            if (model.hasExpression(completeChain)) {
+              model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+            }
+          } else {
+            console.warn(
+              `Invalid chain found! (chain: "${chain}")!\n`,
+              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
+              `target element:`,
+              element,
+            );
+          }
+        }
+
         // for psk-<components> @BindModel decorator is design for this task
         if (!element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
-          if (element.getAttribute(MODEL_KEY)) {
-            let chain = element.getAttribute(MODEL_KEY);
-            if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
-              chain = chain.slice(1);
-              const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
-
-              // initial binding
-              setElementModel(element, model, completeChain);
-              bindElementChangeToModel(element, model, completeChain);
-
-              // onChange
-              model.onChange(completeChain, () => setElementModel(element, model, completeChain));
-
-              // onChangeExpressionChain
-              if (model.hasExpression(completeChain)) {
-                model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
-              }
-            } else {
-              console.warn(
-                `Invalid chain found! (chain: "${chain}")!\n`,
-                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
-                `target element:`,
-                element,
-              );
-            }
-          }
-
           bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
         }
 
