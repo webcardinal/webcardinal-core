@@ -140,12 +140,12 @@ function handleDataForAttributePresence(
     return;
   }
 
-  const noDatatemplates = [];
+  const noDataTemplates = [];
   const templates: ChildNode[] = [];
   while (element.childNodes.length > 0) {
     const firstChild = element.childNodes[0];
     if (isElementNode(firstChild) && (firstChild as Element).getAttribute('slot') === DATA_FOR_NO_DATA_SLOT_NAME) {
-      noDatatemplates.push(firstChild);
+      noDataTemplates.push(firstChild);
     } else {
       templates.push(firstChild);
     }
@@ -155,7 +155,7 @@ function handleDataForAttributePresence(
 
   const existingNodes = [];
   const renderTemplate = () => {
-    dataForAttributeModelValue.forEach((modelElement, modelElementIndex) => {
+    dataForAttributeModelValue.forEach((_modelElement, modelElementIndex) => {
       const updatedNodes = [];
 
       templates.forEach(templateNode => {
