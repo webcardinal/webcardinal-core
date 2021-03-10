@@ -11,26 +11,10 @@
   "dependencyGraph": {},
   "props": [
     {
-      "name": "src",
-      "type": "string",
-      "mutable": false,
-      "attr": "src",
-      "reflectToAttr": false,
-      "docs": "Source path for a HTML page.",
-      "docsTags": [],
-      "values": [
-        {
-          "type": "string"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "type",
-      "type": "\"default\" | \"iframe\" | \"object\"",
+      "name": "loader",
+      "type": "\"default\" | \"iframe\" | \"object\" | \"parser\"",
       "mutable": true,
-      "attr": "type",
+      "attr": "loader",
       "reflectToAttr": false,
       "docs": "Fetch a HTML file and loads inside as normal children or in a wrapped manner.",
       "docsTags": [],
@@ -46,6 +30,26 @@
         },
         {
           "value": "object",
+          "type": "string"
+        },
+        {
+          "value": "parser",
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "src",
+      "type": "string",
+      "mutable": false,
+      "attr": "src",
+      "reflectToAttr": false,
+      "docs": "Source path for a HTML page.",
+      "docsTags": [],
+      "values": [
+        {
           "type": "string"
         }
       ],
