@@ -4,7 +4,12 @@
   "tag": "webc-if",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    }
+  ],
   "encapsulation": "none",
   "dependents": [],
   "dependencies": [],
@@ -33,7 +38,7 @@
       "mutable": false,
       "attr": "data-model",
       "reflectToAttr": false,
-      "docs": "An optional model that will be used to check the condition;\r\nif not provided, then the component will find the closes webc-bindable element and take the model from there",
+      "docs": "An optional model that will be used to check the condition;\nif not provided, then the component will find the closes webc-bindable element and take the model from there",
       "docsTags": [],
       "default": "undefined",
       "values": [

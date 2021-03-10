@@ -7,6 +7,9 @@ import { HostElement } from '../../decorators';
 import { BindingService, ControllerRegistryService } from '../../services';
 import { promisifyEventEmit, extractChain, removeSlotInfoFromElement, createDomMap, diffDomMap } from '../../utils';
 
+/**
+ * @disable cheatsheet
+ */
 @Component({
   tag: 'webc-for',
   shadow: true,

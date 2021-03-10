@@ -31,10 +31,12 @@
     "source": "@webcardinal/core"
   },
   "webc-for": {
-    "source": "@webcardinal/core"
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
   },
   "webc-if": {
-    "source": "@webcardinal/core"
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
   },
   "webc-link": {
     "source": "@webcardinal/core"

@@ -9,6 +9,9 @@ import {
 import { BindingService } from '../../services';
 import { promisifyEventEmit, removeSlotInfoFromElement, getSlots, removeElementChildren } from '../../utils';
 
+/**
+ * @disable cheatsheet
+ */
 @Component({
   tag: 'webc-if',
 })

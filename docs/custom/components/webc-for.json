@@ -4,7 +4,12 @@
   "tag": "webc-for",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    }
+  ],
   "encapsulation": "shadow",
   "dependents": [],
   "dependencies": [],
