@@ -28,13 +28,13 @@ export namespace Components {
     }
     interface WebcAppLoader {
         /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "loader": WebcAppLoaderType;
+        /**
           * Source path for a HTML page.
          */
         "src": string;
-        /**
-          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
-         */
-        "type": WebcAppLoaderType;
     }
     interface WebcAppMenu {
         /**
@@ -382,13 +382,13 @@ declare namespace LocalJSX {
     }
     interface WebcAppLoader {
         /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+         */
+        "loader"?: WebcAppLoaderType;
+        /**
           * Source path for a HTML page.
          */
         "src"?: string;
-        /**
-          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
-         */
-        "type"?: WebcAppLoaderType;
     }
     interface WebcAppMenu {
         /**

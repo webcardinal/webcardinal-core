@@ -1,1 +1,1 @@
-export type WebcAppLoaderType = 'default' | 'iframe' | 'object';
+export type WebcAppLoaderType = 'default' | 'iframe' | 'object' | 'parser';

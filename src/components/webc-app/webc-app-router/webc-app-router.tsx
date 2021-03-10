@@ -6,8 +6,9 @@ import { promisifyEventEmit } from '../../../utils';
 import { URLHelper } from '../webc-app-utils';
 
 interface RoutesPayload {
-  path: string;
-  src: string;
+  path: string
+  src: string
+  loader?: string
 }
 
 @Component({
@@ -63,12 +64,12 @@ export class WebcAppRouter {
   private mapping = {};
   private pagesPathRegExp: RegExp;
 
-  private _renderRoute = ({ path, src }: RoutesPayload) => {
+  private _renderRoute = ({ path, src, loader }: RoutesPayload) => {
     const props = {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { src },
+      componentProps: { src, loader },
     };
     return <stencil-route {...props} />;
   };
@@ -81,10 +82,10 @@ export class WebcAppRouter {
     if (!Array.isArray(routes) || routes.length === 0) return null;
 
     return routes.map(route => {
-      const payload = {
+      const payload: RoutesPayload = {
         path: URLHelper.join('', path, route.path).pathname,
         src: URLHelper.join('', src, route.src).pathname,
-      };
+      }
       if (route.children) {
         return this._renderRoutes(route.children, payload);
       } else {
@@ -101,6 +102,10 @@ export class WebcAppRouter {
 
         if (route.tag) {
           this.tags[route.tag] = payload.path;
+        }
+
+        if (route.loader) {
+          payload.loader = route.loader;
         }
 
         return routeRenderer(payload);

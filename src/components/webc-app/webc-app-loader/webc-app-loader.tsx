@@ -18,7 +18,7 @@ export class WebcAppLoader {
   /**
    * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
    */
-  @Prop({ mutable: true }) type: WebcAppLoaderType = 'default';
+  @Prop({ mutable: true }) loader: WebcAppLoaderType = 'default';
 
   @State() content: string = null;
 
@@ -46,11 +46,31 @@ export class WebcAppLoader {
       return <h4>{`Page ${this.src} could not be loaded!`}</h4>;
     }
 
-    switch (this.type) {
+    if (!this.content) {
+      return;
+    }
+
+    switch (this.loader) {
+      case 'parser': {
+        const parser = new DOMParser();
+        this.host.append(parser.parseFromString(this.content, 'text/html'));
+        const attributes = {
+          style: {
+            width: '100%',
+            height: '100%',
+          },
+        };
+        return (
+          <Host {...attributes}>
+            <slot />
+          </Host>
+        );
+      }
       case 'iframe': {
         const attributes = {
           frameBorder: 0,
-          src: 'data:text/html;charset=utf-8, ' + escape(this.content),
+          srcDoc: this.content,
+          sandbox: 'allow-scripts',
           style: {
             overflow: 'hidden',
             width: '100%',

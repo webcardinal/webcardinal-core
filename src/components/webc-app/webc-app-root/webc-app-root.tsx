@@ -128,7 +128,6 @@ export class WebcAppRoot {
 
     try {
       const logLevel = await promisifyEventEmit(this.getLogLevelEvent);
-      console.log('LogLevel:', logLevel);
       subscribeToLogs(logLevel);
     } catch (error) {
       console.error(error);
