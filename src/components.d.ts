@@ -115,22 +115,6 @@ export namespace Components {
          */
         "local"?: boolean;
     }
-    interface WebcFor {
-        "autoBind": boolean;
-        "chain": string;
-        "controllerName": string | null;
-        "history": RouterHistory;
-    }
-    interface WebcIf {
-        /**
-          * The condition that will be evaluated in order to check which slots will be visible
-         */
-        "condition": any | undefined;
-        /**
-          * An optional model that will be used to check the condition; if not provided, then the component will find the closes webc-bindable element and take the model from there
-         */
-        "model": any | undefined;
-    }
     interface WebcLink {
         "href": string | null;
         /**
@@ -203,13 +187,6 @@ export namespace Components {
           * The content that will be shown in the modal body, if modalName is not provided.
          */
         "text": string;
-    }
-    interface WebcPage {
-        "controllerName": string | null;
-        "enableTranslations": boolean;
-        "getModel": () => Promise<any>;
-        "getTranslationModel": () => Promise<any>;
-        "history": RouterHistory;
     }
     interface WebcSkin {
         /**
@@ -288,18 +265,6 @@ declare global {
         prototype: HTMLWebcDocsElement;
         new (): HTMLWebcDocsElement;
     };
-    interface HTMLWebcForElement extends Components.WebcFor, HTMLStencilElement {
-    }
-    var HTMLWebcForElement: {
-        prototype: HTMLWebcForElement;
-        new (): HTMLWebcForElement;
-    };
-    interface HTMLWebcIfElement extends Components.WebcIf, HTMLStencilElement {
-    }
-    var HTMLWebcIfElement: {
-        prototype: HTMLWebcIfElement;
-        new (): HTMLWebcIfElement;
-    };
     interface HTMLWebcLinkElement extends Components.WebcLink, HTMLStencilElement {
     }
     var HTMLWebcLinkElement: {
@@ -311,12 +276,6 @@ declare global {
     var HTMLWebcModalElement: {
         prototype: HTMLWebcModalElement;
         new (): HTMLWebcModalElement;
-    };
-    interface HTMLWebcPageElement extends Components.WebcPage, HTMLStencilElement {
-    }
-    var HTMLWebcPageElement: {
-        prototype: HTMLWebcPageElement;
-        new (): HTMLWebcPageElement;
     };
     interface HTMLWebcSkinElement extends Components.WebcSkin, HTMLStencilElement {
     }
@@ -347,11 +306,8 @@ declare global {
         "webc-app-router": HTMLWebcAppRouterElement;
         "webc-container": HTMLWebcContainerElement;
         "webc-docs": HTMLWebcDocsElement;
-        "webc-for": HTMLWebcForElement;
-        "webc-if": HTMLWebcIfElement;
         "webc-link": HTMLWebcLinkElement;
         "webc-modal": HTMLWebcModalElement;
-        "webc-page": HTMLWebcPageElement;
         "webc-skin": HTMLWebcSkinElement;
         "webc-spinner": HTMLWebcSpinnerElement;
         "webc-template": HTMLWebcTemplateElement;
@@ -479,26 +435,6 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:config:getDocsSource"?: (event: CustomEvent<any>) => void;
     }
-    interface WebcFor {
-        "autoBind"?: boolean;
-        "chain"?: string;
-        "controllerName"?: string | null;
-        "history"?: RouterHistory;
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
-    }
-    interface WebcIf {
-        /**
-          * The condition that will be evaluated in order to check which slots will be visible
-         */
-        "condition"?: any | undefined;
-        /**
-          * An optional model that will be used to check the condition; if not provided, then the component will find the closes webc-bindable element and take the model from there
-         */
-        "model"?: any | undefined;
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
-    }
     interface WebcLink {
         "href"?: string | null;
         /**
@@ -576,12 +512,6 @@ declare namespace LocalJSX {
          */
         "text"?: string;
     }
-    interface WebcPage {
-        "controllerName"?: string | null;
-        "enableTranslations"?: boolean;
-        "history"?: RouterHistory;
-        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
-    }
     interface WebcSkin {
         /**
           * Path to a stylesheet.
@@ -616,11 +546,8 @@ declare namespace LocalJSX {
         "webc-app-router": WebcAppRouter;
         "webc-container": WebcContainer;
         "webc-docs": WebcDocs;
-        "webc-for": WebcFor;
-        "webc-if": WebcIf;
         "webc-link": WebcLink;
         "webc-modal": WebcModal;
-        "webc-page": WebcPage;
         "webc-skin": WebcSkin;
         "webc-spinner": WebcSpinner;
         "webc-template": WebcTemplate;
@@ -640,11 +567,8 @@ declare module "@stencil/core" {
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
             "webc-docs": LocalJSX.WebcDocs & JSXBase.HTMLAttributes<HTMLWebcDocsElement>;
-            "webc-for": LocalJSX.WebcFor & JSXBase.HTMLAttributes<HTMLWebcForElement>;
-            "webc-if": LocalJSX.WebcIf & JSXBase.HTMLAttributes<HTMLWebcIfElement>;
             "webc-link": LocalJSX.WebcLink & JSXBase.HTMLAttributes<HTMLWebcLinkElement>;
             "webc-modal": LocalJSX.WebcModal & JSXBase.HTMLAttributes<HTMLWebcModalElement>;
-            "webc-page": LocalJSX.WebcPage & JSXBase.HTMLAttributes<HTMLWebcPageElement>;
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
             "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
             "webc-template": LocalJSX.WebcTemplate & JSXBase.HTMLAttributes<HTMLWebcTemplateElement>;

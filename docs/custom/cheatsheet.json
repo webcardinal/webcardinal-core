@@ -30,23 +30,11 @@
   "webc-docs": {
     "source": "@webcardinal/core"
   },
-  "webc-for": {
-    "source": "@webcardinal/core",
-    "disableCheatsheet": true
-  },
-  "webc-if": {
-    "source": "@webcardinal/core",
-    "disableCheatsheet": true
-  },
   "webc-link": {
     "source": "@webcardinal/core"
   },
   "webc-modal": {
     "source": "@webcardinal/core"
-  },
-  "webc-page": {
-    "source": "@webcardinal/core",
-    "disableCheatsheet": true
   },
   "webc-skin": {
     "source": "@webcardinal/core"
