@@ -28,12 +28,12 @@
       "required": false
     },
     {
-      "name": "overrideParent",
+      "name": "disableContainer",
       "type": "boolean",
       "mutable": false,
-      "attr": "override-parent",
+      "attr": "disable-container",
       "reflectToAttr": false,
-      "docs": "If true, parent element of webc-template will have the content of if (webc-template will disappear)\nOtherwise webc-template will have all the content inside hist unnamed slot.",
+      "docs": "If it is not specified, all the markup specified in <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.\r\nOtherwise the content will replace the <code>webc-template</code> element form DOM.",
       "docsTags": [],
       "values": [
         {
@@ -49,7 +49,7 @@
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
+      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
       "docsTags": [],
       "values": [
         {
