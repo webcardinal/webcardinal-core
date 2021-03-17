@@ -1,0 +1,120 @@
+{
+  "filePath": "./src/components/webc-app/webc-app-identity/webc-app-identity.tsx",
+  "fileName": "webc-app-identity.tsx",
+  "tag": "webc-app-identity",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [
+    "webc-app-menu"
+  ],
+  "dependencies": [],
+  "dependencyGraph": {
+    "webc-app-menu": [
+      "webc-app-identity"
+    ]
+  },
+  "props": [
+    {
+      "name": "avatar",
+      "type": "string",
+      "mutable": true,
+      "attr": "avatar",
+      "reflectToAttr": false,
+      "docs": "Path or URL to an image.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": true,
+      "required": false
+    },
+    {
+      "name": "email",
+      "type": "string",
+      "mutable": true,
+      "attr": "email",
+      "reflectToAttr": false,
+      "docs": "Email of your brand or organization.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "mutable": true,
+      "attr": "name",
+      "reflectToAttr": false,
+      "docs": "Name of your brand or organization.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:config:getIdentity",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "All properties enumerated before are automatically filled by webc-app-identity when this event is fired from\r\n<code>ApplicationController</code>.",
+      "docsTags": []
+    }
+  ],
+  "styles": [
+    {
+      "name": "--webc-app-identity-avatar-radius",
+      "annotation": "prop",
+      "docs": "Picture radius."
+    },
+    {
+      "name": "--webc-app-identity-avatar-width",
+      "annotation": "prop",
+      "docs": "Size of the picture."
+    },
+    {
+      "name": "--webc-app-identity-color",
+      "annotation": "prop",
+      "docs": "Color of all text elements."
+    },
+    {
+      "name": "--webc-app-identity-column-gap",
+      "annotation": "prop",
+      "docs": "Horizontal space."
+    },
+    {
+      "name": "--webc-app-identity-email-font-size",
+      "annotation": "prop",
+      "docs": "Size of font for \"email\"."
+    },
+    {
+      "name": "--webc-app-identity-name-font-size",
+      "annotation": "prop",
+      "docs": "Size of font for \"name\"."
+    },
+    {
+      "name": "--webc-app-identity-row-gap",
+      "annotation": "prop",
+      "docs": "Vertical space between \"name\" and \"email\"."
+    }
+  ],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

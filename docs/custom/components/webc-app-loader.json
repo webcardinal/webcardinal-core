@@ -1,0 +1,66 @@
+{
+  "filePath": "./src/components/webc-app/webc-app-loader/webc-app-loader.tsx",
+  "fileName": "webc-app-loader.tsx",
+  "tag": "webc-app-loader",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "loader",
+      "type": "\"default\" | \"iframe\" | \"object\" | \"parser\"",
+      "mutable": true,
+      "attr": "loader",
+      "reflectToAttr": false,
+      "docs": "Fetch a HTML file and loads inside as normal children or in a wrapped manner.",
+      "docsTags": [],
+      "default": "'default'",
+      "values": [
+        {
+          "value": "default",
+          "type": "string"
+        },
+        {
+          "value": "iframe",
+          "type": "string"
+        },
+        {
+          "value": "object",
+          "type": "string"
+        },
+        {
+          "value": "parser",
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "src",
+      "type": "string",
+      "mutable": false,
+      "attr": "src",
+      "reflectToAttr": false,
+      "docs": "Source path for a HTML page.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

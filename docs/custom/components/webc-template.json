@@ -1,0 +1,89 @@
+{
+  "filePath": "./src/components/webc-template/webc-template.tsx",
+  "fileName": "webc-template.tsx",
+  "tag": "webc-template",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "chain",
+      "type": "string",
+      "mutable": true,
+      "attr": "data-model",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "''",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableContainer",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-container",
+      "reflectToAttr": false,
+      "docs": "If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.\r\nOtherwise the content will replace the <code>webc-template</code> element form DOM.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "templateName",
+      "type": "string",
+      "mutable": false,
+      "attr": "template",
+      "reflectToAttr": true,
+      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:model:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).",
+      "docsTags": []
+    },
+    {
+      "event": "webcardinal:translationModel:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Through this event translation model is received.",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

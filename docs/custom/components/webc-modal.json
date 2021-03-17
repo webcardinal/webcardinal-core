@@ -1,0 +1,304 @@
+{
+  "filePath": "./src/components/webc-modal/webc-modal.tsx",
+  "fileName": "webc-modal.tsx",
+  "tag": "webc-modal",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [
+    "webc-spinner"
+  ],
+  "dependencyGraph": {
+    "webc-modal": [
+      "webc-spinner"
+    ]
+  },
+  "props": [
+    {
+      "name": "autoClose",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "auto-close",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal will automatically close when the user clicks outside of it.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "autoShow",
+      "type": "boolean",
+      "mutable": true,
+      "attr": "auto-show",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal will automatically show when the element is constructed.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "canClose",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "can-close",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal can be closed",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "cancelButtonText",
+      "type": "string",
+      "mutable": false,
+      "attr": "cancel-button-text",
+      "reflectToAttr": true,
+      "docs": "The text that will appear on the footer close button, if neither the \"footer\" slot nor modalFooterContent are provided.",
+      "docsTags": [],
+      "default": "'Close'",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "centered",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "centered",
+      "reflectToAttr": true,
+      "docs": "Sets if the popup is centered on the screen or if it appear at the top of the screen.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "confirmButtonText",
+      "type": "string",
+      "mutable": false,
+      "attr": "confirm-button-text",
+      "reflectToAttr": true,
+      "docs": "The text that will appear on the footer confirm button, if neither the \"footer\" slot nor modalFooterContent are provided.",
+      "docsTags": [],
+      "default": "'Ok'",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalFooterContent",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-footer-content",
+      "reflectToAttr": true,
+      "docs": "The content that can be shown in the footer, if provided and the \"footer\" slot is missing from the content.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalName",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-name",
+      "reflectToAttr": true,
+      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalTitle",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-title",
+      "reflectToAttr": true,
+      "docs": "The text that will be shown in the modal's header, if neither the \"title\" slot nor modalTitleContent are provided.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalTitleContent",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-title-content",
+      "reflectToAttr": true,
+      "docs": "The content that can be shown in the header, if provided and the \"title\" slot is missing from the content.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "showCancelButton",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "show-cancel-button",
+      "reflectToAttr": true,
+      "docs": "Sets if the close button will be shown or not.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "showFooter",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "show-footer",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal has the footer displayed.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "text",
+      "type": "string",
+      "mutable": false,
+      "attr": "text",
+      "reflectToAttr": true,
+      "docs": "The content that will be shown in the modal body, if modalName is not provided.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [
+    {
+      "name": "destroy",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "destroy() => Promise<void>",
+      "parameters": [],
+      "docs": "Method that completely removes the modal from the DOM.",
+      "docsTags": []
+    },
+    {
+      "name": "hide",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "hide() => Promise<void>",
+      "parameters": [],
+      "docs": "Method that hides the modal.",
+      "docsTags": []
+    },
+    {
+      "name": "show",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "show() => Promise<void>",
+      "parameters": [],
+      "docs": "Method that shows the modal.",
+      "docsTags": []
+    }
+  ],
+  "events": [
+    {
+      "event": "closed",
+      "detail": "boolean",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\r\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
+      "docsTags": []
+    },
+    {
+      "event": "confirmed",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Event that fires when the confirm button is pressed (only when the default footer is shown).",
+      "docsTags": []
+    },
+    {
+      "event": "initialised",
+      "detail": "HTMLElement",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Event that fires when the modal is initialised (after the modal content was successfully loaded).",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

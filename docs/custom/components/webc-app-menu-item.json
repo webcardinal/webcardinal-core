@@ -1,0 +1,177 @@
+{
+  "filePath": "./src/components/webc-app/webc-app-menu/webc-app-menu-item/webc-app-menu-item.tsx",
+  "fileName": "webc-app-menu-item.tsx",
+  "tag": "webc-app-menu-item",
+  "usage": {},
+  "docs": "",
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    }
+  ],
+  "encapsulation": "none",
+  "dependents": [
+    "webc-app-menu",
+    "webc-app-menu-item"
+  ],
+  "dependencies": [
+    "webc-app-menu-item",
+    "stencil-route-link"
+  ],
+  "dependencyGraph": {
+    "webc-app-menu-item": [
+      "webc-app-menu-item"
+    ],
+    "webc-app-menu": [
+      "webc-app-menu-item"
+    ]
+  },
+  "props": [
+    {
+      "name": "basePath",
+      "type": "string",
+      "mutable": false,
+      "attr": "base-path",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "''",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "item",
+      "type": "{ path: string; children: any; }",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "{\r\n    path: '',\r\n    children: null,\r\n  }",
+      "values": [
+        {
+          "type": "{ path: string; children: any; }"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "level",
+      "type": "number",
+      "mutable": false,
+      "attr": "level",
+      "reflectToAttr": true,
+      "docs": "",
+      "docsTags": [],
+      "default": "0",
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "menuElement",
+      "type": "HTMLElement",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "null",
+      "values": [
+        {
+          "type": "HTMLElement"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "mode",
+      "type": "string",
+      "mutable": false,
+      "attr": "mode",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "name",
+      "type": "string",
+      "mutable": false,
+      "attr": "name",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "''",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "url",
+      "type": "string",
+      "mutable": true,
+      "attr": "url",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "null",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [
+    {
+      "name": "activate",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "activate() => Promise<void>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    },
+    {
+      "name": "deactivate",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "deactivate() => Promise<void>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

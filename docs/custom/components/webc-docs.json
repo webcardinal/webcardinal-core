@@ -1,0 +1,73 @@
+{
+  "filePath": "./src/components/webc-docs/webc-docs.tsx",
+  "fileName": "webc-docs.tsx",
+  "tag": "webc-docs",
+  "usage": {},
+  "docs": "",
+  "docsTags": [
+    {
+      "text": "- Content that goes immediately after \"Tag\" section and before \"Properties\" section.",
+      "name": "slot"
+    }
+  ],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "for",
+      "type": "string",
+      "mutable": false,
+      "attr": "for",
+      "reflectToAttr": false,
+      "docs": "Component tag name (in lowercase) for which documentation is desired.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "local",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "local",
+      "reflectToAttr": false,
+      "docs": "If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your\r\nlocal workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": true,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:config:getDocsSource",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Gets the docs source for current component.<br>\r\nIn <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>,\r\nall webc-docs components will be configured for local docs.<br>\r\nDefault value for <code>docsSource</code> is <code>'github'</code>.",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [
+    {
+      "name": "",
+      "docs": "Content that goes immediately after \"Tag\" section and before \"Properties\" section."
+    }
+  ],
+  "parts": [],
+  "listeners": []
+}

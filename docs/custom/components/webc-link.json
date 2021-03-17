@@ -1,0 +1,68 @@
+{
+  "filePath": "./src/components/webc-link/webc-link.tsx",
+  "fileName": "webc-link.tsx",
+  "tag": "webc-link",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [
+    "stencil-route-link"
+  ],
+  "dependencyGraph": {
+    "webc-link": [
+      "stencil-route-link"
+    ]
+  },
+  "props": [
+    {
+      "name": "href",
+      "type": "string",
+      "mutable": true,
+      "attr": "href",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "tag",
+      "type": "string",
+      "mutable": false,
+      "attr": "tag",
+      "reflectToAttr": false,
+      "docs": "A unique identifier for each page, which was previously set in <code>webcardinal.json</code>",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [
+    {
+      "event": "webcardinal:tags:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.",
+      "docsTags": []
+    }
+  ],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}
