@@ -101,7 +101,7 @@ export class WebcAppMenuItem {
 
   async componentWillLoad() {
     if (!this.url) {
-      this.url = URLHelper.join(this.basePath, this.item.path).pathname;
+      this.url = URLHelper.join(this.item.path).pathname;
     }
     if (this.url === '') {
       this.url = '/';

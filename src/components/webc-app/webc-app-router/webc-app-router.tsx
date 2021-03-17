@@ -71,7 +71,7 @@ export class WebcAppRouter {
       component: 'webc-app-loader',
       componentProps: { src, loader },
     };
-    return <stencil-route {...props} />;
+    return <stencil-route data-path={path} {...props} />;
   };
 
   private _renderRoutes = (
@@ -89,7 +89,6 @@ export class WebcAppRouter {
       if (route.children) {
         return this._renderRoutes(route.children, payload);
       } else {
-        payload.path = URLHelper.join(this.basePath, payload.path).pathname;
         if (payload.path === '') payload.path = '/';
 
         if (route.src.startsWith('http')) {
@@ -151,7 +150,7 @@ export class WebcAppRouter {
 
   render() {
     return (
-      <stencil-router root={this.basePath + '/'}>
+      <stencil-router data-root={this.basePath + '/'} root={this.basePath + '/'}>
         <stencil-route-switch scrollTopOffset={0}>{...this.content}</stencil-route-switch>
       </stencil-router>
     );

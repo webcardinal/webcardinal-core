@@ -92,6 +92,10 @@ export namespace Components {
          */
         "controllerName": string | null;
         /**
+          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+         */
+        "disableContainer": boolean;
+        /**
           * If this property is true, internationalization (i18n) will be enabled.
          */
         "enableTranslations": boolean;
@@ -199,7 +203,7 @@ export namespace Components {
     interface WebcTemplate {
         "chain": string;
         /**
-          * If it is not specified, all the markup specified in <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer": boolean;
         /**
@@ -416,6 +420,10 @@ declare namespace LocalJSX {
          */
         "controllerName"?: string | null;
         /**
+          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+         */
+        "disableContainer"?: boolean;
+        /**
           * If this property is true, internationalization (i18n) will be enabled.
          */
         "enableTranslations"?: boolean;
@@ -527,7 +535,7 @@ declare namespace LocalJSX {
     interface WebcTemplate {
         "chain"?: string;
         /**
-          * If it is not specified, all the markup specified in <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer"?: boolean;
         /**

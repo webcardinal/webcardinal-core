@@ -23,7 +23,7 @@ export class WebcContainer {
    * This property is a string that will permit the developer to choose his own controller.
    * If no value is set then the null default value will be taken and the component will use the basic Controller.
    */
-  @Prop({ attribute: 'controller' }) controllerName: string | null;
+  @Prop({ attribute: 'controller', reflect: true }) controllerName: string | null;
 
   @Prop() history: RouterHistory;
 
@@ -31,6 +31,12 @@ export class WebcContainer {
    * If this property is true, internationalization (i18n) will be enabled.
    */
   @Prop() enableTranslations = false;
+
+  /**
+   *  If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.
+   *  Otherwise the content will replace the <code>webc-template</code> element form DOM.
+   */
+  @Prop() disableContainer = false;
 
   /**
    * Routing configuration received from <code>webc-app-router</code>.
@@ -100,6 +106,8 @@ export class WebcContainer {
       model && this.listeners.getModel.add();
       translationModel && this.listeners.getTranslationModel.add();
     }
+
+    console.log(this.host.innerHTML);
   }
 
   connectedCallback() {
@@ -126,6 +134,13 @@ export class WebcContainer {
     }, 100);
   }
 
+  async componentDidLoad() {
+    if (this.disableContainer) {
+      Array.from(this.host.childNodes).forEach(node => this.host.parentNode.insertBefore(node, this.host));
+      this.host.remove();
+    }
+  }
+
   /**
    * The model from controller is exposed by this method.
    */
@@ -149,6 +164,10 @@ export class WebcContainer {
   }
 
   render() {
+    if (this.disableContainer) {
+      return;
+    }
+
     return <slot />;
   }
 }
