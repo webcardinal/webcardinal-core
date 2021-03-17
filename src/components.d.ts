@@ -199,6 +199,10 @@ export namespace Components {
     interface WebcTemplate {
         "chain": string;
         /**
+          * If it is not specified, all the markup specified in <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+         */
+        "disableContainer": boolean;
+        /**
           * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
         "templateName": string;
@@ -522,6 +526,10 @@ declare namespace LocalJSX {
     }
     interface WebcTemplate {
         "chain"?: string;
+        /**
+          * If it is not specified, all the markup specified in <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+         */
+        "disableContainer"?: boolean;
         /**
           * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
          */
