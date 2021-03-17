@@ -28,12 +28,28 @@
       "required": false
     },
     {
+      "name": "overrideParent",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "override-parent",
+      "reflectToAttr": false,
+      "docs": "If true, parent element of webc-template will have the content of if (webc-template will disappear)\nOtherwise webc-template will have all the content inside hist unnamed slot.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "templateName",
       "type": "string",
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.",
       "docsTags": [],
       "values": [
         {
