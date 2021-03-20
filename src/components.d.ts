@@ -63,10 +63,12 @@ export namespace Components {
         "url": string | null;
     }
     interface WebcAppRedirect {
+        /**
+          * Redirects to the specified URL.
+         */
         "url": string;
     }
     interface WebcAppRoot {
-        "history": RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -394,10 +396,12 @@ declare namespace LocalJSX {
         "url"?: string | null;
     }
     interface WebcAppRedirect {
+        /**
+          * Redirects to the specified URL.
+         */
         "url"?: string;
     }
     interface WebcAppRoot {
-        "history"?: RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */

@@ -1,0 +1,42 @@
+{
+  "filePath": "./src/components/webc-app/webc-app-redirect/webc-app-redirect.tsx",
+  "fileName": "webc-app-redirect.tsx",
+  "tag": "webc-app-redirect",
+  "usage": {},
+  "docs": "",
+  "docsTags": [
+    {
+      "text": "cheatsheet",
+      "name": "disable"
+    }
+  ],
+  "encapsulation": "none",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "url",
+      "type": "string",
+      "mutable": false,
+      "attr": "url",
+      "reflectToAttr": false,
+      "docs": "Redirects to the specified URL.",
+      "docsTags": [],
+      "default": "''",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}

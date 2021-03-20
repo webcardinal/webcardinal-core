@@ -18,6 +18,10 @@
     "source": "@webcardinal/core",
     "disableCheatsheet": true
   },
+  "webc-app-redirect": {
+    "source": "@webcardinal/core",
+    "disableCheatsheet": true
+  },
   "webc-app-root": {
     "source": "@webcardinal/core"
   },
