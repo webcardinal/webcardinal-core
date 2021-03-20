@@ -6,9 +6,17 @@ import { promisifyEventEmit } from '../../../utils';
 import { URLHelper } from '../webc-app-utils';
 
 interface RoutesPayload {
-  path: string
-  src: string
-  loader?: string
+  path: string;
+  src: string;
+  loader?: string;
+}
+
+function isSSAppContext() {
+  return (
+    window.$$ && window.$$.SSAPP_CONTEXT && window.$$.SSAPP_CONTEXT.BASE_URL
+    // && window.$$.SSAPP_CONTEXT.SEED
+    // It is not always received
+  );
 }
 
 @Component({
@@ -69,9 +77,21 @@ export class WebcAppRouter {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { src, loader },
+      componentProps: { path, src, loader },
     };
-    return <stencil-route data-path={path} {...props} />;
+
+    // fix regarding WebCardinal in a non-updated location context of an iframe
+    if (props.url === '/' && isSSAppContext()) {
+      const propsClone = {
+        ...props,
+        url: window.location.pathname,
+        componentProps: { url: '/' }
+      };
+      propsClone.component = 'webc-app-redirect';
+      this.content.push(<stencil-route data-path={propsClone.url} data-src={src} {...propsClone} />);
+    }
+
+    return <stencil-route data-path={props.url} data-src={src} {...props} />;
   };
 
   private _renderRoutes = (
@@ -85,7 +105,7 @@ export class WebcAppRouter {
       const payload: RoutesPayload = {
         path: URLHelper.join('', path, route.path).pathname,
         src: URLHelper.join('', src, route.src).pathname,
-      }
+      };
       if (route.children) {
         return this._renderRoutes(route.children, payload);
       } else {
@@ -130,7 +150,7 @@ export class WebcAppRouter {
       this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
       this.pagesPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.pagesPathname).pathname);
       this.pagesPathRegExp = new RegExp(`^(${this.pagesPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
-      this.content = [this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage)];
+      this.content.push(this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage));
       const skinsPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname);
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,

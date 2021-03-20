@@ -33,8 +33,8 @@ export class WebcContainer {
   @Prop() enableTranslations = false;
 
   /**
-   *  If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.
-   *  Otherwise the content will replace the <code>webc-template</code> element form DOM.
+   *  If it is not specified, all the innerHTML will be placed inside the unnamed slot.
+   *  Otherwise the content will replace the <code>webc-container</code> element form DOM.
    */
   @Prop() disableContainer = false;
 
@@ -70,7 +70,8 @@ export class WebcContainer {
       try {
         const Controller = await ControllerRegistryService.getController(this.controllerName);
         if (this.host.isConnected) {
-          this.controller = new Controller(this.host, this.history);
+          const element = this.disableContainer ? this.host.parentElement : this.host;
+          this.controller = new Controller(element, this.history);
         }
       } catch (error) {
         console.error(error);
@@ -106,8 +107,6 @@ export class WebcContainer {
       model && this.listeners.getModel.add();
       translationModel && this.listeners.getTranslationModel.add();
     }
-
-    console.log(this.host.innerHTML);
   }
 
   connectedCallback() {

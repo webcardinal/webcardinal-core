@@ -62,7 +62,11 @@ export namespace Components {
         "name": string;
         "url": string | null;
     }
+    interface WebcAppRedirect {
+        "url": string;
+    }
     interface WebcAppRoot {
+        "history": RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -92,7 +96,7 @@ export namespace Components {
          */
         "controllerName": string | null;
         /**
-          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+          * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer": boolean;
         /**
@@ -249,6 +253,12 @@ declare global {
         prototype: HTMLWebcAppMenuItemElement;
         new (): HTMLWebcAppMenuItemElement;
     };
+    interface HTMLWebcAppRedirectElement extends Components.WebcAppRedirect, HTMLStencilElement {
+    }
+    var HTMLWebcAppRedirectElement: {
+        prototype: HTMLWebcAppRedirectElement;
+        new (): HTMLWebcAppRedirectElement;
+    };
     interface HTMLWebcAppRootElement extends Components.WebcAppRoot, HTMLStencilElement {
     }
     var HTMLWebcAppRootElement: {
@@ -310,6 +320,7 @@ declare global {
         "webc-app-loader": HTMLWebcAppLoaderElement;
         "webc-app-menu": HTMLWebcAppMenuElement;
         "webc-app-menu-item": HTMLWebcAppMenuItemElement;
+        "webc-app-redirect": HTMLWebcAppRedirectElement;
         "webc-app-root": HTMLWebcAppRootElement;
         "webc-app-router": HTMLWebcAppRouterElement;
         "webc-container": HTMLWebcContainerElement;
@@ -382,7 +393,11 @@ declare namespace LocalJSX {
         "name"?: string;
         "url"?: string | null;
     }
+    interface WebcAppRedirect {
+        "url"?: string;
+    }
     interface WebcAppRoot {
+        "history"?: RouterHistory;
         /**
           * Component tag name (in lowercase) for a UI loader.
          */
@@ -420,7 +435,7 @@ declare namespace LocalJSX {
          */
         "controllerName"?: string | null;
         /**
-          * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
+          * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer"?: boolean;
         /**
@@ -558,6 +573,7 @@ declare namespace LocalJSX {
         "webc-app-loader": WebcAppLoader;
         "webc-app-menu": WebcAppMenu;
         "webc-app-menu-item": WebcAppMenuItem;
+        "webc-app-redirect": WebcAppRedirect;
         "webc-app-root": WebcAppRoot;
         "webc-app-router": WebcAppRouter;
         "webc-container": WebcContainer;
@@ -579,6 +595,7 @@ declare module "@stencil/core" {
             "webc-app-loader": LocalJSX.WebcAppLoader & JSXBase.HTMLAttributes<HTMLWebcAppLoaderElement>;
             "webc-app-menu": LocalJSX.WebcAppMenu & JSXBase.HTMLAttributes<HTMLWebcAppMenuElement>;
             "webc-app-menu-item": LocalJSX.WebcAppMenuItem & JSXBase.HTMLAttributes<HTMLWebcAppMenuItemElement>;
+            "webc-app-redirect": LocalJSX.WebcAppRedirect & JSXBase.HTMLAttributes<HTMLWebcAppRedirectElement>;
             "webc-app-root": LocalJSX.WebcAppRoot & JSXBase.HTMLAttributes<HTMLWebcAppRootElement>;
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;

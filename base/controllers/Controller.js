@@ -51,8 +51,6 @@ class Controller {
 
     this.element = element;
     this.history = history;
-    this.element.componentOnReady().then(this.onReady.bind(this));
-
     this.tagEventListeners = [];
 
     this.setLegacyGetModelEventListener();
@@ -64,6 +62,12 @@ class Controller {
       this.removeAllTagEventListeners();
       this.onDisconnectedCallback();
     };
+
+    if (typeof this.element.componentOnReady === 'function') {
+      this.element.componentOnReady().then(this.onReady.bind(this));
+    } else {
+      this.onReady();
+    }
   }
 
   createElement(elementName, props) {
