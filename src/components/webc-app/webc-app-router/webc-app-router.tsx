@@ -1,5 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop } from '@stencil/core';
+import { Component, Event, h, Prop, State } from '@stencil/core';
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
 import { promisifyEventEmit } from '../../../utils';
@@ -54,6 +54,8 @@ export class WebcAppRouter {
    */
   @Prop({ mutable: true }) pagesPath = '/pages';
 
+  @State() landingPage = null;
+
   /**
    * Routing configuration received from <code>ApplicationController</code>.<br>
    * This configuration includes different settings for pages, skins, modals, etc.;
@@ -61,8 +63,8 @@ export class WebcAppRouter {
   @Event({
     eventName: 'webcardinal:config:getRouting',
     bubbles: true,
-    composed: true,
     cancelable: true,
+    composed: true,
   })
   getRoutingConfigEvent: EventEmitter;
 
@@ -85,10 +87,10 @@ export class WebcAppRouter {
       const propsClone = {
         ...props,
         url: window.location.pathname,
-        componentProps: { url: '/' }
+        componentProps: { url: '/' },
       };
       propsClone.component = 'webc-app-redirect';
-      this.content.push(<stencil-route data-path={propsClone.url} data-src={src} {...propsClone} />);
+      this.content.push(<stencil-route data-path={propsClone.url} data-redirect {...propsClone} />);
     }
 
     return <stencil-route data-path={props.url} data-src={src} {...props} />;
@@ -142,6 +144,31 @@ export class WebcAppRouter {
     return <stencil-route data-src={src} {...props} />;
   };
 
+  private __manageLandingPage = () => {
+    // fix regarding WebCardinal in a non-updated location context of an psk-ssapp
+    if (isSSAppContext()) {
+      if (window.frameElement && window.frameElement.hasAttribute('landing-page')) {
+        this.landingPage = window.frameElement.getAttribute('landing-page');
+      }
+
+      if (this.landingPage) {
+        // if we have a BASE_URL then we prefix the redirectPath url with BASE_URL
+        const baseUrlPathname = new URL(window.$$.SSAPP_CONTEXT.BASE_URL).pathname;
+        this.landingPage = `${baseUrlPathname}${
+          this.landingPage.indexOf('/') === 0 ? this.landingPage.substring(1) : this.landingPage
+        }`;
+
+        const props = {
+          url: window.location.pathname,
+          exact: true,
+          component: 'webc-app-redirect',
+          componentProps: { url: this.landingPage },
+        };
+        this.content.push(<stencil-route data-path={props.url} data-redirect {...props} />);
+      }
+    }
+  };
+
   async componentWillLoad() {
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
@@ -150,14 +177,17 @@ export class WebcAppRouter {
       this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
       this.pagesPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.pagesPathname).pathname);
       this.pagesPathRegExp = new RegExp(`^(${this.pagesPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
+
+      this.__manageLandingPage();
+
       this.content.push(this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage));
-      const skinsPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname);
+
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,
         routing: {
           basePath: this.basePath,
           pagesPath: this.pagesPath,
-          skinsPath,
+          skinsPath: URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname),
           mapping: this.mapping,
         },
       });
