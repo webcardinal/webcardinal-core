@@ -146,26 +146,26 @@ export class WebcAppRouter {
 
   private __manageLandingPage = () => {
     // fix regarding WebCardinal in a non-updated location context of an psk-ssapp
-    if (isSSAppContext()) {
-      if (window.frameElement && window.frameElement.hasAttribute('landing-page')) {
-        this.landingPage = window.frameElement.getAttribute('landing-page');
-      }
+    if (window && window.frameElement && window.frameElement.hasAttribute('landing-page')) {
+      this.landingPage = window.frameElement.getAttribute('landing-page');
+    }
 
-      if (this.landingPage) {
+    if (this.landingPage) {
+      if (isSSAppContext()) {
         // if we have a BASE_URL then we prefix the redirectPath url with BASE_URL
         const baseUrlPathname = new URL(window.$$.SSAPP_CONTEXT.BASE_URL).pathname;
         this.landingPage = `${baseUrlPathname}${
           this.landingPage.indexOf('/') === 0 ? this.landingPage.substring(1) : this.landingPage
         }`;
-
-        const props = {
-          url: window.location.pathname,
-          exact: true,
-          component: 'webc-app-redirect',
-          componentProps: { url: this.landingPage },
-        };
-        this.content.push(<stencil-route data-path={props.url} data-redirect {...props} />);
       }
+
+      const props = {
+        url: window.location.pathname,
+        exact: true,
+        component: 'webc-app-redirect',
+        componentProps: { url: this.landingPage },
+      };
+      this.content.push(<stencil-route data-path={props.url} data-redirect {...props} />);
     }
   };
 
