@@ -73,6 +73,9 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
     let updatedNodeValue = originalNodeValue;
     bindingExpressions.forEach(({ expression, getChainValue, isModelExpression, evaluateModelExpression }) => {
       let value = getChainValue();
+      if (["number", "boolean"].includes(typeof value)) {
+        value = value.toString();
+      }
       if (!value && isModelExpression) {
         value = isModelExpression ? evaluateModelExpression() : '';
       }
