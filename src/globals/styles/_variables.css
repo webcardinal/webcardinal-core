@@ -3,7 +3,7 @@ html {
   --webc-app-menu-gap: 0.75rem;
   --webc-app-menu-color: #f1f1f1;
   --webc-app-menu-items-gap: calc(0.75rem / 2);
-  --webc-app-menu-z-index: 998;
+  --webc-app-menu-z-index: 997;
   --webc-app-menu-mode: vertical;
   --webc-app-menu-disable-identity: false;
 
@@ -65,50 +65,6 @@ html {
   --webc-app-container-gap: 0.75em;
   --webc-app-container-background: #f1f1f1;
 
-  /* <webc-spinner> */
-  --webc-spinner-width: 35px;
-  --webc-spinner-height: 35px;
-  --webc-spinner-radius: 100%;
-  --webc-spinner-dot-size: 6px;
-  --webc-spinner-dot-radius: 100%;
-  --webc-spinner-color: #354f9b;
-  --webc-spinner-background: transparent;
-  --webc-spinner-border: 0.15em solid transparent;
-  --webc-spinner-box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
-  --webc-spinner-animation: 1s;
-  --webc-spinner-animation-delay: 1.2s;
-  --webc-spinner-z-index: 999;
-
-  /* <webc-modal> */
-  --webc-modal-z-index: 1;
-  --webc-modal-dialog-margin: 1rem auto;
-  --webc-modal-backdrop-background: rgba(0, 0, 0, 0.25);
-  --webc-modal-border-radius: 0.3rem;
-  --webc-modal-inner-padding: 1rem;
-  --webc-modal-header-padding: 1rem;
-  --webc-modal-header-title-color: black;
-  --webc-modal-header-title-line-height: 1rem;
-  --webc-modal-header-border-width: 1px;
-  --webc-modal-header-border-color: black;
-  --webc-modal-content-color: null;
-  --webc-modal-content-background: white;
-  --webc-modal-content-border-width: 1px;
-  --webc-modal-content-border-color: black;
-  --webc-modal-content-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  --webc-modal-body-color: black;
-  --webc-modal-footer-margin-between: 0.5rem;
-  --webc-modal-footer-border-width: 1px;
-  --webc-modal-footer-border-color: #e9ecef;
-  --webc-modal-footer-button-color: black;
-  --webc-modal-footer-button-background-color: white;
-  --webc-modal-footer-button-border: 1px solid black;
-  --webc-modal-footer-button-border-radius: 5px;
-  --webc-modal-footer-button-padding: 5px 10px;
-  --webc-modal-footer-cancel-button-color: black;
-  --webc-modal-footer-cancel-button-background-color: white;
-  --webc-modal-footer-confirm-button-color: white;
-  --webc-modal-footer-confirm-button-background-color: #5e7fe1;
-
   /* <webc-app-error-toast> */
   --webc-app-error-toast-warning-color: #fff;
   --webc-app-error-toast-warning-background-color: #ffa900;
@@ -116,6 +72,49 @@ html {
   --webc-app-error-toast-error-background-color: #ed441b;
 }
 
+webc-spinner {
+  --width: 35px;
+  --height: 35px;
+  --radius: 100%;
+  --dot-size: 6px;
+  --dot-radius: 100%;
+  --color: #354f9b;
+  --background: transparent;
+  --border: 0.15em solid transparent;
+  --box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
+  --animation: 1s;
+  --animation-delay: 1.2s;
+  --z-index: 999;
+}
+
+webc-modal {
+  --margin: 1rem auto;
+  --padding: 1rem;
+  --color: #212121;
+  --background: #FFFFFF;
+  --backdrop-background: rgba(0, 0, 0, 0.25);
+  --shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075);
+  --radius: 3px;
+  --z-index: 998;
+
+  /* modal header */
+  --header-border: 1px solid #E9E9E9;
+  --header-button-color: #212121;
+  --header-button-background: #EFEFEF;
+  --header-button-radius: var(--radius, 3px);
+  --title-color: #212121;
+  --description-color: #303030;
+
+  /* model footer */
+  --footer-align: flex-end;
+  --footer-border: 1px solid #EFEFEF;
+  --footer-button-radius: var(--radius, 3px);
+  --cancel-button-color: #212121;
+  --cancel-button-background: #EFEFEF;
+  --confirm-button-color: #FFFFFF;
+  --confirm-button-background: #5E7FE1;
+}
+
 body {
-  font-family: var(--webc-font-family);
+  /*font-family: var(--webc-font-family);*/
 }

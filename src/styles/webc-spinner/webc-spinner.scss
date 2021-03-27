@@ -1,17 +1,17 @@
 webc-spinner {
   /**
-   * @prop --webc-spinner-width
-   * @prop --webc-spinner-height
-   * @prop --webc-spinner-radius
-   * @prop --webc-spinner-dot-size
-   * @prop --webc-spinner-dot-radius
-   * @prop --webc-spinner-color
-   * @prop --webc-spinner-background
-   * @prop --webc-spinner-border
-   * @prop --webc-spinner-box-shadow
-   * @prop --webc-spinner-animation
-   * @prop --webc-spinner-animation-delay
-   * @prop --webc-spinner-z-index
+   * @prop --width
+   * @prop --height
+   * @prop --radius
+   * @prop --dot-size
+   * @prop --dot-radius
+   * @prop --color
+   * @prop --background
+   * @prop --border
+   * @prop --box-shadow
+   * @prop --animation
+   * @prop --animation-delay
+   * @prop --z-index
    */
 
   position: absolute;
@@ -20,16 +20,16 @@ webc-spinner {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: var(--webc-spinner-z-index);
+  z-index: var(--z-index);
 
   & > .circle-fade {
     position: relative;
-    width: var(--webc-spinner-width);
-    height: var(--webc-spinner-height);
-    border: var(--webc-spinner-border);
-    border-radius: var(--webc-spinner-radius);
-    background: var(--webc-spinner-background);
-    box-shadow: var(--webc-spinner-box-shadow);
+    width: var(--width);
+    height: var(--height);
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--background);
+    box-shadow: var(--box-shadow);
 
     & > .circle {
       position: absolute;
@@ -40,11 +40,11 @@ webc-spinner {
         content: '';
         display: block;
         margin: 0.15em auto;
-        width: var(--webc-spinner-dot-size);
-        height: var(--webc-spinner-dot-size);
-        background-color: var(--webc-spinner-color);
-        border-radius: var(--webc-spinner-dot-radius);
-        animation: spinner-default-animation var(--webc-spinner-animation) infinite linear;
+        width: var(--dot-size);
+        height: var(--dot-size);
+        background-color: var(--color);
+        border-radius: var(--dot-radius);
+        animation: spinner-default-animation var(--animation) infinite linear;
       }
     }
   }
@@ -54,7 +54,7 @@ webc-spinner {
       transform: rotate($i * -40deg);
 
       &::after {
-        animation-delay: calc(#{$i / -10} * var(--webc-spinner-animation-delay));
+        animation-delay: calc(#{$i / -10} * var(--animation-delay));
       }
     }
   }

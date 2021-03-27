@@ -1,5 +1,5 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, h, Method, Prop, Event } from '@stencil/core';
+import { Component, h, Method, Prop, Event, State } from '@stencil/core';
 import type { RouterHistory } from '@stencil/router';
 import { injectHistory } from '@stencil/router';
 
@@ -9,9 +9,8 @@ import {
   ComponentListenersService,
   ControllerRegistryService,
   ControllerTranslationService,
-  BindingService,
 } from '../../services';
-import { promisifyEventEmit } from '../../utils';
+import { bindChain, promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -19,18 +18,13 @@ import { promisifyEventEmit } from '../../utils';
 export class WebcContainer {
   @HostElement() private host: HTMLElement;
 
+  @State() history: RouterHistory;
+
   /**
    * This property is a string that will permit the developer to choose his own controller.
    * If no value is set then the null default value will be taken and the component will use the basic Controller.
    */
-  @Prop({ attribute: 'controller', reflect: true }) controllerName: string | null;
-
-  @Prop() history: RouterHistory;
-
-  /**
-   * If this property is true, internationalization (i18n) will be enabled.
-   */
-  @Prop() enableTranslations = false;
+  @Prop({ reflect: true }) controller: string;
 
   /**
    *  If it is not specified, all the innerHTML will be placed inside the unnamed slot.
@@ -49,9 +43,18 @@ export class WebcContainer {
   })
   getRoutingEvent: EventEmitter;
 
-  private controller;
-  private model;
-  private translationModel;
+  /**
+   * Enable translations event received from configuration.
+   */
+  @Event({
+    eventName: 'webcardinal:config:getTranslations',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationsEvent: EventEmitter;
+
+  private controllerInstance;
   private listeners: ComponentListenersService;
 
   async componentWillLoad() {
@@ -60,43 +63,44 @@ export class WebcContainer {
     }
 
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
+    const enableTranslations = await promisifyEventEmit(this.getTranslationsEvent);
 
-    if (this.enableTranslations) {
+    if (enableTranslations) {
       await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
     }
 
     // load controller
-    if (typeof this.controllerName === 'string') {
+    const controllerName = this.controller;
+    if (typeof controllerName === 'string') {
       try {
-        const Controller = await ControllerRegistryService.getController(this.controllerName);
+        const Controller = await ControllerRegistryService.getController(controllerName);
         if (this.host.isConnected) {
           const element = this.disableContainer ? this.host.parentElement : this.host;
-          this.controller = new Controller(element, this.history);
+          this.controllerInstance = new Controller(element, this.history);
         }
       } catch (error) {
         console.error(error);
         return;
       }
     } else {
-      this.controller = new DefaultController(this.host, this.history);
+      this.controllerInstance = new DefaultController(this.host, this.history);
+    }
+    const { model, translationModel } = this.controllerInstance;
+
+    let target = this.host;
+    let shadowRoot = this.host.parentNode;
+    if (shadowRoot instanceof ShadowRoot) {
+      if (this.host.hasAttribute('data-modal')) {
+        target = shadowRoot.host as HTMLElement;
+      }
     }
 
-    const { model, translationModel } = this.controller;
-    if (translationModel) {
-      this.translationModel = translationModel;
-    }
-
-    // get the model
-    if (model) {
-      this.model = model;
-
-      BindingService.bindElement(this.host, {
-        model: this.model,
-        translationModel: this.translationModel,
-        enableTranslations: this.enableTranslations,
-        recursive: true,
-      });
-    }
+    await bindChain(target, {
+      model,
+      translationModel
+    }, {
+      enableTranslations
+    })
 
     if (translationModel || model) {
       // serve models
@@ -128,7 +132,7 @@ export class WebcContainer {
     // there is no way to listen to a OnDestroy like event so we check if the host is still attached to the DOM
     setTimeout(() => {
       if (!document.body.contains(this.host)) {
-        this.controller?.disconnectedCallback();
+        this.controllerInstance?.disconnectedCallback();
       }
     }, 100);
   }
@@ -145,8 +149,8 @@ export class WebcContainer {
    */
   @Method()
   async getModel() {
-    if (this.controller) {
-      return this.controller.model;
+    if (this.controllerInstance) {
+      return this.controllerInstance.model;
     }
     return undefined;
   }
@@ -156,8 +160,8 @@ export class WebcContainer {
    */
   @Method()
   async getTranslationModel() {
-    if (this.controller) {
-      return this.controller.translationModel;
+    if (this.controllerInstance) {
+      return this.controllerInstance.translationModel;
     }
     return undefined;
   }

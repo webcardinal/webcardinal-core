@@ -7,6 +7,7 @@ import {
   EVENT_CONFIG_GET_LOG_LEVEL,
   EVENT_CONFIG_GET_CORE_TYPE,
   EVENT_CONFIG_GET_DOCS_SOURCE,
+  EVENT_CONFIG_GET_TRANSLATIONS
 } from '../constants';
 
 import defaultConfig from './config/default';
@@ -206,6 +207,7 @@ export default class ApplicationController {
       theme: getRaw('theme'),
       version: getRaw('version'),
       coreType: 'webcardinal',
+      enableTranslations: getRaw('enableTranslations') === true
     };
 
     return config;
@@ -292,6 +294,7 @@ export default class ApplicationController {
     element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
     element.addEventListener(EVENT_CONFIG_GET_CORE_TYPE, this._registerListener('coreType'));
     element.addEventListener(EVENT_CONFIG_GET_DOCS_SOURCE, this._registerListener('docsSource'));
+    element.addEventListener(EVENT_CONFIG_GET_TRANSLATIONS, this._registerListener('enableTranslations'));
 
     // @cardinal/core
     // const cardinal_core_events = [

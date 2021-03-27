@@ -6,7 +6,6 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { WebcAppLoaderType } from "./interfaces";
-import { RouterHistory } from "@stencil/router";
 export namespace Components {
     interface WebcAppContainer {
     }
@@ -96,15 +95,11 @@ export namespace Components {
         /**
           * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
          */
-        "controllerName": string | null;
+        "controller": string;
         /**
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer": boolean;
-        /**
-          * If this property is true, internationalization (i18n) will be enabled.
-         */
-        "enableTranslations": boolean;
         /**
           * The model from controller is exposed by this method.
          */
@@ -113,7 +108,6 @@ export namespace Components {
           * The translation model from controller is exposed by this method.
          */
         "getTranslationModel": () => Promise<any>;
-        "history": RouterHistory;
     }
     interface WebcDocs {
         /**
@@ -134,17 +128,9 @@ export namespace Components {
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it.
-         */
-        "autoClose": boolean;
-        /**
           * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow": boolean;
-        /**
-          * Sets if the modal can be closed
-         */
-        "canClose": boolean;
         /**
           * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
@@ -158,45 +144,67 @@ export namespace Components {
          */
         "confirmButtonText": string;
         /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
+        "controller": string;
+        /**
           * Method that completely removes the modal from the DOM.
          */
         "destroy": () => Promise<void>;
+        /**
+          * Sets if the modal will automatically close when the user clicks outside of it.
+         */
+        "disableBackdropClosing": boolean;
+        /**
+          * Sets if the close button will be shown or not.
+         */
+        "disableCancelButton": boolean;
+        /**
+          * Sets if the modal can be closed
+         */
+        "disableClosing": boolean;
+        /**
+          * Decides if expand button should be displayed
+         */
+        "disableExpanding": boolean;
+        /**
+          * Sets if the modal has the footer displayed.
+         */
+        "disableFooter": boolean;
+        /**
+          * Sets if the modal expands to full screen.
+         */
+        "expanded": boolean;
         /**
           * Method that hides the modal.
          */
         "hide": () => Promise<void>;
         /**
+          * The content that will be shown in the modal body, if template is not provided.
+         */
+        "modalContent": string;
+        /**
+          * The content that can be shown in the header, if provided and the "header" slot is missing from the content.
+         */
+        "modalDescription": string;
+        /**
           * The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.
          */
-        "modalFooterContent": string;
+        "modalFooter": string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
-         */
-        "modalName": string;
-        /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
+          * The text that will be shown in the modal's header, if the "header" slot is not provided.
          */
         "modalTitle": string;
-        /**
-          * The content that can be shown in the header, if provided and the "title" slot is missing from the content.
-         */
-        "modalTitleContent": string;
+        "model": any;
         /**
           * Method that shows the modal.
          */
         "show": () => Promise<void>;
         /**
-          * Sets if the close button will be shown or not.
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
          */
-        "showCancelButton": boolean;
-        /**
-          * Sets if the modal has the footer displayed.
-         */
-        "showFooter": boolean;
-        /**
-          * The content that will be shown in the modal body, if modalName is not provided.
-         */
-        "text": string;
+        "template": string;
+        "translationModel": any;
     }
     interface WebcSkin {
         /**
@@ -437,16 +445,15 @@ declare namespace LocalJSX {
         /**
           * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
          */
-        "controllerName"?: string | null;
+        "controller"?: string;
         /**
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer"?: boolean;
         /**
-          * If this property is true, internationalization (i18n) will be enabled.
+          * Enable translations event received from configuration.
          */
-        "enableTranslations"?: boolean;
-        "history"?: RouterHistory;
+        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
         /**
           * Routing configuration received from <code>webc-app-router</code>.
          */
@@ -479,17 +486,9 @@ declare namespace LocalJSX {
     }
     interface WebcModal {
         /**
-          * Sets if the modal will automatically close when the user clicks outside of it.
-         */
-        "autoClose"?: boolean;
-        /**
           * Sets if the modal will automatically show when the element is constructed.
          */
         "autoShow"?: boolean;
-        /**
-          * Sets if the modal can be closed
-         */
-        "canClose"?: boolean;
         /**
           * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
          */
@@ -503,21 +502,50 @@ declare namespace LocalJSX {
          */
         "confirmButtonText"?: string;
         /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
+        "controller"?: string;
+        /**
+          * Sets if the modal will automatically close when the user clicks outside of it.
+         */
+        "disableBackdropClosing"?: boolean;
+        /**
+          * Sets if the close button will be shown or not.
+         */
+        "disableCancelButton"?: boolean;
+        /**
+          * Sets if the modal can be closed
+         */
+        "disableClosing"?: boolean;
+        /**
+          * Decides if expand button should be displayed
+         */
+        "disableExpanding"?: boolean;
+        /**
+          * Sets if the modal has the footer displayed.
+         */
+        "disableFooter"?: boolean;
+        /**
+          * Sets if the modal expands to full screen.
+         */
+        "expanded"?: boolean;
+        /**
+          * The content that will be shown in the modal body, if template is not provided.
+         */
+        "modalContent"?: string;
+        /**
+          * The content that can be shown in the header, if provided and the "header" slot is missing from the content.
+         */
+        "modalDescription"?: string;
+        /**
           * The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.
          */
-        "modalFooterContent"?: string;
+        "modalFooter"?: string;
         /**
-          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.
-         */
-        "modalName"?: string;
-        /**
-          * The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.
+          * The text that will be shown in the modal's header, if the "header" slot is not provided.
          */
         "modalTitle"?: string;
-        /**
-          * The content that can be shown in the header, if provided and the "title" slot is missing from the content.
-         */
-        "modalTitleContent"?: string;
+        "model"?: any;
         /**
           * Event that fires when the modal is pressed (only when the default footer is shown). The event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)
          */
@@ -531,17 +559,10 @@ declare namespace LocalJSX {
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
         /**
-          * Sets if the close button will be shown or not.
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
          */
-        "showCancelButton"?: boolean;
-        /**
-          * Sets if the modal has the footer displayed.
-         */
-        "showFooter"?: boolean;
-        /**
-          * The content that will be shown in the modal body, if modalName is not provided.
-         */
-        "text"?: string;
+        "template"?: string;
+        "translationModel"?: any;
     }
     interface WebcSkin {
         /**

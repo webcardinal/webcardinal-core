@@ -57,6 +57,9 @@ class Controller {
 
     this.translationModel = PskBindableModel.setModel(ControllerHelper.getTranslationModel() || {});
 
+    this.querySelector = this.element.querySelector;
+    this.querySelectorAll = this.element.querySelectorAll;
+
     // will need to be called when the controller will be removed
     this.disconnectedCallback = () => {
       this.removeAllTagEventListeners();
@@ -182,6 +185,11 @@ class Controller {
 
   offTagClick(tag, listener, options) {
     this.offTagEvent(tag, 'click', listener, options);
+  }
+
+  selectByTag(tag) {
+    let elements = this.element.querySelectorAll(`[data-tag="${tag}"]`);
+    return (elements && elements.length > 1) ? elements : elements[0];
   }
 
   navigateToUrl(url, state) {

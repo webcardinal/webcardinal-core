@@ -5,26 +5,28 @@ class WebcController extends Controller {
     super(element, history);
   }
 
-  showModal(text, title, onConfirm, onClose) {
+  showModal(title, content, onConfirm, onClose, props = {}) {
     title = title ? title : 'Info';
-    this.createWebcModal({
-      modalTitle: title,
-      text,
-      onConfirm,
-      onClose,
-    });
-  }
-
-  showModalFromTemplate(modalName, onConfirm, onClose) {
     return this.createWebcModal({
-      modalName,
+      ...props,
+      modalTitle: title,
+      modalContent: content,
       onConfirm,
       onClose,
     });
   }
 
-  showErrorModal(error, title, onConfirm, onClose) {
-    let modalTitle = title ? title : 'Error';
+  showModalFromTemplate(template, onConfirm, onClose, props = {}) {
+    return this.createWebcModal({
+      ...props,
+      template,
+      onConfirm,
+      onClose,
+    });
+  }
+
+  showErrorModal(title, error, onConfirm, onClose, props = {}) {
+    title = title ? title : 'Error';
     let text;
 
     if (error instanceof Error) {
@@ -35,18 +37,19 @@ class WebcController extends Controller {
       text = error;
     }
 
-    this.createWebcModal({
-      modalTitle,
-      text,
-      canClose: false,
+    return this.createWebcModal({
+      disableClosing: true,
       showCancelButton: false,
+      ...props,
+      modalTitle: title,
+      modalContent: text,
       onConfirm,
       onClose,
     });
   }
 
-  showErrorModalAndRedirect(error, title, url, timeout) {
-    let modalTitle = title ? title : 'Error';
+  showErrorModalAndRedirect(title, error, url, timeout, props = {}) {
+    title = title ? title : 'Error';
     let text;
 
     if (error instanceof Error) {
@@ -60,30 +63,51 @@ class WebcController extends Controller {
     if (!timeout) {
       timeout = 5000;
     }
-    this.hideModal();
 
     this.createWebcModal({
-      modalTitle,
-      text,
-      canClose: false,
-      showCancelButton: false,
-      showFooter: false,
+      disableExpanding: true,
+      disableClosing: true,
+      disableFooter: true,
+      ...props,
+      modalTitle: title,
+      modalContent: text,
     });
 
     setTimeout(() => {
       this.hideModal();
-      console.log(`Redirecting to ${url}...`);
-      this.navigateToUrl(url);
+
+      if (typeof url === 'string') {
+        this.navigateToUrl(url);
+      } else if (typeof url === 'object') {
+        const { url, tag, state } = url;
+        if (tag) {
+          this.navigateToPageTag(tag, state)
+        } else {
+          this.navigateToUrl(url, state);
+        }
+      }
     }, timeout);
   }
 
   createWebcModal({
+    template,
+    controller,
+    model,
+    translationModel,
     modalTitle,
-    modalName,
-    text,
-    canClose,
-    showCancelButton,
-    showFooter,
+    modalDescription,
+    modalContent,
+    modalFooter,
+    confirmButtonText,
+    cancelButtonText,
+    centered,
+    expanded,
+    disableCancelButton,
+    disableClosing,
+    disableBackdropClosing,
+    disableExpanding,
+    disableFooter,
+    autoShow,
     onConfirm,
     onClose,
   }) {
@@ -92,12 +116,24 @@ class WebcController extends Controller {
     }
 
     const modal = this.createAndAddElement('webc-modal', {
+      template,
+      controller,
+      model,
+      translationModel,
       modalTitle,
-      modalName,
-      text,
-      canClose,
-      showFooter,
-      showCancelButton,
+      modalDescription,
+      modalContent,
+      modalFooter,
+      confirmButtonText,
+      cancelButtonText,
+      centered,
+      expanded,
+      disableCancelButton,
+      disableClosing,
+      disableBackdropClosing,
+      disableExpanding,
+      disableFooter,
+      autoShow,
     });
 
     modal.addEventListener('confirmed', e => {
@@ -108,13 +144,17 @@ class WebcController extends Controller {
       onClose && onClose(e);
       modal.remove();
     });
+
     return modal;
   }
 
   hideModal() {
-    this.element
-      .querySelectorAll('webc-modal')
-      .forEach(modal => modal.remove());
+    if (this.element.hasAttribute('data-modal')) {
+      this.element.parentNode.host.remove();
+      return;
+    }
+
+    this.element.querySelectorAll('webc-modal').forEach(modal => modal.remove());
   }
 }
 

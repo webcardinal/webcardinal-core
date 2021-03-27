@@ -18,12 +18,13 @@ export default {
     {
       name: 'Homepage',
       path: '/',
-      src: 'index.html',
+      src: 'home.html',
     },
   ] as Page[],
   pagesPathname: 'pages' as PagesPathname,
   skinsPathname: 'skins' as SkinsPathname,
   logLevel: 'error' as LogLevel,
   version: '1.0.0' as Version,
-  docsSource: 'github' as DocsSource
+  docsSource: 'github' as DocsSource,
+  enableTranslations: false as Boolean
 };

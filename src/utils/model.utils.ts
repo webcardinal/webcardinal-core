@@ -1,3 +1,4 @@
+import { BindingService } from "../services";
 import { MODEL_CHAIN_PREFIX, MODEL_KEY } from '../constants';
 
 export function extractChain(element) {
@@ -18,4 +19,37 @@ export function extractChain(element) {
   }
 
   return chain;
+}
+
+export async function bindChain(host, {
+  chain,
+  model, translationModel
+}: {
+  chain?: string,
+  model?: object, translationModel?: object
+}, options: {
+  recursive?: boolean,
+  enableTranslations?: boolean
+} = {}) {
+  if (!options) {
+    options = {};
+  }
+
+  if (model) {
+    Array.from(host.childNodes).forEach((child: Element | ChildNode) => {
+      BindingService.bindElement(child, {
+        model,
+        translationModel,
+        chainPrefix: chain ? chain.slice(1) : null,
+        recursive: true,
+        enableTranslations: true,
+        ...options
+      });
+    });
+  }
+
+  return {
+    model,
+    translationModel
+  }
 }

@@ -2,10 +2,9 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
 
 import { HostElement } from '../../decorators';
-import { BindingService } from '../../services';
-import { promisifyEventEmit, extractChain } from '../../utils';
+import {bindChain, extractChain, promisifyEventEmit} from '../../utils';
 
-import { getTemplateContent } from './webc-template-utils';
+import { getTemplate } from './webc-template-utils';
 
 @Component({
   tag: 'webc-template',
@@ -50,37 +49,24 @@ export class WebcTemplate {
   })
   getTranslationModelEvent: EventEmitter;
 
-  private template;
-  private model;
-  private translationModel;
-
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
 
-    this.template = await getTemplateContent(this.templateName);
-    this.host.innerHTML = this.template;
+    this.host.innerHTML = await getTemplate(this.templateName);
 
     this.chain = extractChain(this.host);
-
     if (this.chain) {
       try {
-        this.model = await promisifyEventEmit(this.getModelEvent);
-        this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
+        await bindChain(this.host, {
+          chain: this.chain,
+          model: await promisifyEventEmit(this.getModelEvent),
+          translationModel: await promisifyEventEmit(this.getTranslationModelEvent)
+        });
       } catch (error) {
         console.error(error);
       }
-
-      Array.from(this.host.childNodes).forEach(child => {
-        BindingService.bindElement(child, {
-          model: this.model,
-          translationModel: this.translationModel,
-          recursive: true,
-          enableTranslations: true,
-          chainPrefix: this.chain ? this.chain.slice(1) : null,
-        });
-      });
     }
   }
 

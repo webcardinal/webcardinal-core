@@ -1,6 +1,6 @@
 const templates = {};
 
-export const getTemplateContent = async templateName => {
+export const getTemplate = async templateName => {
   const { basePath } = window.WebCardinal;
 
   if (templates[templateName]) {
