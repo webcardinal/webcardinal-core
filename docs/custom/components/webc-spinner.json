@@ -20,62 +20,62 @@
   "events": [],
   "styles": [
     {
-      "name": "--webc-spinner-animation",
+      "name": "--animation",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-animation-delay",
+      "name": "--animation-delay",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-background",
+      "name": "--background",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-border",
+      "name": "--border",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-box-shadow",
+      "name": "--box-shadow",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-color",
+      "name": "--color",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-dot-radius",
+      "name": "--dot-radius",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-dot-size",
+      "name": "--dot-size",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-height",
+      "name": "--height",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-radius",
+      "name": "--radius",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-width",
+      "name": "--width",
       "annotation": "prop",
       "docs": ""
     },
     {
-      "name": "--webc-spinner-z-index",
+      "name": "--z-index",
       "annotation": "prop",
       "docs": ""
     }

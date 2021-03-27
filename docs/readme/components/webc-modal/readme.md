@@ -7,21 +7,26 @@
 
 ## Properties
 
-| Property             | Attribute              | Description                                                                                                                           | Type      | Default     |
-| -------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `autoClose`          | `auto-close`           | Sets if the modal will automatically close when the user clicks outside of it.                                                        | `boolean` | `true`      |
-| `autoShow`           | `auto-show`            | Sets if the modal will automatically show when the element is constructed.                                                            | `boolean` | `true`      |
-| `canClose`           | `can-close`            | Sets if the modal can be closed                                                                                                       | `boolean` | `true`      |
-| `cancelButtonText`   | `cancel-button-text`   | The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.               | `string`  | `'Close'`   |
-| `centered`           | `centered`             | Sets if the popup is centered on the screen or if it appear at the top of the screen.                                                 | `boolean` | `true`      |
-| `confirmButtonText`  | `confirm-button-text`  | The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.             | `string`  | `'Ok'`      |
-| `modalFooterContent` | `modal-footer-content` | The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.                           | `string`  | `undefined` |
-| `modalName`          | `modal-name`           | The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>. | `string`  | `undefined` |
-| `modalTitle`         | `modal-title`          | The text that will be shown in the modal's header, if neither the "title" slot nor modalTitleContent are provided.                    | `string`  | `undefined` |
-| `modalTitleContent`  | `modal-title-content`  | The content that can be shown in the header, if provided and the "title" slot is missing from the content.                            | `string`  | `undefined` |
-| `showCancelButton`   | `show-cancel-button`   | Sets if the close button will be shown or not.                                                                                        | `boolean` | `true`      |
-| `showFooter`         | `show-footer`          | Sets if the modal has the footer displayed.                                                                                           | `boolean` | `true`      |
-| `text`               | `text`                 | The content that will be shown in the modal body, if modalName is not provided.                                                       | `string`  | `undefined` |
+| Property                 | Attribute                  | Description                                                                                                                                                                                          | Type      | Default     |
+| ------------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `autoShow`               | `auto-show`                | Sets if the modal will automatically show when the element is constructed.                                                                                                                           | `boolean` | `true`      |
+| `cancelButtonText`       | `cancel-button-text`       | The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.                                                                              | `string`  | `'Close'`   |
+| `centered`               | `centered`                 | Sets if the popup is centered on the screen or if it appear at the top of the screen.                                                                                                                | `boolean` | `true`      |
+| `confirmButtonText`      | `confirm-button-text`      | The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.                                                                            | `string`  | `'Ok'`      |
+| `controller`             | `controller`               | This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller. | `string`  | `undefined` |
+| `disableBackdropClosing` | `disable-backdrop-closing` | Sets if the modal will automatically close when the user clicks outside of it.                                                                                                                       | `boolean` | `true`      |
+| `disableCancelButton`    | `disable-cancel-button`    | Sets if the close button will be shown or not.                                                                                                                                                       | `boolean` | `false`     |
+| `disableClosing`         | `disable-closing`          | Sets if the modal can be closed                                                                                                                                                                      | `boolean` | `false`     |
+| `disableExpanding`       | `disable-expanding`        | Decides if expand button should be displayed                                                                                                                                                         | `boolean` | `false`     |
+| `disableFooter`          | `disable-footer`           | Sets if the modal has the footer displayed.                                                                                                                                                          | `boolean` | `false`     |
+| `expanded`               | `expanded`                 | Sets if the modal expands to full screen.                                                                                                                                                            | `boolean` | `false`     |
+| `modalContent`           | `modal-content`            | The content that will be shown in the modal body, if template is not provided.                                                                                                                       | `string`  | `undefined` |
+| `modalDescription`       | `modal-description`        | The content that can be shown in the header, if provided and the "header" slot is missing from the content.                                                                                          | `string`  | `undefined` |
+| `modalFooter`            | `modal-footer`             | The content that can be shown in the footer, if provided and the "footer" slot is missing from the content.                                                                                          | `string`  | `undefined` |
+| `modalTitle`             | `modal-title`              | The text that will be shown in the modal's header, if the "header" slot is not provided.                                                                                                             | `string`  | `undefined` |
+| `model`                  | `model`                    |                                                                                                                                                                                                      | `any`     | `undefined` |
+| `template`               | `template`                 | The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.                                                                 | `string`  | `undefined` |
+| `translationModel`       | `translation-model`        |                                                                                                                                                                                                      | `any`     | `undefined` |
 
 
 ## Events
@@ -66,16 +71,58 @@ Type: `Promise<void>`
 
 
 
+## Shadow Parts
+
+| Part        | Description |
+| ----------- | ----------- |
+| `"body"`    |             |
+| `"cancel"`  |             |
+| `"close"`   |             |
+| `"confirm"` |             |
+| `"content"` |             |
+| `"expand"`  |             |
+| `"header"`  |             |
+
+
+## CSS Custom Properties
+
+| Name                          | Description |
+| ----------------------------- | ----------- |
+| `--backdrop-background`       |             |
+| `--background`                |             |
+| `--cancel-button-background`  |             |
+| `--cancel-button-color`       |             |
+| `--color`                     |             |
+| `--confirm-button-background` |             |
+| `--confirm-button-color`      |             |
+| `--description-color`         |             |
+| `--footer-align`              |             |
+| `--footer-border`             |             |
+| `--footer-button-radius`      |             |
+| `--header-border`             |             |
+| `--header-button-background`  |             |
+| `--header-button-color`       |             |
+| `--header-button-radius`      |             |
+| `--margin`                    |             |
+| `--padding`                   |             |
+| `--radius`                    |             |
+| `--shadow`                    |             |
+| `--title-color`               |             |
+| `--z-index`                   |             |
+
+
 ## Dependencies
 
 ### Depends on
 
 - [webc-spinner](../webc-spinner)
+- [webc-container](../webc-container)
 
 ### Graph
 ```mermaid
 graph TD;
   webc-modal --> webc-spinner
+  webc-modal --> webc-container
   style webc-modal fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

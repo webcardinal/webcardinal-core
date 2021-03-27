@@ -8,31 +8,16 @@
   "encapsulation": "shadow",
   "dependents": [],
   "dependencies": [
-    "webc-spinner"
+    "webc-spinner",
+    "webc-container"
   ],
   "dependencyGraph": {
     "webc-modal": [
-      "webc-spinner"
+      "webc-spinner",
+      "webc-container"
     ]
   },
   "props": [
-    {
-      "name": "autoClose",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "auto-close",
-      "reflectToAttr": true,
-      "docs": "Sets if the modal will automatically close when the user clicks outside of it.",
-      "docsTags": [],
-      "default": "true",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
     {
       "name": "autoShow",
       "type": "boolean",
@@ -40,23 +25,6 @@
       "attr": "auto-show",
       "reflectToAttr": true,
       "docs": "Sets if the modal will automatically show when the element is constructed.",
-      "docsTags": [],
-      "default": "true",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "canClose",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "can-close",
-      "reflectToAttr": true,
-      "docs": "Sets if the modal can be closed",
       "docsTags": [],
       "default": "true",
       "values": [
@@ -119,12 +87,12 @@
       "required": false
     },
     {
-      "name": "modalFooterContent",
+      "name": "controller",
       "type": "string",
       "mutable": false,
-      "attr": "modal-footer-content",
+      "attr": "controller",
       "reflectToAttr": true,
-      "docs": "The content that can be shown in the footer, if provided and the \"footer\" slot is missing from the content.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "values": [
         {
@@ -135,12 +103,146 @@
       "required": false
     },
     {
-      "name": "modalName",
+      "name": "disableBackdropClosing",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-backdrop-closing",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal will automatically close when the user clicks outside of it.",
+      "docsTags": [],
+      "default": "true",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableCancelButton",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-cancel-button",
+      "reflectToAttr": true,
+      "docs": "Sets if the close button will be shown or not.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableClosing",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-closing",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal can be closed",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableExpanding",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-expanding",
+      "reflectToAttr": true,
+      "docs": "Decides if expand button should be displayed",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableFooter",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-footer",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal has the footer displayed.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "expanded",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "expanded",
+      "reflectToAttr": true,
+      "docs": "Sets if the modal expands to full screen.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalContent",
       "type": "string",
       "mutable": false,
-      "attr": "modal-name",
+      "attr": "modal-content",
       "reflectToAttr": true,
-      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${modalName}.html</code>.",
+      "docs": "The content that will be shown in the modal body, if template is not provided.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalDescription",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-description",
+      "reflectToAttr": true,
+      "docs": "The content that can be shown in the header, if provided and the \"header\" slot is missing from the content.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "modalFooter",
+      "type": "string",
+      "mutable": false,
+      "attr": "modal-footer",
+      "reflectToAttr": true,
+      "docs": "The content that can be shown in the footer, if provided and the \"footer\" slot is missing from the content.",
       "docsTags": [],
       "values": [
         {
@@ -156,7 +258,7 @@
       "mutable": false,
       "attr": "modal-title",
       "reflectToAttr": true,
-      "docs": "The text that will be shown in the modal's header, if neither the \"title\" slot nor modalTitleContent are provided.",
+      "docs": "The text that will be shown in the modal's header, if the \"header\" slot is not provided.",
       "docsTags": [],
       "values": [
         {
@@ -167,12 +269,28 @@
       "required": false
     },
     {
-      "name": "modalTitleContent",
+      "name": "model",
+      "type": "any",
+      "mutable": false,
+      "attr": "model",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "any"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "template",
       "type": "string",
       "mutable": false,
-      "attr": "modal-title-content",
+      "attr": "template",
       "reflectToAttr": true,
-      "docs": "The content that can be shown in the header, if provided and the \"title\" slot is missing from the content.",
+      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -183,50 +301,16 @@
       "required": false
     },
     {
-      "name": "showCancelButton",
-      "type": "boolean",
+      "name": "translationModel",
+      "type": "any",
       "mutable": false,
-      "attr": "show-cancel-button",
-      "reflectToAttr": true,
-      "docs": "Sets if the close button will be shown or not.",
-      "docsTags": [],
-      "default": "true",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "showFooter",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "show-footer",
-      "reflectToAttr": true,
-      "docs": "Sets if the modal has the footer displayed.",
-      "docsTags": [],
-      "default": "true",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "text",
-      "type": "string",
-      "mutable": false,
-      "attr": "text",
-      "reflectToAttr": true,
-      "docs": "The content that will be shown in the modal body, if modalName is not provided.",
+      "attr": "translation-model",
+      "reflectToAttr": false,
+      "docs": "",
       "docsTags": [],
       "values": [
         {
-          "type": "string"
+          "type": "any"
         }
       ],
       "optional": false,
@@ -275,7 +359,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\r\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
+      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
       "docsTags": []
     },
     {
@@ -297,8 +381,143 @@
       "docsTags": []
     }
   ],
-  "styles": [],
+  "styles": [
+    {
+      "name": "--backdrop-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--cancel-button-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--cancel-button-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--confirm-button-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--confirm-button-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--description-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--footer-align",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--footer-border",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--footer-button-radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--header-border",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--header-button-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--header-button-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--header-button-radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--margin",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--padding",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--shadow",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--title-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--z-index",
+      "annotation": "prop",
+      "docs": ""
+    }
+  ],
   "slots": [],
-  "parts": [],
+  "parts": [
+    {
+      "name": "body",
+      "docs": ""
+    },
+    {
+      "name": "cancel",
+      "docs": ""
+    },
+    {
+      "name": "close",
+      "docs": ""
+    },
+    {
+      "name": "confirm",
+      "docs": ""
+    },
+    {
+      "name": "content",
+      "docs": ""
+    },
+    {
+      "name": "expand",
+      "docs": ""
+    },
+    {
+      "name": "header",
+      "docs": ""
+    }
+  ],
   "listeners": []
 }

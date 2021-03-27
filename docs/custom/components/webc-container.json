@@ -6,12 +6,18 @@
   "docs": "",
   "docsTags": [],
   "encapsulation": "none",
-  "dependents": [],
+  "dependents": [
+    "webc-modal"
+  ],
   "dependencies": [],
-  "dependencyGraph": {},
+  "dependencyGraph": {
+    "webc-modal": [
+      "webc-container"
+    ]
+  },
   "props": [
     {
-      "name": "controllerName",
+      "name": "controller",
       "type": "string",
       "mutable": false,
       "attr": "controller",
@@ -38,38 +44,6 @@
       "values": [
         {
           "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "enableTranslations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "enable-translations",
-      "reflectToAttr": false,
-      "docs": "If this property is true, internationalization (i18n) will be enabled.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "history",
-      "type": "RouterHistory",
-      "mutable": false,
-      "reflectToAttr": false,
-      "docs": "",
-      "docsTags": [],
-      "values": [
-        {
-          "type": "RouterHistory"
         }
       ],
       "optional": false,
@@ -101,6 +75,15 @@
     }
   ],
   "events": [
+    {
+      "event": "webcardinal:config:getTranslations",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Enable translations event received from configuration.",
+      "docsTags": []
+    },
     {
       "event": "webcardinal:routing:get",
       "detail": "any",

@@ -7,20 +7,20 @@
 
 ## CSS Custom Properties
 
-| Name                             | Description |
-| -------------------------------- | ----------- |
-| `--webc-spinner-animation`       |             |
-| `--webc-spinner-animation-delay` |             |
-| `--webc-spinner-background`      |             |
-| `--webc-spinner-border`          |             |
-| `--webc-spinner-box-shadow`      |             |
-| `--webc-spinner-color`           |             |
-| `--webc-spinner-dot-radius`      |             |
-| `--webc-spinner-dot-size`        |             |
-| `--webc-spinner-height`          |             |
-| `--webc-spinner-radius`          |             |
-| `--webc-spinner-width`           |             |
-| `--webc-spinner-z-index`         |             |
+| Name                | Description |
+| ------------------- | ----------- |
+| `--animation`       |             |
+| `--animation-delay` |             |
+| `--background`      |             |
+| `--border`          |             |
+| `--box-shadow`      |             |
+| `--color`           |             |
+| `--dot-radius`      |             |
+| `--dot-size`        |             |
+| `--height`          |             |
+| `--radius`          |             |
+| `--width`           |             |
+| `--z-index`         |             |
 
 
 ## Dependencies
