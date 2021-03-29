@@ -71,17 +71,28 @@ Type: `Promise<void>`
 
 
 
+## Slots
+
+| Slot       | Description                                                                                                                |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------- |
+|            | The modal body. The content from <code>modalContent</code> property arrives here too.                                      |
+| `"footer"` | If a custom footer is desired. Otherwise "cancelButton" and "confirmButtonText" will be rendered.                          |
+| `"header"` | If you want a custom header. Otherwise <code>modalTitle</code> and <code>modalDescription</code> will be placed in header. |
+
+
 ## Shadow Parts
 
 | Part        | Description |
 | ----------- | ----------- |
-| `"body"`    |             |
 | `"cancel"`  |             |
 | `"close"`   |             |
 | `"confirm"` |             |
 | `"content"` |             |
+| `"dialog"`  |             |
 | `"expand"`  |             |
+| `"footer"`  |             |
 | `"header"`  |             |
+| `"main"`    |             |
 
 
 ## CSS Custom Properties

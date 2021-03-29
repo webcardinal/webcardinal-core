@@ -4,7 +4,20 @@
   "tag": "webc-modal",
   "usage": {},
   "docs": "",
-  "docsTags": [],
+  "docsTags": [
+    {
+      "text": "- The modal body. The content from <code>modalContent</code> property arrives here too.",
+      "name": "slot"
+    },
+    {
+      "text": "header - If you want a custom header. Otherwise <code>modalTitle</code> and <code>modalDescription</code> will be placed in header.",
+      "name": "slot"
+    },
+    {
+      "text": "footer - If a custom footer is desired. Otherwise \"cancelButton\" and \"confirmButtonText\" will be rendered.",
+      "name": "slot"
+    }
+  ],
   "encapsulation": "shadow",
   "dependents": [],
   "dependencies": [
@@ -488,12 +501,21 @@
       "docs": ""
     }
   ],
-  "slots": [],
-  "parts": [
+  "slots": [
     {
-      "name": "body",
-      "docs": ""
+      "name": "",
+      "docs": "The modal body. The content from <code>modalContent</code> property arrives here too."
     },
+    {
+      "name": "footer",
+      "docs": "If a custom footer is desired. Otherwise \"cancelButton\" and \"confirmButtonText\" will be rendered."
+    },
+    {
+      "name": "header",
+      "docs": "If you want a custom header. Otherwise <code>modalTitle</code> and <code>modalDescription</code> will be placed in header."
+    }
+  ],
+  "parts": [
     {
       "name": "cancel",
       "docs": ""
@@ -511,11 +533,23 @@
       "docs": ""
     },
     {
+      "name": "dialog",
+      "docs": ""
+    },
+    {
       "name": "expand",
       "docs": ""
     },
     {
+      "name": "footer",
+      "docs": ""
+    },
+    {
       "name": "header",
+      "docs": ""
+    },
+    {
+      "name": "main",
       "docs": ""
     }
   ],
