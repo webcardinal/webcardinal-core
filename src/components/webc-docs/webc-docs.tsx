@@ -79,7 +79,7 @@ export class WebcContainer {
 
     this.origin = `https://raw.githubusercontent.com/webcardinal/${library}/master`;
     if (this.local) {
-      this.origin = new URL(`/.webcardinal/components/${library}`, window.location.origin).href;
+      this.origin = new URL(`.dev/webcardinal/.webcardinal/components/${library}`, window.location.origin).href;
       console.warn(`Local docs is active!`);
     }
 

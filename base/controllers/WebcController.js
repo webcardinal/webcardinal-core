@@ -5,7 +5,7 @@ class WebcController extends Controller {
     super(element, history);
   }
 
-  showModal(title, content, onConfirm, onClose, props = {}) {
+  showModal(content, title, onConfirm, onClose, props = {}) {
     title = title ? title : 'Info';
     return this.createWebcModal({
       ...props,
@@ -25,7 +25,7 @@ class WebcController extends Controller {
     });
   }
 
-  showErrorModal(title, error, onConfirm, onClose, props = {}) {
+  showErrorModal(error, title, onConfirm, onClose, props = {}) {
     title = title ? title : 'Error';
     let text;
 
@@ -48,7 +48,7 @@ class WebcController extends Controller {
     });
   }
 
-  showErrorModalAndRedirect(title, error, url, timeout, props = {}) {
+  showErrorModalAndRedirect(error, title, url, timeout, props = {}) {
     title = title ? title : 'Error';
     let text;
 
@@ -79,11 +79,11 @@ class WebcController extends Controller {
       if (typeof url === 'string') {
         this.navigateToUrl(url);
       } else if (typeof url === 'object') {
-        const { url, tag, state } = url;
+        const { href, tag, state } = url;
         if (tag) {
-          this.navigateToPageTag(tag, state)
+          this.navigateToPageTag(tag, state);
         } else {
-          this.navigateToUrl(url, state);
+          this.navigateToUrl(href, state);
         }
       }
     }, timeout);
@@ -110,6 +110,7 @@ class WebcController extends Controller {
     autoShow,
     onConfirm,
     onClose,
+    ...rest
   }) {
     if (!onClose) {
       onClose = onConfirm;
@@ -134,6 +135,7 @@ class WebcController extends Controller {
       disableExpanding,
       disableFooter,
       autoShow,
+      ...rest
     });
 
     modal.addEventListener('confirmed', e => {

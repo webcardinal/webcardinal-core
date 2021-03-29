@@ -6,6 +6,11 @@ import { bindChain } from '../../utils';
 
 import { getModalTemplate } from './webc-modal-utils';
 
+/**
+ * @slot - The modal body. The content from <code>modalContent</code> property arrives here too.
+ * @slot header - If you want a custom header. Otherwise <code>modalTitle</code> and <code>modalDescription</code> will be placed in header.
+ * @slot footer - If a custom footer is desired. Otherwise "cancelButton" and "confirmButtonText" will be rendered.
+ */
 @Component({
   tag: 'webc-modal',
   styleUrls: {
@@ -140,7 +145,7 @@ export class WebcModal {
     if (!this.controller) {
       await bindChain(this.host, {
         model: this.model,
-        translationModel: this.translationModel
+        translationModel: this.translationModel,
       });
     }
 
@@ -148,10 +153,10 @@ export class WebcModal {
     const confirmingItems = this.host.querySelectorAll('[data-confirm]');
 
     if (closingItems) {
-      closingItems.forEach(item => item.addEventListener('click', this.handleClose.bind(this)))
+      closingItems.forEach(item => item.addEventListener('click', this.handleClose.bind(this)));
     }
     if (confirmingItems) {
-      confirmingItems.forEach(item => item.addEventListener('click', this.handleConfirm.bind(this)))
+      confirmingItems.forEach(item => item.addEventListener('click', this.handleConfirm.bind(this)));
     }
   }
 
@@ -238,8 +243,8 @@ export class WebcModal {
 
     const modal = (
       <div class="webc-modal fade show" tabindex="-1" role="dialog" onClick={this.handleBackdropClick.bind(this)}>
-        <div class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `} role="document">
-          <div class="webc-modal-content">
+        <div class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `} role="document" part="dialog">
+          <div class="webc-modal-content" part="content">
             <section class="header" part="header">
               <div class="header-content">{this.getTitleContent()}</div>
               <div class="header-actions">
@@ -267,17 +272,17 @@ export class WebcModal {
             </section>
 
             {this.isLoading ? (
-              <section class="body" part="body">
+              <section class="body" part="main">
                 <webc-spinner />
               </section>
             ) : (
               [
-                <section class="body" part="body">
+                <section class="body" part="main">
                   <slot />
                   {this.modalContent ? <div class="content">{this.modalContent}</div> : null}
                 </section>,
                 !this.disableFooter && (
-                  <section class="footer" part="content">
+                  <section class="footer" part="footer">
                     {this.getFooterContent()}
                   </section>
                 ),
@@ -289,7 +294,11 @@ export class WebcModal {
     );
 
     if (this.controller) {
-      return <webc-container controller={this.controller} data-modal>{modal}</webc-container>;
+      return (
+        <webc-container controller={this.controller} data-modal>
+          {modal}
+        </webc-container>
+      );
     }
 
     return modal;
