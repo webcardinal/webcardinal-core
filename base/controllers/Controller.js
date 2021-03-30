@@ -1,49 +1,67 @@
 import DSUStorage from '../libs/DSUStorage';
 import PskBindableModel from '../libs/bindableModel.js';
 
-const ControllerHelper = {
-  checkEventListener: (eventName, listener, options) => {
-    if (typeof eventName !== 'string' || eventName.trim().length === 0) {
-      throw Error(`
-        Argument eventName is not valid. It must be a non-empty string.
-        Provided value: ${eventName}
-      `);
-    }
+function checkEventListener(eventName, listener, options) {
+  if (typeof eventName !== 'string' || eventName.trim().length === 0) {
+    throw Error(`
+      Argument eventName is not valid. It must be a non-empty string.
+      Provided value: ${eventName}
+    `);
+  }
 
-    if (typeof listener !== 'function') {
-      throw Error(`
-        Argument listener is not valid, it must be a function.
-        Provided value: ${listener}
-      `);
-    }
+  if (typeof listener !== 'function') {
+    throw Error(`
+      Argument listener is not valid, it must be a function.
+      Provided value: ${listener}
+    `);
+  }
 
-    if (options && typeof options !== 'boolean' && typeof options !== 'object') {
-      throw Error(`
-        Argument options is not valid, it must a boolean (true/false) in case of capture, or an options object.
-        If no options are needed, this argument can be left empty.
-        Provided value: ${options}
-      `);
-    }
-  },
-  getTranslationModel: () => {
-    const { language, translations } = window.WebCardinal;
-    const currentTranslations = translations[language];
+  if (options && typeof options !== 'boolean' && typeof options !== 'object') {
+    throw Error(`
+      Argument options is not valid, it must a boolean (true/false) in case of capture, or an options object.
+      If no options are needed, this argument can be left empty.
+      Provided value: ${options}
+    `);
+  }
+}
 
-    if (!currentTranslations) {
-      console.warn(`No translations found for current language ${language}`);
-      return null;
-    }
+function getPathname() {
+  let { pathname } = window.location;
+  if (pathname === '/') {
+    return pathname;
+  }
+  if (pathname.endsWith('/')) {
+    return pathname.slice(0, -1);
+  }
+  return pathname;
+}
 
-    const { pathname } = window.location;
-    const currentPageTranslations = currentTranslations[pathname];
-    if (!currentPageTranslations) {
-      console.warn(`No translations found for language ${language} and page ${pathname}`);
-      return null;
-    }
+function getValueFromModelByChain(model, chain) {
+  if (typeof chain === 'string') {
+    chain = chain.split('.');
+  }
+  const key = chain.shift();
+  return chain.length ? getValueFromModelByChain(model[key], chain) : model[key];
+}
 
-    return currentPageTranslations;
-  },
-};
+function getTranslationModel() {
+  const { language, translations } = window.WebCardinal;
+  const pathname = getPathname();
+  const currentTranslations = translations[language];
+
+  if (!currentTranslations) {
+    console.warn(`No translations found for current language ${language}`);
+    return null;
+  }
+
+  const currentPageTranslations = currentTranslations[pathname];
+  if (!currentPageTranslations) {
+    console.warn(`No translations found for language ${language} and page ${pathname}`);
+    return null;
+  }
+
+  return currentPageTranslations;
+}
 
 class Controller {
   constructor(element, history) {
@@ -55,10 +73,7 @@ class Controller {
 
     this.setLegacyGetModelEventListener();
 
-    this.translationModel = PskBindableModel.setModel(ControllerHelper.getTranslationModel() || {});
-
-    this.querySelector = this.element.querySelector;
-    this.querySelectorAll = this.element.querySelectorAll;
+    this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
 
     // will need to be called when the controller will be removed
     this.disconnectedCallback = () => {
@@ -85,7 +100,7 @@ class Controller {
 
   on(eventName, listener, options) {
     try {
-      ControllerHelper.checkEventListener(eventName, listener, options);
+      checkEventListener(eventName, listener, options);
       this.element.addEventListener(eventName, listener, options);
     } catch (err) {
       console.error(err);
@@ -94,7 +109,7 @@ class Controller {
 
   off(eventName, listener, options) {
     try {
-      ControllerHelper.checkEventListener(eventName, listener, options);
+      checkEventListener(eventName, listener, options);
       this.element.removeEventListener(eventName, listener, options);
     } catch (error) {
       console.error(error);
@@ -113,7 +128,7 @@ class Controller {
 
   onTagEvent(tag, eventName, listener, options) {
     try {
-      ControllerHelper.checkEventListener(eventName, listener, options);
+      checkEventListener(eventName, listener, options);
 
       const eventListener = event => {
         let target = event.target;
@@ -151,7 +166,7 @@ class Controller {
 
   offTagEvent(tag, eventName, listener, options) {
     try {
-      ControllerHelper.checkEventListener(eventName, listener, options);
+      checkEventListener(eventName, listener, options);
 
       const tagEventListenerIndexesToRemove = [];
       this.tagEventListeners
@@ -185,11 +200,6 @@ class Controller {
 
   offTagClick(tag, listener, options) {
     this.offTagEvent(tag, 'click', listener, options);
-  }
-
-  selectByTag(tag) {
-    let elements = this.element.querySelectorAll(`[data-tag="${tag}"]`);
-    return (elements && elements.length > 1) ? elements : elements[0];
   }
 
   navigateToUrl(url, state) {
@@ -257,22 +267,25 @@ class Controller {
     });
   }
 
-  translate(translationKey) {
+  translate(translationChain) {
     const { language } = window.WebCardinal;
-    const { pathname } = window.location;
+    const pathname = getPathname();
 
     if (!this.translationModel) {
       console.warn(`No translations found for language ${language} and page ${pathname}`);
-      return translationKey;
+      return translationChain;
     }
 
-    const translatedString = this.translationModel[translationKey];
-    if (!translatedString) {
-      console.warn(`No translations found for language ${language}, page ${pathname} and key ${translationKey}`);
-      return translationKey;
+    if (translationChain.startsWith('$')) {
+      translationChain = translationChain.slice(1);
+    }
+    const translation = getValueFromModelByChain(this.translationModel, translationChain);
+    if (!translation) {
+      console.warn(`No translations found for language ${language}, page ${pathname} and key ${translationChain}`);
+      return translationChain;
     }
 
-    return translatedString;
+    return translation;
   }
 
   setLanguage(language) {
@@ -280,6 +293,22 @@ class Controller {
       window.localStorage.setItem('language', language);
     }
     window.location.reload();
+  }
+
+  getElementByTag(tag) {
+    return this.element.querySelector(`[data-tag="${tag}"]`);
+  }
+
+  getElementsByTag(tag) {
+    return this.element.querySelectorAll(`[data-tag="${tag}"]`);
+  }
+
+  querySelector(selector) {
+    return this.element.querySelector(selector);
+  }
+
+  querySelectorAll(selector) {
+    return this.element.querySelectorAll(selector)
   }
 }
 

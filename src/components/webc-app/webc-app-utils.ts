@@ -32,7 +32,7 @@ const URLHelper = {
 
     return {
       href: trimEnd(result.href),
-      pathname: trimEnd(result.pathname),
+      pathname: trimEnd(result.pathname) || '/',
     };
   },
 };

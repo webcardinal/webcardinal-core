@@ -2,9 +2,10 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Method, Prop, State } from '@stencil/core';
 
 import { HostElement } from '../../decorators';
-import { bindChain } from '../../utils';
+import { promisifyEventEmit } from '../../utils';
 
 import { getModalTemplate } from './webc-modal-utils';
+import { BindingService } from '../../services';
 
 /**
  * @slot - The modal body. The content from <code>modalContent</code> property arrives here too.
@@ -36,6 +37,8 @@ export class WebcModal {
   @Prop({ reflect: true }) template: string;
 
   @Prop() model: any;
+
+  @Prop() enableTranslations: boolean = false;
 
   @Prop() translationModel: any;
 
@@ -125,6 +128,17 @@ export class WebcModal {
    */
   @Event() closed: EventEmitter<boolean>;
 
+  /**
+   * Enable translations event received from configuration.
+   */
+  @Event({
+    eventName: 'webcardinal:config:getTranslations',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationsStateEvent: EventEmitter;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -140,12 +154,18 @@ export class WebcModal {
       this.isLoading = false;
     }
 
+    const translationsState = await promisifyEventEmit(this.getTranslationsStateEvent);
     this.initialised.emit(this.host);
 
     if (!this.controller) {
-      await bindChain(this.host, {
-        model: this.model,
-        translationModel: this.translationModel,
+      const { model, translationModel, enableTranslations } = this;
+
+      BindingService.bindChildNodes(this.host, {
+        model,
+        translationModel,
+        // chainPrefix: chain ? chain.slice(1) : null,
+        recursive: true,
+        enableTranslations: translationsState || enableTranslations,
       });
     }
 
@@ -185,9 +205,9 @@ export class WebcModal {
   }
 
   handleBackdropClick(e: MouseEvent) {
-    e.preventDefault();
-    e.stopImmediatePropagation();
     if (!this.disableClosing && !this.disableBackdropClosing && e.target === e.currentTarget) {
+      e.preventDefault();
+      e.stopImmediatePropagation();
       this.closed.emit(false);
     }
   }

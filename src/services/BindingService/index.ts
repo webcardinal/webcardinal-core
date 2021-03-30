@@ -341,6 +341,12 @@ const BindingService = {
       }
     }
   },
+
+  bindChildNodes: (element: Element, options: BindElementOptions) => {
+    Array.from(element.childNodes).forEach(child => {
+      BindingService.bindElement(child, { ...options });
+    });
+  }
 };
 
 export default BindingService;

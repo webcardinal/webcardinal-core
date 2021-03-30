@@ -6,11 +6,12 @@ import { injectHistory } from '@stencil/router';
 import DefaultController from '../../../base/controllers/Controller.js';
 import { HostElement } from '../../decorators';
 import {
+  BindingService,
   ComponentListenersService,
   ControllerRegistryService,
   ControllerTranslationService,
 } from '../../services';
-import { bindChain, promisifyEventEmit } from '../../utils';
+import { promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -31,6 +32,8 @@ export class WebcContainer {
    *  Otherwise the content will replace the <code>webc-container</code> element form DOM.
    */
   @Prop() disableContainer = false;
+
+  @Prop() enableTranslations: boolean = false;
 
   /**
    * Routing configuration received from <code>webc-app-router</code>.
@@ -63,10 +66,23 @@ export class WebcContainer {
     }
 
     const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
-    const enableTranslations = await promisifyEventEmit(this.getTranslationsEvent);
+    const translationsState = await promisifyEventEmit(this.getTranslationsEvent);
+    const enableTranslations = translationsState || this.enableTranslations;
 
     if (enableTranslations) {
       await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
+    }
+
+    let target = this.host;
+    let shadowRoot = this.host.parentNode;
+
+    if (shadowRoot instanceof ShadowRoot) {
+      if (this.host.hasAttribute('data-modal')) {
+        target = shadowRoot.host as HTMLElement;
+      }
+    }
+    if (this.disableContainer) {
+      target = target.parentElement;
     }
 
     // load controller
@@ -75,34 +91,25 @@ export class WebcContainer {
       try {
         const Controller = await ControllerRegistryService.getController(controllerName);
         if (this.host.isConnected) {
-          const element = this.disableContainer ? this.host.parentElement : this.host;
-          this.controllerInstance = new Controller(element, this.history);
+          this.controllerInstance = new Controller(target, this.history);
         }
       } catch (error) {
         console.error(error);
         return;
       }
     } else {
-      this.controllerInstance = new DefaultController(this.host, this.history);
+      this.controllerInstance = new DefaultController(target, this.history);
     }
     const { model, translationModel } = this.controllerInstance;
 
-    let target = this.host;
-    let shadowRoot = this.host.parentNode;
-    if (shadowRoot instanceof ShadowRoot) {
-      if (this.host.hasAttribute('data-modal')) {
-        target = shadowRoot.host as HTMLElement;
-      }
-    }
-
-    await bindChain(target, {
-      model,
-      translationModel
-    }, {
-      enableTranslations
-    })
-
     if (translationModel || model) {
+      BindingService.bindChildNodes(target, {
+        model,
+        translationModel,
+        recursive: true,
+        enableTranslations,
+      });
+
       // serve models
       this.listeners = new ComponentListenersService(this.host, {
         model,

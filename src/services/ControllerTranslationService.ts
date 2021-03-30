@@ -1,7 +1,7 @@
 const ControllerTranslationService = {
   loadAndSetTranslationForPage: async routingEvent => {
     const { mapping, skinsPath } = routingEvent;
-    const { pathname } = window.location;
+    let { pathname } = window.location;
     const { language, translations } = window.WebCardinal;
 
     if (translations[language]?.[pathname]) {
@@ -9,6 +9,9 @@ const ControllerTranslationService = {
       return;
     }
 
+    if (pathname.endsWith('/') && pathname !== '/') {
+      pathname = pathname.slice(0, -1);
+    }
     const source = mapping[pathname];
     if (!source) {
       console.warn(

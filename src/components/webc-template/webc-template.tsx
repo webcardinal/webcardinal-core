@@ -2,9 +2,10 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
 
 import { HostElement } from '../../decorators';
-import {bindChain, extractChain, promisifyEventEmit} from '../../utils';
+import { extractChain, promisifyEventEmit } from '../../utils';
 
 import { getTemplate } from './webc-template-utils';
+import { BindingService } from '../../services';
 
 @Component({
   tag: 'webc-template',
@@ -25,7 +26,9 @@ export class WebcTemplate {
    *  If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.
    *  Otherwise the content will replace the <code>webc-template</code> element form DOM.
    */
-  @Prop() disableContainer = false;
+  @Prop() disableContainer: boolean = false;
+
+  @Prop() enableTranslations: boolean = false;
 
   /**
    * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
@@ -49,6 +52,20 @@ export class WebcTemplate {
   })
   getTranslationModelEvent: EventEmitter;
 
+  /**
+   * Enable translations event received from configuration.
+   */
+  @Event({
+    eventName: 'webcardinal:config:getTranslations',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationsStateEvent: EventEmitter;
+
+  private model;
+  private translationModel;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -58,15 +75,22 @@ export class WebcTemplate {
 
     this.chain = extractChain(this.host);
     if (this.chain) {
+      let translationsState = false;
       try {
-        await bindChain(this.host, {
-          chain: this.chain,
-          model: await promisifyEventEmit(this.getModelEvent),
-          translationModel: await promisifyEventEmit(this.getTranslationModelEvent)
-        });
+        this.model = await promisifyEventEmit(this.getModelEvent);
+        this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
+        translationsState = await promisifyEventEmit(this.getTranslationsStateEvent);
       } catch (error) {
         console.error(error);
       }
+
+      BindingService.bindChildNodes(this.host, {
+        model: this.model,
+        translationModel: this.translationModel,
+        recursive: true,
+        chainPrefix: this.chain ? this.chain.slice(1) : null,
+        enableTranslations: translationsState || this.enableTranslations,
+      });
     }
   }
 

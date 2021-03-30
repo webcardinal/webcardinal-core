@@ -119,7 +119,8 @@ export class WebcAppRouter {
           payload.src = URLHelper.join(this.pagesPath, payload.src).pathname;
         }
 
-        this.mapping[payload.path] = payload.src.replace(this.pagesPathRegExp, '');
+        let joinedPath = URLHelper.join(this.basePath, payload.path).pathname;
+        this.mapping[joinedPath] = payload.src.replace(this.pagesPathRegExp, '');
 
         if (route.tag) {
           this.tags[route.tag] = payload.path;

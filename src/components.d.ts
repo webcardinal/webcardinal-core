@@ -100,6 +100,7 @@ export namespace Components {
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer": boolean;
+        "enableTranslations": boolean;
         /**
           * The model from controller is exposed by this method.
          */
@@ -171,6 +172,7 @@ export namespace Components {
           * Sets if the modal has the footer displayed.
          */
         "disableFooter": boolean;
+        "enableTranslations": boolean;
         /**
           * Sets if the modal expands to full screen.
          */
@@ -220,6 +222,7 @@ export namespace Components {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer": boolean;
+        "enableTranslations": boolean;
         /**
           * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
          */
@@ -450,6 +453,7 @@ declare namespace LocalJSX {
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer"?: boolean;
+        "enableTranslations"?: boolean;
         /**
           * Enable translations event received from configuration.
          */
@@ -525,6 +529,7 @@ declare namespace LocalJSX {
           * Sets if the modal has the footer displayed.
          */
         "disableFooter"?: boolean;
+        "enableTranslations"?: boolean;
         /**
           * Sets if the modal expands to full screen.
          */
@@ -559,6 +564,10 @@ declare namespace LocalJSX {
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
         /**
+          * Enable translations event received from configuration.
+         */
+        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
+        /**
           * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
          */
         "template"?: string;
@@ -578,6 +587,11 @@ declare namespace LocalJSX {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer"?: boolean;
+        "enableTranslations"?: boolean;
+        /**
+          * Enable translations event received from configuration.
+         */
+        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
          */
