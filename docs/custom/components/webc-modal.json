@@ -105,7 +105,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": true,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "values": [
         {
@@ -190,6 +190,23 @@
       "attr": "disable-footer",
       "reflectToAttr": true,
       "docs": "Sets if the modal has the footer displayed.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "enableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "enable-translations",
+      "reflectToAttr": false,
+      "docs": "",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -372,7 +389,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
+      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\r\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
       "docsTags": []
     },
     {
@@ -391,6 +408,15 @@
       "cancelable": true,
       "composed": true,
       "docs": "Event that fires when the modal is initialised (after the modal content was successfully loaded).",
+      "docsTags": []
+    },
+    {
+      "event": "webcardinal:config:getTranslations",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Enable translations event received from configuration.",
       "docsTags": []
     }
   ],

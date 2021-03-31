@@ -48,6 +48,23 @@
       ],
       "optional": false,
       "required": false
+    },
+    {
+      "name": "enableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "enable-translations",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
     }
   ],
   "methods": [

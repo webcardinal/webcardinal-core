@@ -300,6 +300,9 @@ const BindingService = {
             chain = chain.slice(1);
             const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
 
+            // update MODEL_KEY
+            element.setAttribute(MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+
             // initial binding
             setElementModel(element, model, completeChain);
             bindElementChangeToModel(element, model, completeChain);
@@ -349,7 +352,7 @@ const BindingService = {
     Array.from(element.childNodes).forEach(child => {
       BindingService.bindElement(child, { ...options });
     });
-  }
+  },
 };
 
 export default BindingService;

@@ -45,6 +45,23 @@
       "required": false
     },
     {
+      "name": "enableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "enable-translations",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "templateName",
       "type": "string",
       "mutable": false,
@@ -63,6 +80,15 @@
   ],
   "methods": [],
   "events": [
+    {
+      "event": "webcardinal:config:getTranslations",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Enable translations event received from configuration.",
+      "docsTags": []
+    },
     {
       "event": "webcardinal:model:get",
       "detail": "any",
