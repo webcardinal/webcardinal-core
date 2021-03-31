@@ -133,7 +133,7 @@ function handleDataForAttributePresence(
     ? [chainPrefix, dataForAttributeChain].filter(String).join('.')
     : dataForAttributeChain;
 
-  const dataForAttributeModelValue = model.getChainValue(completeChain);
+  let dataForAttributeModelValue = model.getChainValue(completeChain);
 
   if (!Array.isArray(dataForAttributeModelValue)) {
     console.error(`Attribute "${DATA_FOR_ATTRIBUTE}" must be an array in the model!`);
@@ -159,7 +159,7 @@ function handleDataForAttributePresence(
       removeElementChildNodes(element);
       noDataTemplates.forEach(templateNode => {
         const childElement = templateNode.cloneNode(true) as HTMLElement;
-        // when nesting mutiple webc-fors, the inner slots will have the hidden property set automatically
+        // when nesting multiple data-for attributes, the inner slots will have the hidden property set automatically
         removeSlotInfoFromElement(childElement);
 
         element.appendChild(childElement);
@@ -229,6 +229,9 @@ function handleDataForAttributePresence(
       removeElementChildNodes(element);
       existingNodes = [];
     }
+
+    dataForAttributeModelValue = newValue;
+
     renderTemplate();
   };
 
