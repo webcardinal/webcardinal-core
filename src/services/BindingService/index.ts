@@ -10,7 +10,12 @@ import {
   SKIP_BINDING_FOR_COMPONENTS,
   TRANSLATION_CHAIN_PREFIX,
 } from '../../constants';
-import { bindElementAttributes, bindElementChangeToModel, isAttributePresentOnElement } from '../../utils';
+import {
+  bindElementAttributes,
+  bindElementChangeToModel,
+  getCompleteChain,
+  isAttributePresentOnElement,
+} from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
 import { isElementNode, isTextNode, setElementModel } from './binding-service-utils';
@@ -56,7 +61,7 @@ const BindingService = {
             currentChain = currentChain.slice(1);
           }
         }
-        const completeChain = chainPrefix ? [chainPrefix, currentChain].filter(Boolean).join('.') : currentChain;
+        const completeChain = getCompleteChain(chainPrefix, currentChain);
 
         element[TAG_MODEL_FUNCTION_PROPERTY] = () => {
           if (model.hasExpression(completeChain)) {
@@ -104,7 +109,7 @@ const BindingService = {
 
           if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
             chain = chain.slice(1);
-            const completeChain = chainPrefix ? [chainPrefix, chain].filter(Boolean).join('.') : chain;
+            const completeChain = getCompleteChain(chainPrefix, chain);
 
             // update VIEW_MODEL_KEY
             element.setAttribute(VIEW_MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);

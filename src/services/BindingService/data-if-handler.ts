@@ -5,7 +5,13 @@ import {
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
 } from '../../constants';
-import { bindElementAttributes, getSlots, removeElementChildNodes, removeSlotInfoFromElement } from '../../utils';
+import {
+  bindElementAttributes,
+  getCompleteChain,
+  getSlots,
+  removeElementChildNodes,
+  removeSlotInfoFromElement,
+} from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
 
@@ -24,7 +30,7 @@ export function handleDataIfAttributePresence(
   }
 
   conditionChain = conditionChain.slice(1);
-  const completeConditionChain = chainPrefix ? [chainPrefix, conditionChain].filter(Boolean).join('.') : conditionChain;
+  const completeConditionChain = getCompleteChain(chainPrefix, conditionChain);
 
   const children = Array.from(element.children);
 

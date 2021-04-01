@@ -1,13 +1,9 @@
-import {
-  FOR_ATTRIBUTE,
-  FOR_NO_DATA_SLOT_NAME,
-  MODEL_CHAIN_PREFIX,
-  TRANSLATION_CHAIN_PREFIX,
-} from '../../constants';
+import { FOR_ATTRIBUTE, FOR_NO_DATA_SLOT_NAME, MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX } from '../../constants';
 import {
   bindElementAttributes,
   createDomMap,
   diffDomMap,
+  getCompleteChain,
   removeElementChildNodes,
   removeSlotInfoFromElement,
 } from '../../utils';
@@ -30,17 +26,18 @@ export function handleDataForAttributePresence(
   }
 
   dataForAttributeChain = dataForAttributeChain.slice(1);
-  const completeChain = chainPrefix
-    ? [chainPrefix, dataForAttributeChain].filter(Boolean).join('.')
-    : dataForAttributeChain;
+  const completeChain = getCompleteChain(chainPrefix, dataForAttributeChain);
 
   let dataForAttributeModelValue = model.getChainValue(completeChain);
-  let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
-
   if (!Array.isArray(dataForAttributeModelValue)) {
-    console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
+    console.error(
+      `Attribute "${FOR_ATTRIBUTE}" (${dataForAttributeChain}) must be a chain to an array in the model!`,
+      element,
+    );
     return;
   }
+
+  let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];
@@ -81,7 +78,7 @@ export function handleDataForAttributePresence(
 
       templates.forEach(templateNode => {
         const childElement = templateNode.cloneNode(true) as HTMLElement;
-        const modelElementChainPrefix = [completeChain, modelElementIndex].filter(Boolean).join('.');
+        const modelElementChainPrefix = getCompleteChain(completeChain, modelElementIndex);
 
         bindElement(childElement, {
           model,

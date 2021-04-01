@@ -1,4 +1,5 @@
 import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS, TRANSLATION_CHAIN_PREFIX } from '../../constants';
+import { getCompleteChain } from '../../utils';
 
 export function bindNodeValue(node: ChildNode, model: any, translationModel: any, modelChainPrefix: string = null) {
   // for some webc-<components> binding is managed by component itself
@@ -33,7 +34,7 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
       let chain = expression.chainWithPrefix.slice(1);
       if (!isTranslation && modelChainPrefix) {
         // prepend the modelChainPrefix
-        chain = [modelChainPrefix, chain].filter(Boolean).join('.');
+        chain = getCompleteChain(modelChainPrefix, chain);
         chainWithPrefix = `${MODEL_CHAIN_PREFIX}${chain}`;
       }
 
@@ -73,7 +74,7 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
     let updatedNodeValue = originalNodeValue;
     bindingExpressions.forEach(({ expression, getChainValue, isModelExpression, evaluateModelExpression }) => {
       let value = getChainValue();
-      if (["number", "boolean"].includes(typeof value)) {
+      if (['number', 'boolean'].includes(typeof value)) {
         value = value.toString();
       }
       if (!value && isModelExpression) {

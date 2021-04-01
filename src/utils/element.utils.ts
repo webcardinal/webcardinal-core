@@ -157,7 +157,7 @@ export function bindElementAttributes(
 
     if (modelChainPrefix) {
       // prepend the modelChainPrefix
-      chain = [modelChainPrefix, chain].filter(Boolean).join('.');
+      chain = getCompleteChain(modelChainPrefix, chain);
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
@@ -256,4 +256,11 @@ export function removeElementChildNodes(element: Element) {
   while (element.childNodes.length > 0) {
     element.childNodes[0].remove();
   }
+}
+
+export function getCompleteChain(...parts) {
+  return parts
+    .filter(part => part != null)
+    .filter(String)
+    .join('.');
 }
