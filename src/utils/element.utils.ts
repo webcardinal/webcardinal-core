@@ -1,6 +1,7 @@
 import {
   MODEL_CHAIN_PREFIX,
   MODEL_KEY,
+  VIEW_MODEL_KEY,
   PSK_CARDINAL_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
   SKIP_BINDING_FOR_PROPERTIES,
@@ -145,7 +146,7 @@ export function bindElementAttributes(
     const key = attribute.nodeName;
     let chain = attribute.nodeValue;
 
-    if (key === MODEL_KEY) {
+    if (key === VIEW_MODEL_KEY || key === MODEL_KEY) {
       return;
     }
 
@@ -156,7 +157,7 @@ export function bindElementAttributes(
 
     if (modelChainPrefix) {
       // prepend the modelChainPrefix
-      chain = [modelChainPrefix, chain].filter(String).join('.');
+      chain = [modelChainPrefix, chain].filter(Boolean).join('.');
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });

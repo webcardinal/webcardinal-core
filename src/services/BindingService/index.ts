@@ -1,260 +1,22 @@
 import {
-  DATA_FOR_ATTRIBUTE,
-  DATA_FOR_NO_DATA_SLOT_NAME,
-  DATA_IF_ATTRIBUTE,
-  DATA_IF_FALSE_CONDITION_SLOT_NAME,
-  DATA_IF_TRUE_CONDITION_SLOT_NAME,
+  TAG_ATTRIBUTE,
+  TAG_MODEL_FUNCTION_PROPERTY,
+  FOR_ATTRIBUTE,
+  IF_ATTRIBUTE,
   MODEL_CHAIN_PREFIX,
   MODEL_KEY,
+  VIEW_MODEL_KEY,
   PSK_CARDINAL_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
   TRANSLATION_CHAIN_PREFIX,
 } from '../../constants';
-import {
-  bindElementAttributes,
-  bindElementChangeToModel,
-  createDomMap,
-  diffDomMap,
-  getSlots,
-  isAttributePresentOnElement,
-  removeElementChildNodes,
-  removeSlotInfoFromElement,
-} from '../../utils';
+import { bindElementAttributes, bindElementChangeToModel, isAttributePresentOnElement } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
 import { isElementNode, isTextNode, setElementModel } from './binding-service-utils';
+import { handleDataForAttributePresence } from './data-for-handler';
+import { handleDataIfAttributePresence } from './data-if-handler';
 import { bindNodeValue } from './node-value-binding-utils';
-
-function handleDataIfAttributePresence(
-  element: Element,
-  { model, translationModel, chainPrefix, enableTranslations = false }: BindElementOptions = {
-    model: null,
-    translationModel: null,
-  },
-) {
-  let conditionChain = element.getAttribute(DATA_IF_ATTRIBUTE);
-  if (!conditionChain.startsWith(MODEL_CHAIN_PREFIX)) {
-    console.warn(`Attribute "${DATA_IF_ATTRIBUTE}" doesn't start with the chain prefix!`);
-    return;
-  }
-
-  conditionChain = conditionChain.slice(1);
-  const completeConditionChain = chainPrefix ? [chainPrefix, conditionChain].filter(String).join('.') : conditionChain;
-
-  const children = Array.from(element.children);
-
-  let conditionValue;
-  let trueSlotElements: ChildNode[] = getSlots(children, DATA_IF_TRUE_CONDITION_SLOT_NAME);
-  const falseSlotElements = getSlots(children, DATA_IF_FALSE_CONDITION_SLOT_NAME);
-
-  if (!trueSlotElements.length && !falseSlotElements.length) {
-    trueSlotElements = Array.from(element.childNodes);
-  }
-
-  removeElementChildNodes(element);
-
-  const setVisibleContent = () => {
-    const visibleSlots = conditionValue ? trueSlotElements : falseSlotElements;
-    removeElementChildNodes(element);
-    visibleSlots.forEach(slot => {
-      const slotElement = slot.cloneNode(true) as HTMLElement;
-      removeSlotInfoFromElement(slotElement);
-
-      element.appendChild(slotElement);
-
-      BindingService.bindElement(slotElement, {
-        model,
-        translationModel,
-        chainPrefix,
-        enableTranslations,
-        recursive: true,
-      });
-    });
-  };
-
-  const setExtractedConditionValue = async extractedConditionValue => {
-    let value;
-    if (extractedConditionValue instanceof Promise) {
-      try {
-        value = await extractedConditionValue;
-      } catch (error) {
-        console.error('data-if condition promise failed', error);
-        value = false;
-      }
-    } else {
-      value = !!extractedConditionValue; // ensure we have a boolean value
-    }
-
-    // the value has changed so the visible content must be updated
-    const mustUpdateVisibleContent = conditionValue !== value;
-    conditionValue = value;
-    if (mustUpdateVisibleContent) {
-      setVisibleContent();
-    }
-  };
-
-  setExtractedConditionValue(model.getChainValue(completeConditionChain));
-
-  // initial binding
-  //   bindElementChangeToModel(element, model, completeConditionChain);
-  bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
-  if (enableTranslations) {
-    bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
-  }
-
-  model.onChange(completeConditionChain, () => {
-    setExtractedConditionValue(model.getChainValue(completeConditionChain));
-  });
-
-  if (model.hasExpression(completeConditionChain)) {
-    setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
-
-    model.onChangeExpressionChain(completeConditionChain, () => {
-      setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
-    });
-  }
-}
-
-function handleDataForAttributePresence(
-  element: Element,
-  { model, translationModel, chainPrefix, enableTranslations = false }: BindElementOptions = {
-    model: null,
-    translationModel: null,
-  },
-) {
-  let dataForAttributeChain = element.getAttribute(DATA_FOR_ATTRIBUTE);
-  if (!dataForAttributeChain.startsWith(MODEL_CHAIN_PREFIX)) {
-    console.warn(`Attribute "${DATA_FOR_ATTRIBUTE}" doesn't start with the chain prefix!`);
-    return;
-  }
-
-  dataForAttributeChain = dataForAttributeChain.slice(1);
-  const completeChain = chainPrefix
-    ? [chainPrefix, dataForAttributeChain].filter(String).join('.')
-    : dataForAttributeChain;
-
-  let dataForAttributeModelValue = model.getChainValue(completeChain);
-  let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
-
-  if (!Array.isArray(dataForAttributeModelValue)) {
-    console.error(`Attribute "${DATA_FOR_ATTRIBUTE}" must be an array in the model!`);
-    return;
-  }
-
-  const noDataTemplates = [];
-  const templates: ChildNode[] = [];
-  while (element.childNodes.length > 0) {
-    const firstChild = element.childNodes[0];
-    if (isElementNode(firstChild) && (firstChild as Element).getAttribute('slot') === DATA_FOR_NO_DATA_SLOT_NAME) {
-      noDataTemplates.push(firstChild);
-    } else {
-      templates.push(firstChild);
-    }
-
-    firstChild.remove();
-  }
-
-  let existingNodes = [];
-  const renderTemplate = () => {
-    if (!dataForAttributeModelValueLength) {
-      removeElementChildNodes(element);
-      noDataTemplates.forEach(templateNode => {
-        const childElement = templateNode.cloneNode(true) as HTMLElement;
-        // when nesting multiple data-for attributes, the inner slots will have the hidden property set automatically
-        removeSlotInfoFromElement(childElement);
-
-        element.appendChild(childElement);
-        BindingService.bindElement(childElement, {
-          model,
-          translationModel,
-          chainPrefix: chainPrefix,
-          enableTranslations,
-          recursive: true,
-        });
-      });
-      return;
-    }
-
-    dataForAttributeModelValue.forEach((_modelElement, modelElementIndex) => {
-      const updatedNodes = [];
-
-      templates.forEach(templateNode => {
-        const childElement = templateNode.cloneNode(true) as HTMLElement;
-        const modelElementChainPrefix = [completeChain, modelElementIndex].filter(String).join('.');
-
-        BindingService.bindElement(childElement, {
-          model,
-          translationModel,
-          chainPrefix: modelElementChainPrefix,
-          enableTranslations,
-          recursive: true,
-        });
-        updatedNodes.push(childElement);
-      });
-
-      if (existingNodes[modelElementIndex]) {
-        // we have existing nodes that we need to update
-        updatedNodes.forEach((element, index) => {
-          const updatedElement = document.createElement('div');
-          updatedElement.appendChild(element);
-
-          const existingElement = document.createElement('div');
-          existingElement.appendChild(existingNodes[modelElementIndex][index].cloneNode(true) as HTMLElement);
-
-          const templateMap = createDomMap(updatedElement);
-          const domMap = createDomMap(existingElement);
-          diffDomMap(templateMap, domMap, existingNodes[modelElementIndex][index]);
-        });
-      } else {
-        updatedNodes.forEach(childElement => {
-          element.appendChild(childElement);
-        });
-      }
-
-      existingNodes[modelElementIndex] = updatedNodes;
-    });
-  };
-
-  const updateAndRenderTemplate = newValue => {
-    if (!Array.isArray(newValue)) {
-      console.error(`Attribute "${DATA_FOR_ATTRIBUTE}" must be an array in the model!`);
-      newValue = [];
-    }
-
-    newValue = newValue || [];
-
-    const hasContentLengthChanged = dataForAttributeModelValueLength !== newValue.length;
-    if (hasContentLengthChanged) {
-      removeElementChildNodes(element);
-      existingNodes = [];
-    }
-
-    dataForAttributeModelValue = newValue;
-    dataForAttributeModelValueLength = dataForAttributeModelValue.length;
-
-    renderTemplate();
-  };
-
-  renderTemplate();
-
-  // initial binding
-  //   bindElementChangeToModel(element, model, completeChain);
-  bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
-  if (enableTranslations) {
-    bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
-  }
-
-  model.onChange(completeChain, () => {
-    // todo: further optimize the rendering by checking exactly which element of the array triggered the change
-    updateAndRenderTemplate(model.getChainValue(completeChain));
-  });
-
-  if (model.hasExpression(completeChain)) {
-    model.onChangeExpressionChain(completeChain, () => {
-      updateAndRenderTemplate(model.evaluateExpression(completeChain));
-    });
-  }
-}
 
 const BindingService = {
   bindElement: (
@@ -285,23 +47,71 @@ const BindingService = {
         return;
       }
 
-      const hasDataIfAttribute = isAttributePresentOnElement(element, DATA_IF_ATTRIBUTE);
-      const hasDataForAttribute = isAttributePresentOnElement(element, DATA_FOR_ATTRIBUTE);
+      if (element.hasAttribute(TAG_ATTRIBUTE)) {
+        let currentChain;
+        if (element.hasAttribute(MODEL_KEY)) {
+          // take the current chain from the MODEL_KEY
+          currentChain = element.getAttribute(MODEL_KEY);
+          if (currentChain?.startsWith(MODEL_CHAIN_PREFIX)) {
+            currentChain = currentChain.slice(1);
+          }
+        }
+        const completeChain = chainPrefix ? [chainPrefix, currentChain].filter(Boolean).join('.') : currentChain;
+
+        element[TAG_MODEL_FUNCTION_PROPERTY] = () => {
+          if (model.hasExpression(completeChain)) {
+            return model.evaluateExpression(completeChain);
+          }
+
+          return model.toObject(completeChain);
+        };
+
+        // element[TAG_MODEL_PROPERTY] = model.toObject(completeChain);
+        // model.onChange(completeChain, _ => {
+        //   element[TAG_MODEL_PROPERTY] = model.toObject(completeChain);
+        // });
+
+        // if (model.hasExpression(completeChain)) {
+        //   element[TAG_MODEL_PROPERTY] = model.evaluateExpression(completeChain);
+        //   model.onChangeExpressionChain(completeChain, _ => {
+        //     element[TAG_MODEL_PROPERTY] = model.evaluateExpression(completeChain);
+        //   });
+        // }
+      }
+
+      const hasDataIfAttribute = isAttributePresentOnElement(element, IF_ATTRIBUTE);
+      const hasDataForAttribute = isAttributePresentOnElement(element, FOR_ATTRIBUTE);
       if (hasDataIfAttribute && hasDataForAttribute) {
         console.error('Cannot use both data-if and data-for attributes on the same element', element);
       } else if (hasDataIfAttribute) {
-        handleDataIfAttributePresence(element, options);
+        handleDataIfAttributePresence(element, BindingService.bindElement, options);
       } else if (hasDataForAttribute) {
-        handleDataForAttributePresence(element, options);
+        handleDataForAttributePresence(element, BindingService.bindElement, options);
       } else {
-        if (element.getAttribute(MODEL_KEY)) {
-          let chain = element.getAttribute(MODEL_KEY);
+        const hasViewModelAttribute = element.hasAttribute(VIEW_MODEL_KEY);
+        const hasModelAttribute = element.hasAttribute(MODEL_KEY);
+        if (hasViewModelAttribute || hasModelAttribute) {
+          let chain;
+          if (hasViewModelAttribute) {
+            chain = element.getAttribute(VIEW_MODEL_KEY);
+          } else {
+            console.warn(
+              `Attribute ${MODEL_KEY} is deprecated for binding! Use the ${VIEW_MODEL_KEY} key attribute instead.`,
+              element,
+            );
+            chain = element.getAttribute(MODEL_KEY);
+          }
+
           if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
             chain = chain.slice(1);
-            const completeChain = chainPrefix ? [chainPrefix, chain].filter(String).join('.') : chain;
+            const completeChain = chainPrefix ? [chainPrefix, chain].filter(Boolean).join('.') : chain;
 
-            // update MODEL_KEY
-            element.setAttribute(MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+            // update VIEW_MODEL_KEY
+            element.setAttribute(VIEW_MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+            if (hasModelAttribute) {
+              // temporary update deprecated MODEL_KEY attribute
+              element.setAttribute(MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+            }
 
             // initial binding
             setElementModel(element, model, completeChain);

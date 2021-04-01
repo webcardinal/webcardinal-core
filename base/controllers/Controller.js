@@ -1,6 +1,8 @@
 import DSUStorage from '../libs/DSUStorage';
 import PskBindableModel from '../libs/bindableModel.js';
 
+export const DATA_TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
+
 function checkEventListener(eventName, listener, options) {
   if (typeof eventName !== 'string' || eventName.trim().length === 0) {
     throw Error(`
@@ -138,8 +140,9 @@ class Controller {
             event.preventDefault(); // Cancel the native event
             event.stopPropagation(); // Don't bubble/capture the event any further
 
-            const dataModelChain = target.getAttribute('data-model');
-            const attachedModel = dataModelChain ? this.model.toObject(dataModelChain.slice(1)) : undefined;
+            const attachedModel = target[DATA_TAG_MODEL_FUNCTION_PROPERTY]
+              ? target[DATA_TAG_MODEL_FUNCTION_PROPERTY]()
+              : null;
 
             listener(attachedModel, target, event);
             break;
@@ -308,7 +311,7 @@ class Controller {
   }
 
   querySelectorAll(selector) {
-    return this.element.querySelectorAll(selector)
+    return this.element.querySelectorAll(selector);
   }
 }
 

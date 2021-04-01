@@ -33,7 +33,7 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
       let chain = expression.chainWithPrefix.slice(1);
       if (!isTranslation && modelChainPrefix) {
         // prepend the modelChainPrefix
-        chain = [modelChainPrefix, chain].filter(String).join('.');
+        chain = [modelChainPrefix, chain].filter(Boolean).join('.');
         chainWithPrefix = `${MODEL_CHAIN_PREFIX}${chain}`;
       }
 

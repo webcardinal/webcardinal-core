@@ -1,7 +1,15 @@
-import { MODEL_CHAIN_PREFIX, MODEL_KEY } from '../constants';
+import { MODEL_CHAIN_PREFIX, MODEL_KEY, VIEW_MODEL_KEY } from '../constants';
 
 export function extractChain(element) {
-  const chain = element.getAttribute(MODEL_KEY);
+  let chain = element.hasAttribute(VIEW_MODEL_KEY) ? element.getAttribute(VIEW_MODEL_KEY) : null;
+  if (!chain && element.hasAttribute(MODEL_KEY)) {
+    console.warn(
+      `Attribute ${MODEL_KEY} is deprecated for binding! Use the ${VIEW_MODEL_KEY} key attribute instead.`,
+      element,
+    );
+    chain = element.getAttribute(MODEL_KEY);
+  }
+
   if (!chain) {
     return '';
   }
