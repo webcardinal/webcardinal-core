@@ -134,6 +134,7 @@ function handleDataForAttributePresence(
     : dataForAttributeChain;
 
   let dataForAttributeModelValue = model.getChainValue(completeChain);
+  let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
   if (!Array.isArray(dataForAttributeModelValue)) {
     console.error(`Attribute "${DATA_FOR_ATTRIBUTE}" must be an array in the model!`);
@@ -155,7 +156,7 @@ function handleDataForAttributePresence(
 
   let existingNodes = [];
   const renderTemplate = () => {
-    if (!dataForAttributeModelValue.length) {
+    if (!dataForAttributeModelValueLength) {
       removeElementChildNodes(element);
       noDataTemplates.forEach(templateNode => {
         const childElement = templateNode.cloneNode(true) as HTMLElement;
@@ -222,15 +223,14 @@ function handleDataForAttributePresence(
 
     newValue = newValue || [];
 
-    const hasContentTypeChanged =
-      (dataForAttributeModelValue.length === 0 && newValue.length !== 0) ||
-      (dataForAttributeModelValue.length !== 0 && newValue.length === 0);
-    if (hasContentTypeChanged) {
+    const hasContentLengthChanged = dataForAttributeModelValueLength !== newValue.length;
+    if (hasContentLengthChanged) {
       removeElementChildNodes(element);
       existingNodes = [];
     }
 
     dataForAttributeModelValue = newValue;
+    dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
     renderTemplate();
   };
