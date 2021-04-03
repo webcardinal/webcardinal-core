@@ -1,4 +1,10 @@
-import { FOR_ATTRIBUTE, FOR_NO_DATA_SLOT_NAME, MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX } from '../../constants';
+import {
+  FOR_ATTRIBUTE,
+  FOR_OPTIMISTIC_ATTRIBUTE,
+  FOR_NO_DATA_SLOT_NAME,
+  MODEL_CHAIN_PREFIX,
+  TRANSLATION_CHAIN_PREFIX,
+} from '../../constants';
 import {
   bindElementAttributes,
   createDomMap,
@@ -38,6 +44,8 @@ export function handleDataForAttributePresence(
   }
 
   let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
+
+  const isOptimisticMode = element.hasAttribute(FOR_OPTIMISTIC_ATTRIBUTE);
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];
@@ -93,44 +101,59 @@ export function handleDataForAttributePresence(
       if (existingNodes[modelElementIndex]) {
         // we have existing nodes that we need to update
         updatedNodes.forEach((element, index) => {
-          const updatedElement = document.createElement('div');
-          updatedElement.appendChild(element);
-
           const existingElement = document.createElement('div');
           existingElement.appendChild(existingNodes[modelElementIndex][index].cloneNode(true) as HTMLElement);
 
-          const templateMap = createDomMap(updatedElement);
-          const domMap = createDomMap(existingElement);
+          const templateMap = createDomMap(element);
+          const domMap = createDomMap(existingNodes[modelElementIndex][index]);
           diffDomMap(templateMap, domMap, existingNodes[modelElementIndex][index]);
         });
       } else {
         updatedNodes.forEach(childElement => {
           element.appendChild(childElement);
         });
+        existingNodes[modelElementIndex] = updatedNodes;
       }
-
-      existingNodes[modelElementIndex] = updatedNodes;
     });
+
+    // remove any leftover existingNodes
+    for (let index = dataForAttributeModelValueLength; index < existingNodes.length; index++) {
+      const nodes = existingNodes[index];
+      nodes.forEach(node => {
+        removeElementChildNodes(node);
+        node.remove();
+      });
+    }
+    existingNodes.splice(dataForAttributeModelValueLength);
   };
 
-  const updateAndRenderTemplate = newValue => {
+  const updateAndRenderTemplate = (newValue, forceRefresh = false) => {
     if (!Array.isArray(newValue)) {
       console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
       newValue = [];
     }
 
     newValue = newValue || [];
-
     const hasContentLengthChanged = dataForAttributeModelValueLength !== newValue.length;
-    if (hasContentLengthChanged) {
-      removeElementChildNodes(element);
-      existingNodes = [];
-    }
 
     dataForAttributeModelValue = newValue;
     dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
-    renderTemplate();
+    if (isOptimisticMode) {
+      // in optimistic mode there is no need to cleanup the existing content,
+      // since there is an optimized comparision process that is being executed instead
+      renderTemplate();
+      return;
+    }
+
+    if (forceRefresh || hasContentLengthChanged) {
+      // if we have a force refresh or the length of the list has changed,
+      // then we will cleanup the existing content and recreated it from scratch
+      // to make sure there are no leftover content/binding that could generate issues
+      removeElementChildNodes(element);
+      existingNodes = [];
+      renderTemplate();
+    }
   };
 
   renderTemplate();
@@ -142,9 +165,10 @@ export function handleDataForAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  model.onChange(completeChain, () => {
-    // todo: further optimize the rendering by checking exactly which element of the array triggered the change
-    updateAndRenderTemplate(model.getChainValue(completeChain));
+  model.onChange(completeChain, ({ targetChain }) => {
+    // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
+    const forceRefresh = completeChain === targetChain;
+    updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
   });
 
   if (model.hasExpression(completeChain)) {
