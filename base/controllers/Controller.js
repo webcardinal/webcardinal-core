@@ -73,6 +73,23 @@ class Controller {
     this.history = history;
     this.tagEventListeners = [];
 
+    let model;
+    Object.defineProperty(this, 'model', {
+      get() {
+        return model;
+      },
+      set(modelToSet) {
+        if (model) {
+          // update the current model without overwriting it
+          Object.keys(modelToSet).forEach(modelKey => {
+            model[modelKey] = modelToSet[modelKey];
+          });
+        } else {
+          model = PskBindableModel.setModel(modelToSet);
+        }
+      },
+    });
+
     this.setLegacyGetModelEventListener();
 
     this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
@@ -242,14 +259,7 @@ class Controller {
   }
 
   setModel(model) {
-    if (this.model) {
-        // update the current model without overwriting it
-        Object.keys(model).forEach(modelKey => {
-            this.model[modelKey] = model[modelKey];
-        })
-    } else {
-        this.model = PskBindableModel.setModel(model);
-    }
+    this.model = model;
   }
 
   setLegacyGetModelEventListener() {
