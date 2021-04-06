@@ -465,21 +465,7 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                     }
                 }
 
-                function makeArrayGetter(parentChain) {
-                    return function(target, prop) {
-                        const val = target[prop];
-                        if (typeof val === 'function') {
-                            switch (prop) {
-                                case "push":
-                                    return pushHandler(target, parentChain);
-                                default:
-                                    return arrayFnHandler(prop, target, parentChain);
-                            }
-                        }
-                        return val;
-                    }
-                }
-
+               
                 function proxify(obj, parentChain) {
 
                     if (typeof obj !== "object" || obj instanceof File) {
@@ -564,6 +550,50 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                             SoundPubSub.subscribe(createChannelName(chain), callback);
                         }
                     }
+
+                    function makeArrayGetter(parentChain) {
+                        const PROXY_ROOT_METHODS = [
+                            "toObject",
+                            "addExpression",
+                            "evaluateExpression",
+                            "hasExpression",
+                            "onChangeExpressionChain"
+                        ];
+                        return function(target, prop) {
+                            if (isRoot) {                               
+                                switch (prop) {
+                                    case "onChange":
+                                        return onChange;
+                                    case "notify":
+                                        return notify;
+                                    case "getChainValue":
+                                        return getChainValue;
+                                    case "setChainValue":
+                                        return setChainValue;
+                                    default:
+                                        if(PROXY_ROOT_METHODS.includes(prop)) {
+                                            return target[prop];
+                                        }
+                                }
+                            }
+
+                            if (prop === "__isProxy") {
+                                return true;
+                            }
+
+                            const val = target[prop];
+                            if (typeof val === 'function') {
+                                switch (prop) {
+                                    case "push":
+                                        return pushHandler(target, parentChain);
+                                    default:
+                                        return arrayFnHandler(prop, target, parentChain);
+                                }
+                            }
+                            return val;
+                        }
+                    }
+
                     let setter = makeSetter(parentChain);
 
                     let handler = {
@@ -637,7 +667,7 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                     };
 
                     if (Array.isArray(obj)) {
-                        handler.get = makeArrayGetter(parentChain);
+                        handler.get = makeArrayGetter(parentChain || "");
                     }
 
                     //proxify inner objects
