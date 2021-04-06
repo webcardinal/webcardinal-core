@@ -242,7 +242,14 @@ class Controller {
   }
 
   setModel(model) {
-    this.model = PskBindableModel.setModel(model);
+    if (this.model) {
+        // update the current model without overwriting it
+        Object.keys(model).forEach(modelKey => {
+            this.model[modelKey] = model[modelKey];
+        })
+    } else {
+        this.model = PskBindableModel.setModel(model);
+    }
   }
 
   setLegacyGetModelEventListener() {
