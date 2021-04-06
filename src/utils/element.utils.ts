@@ -29,7 +29,7 @@ function isNativeProperty(key) {
 function shortcutToProperty(key) {
   switch (key) {
     case 'model':
-      return 'data-model';
+      return 'data-view-model';
     case 'tag':
       return 'data-tag';
     case 'text':
@@ -53,7 +53,7 @@ export function setElementValue(element, { key, value }) {
       element,
     );
   }
-  if (['data-tag', 'data-model'].includes(key)) {
+  if (['data-tag', 'data-view-model'].includes(key)) {
     console.warn(
       `Model property "${key}" can be shorthanded, try "${key.substr(5)}" instead!\n`,
       `target model:`,
@@ -64,6 +64,10 @@ export function setElementValue(element, { key, value }) {
   key = shortcutToProperty(key);
 
   if (isNativeProperty(key)) {
+    if (element.tagName === 'INPUT' && element.getAttribute('type') === 'file' && key === 'value') {
+      // in case of file input types, we cannot set the value of the input
+      return;
+    }
     element[key] = value;
     return;
   }
@@ -199,6 +203,9 @@ export function bindElementChangeToModelProperty(element: Element, model, proper
       const target = e.target as any;
       if (tagName === 'input' && element.getAttribute('type') === 'checkbox') {
         model.setChainValue(propertyChain, target.checked);
+      }
+      if (tagName === 'input' && element.getAttribute('type') === 'file') {
+        model.setChainValue(propertyChain, Array.from(target.files));
       } else {
         const updatedValue = target.value;
         model.setChainValue(propertyChain, updatedValue);

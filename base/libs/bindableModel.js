@@ -482,7 +482,7 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
 
                 function proxify(obj, parentChain) {
 
-                    if (typeof obj !== "object") {
+                    if (typeof obj !== "object" || obj instanceof File) {
                         return obj;
                     }
 
