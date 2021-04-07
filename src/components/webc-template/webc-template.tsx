@@ -16,11 +16,9 @@ export class WebcTemplate {
 
   /**
    * The name of the template that will be loaded.
-   * The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
+   * The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
    */
-  @Prop({ attribute: 'template', reflect: true }) templateName: string;
-
-  @Prop({ attribute: 'data-model', mutable: true }) chain = '';
+  @Prop({ reflect: true }) template: string;
 
   /**
    *  If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.
@@ -65,15 +63,17 @@ export class WebcTemplate {
 
   private model;
   private translationModel;
+  private chain = '';
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
 
-    this.host.innerHTML = await getTemplate(this.templateName);
+    this.host.innerHTML = await getTemplate(this.template);
 
     this.chain = extractChain(this.host);
+
     if (this.chain) {
       let translationsState = false;
       try {

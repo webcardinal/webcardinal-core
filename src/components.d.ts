@@ -217,16 +217,15 @@ export namespace Components {
     interface WebcSpinner {
     }
     interface WebcTemplate {
-        "chain": string;
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer": boolean;
         "enableTranslations": boolean;
         /**
-          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
          */
-        "templateName": string;
+        "template": string;
     }
 }
 declare global {
@@ -582,7 +581,6 @@ declare namespace LocalJSX {
     interface WebcSpinner {
     }
     interface WebcTemplate {
-        "chain"?: string;
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
@@ -601,9 +599,9 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         /**
-          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${templateName}.html</code>.
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
          */
-        "templateName"?: string;
+        "template"?: string;
     }
     interface IntrinsicElements {
         "webc-app-container": WebcAppContainer;
