@@ -2,3 +2,5 @@
 .vscode/
 build/
 node_modules/
+test/
+test-results/

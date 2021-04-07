@@ -63,5 +63,11 @@
     "ignorePatterns": [
       "base/libs/*"
     ]
+  },
+  "jest-stare": {
+    "resultDir": "test-results",
+    "reportTitle": "WebCardinal Tests",
+    "reportHeadline": "webcardinal-core",
+    "resultJson": "test.json"
   }
 }
