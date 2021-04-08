@@ -125,7 +125,7 @@ export default class Controller {
   }
 
   createElement(elementName, props) {
-    if (props.model) {
+    if (props && props.model) {
       props.model = proxifyModelProperty(props.model)
     }
     return Object.assign(document.createElement(elementName), props);
