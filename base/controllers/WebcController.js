@@ -1,6 +1,6 @@
-import Controller from './Controller';
+import Controller, { proxifyModelProperty } from './Controller';
 
-class WebcController extends Controller {
+export default class WebcController extends Controller {
   constructor(element, history) {
     super(element, history);
   }
@@ -116,6 +116,10 @@ class WebcController extends Controller {
       onClose = onConfirm;
     }
 
+    if (model) {
+      model = proxifyModelProperty(model);
+    }
+
     const modal = this.createAndAddElement('webc-modal', {
       template,
       controller,
@@ -159,5 +163,3 @@ class WebcController extends Controller {
     this.element.querySelectorAll('webc-modal').forEach(modal => modal.remove());
   }
 }
-
-export default WebcController;

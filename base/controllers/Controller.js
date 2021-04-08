@@ -65,7 +65,24 @@ function getTranslationModel() {
   return currentPageTranslations;
 }
 
-class Controller {
+export function proxifyModelProperty(model) {
+  if (!model || typeof model !== 'object') {
+    console.warn('A model must be an object!');
+    return;
+  }
+
+  /*
+   * A valid psk_bindable_model must be a proxy with the following functions
+   * addExpression, evaluateExpression, hasExpression, onChangeExpressionChain, toObject
+   */
+
+  if (typeof model.onChangeExpressionChain === 'undefined') {
+    return PskBindableModel.setModel(model);
+  }
+  return model;
+}
+
+export default class Controller {
   constructor(element, history) {
     this.DSUStorage = new DSUStorage();
 
@@ -108,6 +125,9 @@ class Controller {
   }
 
   createElement(elementName, props) {
+    if (props.model) {
+      props.model = proxifyModelProperty(props.model)
+    }
     return Object.assign(document.createElement(elementName), props);
   }
 
@@ -331,5 +351,3 @@ class Controller {
     return this.element.querySelectorAll(selector);
   }
 }
-
-export default Controller;

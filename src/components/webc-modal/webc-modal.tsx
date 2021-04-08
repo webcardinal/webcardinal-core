@@ -38,7 +38,7 @@ export class WebcModal {
 
   @Prop() model: any;
 
-  @Prop() enableTranslations: boolean = false;
+  @Prop({ reflect: true }) enableTranslations: boolean = false;
 
   @Prop() translationModel: any;
 
@@ -65,12 +65,12 @@ export class WebcModal {
   /**
    * The text that will appear on the footer close button, if neither the "footer" slot nor modalFooterContent are provided.
    */
-  @Prop({ reflect: true }) cancelButtonText = 'Close';
+  @Prop() cancelButtonText = 'Close';
 
   /**
    * The text that will appear on the footer confirm button, if neither the "footer" slot nor modalFooterContent are provided.
    */
-  @Prop({ reflect: true }) confirmButtonText = 'Ok';
+  @Prop() confirmButtonText = 'Ok';
 
   /**
    * Sets if the modal expands to full screen.
