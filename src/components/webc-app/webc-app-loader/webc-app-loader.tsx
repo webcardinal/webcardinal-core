@@ -76,6 +76,11 @@ export class WebcAppLoader {
   }
 
   private async setSkinContext() {
+    if (this.src.startsWith('http')) {
+      this.activeSrc = this.src;
+      return;
+    }
+
     // if a skin is set by the webc-app-router via webcardinal.json for a specific page
     if (this.skin !== 'none') {
       if (this.skin.toLowerCase() !== 'default') {
