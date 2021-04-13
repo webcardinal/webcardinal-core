@@ -11,12 +11,29 @@
   "dependencyGraph": {},
   "props": [
     {
+      "name": "basePath",
+      "type": "string",
+      "mutable": true,
+      "attr": "base-path",
+      "reflectToAttr": true,
+      "docs": "Source path is prefixed with this path.",
+      "docsTags": [],
+      "default": "'/'",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "loader",
       "type": "\"default\" | \"iframe\" | \"object\" | \"parser\"",
-      "mutable": true,
+      "mutable": false,
       "attr": "loader",
       "reflectToAttr": false,
-      "docs": "Fetch a HTML file and loads inside as normal children or in a wrapped manner.",
+      "docs": "Fetch a HTML file and loads inside as normal children or in a wrapper.",
       "docsTags": [],
       "default": "'default'",
       "values": [
@@ -41,16 +58,50 @@
       "required": false
     },
     {
+      "name": "skin",
+      "type": "string",
+      "mutable": true,
+      "attr": "skin",
+      "reflectToAttr": true,
+      "docs": "If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.",
+      "docsTags": [],
+      "default": "'default'",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "src",
       "type": "string",
-      "mutable": false,
+      "mutable": true,
       "attr": "src",
-      "reflectToAttr": false,
+      "reflectToAttr": true,
       "docs": "Source path for a HTML page.",
       "docsTags": [],
       "values": [
         {
           "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "translations",
+      "type": "boolean",
+      "mutable": true,
+      "attr": "translations",
+      "reflectToAttr": true,
+      "docs": "Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
         }
       ],
       "optional": false,

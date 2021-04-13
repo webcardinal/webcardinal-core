@@ -21,9 +21,10 @@
       "type": "string",
       "mutable": false,
       "attr": "controller",
-      "reflectToAttr": true,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "reflectToAttr": false,
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
+      "default": "''",
       "values": [
         {
           "type": "string"
@@ -37,8 +38,8 @@
       "type": "boolean",
       "mutable": false,
       "attr": "disable-container",
-      "reflectToAttr": false,
-      "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\r\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
+      "reflectToAttr": true,
+      "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -50,12 +51,12 @@
       "required": false
     },
     {
-      "name": "enableTranslations",
+      "name": "translations",
       "type": "boolean",
       "mutable": false,
-      "attr": "enable-translations",
-      "reflectToAttr": false,
-      "docs": "",
+      "attr": "translations",
+      "reflectToAttr": true,
+      "docs": "If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -93,17 +94,8 @@
   ],
   "events": [
     {
-      "event": "webcardinal:config:getTranslations",
-      "detail": "any",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": "Enable translations event received from configuration.",
-      "docsTags": []
-    },
-    {
       "event": "webcardinal:routing:get",
-      "detail": "any",
+      "detail": "RoutingState",
       "bubbles": true,
       "cancelable": true,
       "composed": true,

@@ -53,7 +53,7 @@
       "type": "string",
       "mutable": false,
       "attr": "cancel-button-text",
-      "reflectToAttr": true,
+      "reflectToAttr": false,
       "docs": "The text that will appear on the footer close button, if neither the \"footer\" slot nor modalFooterContent are provided.",
       "docsTags": [],
       "default": "'Close'",
@@ -87,7 +87,7 @@
       "type": "string",
       "mutable": false,
       "attr": "confirm-button-text",
-      "reflectToAttr": true,
+      "reflectToAttr": false,
       "docs": "The text that will appear on the footer confirm button, if neither the \"footer\" slot nor modalFooterContent are provided.",
       "docsTags": [],
       "default": "'Ok'",
@@ -105,7 +105,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": true,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "values": [
         {
@@ -190,23 +190,6 @@
       "attr": "disable-footer",
       "reflectToAttr": true,
       "docs": "Sets if the modal has the footer displayed.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "enableTranslations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "enable-translations",
-      "reflectToAttr": false,
-      "docs": "",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -320,7 +303,7 @@
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.",
+      "docs": "The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -341,6 +324,23 @@
       "values": [
         {
           "type": "any"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "translations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "translations",
+      "reflectToAttr": true,
+      "docs": "If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
         }
       ],
       "optional": false,
@@ -389,7 +389,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\r\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
+      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
       "docsTags": []
     },
     {
@@ -408,15 +408,6 @@
       "cancelable": true,
       "composed": true,
       "docs": "Event that fires when the modal is initialised (after the modal content was successfully loaded).",
-      "docsTags": []
-    },
-    {
-      "event": "webcardinal:config:getTranslations",
-      "detail": "any",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": "Enable translations event received from configuration.",
       "docsTags": []
     }
   ],

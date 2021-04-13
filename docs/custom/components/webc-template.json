@@ -28,12 +28,28 @@
       "required": false
     },
     {
-      "name": "enableTranslations",
+      "name": "template",
+      "type": "string",
+      "mutable": false,
+      "attr": "template",
+      "reflectToAttr": true,
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "translations",
       "type": "boolean",
       "mutable": false,
-      "attr": "enable-translations",
-      "reflectToAttr": false,
-      "docs": "",
+      "attr": "translations",
+      "reflectToAttr": true,
+      "docs": "If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -43,42 +59,40 @@
       ],
       "optional": false,
       "required": false
-    },
-    {
-      "name": "template",
-      "type": "string",
-      "mutable": false,
-      "attr": "template",
-      "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath}/templates/${template}.html</code>.",
-      "docsTags": [],
-      "values": [
-        {
-          "type": "string"
-        }
-      ],
-      "optional": false,
-      "required": false
     }
   ],
-  "methods": [],
-  "events": [
+  "methods": [
     {
-      "event": "webcardinal:config:getTranslations",
-      "detail": "any",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": "Enable translations event received from configuration.",
+      "name": "getModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getModel() => Promise<any>",
+      "parameters": [],
+      "docs": "The model from controller is exposed by this method.",
       "docsTags": []
     },
+    {
+      "name": "getTranslationModel",
+      "returns": {
+        "type": "Promise<any>",
+        "docs": ""
+      },
+      "signature": "getTranslationModel() => Promise<any>",
+      "parameters": [],
+      "docs": "The translation model from controller is exposed by this method.",
+      "docsTags": []
+    }
+  ],
+  "events": [
     {
       "event": "webcardinal:model:get",
       "detail": "any",
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).",
+      "docs": "Through this event the model is received.",
       "docsTags": []
     },
     {
@@ -87,7 +101,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Through this event translation model is received.",
+      "docs": "Through this event the translation model is received.",
       "docsTags": []
     }
   ],

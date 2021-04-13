@@ -31,7 +31,7 @@
       "mutable": true,
       "attr": "base-path",
       "reflectToAttr": false,
-      "docs": "There is the possibility to change the base path of your application, using <code>base</code> HTML Element:\r\n<psk-example>\r\n   <psk-code>\r\n    <base href=\"/my-custom-base\">\r\n   </psk-code>\r\n</psk-example>\r\n\r\nBoth <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.",
+      "docs": "There is the possibility to change the base path of your application, using <code>base</code> HTML Element:\n<psk-example>\n   <psk-code>\n    <base href=\"/my-custom-base/sub-path/\">\n   </psk-code>\n</psk-example>\n\nBoth <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.",
       "docsTags": [],
       "default": "''",
       "values": [
@@ -48,28 +48,11 @@
       "mutable": true,
       "attr": "fallback-page",
       "reflectToAttr": false,
-      "docs": "Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.\r\nThis page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.",
+      "docs": "Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown.\nThis page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.",
       "docsTags": [],
       "values": [
         {
           "type": "any"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "pagesPath",
-      "type": "string",
-      "mutable": true,
-      "attr": "pages-path",
-      "reflectToAttr": false,
-      "docs": "Path to <code>/pages</code> folder.<br>\r\nThis folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.",
-      "docsTags": [],
-      "default": "'/pages'",
-      "values": [
-        {
-          "type": "string"
         }
       ],
       "optional": false,
@@ -100,7 +83,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Routing configuration received from <code>ApplicationController</code>.<br>\r\nThis configuration includes different settings for pages, skins, modals, etc.;",
+      "docs": "Routing configuration received from <code>ApplicationController</code>.<br>\nThis configuration includes different settings for pages, skins, modals, etc.;",
       "docsTags": []
     }
   ],
