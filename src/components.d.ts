@@ -5,7 +5,7 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { WebcAppLoaderType } from "./interfaces";
+import { RoutingState, WebcAppLoaderType } from "./interfaces";
 export namespace Components {
     interface WebcAppContainer {
     }
@@ -27,13 +27,25 @@ export namespace Components {
     }
     interface WebcAppLoader {
         /**
-          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+          * Source path is prefixed with this path.
+         */
+        "basePath": string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapper.
          */
         "loader": WebcAppLoaderType;
+        /**
+          * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
+         */
+        "skin": string;
         /**
           * Source path for a HTML page.
          */
         "src": string;
+        /**
+          * Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.
+         */
+        "translations": boolean;
     }
     interface WebcAppMenu {
         /**
@@ -75,17 +87,13 @@ export namespace Components {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base/sub-path/">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath": string;
         /**
           * Similar to 404 page, if <code>window.location.href</code> does not match any page, this fallback will be shown. This page can be changed from <code>webcardinal.json</code>, using <code>pagesFallback</code>.
          */
         "fallbackPage": any;
-        /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
-         */
-        "pagesPath": string;
         /**
           * This Array is received from <code>ApplicationController</code>.
          */
@@ -100,7 +108,6 @@ export namespace Components {
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer": boolean;
-        "enableTranslations": boolean;
         /**
           * The model from controller is exposed by this method.
          */
@@ -109,6 +116,10 @@ export namespace Components {
           * The translation model from controller is exposed by this method.
          */
         "getTranslationModel": () => Promise<any>;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations": boolean;
     }
     interface WebcDocs {
         /**
@@ -172,7 +183,6 @@ export namespace Components {
           * Sets if the modal has the footer displayed.
          */
         "disableFooter": boolean;
-        "enableTranslations": boolean;
         /**
           * Sets if the modal expands to full screen.
          */
@@ -203,10 +213,14 @@ export namespace Components {
          */
         "show": () => Promise<void>;
         /**
-          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.
          */
         "template": string;
         "translationModel": any;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations": boolean;
     }
     interface WebcSkin {
         /**
@@ -221,11 +235,22 @@ export namespace Components {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer": boolean;
-        "enableTranslations": boolean;
         /**
-          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
+          * The model from controller is exposed by this method.
+         */
+        "getModel": () => Promise<any>;
+        /**
+          * The translation model from controller is exposed by this method.
+         */
+        "getTranslationModel": () => Promise<any>;
+        /**
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
          */
         "template": string;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations": boolean;
     }
 }
 declare global {
@@ -369,13 +394,25 @@ declare namespace LocalJSX {
     }
     interface WebcAppLoader {
         /**
-          * Fetch a HTML file and loads inside as normal children or in a wrapped manner.
+          * Source path is prefixed with this path.
+         */
+        "basePath"?: string;
+        /**
+          * Fetch a HTML file and loads inside as normal children or in a wrapper.
          */
         "loader"?: WebcAppLoaderType;
+        /**
+          * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
+         */
+        "skin"?: string;
         /**
           * Source path for a HTML page.
          */
         "src"?: string;
+        /**
+          * Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.
+         */
+        "translations"?: boolean;
     }
     interface WebcAppMenu {
         /**
@@ -423,7 +460,7 @@ declare namespace LocalJSX {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base/sub-path/">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath"?: string;
         /**
@@ -434,10 +471,6 @@ declare namespace LocalJSX {
           * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
         "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
-        /**
-          * Path to <code>/pages</code> folder.<br> This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
-         */
-        "pagesPath"?: string;
         /**
           * This Array is received from <code>ApplicationController</code>.
          */
@@ -452,15 +485,14 @@ declare namespace LocalJSX {
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer"?: boolean;
-        "enableTranslations"?: boolean;
-        /**
-          * Enable translations event received from configuration.
-         */
-        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
         /**
           * Routing configuration received from <code>webc-app-router</code>.
          */
-        "onWebcardinal:routing:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations"?: boolean;
     }
     interface WebcDocs {
         /**
@@ -528,7 +560,6 @@ declare namespace LocalJSX {
           * Sets if the modal has the footer displayed.
          */
         "disableFooter"?: boolean;
-        "enableTranslations"?: boolean;
         /**
           * Sets if the modal expands to full screen.
          */
@@ -563,14 +594,14 @@ declare namespace LocalJSX {
          */
         "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
         /**
-          * Enable translations event received from configuration.
-         */
-        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
-        /**
-          * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
+          * The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.
          */
         "template"?: string;
         "translationModel"?: any;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations"?: boolean;
     }
     interface WebcSkin {
         /**
@@ -585,23 +616,22 @@ declare namespace LocalJSX {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer"?: boolean;
-        "enableTranslations"?: boolean;
         /**
-          * Enable translations event received from configuration.
-         */
-        "onWebcardinal:config:getTranslations"?: (event: CustomEvent<any>) => void;
-        /**
-          * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+          * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         /**
-          * Through this event translation model is received.
+          * Through this event the translation model is received.
          */
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         /**
-          * The name of the template that will be loaded. The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
          */
         "template"?: string;
+        /**
+          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+         */
+        "translations"?: boolean;
     }
     interface IntrinsicElements {
         "webc-app-container": WebcAppContainer;

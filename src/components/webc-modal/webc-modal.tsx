@@ -1,11 +1,11 @@
-import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Method, Prop, State } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Method, Prop, State } from '@stencil/core';
+import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
-import { promisifyEventEmit } from '../../utils';
+import { BindingService } from '../../services';
+import { resolveTranslationsState } from '../../utils';
 
 import { getModalTemplate } from './webc-modal-utils';
-import { BindingService } from '../../services';
 
 /**
  * @slot - The modal body. The content from <code>modalContent</code> property arrives here too.
@@ -20,7 +20,7 @@ import { BindingService } from '../../services';
   shadow: true,
 })
 export class WebcModal {
-  @HostElement() private host: HTMLElement;
+  @HostElement() host: HTMLStencilElement;
 
   @State() isLoading = false;
   @State() isVisible = false;
@@ -32,13 +32,16 @@ export class WebcModal {
   @Prop({ reflect: true }) controller: string;
 
   /**
-   * The name of the model that will be loaded. The generated path will have the format <code>${basePath}/modals/${template}.html</code>.
+   * The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.
    */
   @Prop({ reflect: true }) template: string;
 
-  @Prop() model: any;
+  /**
+   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   */
+  @Prop({ reflect: true }) translations: boolean = false;
 
-  @Prop({ reflect: true }) enableTranslations: boolean = false;
+  @Prop() model: any;
 
   @Prop() translationModel: any;
 
@@ -128,17 +131,6 @@ export class WebcModal {
    */
   @Event() closed: EventEmitter<boolean>;
 
-  /**
-   * Enable translations event received from configuration.
-   */
-  @Event({
-    eventName: 'webcardinal:config:getTranslations',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  getTranslationsStateEvent: EventEmitter;
-
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -154,18 +146,18 @@ export class WebcModal {
       this.isLoading = false;
     }
 
-    const translationsState = await promisifyEventEmit(this.getTranslationsStateEvent);
+    this.translations = resolveTranslationsState(this);
     this.initialised.emit(this.host);
 
     if (!this.controller) {
-      const { model, translationModel, enableTranslations } = this;
+      const { model, translationModel } = this;
 
       BindingService.bindChildNodes(this.host, {
         model,
         translationModel,
         // chainPrefix: chain ? chain.slice(1) : null,
         recursive: true,
-        enableTranslations: translationsState || enableTranslations,
+        enableTranslations: this.translations,
       });
     }
 
@@ -315,7 +307,7 @@ export class WebcModal {
 
     if (this.controller) {
       return (
-        <webc-container controller={this.controller} data-modal>
+        <webc-container controller={this.controller} translations={this.translations} data-modal>
           {modal}
         </webc-container>
       );

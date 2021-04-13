@@ -27,6 +27,24 @@ function checkEventListener(eventName, listener, options) {
   }
 }
 
+function isSkinEnabled() {
+  const { state } = window.WebCardinal || {};
+  if (state && state.activeSkin) {
+    const { name, translations } = state.activeSkin;
+    return name && typeof translations === 'boolean';
+  }
+  return false;
+}
+
+function areTranslationsEnabled() {
+  const { state } = window.WebCardinal || {};
+  if (state && state.activePage && state.activePage.skin) {
+    const { name, translations } = state.activePage.skin;
+    return name && translations === true
+  }
+  return false;
+}
+
 function getPathname() {
   let { pathname } = window.location;
   if (pathname === '/') {
@@ -47,19 +65,24 @@ function getValueFromModelByChain(model, chain) {
 }
 
 function getTranslationModel() {
-  const { language, translations } = window.WebCardinal;
+  if (!areTranslationsEnabled()) {
+    return;
+  }
+
+  const { state, translations } = window.WebCardinal;
+  const { name: skin } = state.activePage.skin;
   const pathname = getPathname();
-  const currentTranslations = translations[language];
+  const currentTranslations = translations[skin];
 
   if (!currentTranslations) {
-    console.warn(`No translations found for current language ${language}`);
-    return null;
+    console.warn(`No translations found for current skin "${skin}"`);
+    return;
   }
 
   const currentPageTranslations = currentTranslations[pathname];
   if (!currentPageTranslations) {
-    console.warn(`No translations found for language ${language} and page ${pathname}`);
-    return null;
+    console.warn(`No translations found current skin "${skin} and page "${pathname}"`);
+    return;
   }
 
   return currentPageTranslations;
@@ -259,7 +282,7 @@ export default class Controller {
               console.error(error);
               return;
             }
-            this.history.push(path, state);
+            this.navigateToUrl(path, state);
           },
         },
       }),
@@ -307,12 +330,90 @@ export default class Controller {
     });
   }
 
+  setState(state) {
+    this.history.location.state = state;
+  }
+
+  getState() {
+    return this.history.location.state;
+  }
+
+  setLanguage() {
+    console.warn([
+      `'Functions "setLanguage" is deprecated!'`,
+      'Use "setSkin" with a new skin if changing of the translations is desired',
+    ]);
+  }
+
+  setPreferredSkin(skin, { saveOption } = { saveOption: true }) {
+    if (!isSkinEnabled()) {
+      console.warn("WebCardinal skin is not set by your Application!");
+      return;
+    }
+
+    if (typeof skin === 'string') {
+      skin = {
+        ...window.WebCardinal.state.activeSkin,
+        name: skin
+      }
+    }
+
+    if (typeof skin !== 'object') {
+      console.warn("Skin must be an object or a string!");
+      return;
+    }
+
+    if (saveOption && 'localStorage' in window) {
+      window.localStorage.setItem('webcardinal.skin', JSON.stringify(skin));
+    }
+
+    window.WebCardinal.state.activeSkin = skin;
+  }
+
+  getPreferredSkin() {
+    if (!isSkinEnabled()) {
+      console.warn("WebCardinal skin is not set by your Application!");
+      return;
+    }
+
+    return window.WebCardinal.state.activeSkin;
+  }
+
+  changeSkinForCurrentPage(skin) {
+    if (!isSkinEnabled()) {
+      console.warn("WebCardinal skin is not set by your Application!");
+      return;
+    }
+
+    if (typeof skin === 'string') {
+      skin = {
+        ...window.WebCardinal.state.activePage.skin,
+        name: skin
+      }
+    }
+
+    if (typeof skin !== 'object') {
+      console.warn("Skin must be an object or a string!");
+      return;
+    }
+
+    window.WebCardinal.state.activePage.loader.skin = skin.name;
+  }
+
   translate(translationChain) {
-    const { language } = window.WebCardinal;
+    if (!areTranslationsEnabled()) {
+      console.warn([
+        `Function "translate" must be called only when translations are enabled!`,
+        `Check WebCardinal.state`
+      ].join('\n'));
+      return;
+    }
+
+    const { skin } = window.WebCardinal.state.activePage;
     const pathname = getPathname();
 
     if (!this.translationModel) {
-      console.warn(`No translations found for language ${language} and page ${pathname}`);
+      console.warn(`No translations found for skin "${skin}" and page "${pathname}"`);
       return translationChain;
     }
 
@@ -321,18 +422,11 @@ export default class Controller {
     }
     const translation = getValueFromModelByChain(this.translationModel, translationChain);
     if (!translation) {
-      console.warn(`No translations found for language ${language}, page ${pathname} and key ${translationChain}`);
+      console.warn(`No translations found for skin "${skin}", page "${pathname}" and chain "${translationChain}"`);
       return translationChain;
     }
 
     return translation;
-  }
-
-  setLanguage(language) {
-    if ('localStorage' in window) {
-      window.localStorage.setItem('language', language);
-    }
-    window.location.reload();
   }
 
   getElementByTag(tag) {

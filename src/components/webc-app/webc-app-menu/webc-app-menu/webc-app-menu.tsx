@@ -4,15 +4,15 @@ import type { RouterHistory } from '@stencil/router';
 import { injectHistory } from '@stencil/router';
 
 import { HostElement } from '../../../../decorators';
-import { promisifyEventEmit, convertCSSTimeToMs } from '../../../../utils';
-import { URLHelper } from '../../webc-app-utils';
+import { promisifyEventEmit, convertCSSTimeToMs, URLHelper } from '../../../../utils';
+
+const { trimEnd } = URLHelper;
 
 @Component({
   tag: 'webc-app-menu',
   styleUrls: {
     vertical: '../../../../styles/webc-app-menu/webc-app-menu.vertical.scss',
-    horizontal:
-      '../../../../styles/webc-app-menu/webc-app-menu.horizontal.scss',
+    horizontal: '../../../../styles/webc-app-menu/webc-app-menu.horizontal.scss',
     mobile: '../../../../styles/webc-app-menu/webc-app-menu.mobile.scss',
   },
 })
@@ -112,17 +112,14 @@ export class WebcAppMenu {
   async componentWillLoad() {
     // disable flag for webc-app-identity
     this.computedStyles = window.getComputedStyle(this.host);
-    this.disableIdentity =
-      this.computedStyles
-        .getPropertyValue('--webc-app-menu-disable-identity')
-        .trim() === 'true';
+    this.disableIdentity = this.computedStyles.getPropertyValue('--webc-app-menu-disable-identity').trim() === 'true';
 
     // get routing data
     if (this.items.length === 0) {
       try {
         const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
         this.items = this._extractItems(routing.pages);
-        this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
+        this.basePath = trimEnd(new URL(routing.baseURL).pathname);
       } catch (error) {
         console.error(error);
       }
@@ -130,11 +127,7 @@ export class WebcAppMenu {
 
     // manage modes
     if (!this.modes.includes(this.mode)) {
-      console.warn(
-        `You must use one of the following modes: ${this.modes.join(', ')}\n`,
-        `target element:`,
-        this.host,
-      );
+      console.warn(`You must use one of the following modes: ${this.modes.join(', ')}\n`, `target element:`, this.host);
       this.mode = this.defaultMode;
     }
 

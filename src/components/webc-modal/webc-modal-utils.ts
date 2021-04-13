@@ -1,13 +1,22 @@
+import { MODALS_PATH } from '../../constants';
+import { getSkinForCurrentPage, getSkinPathForCurrentPage, URLHelper } from '../../utils';
+
 const modals = {};
+const { join } = URLHelper;
 
 export const getModalTemplate = async template => {
   const { basePath } = window.WebCardinal;
+  const skin = getSkinForCurrentPage();
 
-  if (modals[template]) {
-    return modals[template];
+  if (!modals[skin]) {
+    modals[skin] = {};
   }
 
-  const modalPath = `${basePath}/modals/${template}.html`;
+  if (modals[skin][template]) {
+    return modals[skin][template];
+  }
+
+  const modalPath = join(basePath, getSkinPathForCurrentPage(), MODALS_PATH, `${template}.html`).pathname;
 
   try {
     const response = await fetch(modalPath);
@@ -15,13 +24,10 @@ export const getModalTemplate = async template => {
     if (!response.ok) {
       throw new Error(content);
     }
-    modals[template] = content;
+    modals[skin][template] = content;
     return content;
   } catch (error) {
-    console.log(
-      `Error while loading ${template} modal at ${modalPath}`,
-      error,
-    );
-    return null;
+    console.warn(`Error while loading "${template}" modal at "${modalPath}"`, error);
+    return;
   }
 };

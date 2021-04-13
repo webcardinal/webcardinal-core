@@ -101,7 +101,7 @@ const BindingService = {
             chain = element.getAttribute(VIEW_MODEL_KEY);
           } else {
             console.warn(
-              `Attribute ${MODEL_KEY} is deprecated for binding! Use the ${VIEW_MODEL_KEY} key attribute instead.`,
+              `Attribute "${MODEL_KEY}" is deprecated for binding! Use the "${VIEW_MODEL_KEY}" key attribute instead.`,
               element,
             );
             chain = element.getAttribute(MODEL_KEY);

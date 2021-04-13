@@ -1,14 +1,18 @@
-import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop, State } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Prop, State } from '@stencil/core';
+
+import { PAGES_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
-import { promisifyEventEmit } from '../../../utils';
-import { URLHelper } from '../webc-app-utils';
+import { promisifyEventEmit, URLHelper } from '../../../utils';
+
+const { join, trimEnd } = URLHelper;
 
 interface RoutesPayload {
   path: string;
   src: string;
   loader?: string;
+  skin?: string;
+  translations?: boolean;
 }
 
 function isSSAppContext() {
@@ -25,6 +29,8 @@ function isSSAppContext() {
 export class WebcAppRouter {
   @HostElement() host: HTMLElement;
 
+  @State() landingPage = null;
+
   /**
    * This Array is received from <code>ApplicationController</code>.
    */
@@ -40,21 +46,13 @@ export class WebcAppRouter {
    * There is the possibility to change the base path of your application, using <code>base</code> HTML Element:
    * <psk-example>
    *   <psk-code>
-   *    <base href="/my-custom-base">
+   *    <base href="/my-custom-base/sub-path/">
    *   </psk-code>
    * </psk-example>
    *
    * Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
    */
   @Prop({ mutable: true }) basePath = '';
-
-  /**
-   * Path to <code>/pages</code> folder.<br>
-   * This folder can be changed from <code>webcardinal.json</code>, using <code>pagesPathname</code>.
-   */
-  @Prop({ mutable: true }) pagesPath = '/pages';
-
-  @State() landingPage = null;
 
   /**
    * Routing configuration received from <code>ApplicationController</code>.<br>
@@ -74,12 +72,12 @@ export class WebcAppRouter {
   private mapping = {};
   private pagesPathRegExp: RegExp;
 
-  private _renderRoute = ({ path, src, loader }: RoutesPayload) => {
+  private _renderRoute = ({ path, src, loader, skin, translations }: RoutesPayload) => {
     const props = {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { path, src, loader },
+      componentProps: { src, loader, skin, translations, basePath: this.basePath },
     };
 
     // fix regarding WebCardinal in a non-updated location context of an iframe
@@ -105,9 +103,15 @@ export class WebcAppRouter {
 
     return routes.map(route => {
       const payload: RoutesPayload = {
-        path: URLHelper.join('', path, route.path).pathname,
-        src: URLHelper.join('', src, route.src).pathname,
+        path: join('', path, route.path).pathname,
+        src: join('', src, route.src).pathname,
+        skin: route?.skin?.name || 'none'
       };
+
+      if (typeof route.skin?.translations === 'boolean') {
+        payload.translations = route?.skin?.translations;
+      }
+
       if (route.children) {
         return this._renderRoutes(route.children, payload);
       } else {
@@ -116,10 +120,10 @@ export class WebcAppRouter {
         if (route.src.startsWith('http')) {
           payload.src = route.src;
         } else {
-          payload.src = URLHelper.join(this.pagesPath, payload.src).pathname;
+          payload.src = '.' + join(PAGES_PATH, payload.src).pathname;
         }
 
-        let joinedPath = URLHelper.join(this.basePath, payload.path).pathname;
+        let joinedPath = join(this.basePath, payload.path).pathname;
         this.mapping[joinedPath] = payload.src.replace(this.pagesPathRegExp, '');
 
         if (route.tag) {
@@ -137,10 +141,13 @@ export class WebcAppRouter {
 
   private _renderFallback = fallback => {
     if (!fallback || !fallback.src) return null;
-    const src = URLHelper.join(this.pagesPath, fallback.src).pathname;
+    const src = '.' + join(PAGES_PATH, fallback.src).pathname;
+    const loader = fallback.loader || 'default';
+    const skin = fallback?.skin?.name || 'none';
+    const translations = fallback?.skin?.translations;
     const props = {
       component: 'webc-app-loader',
-      componentProps: { src },
+      componentProps: { src, loader, skin, translations, basePath: this.basePath },
     };
     return <stencil-route data-src={src} {...props} />;
   };
@@ -175,9 +182,9 @@ export class WebcAppRouter {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;
       this.fallbackPage = routing.pagesFallback;
-      this.basePath = URLHelper.trimEnd(new URL(routing.baseURL).pathname);
-      this.pagesPath = URLHelper.trimEnd(new URL(routing.baseURL + routing.pagesPathname).pathname);
-      this.pagesPathRegExp = new RegExp(`^(${this.pagesPath.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
+      this.basePath = trimEnd(new URL(routing.baseURL).pathname);
+
+      this.pagesPathRegExp = new RegExp(`^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
 
       this.__manageLandingPage();
 
@@ -185,12 +192,7 @@ export class WebcAppRouter {
 
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,
-        routing: {
-          basePath: this.basePath,
-          pagesPath: this.pagesPath,
-          skinsPath: URLHelper.trimEnd(new URL(routing.baseURL + routing.skinsPathname).pathname),
-          mapping: this.mapping,
-        },
+        routing: { basePath: this.basePath, mapping: this.mapping },
       });
       this.listeners.getTags.add();
       this.listeners.getRouting.add();

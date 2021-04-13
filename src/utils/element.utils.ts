@@ -1,10 +1,10 @@
 import {
   MODEL_CHAIN_PREFIX,
   MODEL_KEY,
-  VIEW_MODEL_KEY,
   PSK_CARDINAL_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
   SKIP_BINDING_FOR_PROPERTIES,
+  VIEW_MODEL_KEY,
 } from '../constants';
 
 export function getClosestParentElement(element: HTMLElement, selector: string, stopSelector?: string): HTMLElement {
@@ -129,6 +129,8 @@ function isAttributeForModelChange(element: Element, attribute: string) {
  * @description - Binds all attributes for an Element
  * @param element
  * @param model - Object in which the specified chain (<attribute>="@chain") is searched
+ * @param chainPrefix
+ * @param modelChainPrefix
  */
 export function bindElementAttributes(
   element: Element,
@@ -238,11 +240,9 @@ export function isAttributePresentOnElement(element: Element, attributeName: str
 }
 
 export function getSlots(elements: Element[], slotName: string) {
-  const validElements = elements.filter(child => {
+  return elements.filter(child => {
     return child.getAttribute('slot') === slotName;
   });
-
-  return validElements;
 }
 
 export function getSlotContent(elements: Element[], slotName: string) {

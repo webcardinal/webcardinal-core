@@ -3,13 +3,20 @@ import type { LogLevel } from '../interfaces';
 // events
 export * from './events';
 
+// routing
+export const PAGES_PATH = "pages";
+export const SKINS_PATH = "skins";
+export const TEMPLATES_PATH = "templates"
+export const MODALS_PATH = "modals"
+export const SCRIPTS_PATH = "scripts"
+
 // data-model
 export const MODEL_KEY = 'data-model';
 export const VIEW_MODEL_KEY = 'data-view-model';
 export const MODEL_CHAIN_PREFIX = '@';
 export const TRANSLATION_CHAIN_PREFIX = '$';
 export const SKIP_BINDING_FOR_PROPERTIES = ['_saveElement'];
-export const SKIP_BINDING_FOR_COMPONENTS = ['webc-for', 'webc-if', 'webc-template', 'webc-container'];
+export const SKIP_BINDING_FOR_COMPONENTS = ['webc-template', 'webc-container'];
 export const PSK_CARDINAL_PREFIX = 'psk-';
 
 // data-tag attribute

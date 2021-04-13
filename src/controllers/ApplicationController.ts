@@ -7,10 +7,10 @@ import {
   EVENT_CONFIG_GET_LOG_LEVEL,
   EVENT_CONFIG_GET_CORE_TYPE,
   EVENT_CONFIG_GET_DOCS_SOURCE,
-  EVENT_CONFIG_GET_TRANSLATIONS
 } from '../constants';
 
 import defaultConfig from './config/default';
+import { Skin } from './config/types';
 
 const CONFIG_PATH = 'webcardinal.json';
 
@@ -167,6 +167,20 @@ export default class ApplicationController {
           page.loader = rawPage.loader;
         }
 
+        // page skin
+        if (typeof rawPage.skin === 'object' && typeof rawPage.skin.name === 'string') {
+          page.skin = rawPage.skin;
+
+          if (typeof page.skin.translations !== 'boolean') {
+            const activeSkin = skins.filter(skin => skin.name === page.skin.name)[0];
+            if (activeSkin) {
+              page.skin.translations = activeSkin.translations;
+            } else {
+              console.warn([`Skin "${page.skin.name}" can not be found in skins from webcardinal.json!`].join('\n'));
+            }
+          }
+        }
+
         // children recursion
         if (hasChildren) {
           page.children = getPages(baseURL, rawPage.children);
@@ -184,14 +198,84 @@ export default class ApplicationController {
       return fallback;
     };
 
-    const getPathname = source => {
-      return '/' + this._trimPathname(getRaw(source));
-    };
-
     const getLogLevel = () => {
       const logLevel = getRaw('logLevel');
       return Object.values(LOG_LEVEL).includes(logLevel) ? logLevel : defaultConfig.logLevel;
     };
+
+    const getEnableTranslations = () => {
+      const enableTranslations = getRaw('enableTranslations');
+      if (typeof enableTranslations === 'boolean') {
+        console.warn('"enableTranslations" is deprecated in webcardinal.json, replace with "translations"!');
+      }
+      return getRaw('enableTranslations') === true;
+    };
+
+    const getTranslations = () => getRaw('translations') === true;
+
+    const getSkins = (): Skin[] => {
+      let skins = getRaw('skins');
+
+      if (!Array.isArray(skins)) {
+        return [
+          {
+            name: 'default',
+            translations,
+          },
+        ];
+      }
+
+      let found = skins.find(skin => skin?.name.toLowerCase() === 'none');
+      if (found) {
+        console.warn(
+          [`Skin "none" is reserved, it is internal part for webc-app-router!`, `Please, rename this skin!`].join('\n'),
+        );
+      }
+
+      found = skins.find(skin => skin?.name.toLowerCase() === 'default');
+      if (!found) {
+        skins.push({
+          name: 'default',
+          translations,
+        });
+      }
+
+      return skins
+        .filter(skin => skin.name && skin.name !== 'none')
+        .map(skin => {
+          if (typeof skin.translations !== 'boolean') {
+            skin.translations = translations;
+          }
+          return skin;
+        });
+    };
+
+    const translations = getEnableTranslations() || getTranslations();
+    const skins = getSkins();
+
+    window.WebCardinal = {
+      ...window.WebCardinal,
+      state: {},
+    };
+
+    let activeSkin = window.localStorage && (localStorage.getItem('webcardinal.skin') as any);
+    if (activeSkin) {
+      try {
+        window.WebCardinal.state = { activeSkin: JSON.parse(activeSkin) };
+      } catch (error) {
+        console.error(error);
+        console.warn('Previously stored preferred skin can not be used!');
+      }
+    }
+
+    if (!window.WebCardinal.state.activeSkin) {
+      if (Array.isArray(skins) && skins.length > 0) {
+        activeSkin = skins[0];
+      } else {
+        activeSkin = { name: 'default', translations };
+      }
+      window.WebCardinal.state.activeSkin = activeSkin;
+    }
 
     const config: any = {
       identity: getIdentity(),
@@ -199,15 +283,14 @@ export default class ApplicationController {
         baseURL: getBaseURL(),
         pages: getPages(),
         pagesFallback: getPagesFallback(),
-        pagesPathname: getPathname('pagesPathname'),
-        skinsPathname: getPathname('skinsPathname'),
       },
       logLevel: getLogLevel(),
       docsSource: getRaw('docsSource'),
       theme: getRaw('theme'),
       version: getRaw('version'),
       coreType: 'webcardinal',
-      enableTranslations: getRaw('enableTranslations') === true
+      translations,
+      skins,
     };
 
     return config;
@@ -272,14 +355,13 @@ export default class ApplicationController {
       }
 
       this.config = this._prepareConfiguration(rawConfig);
-      console.log('Application config:', this.config);
+      console.log('WebCardinal config:', this.config);
       this.isConfigLoaded = true;
 
       window.WebCardinal = {
-        controllers,
+        ...window.WebCardinal,
         basePath: this.basePath,
-        language: 'localStorage' in window ? window.localStorage.getItem('language') || 'en' : 'en',
-        translations: {},
+        controllers,
       };
 
       while (this.pendingRequests.length) {
@@ -294,10 +376,11 @@ export default class ApplicationController {
     element.addEventListener(EVENT_CONFIG_GET_LOG_LEVEL, this._registerListener('logLevel'));
     element.addEventListener(EVENT_CONFIG_GET_CORE_TYPE, this._registerListener('coreType'));
     element.addEventListener(EVENT_CONFIG_GET_DOCS_SOURCE, this._registerListener('docsSource'));
-    element.addEventListener(EVENT_CONFIG_GET_TRANSLATIONS, this._registerListener('enableTranslations'));
 
-    // @cardinal/core
-    // const cardinal_core_events = [
+    // Necessary legacy events implemented only for @cardinal/core
+    element.addEventListener('getThemeConfig', this._registerListener('theme'));
+
+    // Other legacy events
     //   'getAppVersion',
     //   'needRoutes',
     //   'needMenuItems',
@@ -308,9 +391,5 @@ export default class ApplicationController {
     //   'getConfiguration',
     //   'validateUrl',
     //   'getCustomLandingPage'
-    // ];
-
-    // Necessary legacy events
-    element.addEventListener('getThemeConfig', this._registerListener('theme'));
   }
 }

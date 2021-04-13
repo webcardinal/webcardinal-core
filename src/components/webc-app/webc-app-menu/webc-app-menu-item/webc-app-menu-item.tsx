@@ -1,7 +1,9 @@
 import { Component, h, Host, Method, Prop } from '@stencil/core';
 
 import { HostElement } from '../../../../decorators';
-import { URLHelper } from '../../webc-app-utils';
+import { URLHelper } from '../../../../utils';
+
+const { join } = URLHelper;
 
 /**
  * @disable cheatsheet
@@ -101,7 +103,7 @@ export class WebcAppMenuItem {
 
   async componentWillLoad() {
     if (!this.url) {
-      this.url = URLHelper.join(this.item.path).pathname;
+      this.url = join(this.item.path).pathname;
     }
     if (this.url === '') {
       this.url = '/';
@@ -119,7 +121,7 @@ export class WebcAppMenuItem {
       this.item.children.forEach(item => {
         props.name = item.name;
         props.item = {
-          path: URLHelper.join('', this.item.path, item.path).pathname,
+          path: join('', this.item.path, item.path).pathname,
         };
         if (item.children) {
           props.item.children = item.children;

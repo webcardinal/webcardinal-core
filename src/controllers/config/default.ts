@@ -1,17 +1,15 @@
 import type {
   Identity,
-  Version,
   Page,
-  PagesPathname,
-  SkinsPathname,
   LogLevel,
-  DocsSource
+  DocsSource,
+  Skin
 } from './types';
 
 export default {
   identity: {
     name: 'WebCardinal',
-    email: 'privatesky@axiologic.net',
+    email: 'webcardinal@axiologic.net',
     avatar: '',
   } as Identity,
   pages: [
@@ -21,10 +19,15 @@ export default {
       src: 'home.html',
     },
   ] as Page[],
-  pagesPathname: 'pages' as PagesPathname,
-  skinsPathname: 'skins' as SkinsPathname,
+  pagesPathname: 'pages' as string,
+  skinsPathname: 'skins' as string,
   logLevel: 'error' as LogLevel,
-  version: '1.0.0' as Version,
+  version: '1.0.0' as string,
   docsSource: 'github' as DocsSource,
-  enableTranslations: false as Boolean
+  translations: false as boolean,
+  skins: [
+    {
+      name: 'default'
+    }
+  ] as Skin[]
 };

@@ -1,39 +1,45 @@
-import type { EventEmitter } from '@stencil/core';
-import { Component, h, Method, Prop, Event, State } from '@stencil/core';
-import type { RouterHistory } from '@stencil/router';
-import { injectHistory } from '@stencil/router';
+import { Component, Event, EventEmitter, h, Method, Prop, State } from '@stencil/core';
+import { HTMLStencilElement } from '@stencil/core/internal';
+import { injectHistory, RouterHistory } from '@stencil/router';
 
 import DefaultController from '../../../base/controllers/Controller.js';
 import { HostElement } from '../../decorators';
+import { RoutingState } from '../../interfaces';
 import {
   BindingService,
   ComponentListenersService,
   ControllerRegistryService,
   ControllerTranslationService,
 } from '../../services';
-import { promisifyEventEmit } from '../../utils';
+import { resolveTranslationsState, resolveRoutingState } from '../../utils';
 
 @Component({
   tag: 'webc-container',
 })
 export class WebcContainer {
-  @HostElement() private host: HTMLElement;
+  @HostElement() host: HTMLStencilElement;
 
   @State() history: RouterHistory;
+
+  private controllerInstance;
+  private listeners: ComponentListenersService;
 
   /**
    * This property is a string that will permit the developer to choose his own controller.
    * If no value is set then the null default value will be taken and the component will use the basic Controller.
    */
-  @Prop({ reflect: true }) controller: string;
+  @Prop() controller: string = '';
 
   /**
    *  If it is not specified, all the innerHTML will be placed inside the unnamed slot.
    *  Otherwise the content will replace the <code>webc-container</code> element form DOM.
    */
-  @Prop() disableContainer = false;
+  @Prop({ reflect: true }) disableContainer: boolean = false;
 
-  @Prop() enableTranslations: boolean = false;
+  /**
+   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   */
+  @Prop({ reflect: true }) translations: boolean = false;
 
   /**
    * Routing configuration received from <code>webc-app-router</code>.
@@ -41,76 +47,40 @@ export class WebcContainer {
   @Event({
     eventName: 'webcardinal:routing:get',
     bubbles: true,
-    composed: true,
     cancelable: true,
-  })
-  getRoutingEvent: EventEmitter;
-
-  /**
-   * Enable translations event received from configuration.
-   */
-  @Event({
-    eventName: 'webcardinal:config:getTranslations',
-    bubbles: true,
     composed: true,
-    cancelable: true,
   })
-  getTranslationsEvent: EventEmitter;
-
-  private controllerInstance;
-  private listeners: ComponentListenersService;
+  getRoutingStateEvent: EventEmitter<RoutingState>;
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
 
-    const routingEvent = await promisifyEventEmit(this.getRoutingEvent);
-    const translationsState = await promisifyEventEmit(this.getTranslationsEvent);
-    const enableTranslations = translationsState || this.enableTranslations;
-
-    if (enableTranslations) {
-      await ControllerTranslationService.loadAndSetTranslationForPage(routingEvent);
-    }
-
-    let target = this.host;
-    let shadowRoot = this.host.parentNode;
-
-    if (shadowRoot instanceof ShadowRoot) {
-      if (this.host.hasAttribute('data-modal')) {
-        target = shadowRoot.host as HTMLElement;
+    this.translations = resolveTranslationsState(this);
+    if (this.translations) {
+      const routingState = await resolveRoutingState(this);
+      this.translations = await ControllerTranslationService.loadAndSetTranslationsForPage(routingState);
+      if (!this.translations) {
+        console.warn('Translations were automatically disabled for current page', window.WebCardinal?.state?.activePage || {})
       }
     }
-    if (this.disableContainer) {
-      target = target.parentElement;
+
+    const controllerElement = this.resolveControllerElement();
+    this.controllerInstance = await this.loadController(controllerElement);
+
+    if (this.host.hasAttribute('default-controller')) {
+      return;
     }
 
-    // load controller
-    const controllerName = this.controller;
-    if (typeof controllerName === 'string') {
-      try {
-        const Controller = await ControllerRegistryService.getController(controllerName);
-        if (this.host.isConnected) {
-          this.controllerInstance = new Controller(target, this.history);
-        }
-      } catch (error) {
-        console.error(error);
-        return;
-      }
-    } else {
-      this.controllerInstance = new DefaultController(target, this.history);
-    }
     const { model, translationModel } = this.controllerInstance;
-
     if (translationModel || model) {
-      BindingService.bindChildNodes(target, {
+      BindingService.bindChildNodes(controllerElement, {
         model,
         translationModel,
         recursive: true,
-        enableTranslations,
+        enableTranslations: this.translations,
       });
-
-      // serve models
       this.listeners = new ComponentListenersService(this.host, {
         model,
         translationModel,
@@ -120,7 +90,7 @@ export class WebcContainer {
     }
   }
 
-  connectedCallback() {
+  async connectedCallback() {
     if (this.listeners) {
       const { getModel, getTranslationModel } = this.listeners;
       getModel?.add();
@@ -128,7 +98,7 @@ export class WebcContainer {
     }
   }
 
-  disconnectedCallback() {
+  async disconnectedCallback() {
     if (this.listeners) {
       const { getModel, getTranslationModel } = this.listeners;
       getModel?.remove();
@@ -136,7 +106,7 @@ export class WebcContainer {
     }
 
     // disconnectedCallback can be called multiple times
-    // there is no way to listen to a OnDestroy like event so we check if the host is still attached to the DOM
+    // there is no way to listen to a "onDestroy" like event so we check if the host is still attached to the DOM
     setTimeout(() => {
       if (!document.body.contains(this.host)) {
         this.controllerInstance?.disconnectedCallback();
@@ -173,12 +143,56 @@ export class WebcContainer {
     return undefined;
   }
 
-  render() {
+  // It resolves "this.element" from any type of WebCardinal Controller
+  private resolveControllerElement() {
+    let target = this.host as HTMLElement;
+    const shadowRoot = this.host.parentNode;
+    if (shadowRoot instanceof ShadowRoot) {
+      if (this.host.hasAttribute('data-modal')) {
+        target = shadowRoot.host as HTMLElement;
+      }
+    }
     if (this.disableContainer) {
-      return;
+      target = target.parentElement;
+    }
+    return target;
+  }
+
+  // It loads the controller specified as property or a default controller
+  private async loadController(element: HTMLElement) {
+    const loadDefaultController = () => {
+      this.host.setAttribute('default-controller', '');
+      return new DefaultController(element, this.history);
     }
 
-    return <slot />;
+    if (this.host.hasAttribute('controller-name') && !this.controller) {
+      console.warn([
+        `Attribute "controller-name" is deprecated!`,
+        `Use "controller" instead!`
+      ].join('\n'), `target:`, this.host);
+      this.controller = this.host.getAttribute('controller-name');
+    }
+
+    if (typeof this.controller !== 'string') {
+      console.error('"controller" must be a string!');
+      return loadDefaultController();
+    }
+
+    if (this.controller.length === 0) {
+      return loadDefaultController();
+    }
+
+    try {
+      const Controller = await ControllerRegistryService.getController(this.controller);
+      return new Controller(element, this.history);
+    } catch (error) {
+      console.error(`Error while loading controller "${this.controller}"`, error);
+      return loadDefaultController();
+    }
+  }
+
+  render() {
+    return this.disableContainer ? null : <slot />;
   }
 }
 

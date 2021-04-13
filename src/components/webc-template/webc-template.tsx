@@ -1,22 +1,23 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop } from '@stencil/core';
+import { Component, Event, h, Method, Prop } from '@stencil/core';
+import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
-import { extractChain, promisifyEventEmit } from '../../utils';
+import { BindingService } from '../../services';
+import { extractChain, promisifyEventEmit, resolveTranslationsState } from '../../utils';
 
 import { getTemplate } from './webc-template-utils';
-import { BindingService } from '../../services';
 
 @Component({
   tag: 'webc-template',
   shadow: true,
 })
 export class WebcTemplate {
-  @HostElement() host: HTMLElement;
+  @HostElement() host: HTMLStencilElement;
 
   /**
    * The name of the template that will be loaded.
-   * The generated path will have the format <code>${basePath}/templates/${template}.html</code>.
+   * The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
    */
   @Prop({ reflect: true }) template: string;
 
@@ -26,10 +27,13 @@ export class WebcTemplate {
    */
   @Prop() disableContainer: boolean = false;
 
-  @Prop() enableTranslations: boolean = false;
+  /**
+   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   */
+  @Prop({ reflect: true }) translations: boolean = false;
 
   /**
-   * Through this event model is received (from webc-container, webc-for, webc-if or any component that supports a controller).
+   * Through this event the model is received.
    */
   @Event({
     eventName: 'webcardinal:model:get',
@@ -40,7 +44,7 @@ export class WebcTemplate {
   getModelEvent: EventEmitter;
 
   /**
-   * Through this event translation model is received.
+   * Through this event the translation model is received.
    */
   @Event({
     eventName: 'webcardinal:translationModel:get',
@@ -49,17 +53,6 @@ export class WebcTemplate {
     cancelable: true,
   })
   getTranslationModelEvent: EventEmitter;
-
-  /**
-   * Enable translations event received from configuration.
-   */
-  @Event({
-    eventName: 'webcardinal:config:getTranslations',
-    bubbles: true,
-    composed: true,
-    cancelable: true,
-  })
-  getTranslationsStateEvent: EventEmitter;
 
   private model;
   private translationModel;
@@ -70,16 +63,25 @@ export class WebcTemplate {
       return;
     }
 
+    if (this.host.hasAttribute('template-name') && !this.template) {
+      console.warn(
+        [`Attribute "template-name" is deprecated!`, `Use "template" instead!`].join('\n'),
+        `target:`,
+        this.host,
+      );
+      this.template = this.host.getAttribute('template-name');
+    }
+
     this.host.innerHTML = await getTemplate(this.template);
 
     this.chain = extractChain(this.host);
 
     if (this.chain) {
-      let translationsState = false;
+      this.translations = resolveTranslationsState(this);
+
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
         this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
-        translationsState = await promisifyEventEmit(this.getTranslationsStateEvent);
       } catch (error) {
         console.error(error);
       }
@@ -89,7 +91,7 @@ export class WebcTemplate {
         translationModel: this.translationModel,
         recursive: true,
         chainPrefix: this.chain ? this.chain.slice(1) : null,
-        enableTranslations: translationsState || this.enableTranslations,
+        enableTranslations: this.translations,
       });
     }
   }
@@ -99,6 +101,28 @@ export class WebcTemplate {
       Array.from(this.host.childNodes).forEach(node => this.host.parentNode.insertBefore(node, this.host));
       this.host.remove();
     }
+  }
+
+  /**
+   * The model from controller is exposed by this method.
+   */
+  @Method()
+  async getModel() {
+    if (this.model) {
+      return this.model;
+    }
+    return undefined;
+  }
+
+  /**
+   * The translation model from controller is exposed by this method.
+   */
+  @Method()
+  async getTranslationModel() {
+    if (this.translationModel) {
+      return this.translationModel;
+    }
+    return undefined;
   }
 
   render() {

@@ -37,9 +37,7 @@ class ComponentsListenerService {
   private readonly tags: any;
   private readonly routing: any;
   private listeners: {
-    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (
-      event: CustomEvent,
-    ) => void;
+    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void;
   } = {
     getModel: () => null,
     getTranslationModel: () => null,
@@ -47,15 +45,7 @@ class ComponentsListenerService {
     getRouting: () => null,
   };
 
-  constructor(
-    host: HTMLElement,
-    {
-      model,
-      translationModel,
-      tags,
-      routing,
-    }: ComponentsListenerServiceOptions,
-  ) {
+  constructor(host: HTMLElement, { model, translationModel, tags, routing }: ComponentsListenerServiceOptions) {
     this.host = host;
 
     if (model) {
@@ -126,14 +116,11 @@ class ComponentsListenerService {
 
         if (event.detail.tag) {
           if (!this.tags[event.detail.tag]) {
-            callback(`There is no page tag "${event.detail.tag}" registered in webcardinal.json`)
+            callback(`There is no page tag "${event.detail.tag}" registered in webcardinal.json`);
             return;
           }
 
-          callback(
-            undefined,
-            this.tags[event.detail.tag]
-          );
+          callback(undefined, this.tags[event.detail.tag]);
         }
 
         callback(undefined, this.tags);
@@ -159,8 +146,7 @@ class ComponentsListenerService {
     const eventName = EVENT_MODEL_GET;
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getModel),
-      remove: () =>
-        this.host.removeEventListener(eventName, this.listeners.getModel),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getModel),
       eventName,
     };
   }
@@ -170,16 +156,8 @@ class ComponentsListenerService {
 
     const eventName = EVENT_TRANSLATION_MODEL_GET;
     return {
-      add: () =>
-        this.host.addEventListener(
-          eventName,
-          this.listeners.getTranslationModel,
-        ),
-      remove: () =>
-        this.host.removeEventListener(
-          eventName,
-          this.listeners.getTranslationModel,
-        ),
+      add: () => this.host.addEventListener(eventName, this.listeners.getTranslationModel),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getTranslationModel),
       eventName,
     };
   }
@@ -190,8 +168,7 @@ class ComponentsListenerService {
     const eventName = EVENT_TAGS_GET;
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getTags),
-      remove: () =>
-        this.host.removeEventListener(eventName, this.listeners.getTags),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getTags),
       eventName,
     };
   }
@@ -201,10 +178,8 @@ class ComponentsListenerService {
 
     const eventName = EVENT_ROUTING_GET;
     return {
-      add: () =>
-        this.host.addEventListener(eventName, this.listeners.getRouting),
-      remove: () =>
-        this.host.removeEventListener(eventName, this.listeners.getRouting),
+      add: () => this.host.addEventListener(eventName, this.listeners.getRouting),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getRouting),
       eventName,
     };
   }

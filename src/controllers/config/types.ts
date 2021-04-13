@@ -4,7 +4,10 @@ export type Identity = {
   avatar: string;
 };
 
-export type Version = string;
+export type Skin = {
+  name: string;
+  translations?: boolean;
+};
 
 export type Page = {
   name: string;
@@ -12,11 +15,8 @@ export type Page = {
   src?: string;
   indexed?: boolean;
   children?: Page[];
+  skin?: Skin;
 };
-
-export type PagesPathname = string;
-
-export type SkinsPathname = string;
 
 export type LogLevel = 'none' | 'warn' | 'error';
 

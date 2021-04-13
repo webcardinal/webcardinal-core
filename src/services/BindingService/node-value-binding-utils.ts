@@ -50,10 +50,10 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
         getChainValue: () => {
           let value = currentModel.getChainValue(chain);
           if (isTranslation && value === undefined) {
-            const { language } = window.WebCardinal;
+            const { skin } = window.WebCardinal.state.activePage;
             const { pathname } = window.location;
 
-            console.warn(`No translations found for language ${language}, page ${pathname} and key ${chain}`);
+            console.warn(`No translations found for skin "${skin.name}", page "${pathname}" and chain "${chain}"`);
 
             // we have a translation for a missing key, so we return the translation key (chain)
             value = chain;
