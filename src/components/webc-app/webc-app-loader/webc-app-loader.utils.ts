@@ -1,6 +1,7 @@
 export async function checkPageExistence(pageSrc) {
   try {
-    const response = await fetch(pageSrc, { method: 'head' })
+    // method 'head' is not supported by APIHUB
+    const response = await fetch(pageSrc, { method: 'get' })
     return response.ok === true;
   } catch (error) {
     console.log(
