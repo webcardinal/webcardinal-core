@@ -342,7 +342,7 @@ export default class Controller {
     console.warn([
       `'Functions "setLanguage" is deprecated!'`,
       'Use "setSkin" with a new skin if changing of the translations is desired',
-    ]);
+    ].join('\n'));
   }
 
   setPreferredSkin(skin, { saveOption } = { saveOption: true }) {

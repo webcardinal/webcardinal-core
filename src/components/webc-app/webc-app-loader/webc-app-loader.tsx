@@ -103,6 +103,9 @@ export class WebcAppLoader {
         if (await checkPageExistence(src)) {
           this.activeSrc = src;
           this.skin = preferredSkin.name;
+          if (!this.translations) {
+            this.translations ||= preferredSkin.translations;
+          }
           this.skinSet = true;
           return;
         }
