@@ -1,5 +1,5 @@
 import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS, TRANSLATION_CHAIN_PREFIX } from '../../constants';
-import { getCompleteChain } from '../../utils';
+import { getCompleteChain, getSkinFromState } from '../../utils';
 
 export function bindNodeValue(node: ChildNode, model: any, translationModel: any, modelChainPrefix: string = null) {
   // for some webc-<components> binding is managed by component itself
@@ -50,10 +50,9 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
         getChainValue: () => {
           let value = currentModel.getChainValue(chain);
           if (isTranslation && value === undefined) {
-            const { skin } = window.WebCardinal.state.activePage;
             const { pathname } = window.location;
-
-            console.warn(`No translations found for skin "${skin.name}", page "${pathname}" and chain "${chain}"`);
+            const skin = getSkinFromState();
+            console.warn(`No translations found for skin "${skin}", page "${pathname}" and chain "${chain}"`);
 
             // we have a translation for a missing key, so we return the translation key (chain)
             value = chain;

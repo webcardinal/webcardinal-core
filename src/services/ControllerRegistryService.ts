@@ -1,31 +1,37 @@
-import { getSkinForCurrentPage, getSkinPathForCurrentPage, URLHelper } from '../utils';
 import { SCRIPTS_PATH } from '../constants';
+import { getSkinFromState, getSkinPathFromState, loadJS, URLHelper } from '../utils';
 
 const { join } = URLHelper;
 
 const ControllerRegistryService = {
-  getController: async controller => {
+  getController: async controllerPath => {
     const { controllers, basePath } = window.WebCardinal;
-    const skin = getSkinForCurrentPage();
+    const skin = getSkinFromState();
 
     if (!controllers[skin]) {
       controllers[skin] = {};
     }
 
-    if (controllers[skin][controller]) {
-      return controllers[skin][controller];
+    if (controllers[skin][controllerPath]) {
+      return controllers[skin][controllerPath];
     }
 
-    const controllerPath = join(basePath, getSkinPathForCurrentPage(), SCRIPTS_PATH, 'controllers', `${controller}.js`)
-      .pathname;
+    // check if there is a controller for current skin
+    let controller = await loadJS(
+      join(basePath, getSkinPathFromState(), SCRIPTS_PATH, 'controllers', controllerPath).pathname,
+    );
 
-    try {
-      const controller = await import(controllerPath);
-      return controller.default || controller;
-    } catch (error) {
-      console.error(error);
+    if (controller) {
+      return controller;
+    }
+
+    // only one request for default skin
+    if (skin === 'default') {
       return;
     }
+
+    // if there is no controller from skin, fallback is to default skin (root level)
+    return await loadJS(join(basePath, SCRIPTS_PATH, 'controllers', controllerPath).pathname);
   },
 };
 

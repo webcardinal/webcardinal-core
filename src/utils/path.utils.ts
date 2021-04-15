@@ -39,24 +39,66 @@ export const URLHelper = {
   },
 };
 
-export function getSkinForCurrentPage() {
-  const { WebCardinal } = window;
-  if (WebCardinal && WebCardinal.state && WebCardinal.state.activePage && WebCardinal.state.activePage.skin) {
-    const { skin } = WebCardinal.state.activePage;
-    if (skin && typeof skin.name === 'string') {
-      return skin.name;
+export async function loadHTML(path) {
+  try {
+    const response = await fetch(`${path}.html`);
+    const content = await response.text();
+    if (!response.ok) {
+      throw new Error(content);
     }
+    return [null, content];
+  } catch (error) {
+    return [error];
   }
-  return 'default';
 }
 
-export function getSkinPathForCurrentPage() {
-  const { WebCardinal } = window;
-  if (WebCardinal && WebCardinal.state && WebCardinal.state.activePage && WebCardinal.state.activePage.skin) {
-    const { skin } = WebCardinal.state.activePage;
-    if (skin && typeof skin.name === 'string' && skin.name !== 'default') {
-      return `${SKINS_PATH}/${skin.name}`;
-    }
+export async function loadJS(path) {
+  try {
+    const script = await import(`${path}.js`);
+    return script.default || script;
+  } catch (error) {
+    // console.error(error);
+    return;
   }
-  return '';
+}
+
+export async function loadJSON(path) {
+  try {
+    const response = await fetch(`${path}.json`);
+    if (!response.ok) {
+      const content = await response.text();
+      throw new Error(content);
+    }
+    const json = await response.json();
+    return [null, json];
+  } catch (error) {
+    return [error]
+  }
+}
+
+export function getTranslationsFromState(): boolean {
+  if (!window.WebCardinal?.state?.translations || typeof window.WebCardinal?.state?.translations !== 'boolean') {
+    console.warn([
+      `Preferred "translations" can not be found in WebCardinal.state!`,
+      `The fallback for translations is "true".`
+    ].join('\n'), window.WebCardinal);
+    return true;
+  }
+  return window.WebCardinal.state.translations;
+}
+
+export function getSkinFromState(): string {
+  if (!window.WebCardinal?.state?.skin || typeof window.WebCardinal?.state?.skin !== 'string') {
+    console.warn([
+      `Preferred "skin" can not be found in WebCardinal.state!`,
+      `The fallback for skin is "default".`
+    ].join('\n'), window.WebCardinal);
+    return 'default';
+  }
+  return window.WebCardinal.state.skin;
+}
+
+export function getSkinPathFromState(): string {
+  const skin = getSkinFromState();
+  return skin !== 'default' ? `${SKINS_PATH}/${skin}` : '';
 }

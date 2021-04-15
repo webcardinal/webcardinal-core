@@ -1,9 +1,9 @@
 import type {
   Identity,
   Page,
+  FallbackPage,
   LogLevel,
-  DocsSource,
-  Skin
+  DocsSource
 } from './types';
 
 export default {
@@ -12,6 +12,9 @@ export default {
     email: 'webcardinal@axiologic.net',
     avatar: '',
   } as Identity,
+  pagesFallback: {
+    name: '404'
+  } as FallbackPage,
   pages: [
     {
       name: 'Homepage',
@@ -19,15 +22,9 @@ export default {
       src: 'home.html',
     },
   ] as Page[],
-  pagesPathname: 'pages' as string,
-  skinsPathname: 'skins' as string,
   logLevel: 'error' as LogLevel,
   version: '1.0.0' as string,
   docsSource: 'github' as DocsSource,
-  translations: false as boolean,
-  skins: [
-    {
-      name: 'default'
-    }
-  ] as Skin[]
+  translations: true as boolean,
+  skin: 'default' as string,
 };

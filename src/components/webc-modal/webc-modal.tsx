@@ -3,9 +3,9 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
 import { BindingService } from '../../services';
-import { resolveTranslationsState } from '../../utils';
+import { resolveEnableTranslationState } from '../../utils';
 
-import { getModalTemplate } from './webc-modal-utils';
+import { getModalTemplate } from './webc-modal.utils';
 
 /**
  * @slot - The modal body. The content from <code>modalContent</code> property arrives here too.
@@ -37,9 +37,9 @@ export class WebcModal {
   @Prop({ reflect: true }) template: string;
 
   /**
-   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
    */
-  @Prop({ reflect: true }) translations: boolean = false;
+  @Prop({ reflect: true }) disableTranslations: boolean = false;
 
   @Prop() model: any;
 
@@ -146,7 +146,7 @@ export class WebcModal {
       this.isLoading = false;
     }
 
-    this.translations = resolveTranslationsState(this);
+    const enableTranslations = resolveEnableTranslationState(this);
     this.initialised.emit(this.host);
 
     if (!this.controller) {
@@ -157,7 +157,7 @@ export class WebcModal {
         translationModel,
         // chainPrefix: chain ? chain.slice(1) : null,
         recursive: true,
-        enableTranslations: this.translations,
+        enableTranslations,
       });
     }
 
@@ -307,7 +307,7 @@ export class WebcModal {
 
     if (this.controller) {
       return (
-        <webc-container controller={this.controller} translations={this.translations} data-modal>
+        <webc-container controller={this.controller} disableTranslations={this.disableTranslations} data-modal>
           {modal}
         </webc-container>
       );

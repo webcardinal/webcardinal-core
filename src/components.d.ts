@@ -42,10 +42,6 @@ export namespace Components {
           * Source path for a HTML page.
          */
         "src": string;
-        /**
-          * Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.
-         */
-        "translations": boolean;
     }
     interface WebcAppMenu {
         /**
@@ -109,6 +105,10 @@ export namespace Components {
          */
         "disableContainer": boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations": boolean;
+        /**
           * The model from controller is exposed by this method.
          */
         "getModel": () => Promise<any>;
@@ -116,10 +116,6 @@ export namespace Components {
           * The translation model from controller is exposed by this method.
          */
         "getTranslationModel": () => Promise<any>;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations": boolean;
     }
     interface WebcDocs {
         /**
@@ -184,6 +180,10 @@ export namespace Components {
          */
         "disableFooter": boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations": boolean;
+        /**
           * Sets if the modal expands to full screen.
          */
         "expanded": boolean;
@@ -217,10 +217,6 @@ export namespace Components {
          */
         "template": string;
         "translationModel": any;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations": boolean;
     }
     interface WebcSkin {
         /**
@@ -236,6 +232,10 @@ export namespace Components {
          */
         "disableContainer": boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations": boolean;
+        /**
           * The model from controller is exposed by this method.
          */
         "getModel": () => Promise<any>;
@@ -247,10 +247,6 @@ export namespace Components {
           * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
          */
         "template": string;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations": boolean;
     }
 }
 declare global {
@@ -409,10 +405,6 @@ declare namespace LocalJSX {
           * Source path for a HTML page.
          */
         "src"?: string;
-        /**
-          * Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.
-         */
-        "translations"?: boolean;
     }
     interface WebcAppMenu {
         /**
@@ -486,13 +478,13 @@ declare namespace LocalJSX {
          */
         "disableContainer"?: boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations"?: boolean;
+        /**
           * Routing configuration received from <code>webc-app-router</code>.
          */
         "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations"?: boolean;
     }
     interface WebcDocs {
         /**
@@ -561,6 +553,10 @@ declare namespace LocalJSX {
          */
         "disableFooter"?: boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations"?: boolean;
+        /**
           * Sets if the modal expands to full screen.
          */
         "expanded"?: boolean;
@@ -598,10 +594,6 @@ declare namespace LocalJSX {
          */
         "template"?: string;
         "translationModel"?: any;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations"?: boolean;
     }
     interface WebcSkin {
         /**
@@ -617,6 +609,10 @@ declare namespace LocalJSX {
          */
         "disableContainer"?: boolean;
         /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations"?: boolean;
+        /**
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
@@ -628,10 +624,6 @@ declare namespace LocalJSX {
           * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
          */
         "template"?: string;
-        /**
-          * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
-         */
-        "translations"?: boolean;
     }
     interface IntrinsicElements {
         "webc-app-container": WebcAppContainer;

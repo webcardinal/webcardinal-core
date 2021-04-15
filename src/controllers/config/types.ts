@@ -13,10 +13,18 @@ export type Page = {
   name: string;
   path?: string;
   src?: string;
+  tag?: string;
+  loader?: string;
   indexed?: boolean;
   children?: Page[];
-  skin?: Skin;
 };
+
+export type FallbackPage = {
+  name: string;
+  src?: string;
+  tag?: string;
+  loader?: string;
+}
 
 export type LogLevel = 'none' | 'warn' | 'error';
 

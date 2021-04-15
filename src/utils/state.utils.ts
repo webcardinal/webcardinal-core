@@ -1,43 +1,18 @@
 import type { EventEmitter } from '@stencil/core';
-import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { RoutingState } from '../interfaces';
 import { promisifyEventEmit } from './promisify';
+import { getTranslationsFromState } from './path.utils';
 
 // WebCardinal State
 
-export function resolveTranslationsState(self: { translations: boolean; host: HTMLStencilElement }): boolean {
+export function resolveEnableTranslationState(self: { disableTranslations: boolean }) {
   // /**
-  //  * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+  //  * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
   //  */
-  // @Prop({ reflect: true }) translations: boolean = false;
+  // @Prop({ reflect: true }) disableTranslations: boolean = false;
 
-  if (!self.host.hasAttribute('translations') && self.host.hasAttribute('enable-translations')) {
-    console.warn(
-      [`Attribute "enable-translations" is deprecated!`, `Use "translations" instead!`].join('\n'),
-      `target:`,
-      self.host,
-    );
-    return true;
-  }
-
-  if (self.translations) {
-    return true;
-  }
-
-  if (
-    window.WebCardinal &&
-    window.WebCardinal.state &&
-    window.WebCardinal.state.activePage &&
-    window.WebCardinal.state.activePage.skin &&
-    typeof window.WebCardinal.state.activePage.skin.translations === 'boolean'
-  ) {
-    self.translations ||= window.WebCardinal.state.activePage.skin.translations;
-  } else {
-    console.error('"translations" can not be obtained from WebCardinal.state!\n');
-  }
-
-  return self.translations;
+  return !self.disableTranslations && getTranslationsFromState();
 }
 
 export async function resolveRoutingState(self: {

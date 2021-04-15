@@ -4,9 +4,9 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
 import { BindingService } from '../../services';
-import { extractChain, promisifyEventEmit, resolveTranslationsState } from '../../utils';
+import { extractChain, promisifyEventEmit, resolveEnableTranslationState } from '../../utils';
 
-import { getTemplate } from './webc-template-utils';
+import { getTemplate } from './webc-template.utils';
 
 @Component({
   tag: 'webc-template',
@@ -25,12 +25,12 @@ export class WebcTemplate {
    *  If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.
    *  Otherwise the content will replace the <code>webc-template</code> element form DOM.
    */
-  @Prop() disableContainer: boolean = false;
+  @Prop({ reflect: true }) disableContainer: boolean = false;
 
   /**
-   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
    */
-  @Prop({ reflect: true }) translations: boolean = false;
+  @Prop({ reflect: true }) disableTranslations: boolean = false;
 
   /**
    * Through this event the model is received.
@@ -77,7 +77,7 @@ export class WebcTemplate {
     this.chain = extractChain(this.host);
 
     if (this.chain) {
-      this.translations = resolveTranslationsState(this);
+      const enableTranslations = resolveEnableTranslationState(this);
 
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
@@ -91,7 +91,7 @@ export class WebcTemplate {
         translationModel: this.translationModel,
         recursive: true,
         chainPrefix: this.chain ? this.chain.slice(1) : null,
-        enableTranslations: this.translations,
+        enableTranslations,
       });
     }
   }

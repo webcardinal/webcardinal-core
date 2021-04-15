@@ -29,20 +29,12 @@ function checkEventListener(eventName, listener, options) {
 
 function isSkinEnabled() {
   const { state } = window.WebCardinal || {};
-  if (state && state.activeSkin) {
-    const { name, translations } = state.activeSkin;
-    return name && typeof translations === 'boolean';
-  }
-  return false;
+  return state && state.skin && typeof state.skin === 'string';
 }
 
 function areTranslationsEnabled() {
   const { state } = window.WebCardinal || {};
-  if (state && state.activePage && state.activePage.skin) {
-    const { name, translations } = state.activePage.skin;
-    return name && translations === true
-  }
-  return false;
+  return state && typeof state.translations === 'boolean';
 }
 
 function getPathname() {
@@ -70,22 +62,33 @@ function getTranslationModel() {
   }
 
   const { state, translations } = window.WebCardinal;
-  const { name: skin } = state.activePage.skin;
+  const { skin } = state;
   const pathname = getPathname();
-  const currentTranslations = translations[skin];
 
-  if (!currentTranslations) {
-    console.warn(`No translations found for current skin "${skin}"`);
+  const skinTranslations = translations[skin];
+  const defaultTranslations = translations['default'];
+
+  if (!skinTranslations && !defaultTranslations) {
+    console.warn(`No translations found for skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`);
     return;
   }
 
-  const currentPageTranslations = currentTranslations[pathname];
-  if (!currentPageTranslations) {
-    console.warn(`No translations found current skin "${skin} and page "${pathname}"`);
+  let pageTranslations = skinTranslations && skinTranslations[pathname];
+
+  if (pageTranslations) {
+    return pageTranslations;
+  }
+
+  pageTranslations = defaultTranslations && defaultTranslations[pathname];
+
+  if (!pageTranslations) {
+    console.warn(
+      `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`,
+    );
     return;
   }
 
-  return currentPageTranslations;
+  return pageTranslations;
 }
 
 export function proxifyModelProperty(model) {
@@ -149,7 +152,7 @@ export default class Controller {
 
   createElement(elementName, props) {
     if (props && props.model) {
-      props.model = proxifyModelProperty(props.model)
+      props.model = proxifyModelProperty(props.model);
     }
     return Object.assign(document.createElement(elementName), props);
   }
@@ -339,81 +342,72 @@ export default class Controller {
   }
 
   setLanguage() {
-    console.warn([
-      `'Functions "setLanguage" is deprecated!'`,
-      'Use "setSkin" with a new skin if changing of the translations is desired',
-    ].join('\n'));
+    console.warn(
+      [
+        `'Functions "setLanguage" is deprecated!'`,
+        'Use "setSkin" with a new skin if changing of the translations is desired',
+      ].join('\n'),
+    );
   }
 
   setPreferredSkin(skin, { saveOption } = { saveOption: true }) {
     if (!isSkinEnabled()) {
-      console.warn("WebCardinal skin is not set by your Application!");
+      console.warn('WebCardinal skin is not set by your Application!');
       return;
     }
 
-    if (typeof skin === 'string') {
-      skin = {
-        ...window.WebCardinal.state.activeSkin,
-        name: skin
-      }
-    }
-
-    if (typeof skin !== 'object') {
-      console.warn("Skin must be an object or a string!");
+    if (typeof skin !== 'string') {
+      console.log('"skin" must be a valid non-empty string!');
       return;
     }
 
     if (saveOption && 'localStorage' in window) {
-      window.localStorage.setItem('webcardinal.skin', JSON.stringify(skin));
+      window.localStorage.setItem('webcardinal.skin', skin);
     }
 
-    window.WebCardinal.state.activeSkin = skin;
+    window.WebCardinal.state.skin = skin;
   }
 
   getPreferredSkin() {
     if (!isSkinEnabled()) {
-      console.warn("WebCardinal skin is not set by your Application!");
+      console.warn('WebCardinal skin is not set by your Application!');
       return;
     }
 
-    return window.WebCardinal.state.activeSkin;
+    return window.WebCardinal.state.skin;
   }
 
   changeSkinForCurrentPage(skin) {
     if (!isSkinEnabled()) {
-      console.warn("WebCardinal skin is not set by your Application!");
+      console.warn('WebCardinal skin is not set by your Application!');
       return;
     }
 
-    if (typeof skin === 'string') {
-      skin = {
-        ...window.WebCardinal.state.activePage.skin,
-        name: skin
-      }
-    }
-
-    if (typeof skin !== 'object') {
-      console.warn("Skin must be an object or a string!");
+    if (typeof skin !== 'string') {
+      console.log('"skin" must be a valid non-empty string!');
       return;
     }
 
-    window.WebCardinal.state.activePage.loader.skin = skin.name;
+    window.WebCardinal.state.page.loader.skin = skin;
   }
 
   translate(translationChain) {
     if (!areTranslationsEnabled()) {
-      console.warn([
-        `Function "translate" must be called only when translations are enabled!`,
-        `Check WebCardinal.state`
-      ].join('\n'));
+      console.warn(
+        [`Function "translate" must be called only when translations are enabled!`, `Check WebCardinal.state`].join(
+          '\n',
+        ),
+      );
       return;
     }
 
-    const { skin } = window.WebCardinal.state.activePage;
+    const { skin } = window.WebCardinal.state;
     const pathname = getPathname();
 
     if (!this.translationModel) {
-      console.warn(`No translations found for skin "${skin}" and page "${pathname}"`);
+      console.warn(
+        `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''})`,
+      );
       return translationChain;
     }
 
@@ -422,7 +416,11 @@ export default class Controller {
     }
     const translation = getValueFromModelByChain(this.translationModel, translationChain);
     if (!translation) {
-      console.warn(`No translations found for skin "${skin}", page "${pathname}" and chain "${translationChain}"`);
+      console.warn(
+        `No translations found for chain: "${translationChain}" (page: "${pathname}", skins: "${skin}"${
+          skin !== 'default' ? ' and "default"' : ''
+        })`,
+      );
       return translationChain;
     }
 

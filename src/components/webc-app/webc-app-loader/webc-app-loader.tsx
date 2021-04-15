@@ -4,7 +4,7 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 import { HostElement } from '../../../decorators';
 import { SKINS_PATH } from '../../../constants';
 import { WebcAppLoaderType } from '../../../interfaces';
-import { URLHelper } from '../../../utils';
+import { getSkinFromState, URLHelper } from '../../../utils';
 
 import { checkPageExistence, loadPageContent } from './webc-app-loader.utils';
 
@@ -42,11 +42,6 @@ export class WebcAppLoader {
    */
   @Prop({ reflect: true, mutable: true }) skin: string = 'default';
 
-  /**
-   * Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.
-   */
-  @Prop({ reflect: true, mutable: true }) translations: boolean = false;
-
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -83,7 +78,7 @@ export class WebcAppLoader {
 
     // if a skin is set by the webc-app-router via webcardinal.json for a specific page
     if (this.skin !== 'none') {
-      if (this.skin.toLowerCase() !== 'default') {
+      if (this.skin !== 'default') {
         const src = join(this.basePath, SKINS_PATH, this.skin, this.src).pathname;
         if (await checkPageExistence(src)) {
           this.activeSrc = src;
@@ -96,19 +91,14 @@ export class WebcAppLoader {
     }
 
     // otherwise a preferred skin is loaded
-    const preferredSkin = this.getPreferredSkin();
-    if (preferredSkin) {
-      if (preferredSkin.name.toLowerCase() !== 'default') {
-        const src = join(this.basePath, SKINS_PATH, preferredSkin.name, this.src).pathname;
-        if (await checkPageExistence(src)) {
-          this.activeSrc = src;
-          this.skin = preferredSkin.name;
-          if (!this.translations) {
-            this.translations ||= preferredSkin.translations;
-          }
-          this.skinSet = true;
-          return;
-        }
+    const preferredSkin = getSkinFromState();
+    if (preferredSkin !== 'default') {
+      const src = join(this.basePath, SKINS_PATH, preferredSkin, this.src).pathname;
+      if (await checkPageExistence(src)) {
+        this.activeSrc = src;
+        this.skin = preferredSkin;
+        this.skinSet = true;
+        return;
       }
     }
 
@@ -135,29 +125,10 @@ export class WebcAppLoader {
   }
 
   private updateActivePage() {
-    window.WebCardinal.state.activePage = {
-      skin: {
-        name: this.skin,
-        translations: this.translations,
-      },
-      src: this.src,
+    window.WebCardinal.state.page = {
       loader: this.host,
+      src: this.activeSrc
     };
-  }
-
-  private getPreferredSkin() {
-    let preferredSkin;
-    if (window.WebCardinal && window.WebCardinal.state && window.WebCardinal.state.activeSkin) {
-      preferredSkin = window.WebCardinal.state.activeSkin;
-    } else {
-      console.error('"activeSkin" can not be found in WebCardinal.state!');
-      return;
-    }
-    if (!preferredSkin.name) {
-      console.error('A valid WebCardinal skin must have a name!');
-      return;
-    }
-    return preferredSkin;
   }
 
   render() {

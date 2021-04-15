@@ -11,7 +11,7 @@ import {
   ControllerRegistryService,
   ControllerTranslationService,
 } from '../../services';
-import { resolveTranslationsState, resolveRoutingState } from '../../utils';
+import { resolveRoutingState, resolveEnableTranslationState } from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -37,9 +37,9 @@ export class WebcContainer {
   @Prop({ reflect: true }) disableContainer: boolean = false;
 
   /**
-   * If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.
+   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
    */
-  @Prop({ reflect: true }) translations: boolean = false;
+  @Prop({ reflect: true }) disableTranslations: boolean = false;
 
   /**
    * Routing configuration received from <code>webc-app-router</code>.
@@ -57,12 +57,12 @@ export class WebcContainer {
       return;
     }
 
-    this.translations = resolveTranslationsState(this);
-    if (this.translations) {
+    const enableTranslations = resolveEnableTranslationState(this);
+
+    if (enableTranslations) {
       const routingState = await resolveRoutingState(this);
-      this.translations = await ControllerTranslationService.loadAndSetTranslationsForPage(routingState);
-      if (!this.translations) {
-        console.warn('Translations were automatically disabled for current page', window.WebCardinal?.state?.activePage || {})
+      if (!(await ControllerTranslationService.loadAndSetTranslationsForPage(routingState))) {
+        // console.warn('TODO: future optimization, do not load any translations for this page in the current context (while the user is in the same page)');
       }
     }
 
@@ -79,7 +79,7 @@ export class WebcContainer {
         model,
         translationModel,
         recursive: true,
-        enableTranslations: this.translations,
+        enableTranslations,
       });
       this.listeners = new ComponentListenersService(this.host, {
         model,
@@ -163,13 +163,14 @@ export class WebcContainer {
     const loadDefaultController = () => {
       this.host.setAttribute('default-controller', '');
       return new DefaultController(element, this.history);
-    }
+    };
 
     if (this.host.hasAttribute('controller-name') && !this.controller) {
-      console.warn([
-        `Attribute "controller-name" is deprecated!`,
-        `Use "controller" instead!`
-      ].join('\n'), `target:`, this.host);
+      console.warn(
+        [`Attribute "controller-name" is deprecated!`, `Use "controller" instead!`].join('\n'),
+        `target:`,
+        this.host,
+      );
       this.controller = this.host.getAttribute('controller-name');
     }
 

@@ -12,7 +12,6 @@ interface RoutesPayload {
   src: string;
   loader?: string;
   skin?: string;
-  translations?: boolean;
 }
 
 function isSSAppContext() {
@@ -72,12 +71,12 @@ export class WebcAppRouter {
   private mapping = {};
   private pagesPathRegExp: RegExp;
 
-  private _renderRoute = ({ path, src, loader, skin, translations }: RoutesPayload) => {
+  private _renderRoute = ({ path, src, loader, skin }: RoutesPayload) => {
     const props = {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, translations, basePath: this.basePath },
+      componentProps: { src, loader, skin, basePath: this.basePath },
     };
 
     // fix regarding WebCardinal in a non-updated location context of an iframe
@@ -105,12 +104,8 @@ export class WebcAppRouter {
       const payload: RoutesPayload = {
         path: join('', path, route.path).pathname,
         src: join('', src, route.src).pathname,
-        skin: route?.skin?.name || 'none'
+        skin: 'none'
       };
-
-      if (typeof route.skin?.translations === 'boolean') {
-        payload.translations = route?.skin?.translations;
-      }
 
       if (route.children) {
         return this._renderRoutes(route.children, payload);
@@ -143,11 +138,10 @@ export class WebcAppRouter {
     if (!fallback || !fallback.src) return null;
     const src = '.' + join(PAGES_PATH, fallback.src).pathname;
     const loader = fallback.loader || 'default';
-    const skin = fallback?.skin?.name || 'none';
-    const translations = fallback?.skin?.translations;
+    const skin = 'none';
     const props = {
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, translations, basePath: this.basePath },
+      componentProps: { src, loader, skin, basePath: this.basePath },
     };
     return <stencil-route data-src={src} {...props} />;
   };
