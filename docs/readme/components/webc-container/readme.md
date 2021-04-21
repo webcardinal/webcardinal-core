@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property           | Attribute           | Description                                                                                                                                                                                          | Type      | Default |
-| ------------------ | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
-| `controller`       | `controller`        | This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller. | `string`  | `''`    |
-| `disableContainer` | `disable-container` | If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.                               | `boolean` | `false` |
-| `translations`     | `translations`      | If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.                                                                                           | `boolean` | `false` |
+| Property              | Attribute              | Description                                                                                                                                                                                          | Type      | Default |
+| --------------------- | ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
+| `controller`          | `controller`           | This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller. | `string`  | `''`    |
+| `disableContainer`    | `disable-container`    | If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.                               | `boolean` | `false` |
+| `disableTranslations` | `disable-translations` | If this flag is specified, when translations are enabled, it will disable binding and loading of translations.                                                                                       | `boolean` | `false` |
 
 
 ## Events

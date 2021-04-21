@@ -19,6 +19,7 @@
 | `disableClosing`         | `disable-closing`          | Sets if the modal can be closed                                                                                                                                                                      | `boolean` | `false`     |
 | `disableExpanding`       | `disable-expanding`        | Decides if expand button should be displayed                                                                                                                                                         | `boolean` | `false`     |
 | `disableFooter`          | `disable-footer`           | Sets if the modal has the footer displayed.                                                                                                                                                          | `boolean` | `false`     |
+| `disableTranslations`    | `disable-translations`     | If this flag is specified, when translations are enabled, it will disable binding and loading of translations.                                                                                       | `boolean` | `false`     |
 | `expanded`               | `expanded`                 | Sets if the modal expands to full screen.                                                                                                                                                            | `boolean` | `false`     |
 | `modalContent`           | `modal-content`            | The content that will be shown in the modal body, if template is not provided.                                                                                                                       | `string`  | `undefined` |
 | `modalDescription`       | `modal-description`        | The content that can be shown in the header, if provided and the "header" slot is missing from the content.                                                                                          | `string`  | `undefined` |
@@ -27,7 +28,6 @@
 | `model`                  | `model`                    |                                                                                                                                                                                                      | `any`     | `undefined` |
 | `template`               | `template`                 | The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.                                                      | `string`  | `undefined` |
 | `translationModel`       | `translation-model`        |                                                                                                                                                                                                      | `any`     | `undefined` |
-| `translations`           | `translations`             | If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.                                                                                           | `boolean` | `false`     |
 
 
 ## Events

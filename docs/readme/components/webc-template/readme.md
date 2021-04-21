@@ -7,11 +7,11 @@
 
 ## Properties
 
-| Property           | Attribute           | Description                                                                                                                                                                                                               | Type      | Default     |
-| ------------------ | ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
-| `disableContainer` | `disable-container` | If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM. | `boolean` | `false`     |
-| `template`         | `template`          | The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.                                                                     | `string`  | `undefined` |
-| `translations`     | `translations`      | If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.                                                                                                                | `boolean` | `false`     |
+| Property              | Attribute              | Description                                                                                                                                                                                                               | Type      | Default     |
+| --------------------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ----------- |
+| `disableContainer`    | `disable-container`    | If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM. | `boolean` | `false`     |
+| `disableTranslations` | `disable-translations` | If this flag is specified, when translations are enabled, it will disable binding and loading of translations.                                                                                                            | `boolean` | `false`     |
+| `template`            | `template`             | The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.                                                                     | `string`  | `undefined` |
 
 
 ## Events

@@ -33,7 +33,7 @@
       "mutable": true,
       "attr": "base-path",
       "reflectToAttr": false,
-      "docs": "There is the possibility to change the base path of your application, using <code>base</code> HTML Element:\n<psk-example>\n   <psk-code>\n    <base href=\"/my-custom-base\">\n   </psk-code>\n</psk-example>\n\nBoth <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.",
+      "docs": "There is the possibility to change the base path of your application, using <code>base</code> HTML Element:\r\n<psk-example>\r\n   <psk-code>\r\n    <base href=\"/my-custom-base\">\r\n   </psk-code>\r\n</psk-example>\r\n\r\nBoth <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.",
       "docsTags": [],
       "default": "''",
       "values": [
@@ -50,7 +50,7 @@
       "mutable": true,
       "attr": "disable-identity",
       "reflectToAttr": true,
-      "docs": "Decides if <code>webc-app-identity</code> is rendered.<br>\nThis property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.",
+      "docs": "Decides if <code>webc-app-identity</code> is rendered.<br>\r\nThis property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -103,7 +103,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Routing configuration received from <code>ApplicationController</code>.<br>\nThis configuration includes different settings for pages, skins, modals, etc.;",
+      "docs": "Routing configuration received from <code>ApplicationController</code>.<br>\r\nThis configuration includes different settings for pages, skins, modals, etc.;",
       "docsTags": []
     }
   ],

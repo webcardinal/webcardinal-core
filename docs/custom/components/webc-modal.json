@@ -105,7 +105,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": true,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "values": [
         {
@@ -190,6 +190,23 @@
       "attr": "disable-footer",
       "reflectToAttr": true,
       "docs": "Sets if the modal has the footer displayed.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "disableTranslations",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-translations",
+      "reflectToAttr": true,
+      "docs": "If this flag is specified, when translations are enabled, it will disable binding and loading of translations.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -328,23 +345,6 @@
       ],
       "optional": false,
       "required": false
-    },
-    {
-      "name": "translations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "translations",
-      "reflectToAttr": true,
-      "docs": "If this flag is set it will override the <strong>translations</strong> from <code>webcardinal.json</code>.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
     }
   ],
   "methods": [
@@ -389,7 +389,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
+      "docs": "Event that fires when the modal is pressed (only when the default footer is shown).\r\nThe event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)",
       "docsTags": []
     },
     {

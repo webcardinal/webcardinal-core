@@ -89,23 +89,6 @@
       ],
       "optional": false,
       "required": false
-    },
-    {
-      "name": "translations",
-      "type": "boolean",
-      "mutable": true,
-      "attr": "translations",
-      "reflectToAttr": true,
-      "docs": "Decides if translations are enabled for the current loaded page according to <code>webcardinal.json</code>.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
     }
   ],
   "methods": [],
