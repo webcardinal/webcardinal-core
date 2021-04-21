@@ -1,9 +1,11 @@
 import {
   FOR_ATTRIBUTE,
-  FOR_OPTIMISTIC_ATTRIBUTE,
   FOR_NO_DATA_SLOT_NAME,
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
+  FOR_OPTIONS,
+  FOR_OPTIMISTIC,
+  FOR_WRAPPER_RERENDER,
 } from '../../constants';
 import {
   bindElementAttributes,
@@ -45,10 +47,16 @@ export function handleDataForAttributePresence(
 
   let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
-  const isOptimisticMode = element.hasAttribute(FOR_OPTIMISTIC_ATTRIBUTE);
+  const forOptions = (element.getAttribute(FOR_OPTIONS) || '').split(' ').filter(String);
+  console.log({ forOptions });
+
+  const isOptimisticMode = forOptions.includes(FOR_OPTIMISTIC);
+  let isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
+  console.log({ isOptimisticMode, isWrapperRerenderMode });
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];
+
   while (element.childNodes.length > 0) {
     const firstChild = element.childNodes[0];
     if (isElementNode(firstChild) && (firstChild as Element).getAttribute('slot') === FOR_NO_DATA_SLOT_NAME) {
@@ -61,6 +69,7 @@ export function handleDataForAttributePresence(
   }
 
   let existingNodes = [];
+
   const renderTemplate = () => {
     if (!dataForAttributeModelValueLength) {
       removeElementChildNodes(element);
@@ -79,6 +88,22 @@ export function handleDataForAttributePresence(
         });
       });
       return;
+    }
+
+    if (isWrapperRerenderMode) {
+      const wrapper = document.createElement(element.tagName);
+      const attributes = Array.prototype.slice.call(element.attributes);
+      let attribute;
+      while ((attribute = attributes.pop())) {
+        if (attribute.nodeName === FOR_OPTIONS) continue;
+        wrapper.setAttribute(attribute.nodeName, attribute.nodeValue);
+      }
+      if (forOptions.length > 0) {
+        wrapper.setAttribute(FOR_OPTIONS, forOptions.join(' '));
+      }
+      element.insertAdjacentElement('afterend', wrapper);
+      element.remove();
+      element = wrapper;
     }
 
     dataForAttributeModelValue.forEach((_modelElement, modelElementIndex) => {
@@ -141,7 +166,7 @@ export function handleDataForAttributePresence(
 
     if (isOptimisticMode) {
       // in optimistic mode there is no need to cleanup the existing content,
-      // since there is an optimized comparision process that is being executed instead
+      // since there is an optimized comparison process that is being executed instead
       renderTemplate();
       return;
     }

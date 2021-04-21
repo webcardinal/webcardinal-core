@@ -26,7 +26,9 @@ export const TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
 // data-for attribute
 export const FOR_ATTRIBUTE = 'data-for';
 export const FOR_NO_DATA_SLOT_NAME = 'no-data';
-export const FOR_OPTIMISTIC_ATTRIBUTE = 'data-for-optimistic';
+export const FOR_OPTIONS = `${FOR_ATTRIBUTE}-options`;
+export const FOR_OPTIMISTIC = 'optimistic';
+export const FOR_WRAPPER_RERENDER = 'rerender';
 
 // data-if attribute
 export const IF_ATTRIBUTE = 'data-if';

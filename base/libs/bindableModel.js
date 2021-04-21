@@ -465,7 +465,7 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                     }
                 }
 
-               
+
                 function proxify(obj, parentChain) {
 
                     if (typeof obj !== "object" || obj instanceof File) {
@@ -478,6 +478,9 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                         notify = function(changedChain) {
 
                             function getRelatedChains(changedChain) {
+                                if (typeof changedChain !== 'string') {
+                                  changedChain = `${changedChain}`;
+                                }
                                 let chainsRelatedSet = new Set();
                                 chainsRelatedSet.add(WILDCARD);
                                 let chainSequence = changedChain.split(CHAIN_SEPARATOR).map(el => el.trim());
@@ -560,7 +563,7 @@ bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(
                             "onChangeExpressionChain"
                         ];
                         return function(target, prop) {
-                            if (isRoot) {                               
+                            if (isRoot) {
                                 switch (prop) {
                                     case "onChange":
                                         return onChange;
