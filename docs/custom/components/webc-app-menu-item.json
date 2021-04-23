@@ -52,7 +52,7 @@
       "reflectToAttr": false,
       "docs": "",
       "docsTags": [],
-      "default": "{\r\n    path: '',\r\n    children: null,\r\n  }",
+      "default": "{\n    path: '',\n    children: null,\n  }",
       "values": [
         {
           "type": "{ path: string; children: any; }"

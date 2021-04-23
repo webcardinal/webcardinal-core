@@ -1,22 +1,23 @@
 {
-  "filePath": "./src/components/webc-container/webc-container.tsx",
-  "fileName": "webc-container.tsx",
-  "tag": "webc-container",
+  "filePath": "./src/components/webc-component/webc-component.tsx",
+  "fileName": "webc-component.tsx",
+  "tag": "webc-component",
   "usage": {},
   "docs": "",
   "docsTags": [],
   "encapsulation": "none",
   "dependents": [
-    "webc-component",
-    "webc-modal"
+    "webc-app-root"
   ],
-  "dependencies": [],
+  "dependencies": [
+    "webc-container"
+  ],
   "dependencyGraph": {
     "webc-component": [
       "webc-container"
     ],
-    "webc-modal": [
-      "webc-container"
+    "webc-app-root": [
+      "webc-component"
     ]
   },
   "props": [
@@ -38,23 +39,6 @@
       "required": false
     },
     {
-      "name": "disableContainer",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "disable-container",
-      "reflectToAttr": true,
-      "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
       "name": "disableTranslations",
       "type": "boolean",
       "mutable": false,
@@ -66,6 +50,37 @@
       "values": [
         {
           "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "element",
+      "type": "HTMLElement",
+      "mutable": false,
+      "reflectToAttr": false,
+      "docs": "The reference to actual CustomElement / Component that is created.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "HTMLElement"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "template",
+      "type": "string",
+      "mutable": false,
+      "attr": "template",
+      "reflectToAttr": true,
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
         }
       ],
       "optional": false,
@@ -104,15 +119,6 @@
       "cancelable": true,
       "composed": true,
       "docs": "Through this event the model is received.",
-      "docsTags": []
-    },
-    {
-      "event": "webcardinal:routing:get",
-      "detail": "RoutingState",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": "Routing configuration received from <code>webc-app-router</code>.",
       "docsTags": []
     },
     {

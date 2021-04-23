@@ -7,9 +7,10 @@
 
 ## Properties
 
-| Property     | Attribute | Description                                        | Type     | Default          |
-| ------------ | --------- | -------------------------------------------------- | -------- | ---------------- |
-| `loaderName` | `loader`  | Component tag name (in lowercase) for a UI loader. | `string` | `'webc-spinner'` |
+| Property  | Attribute | Description                                                                                                       | Type     | Default          |
+| --------- | --------- | ----------------------------------------------------------------------------------------------------------------- | -------- | ---------------- |
+| `loader`  | `loader`  | Component tag name for a UI loader.                                                                               | `string` | `'webc-spinner'` |
+| `preload` | `preload` | Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br> | `string` | `undefined`      |
 
 
 ## Events
@@ -26,6 +27,7 @@
 - [webc-app-container](../webc-app-container)
 - [webc-app-menu](../webc-app-menu/webc-app-menu)
 - [webc-app-error-toast](../webc-app-error-toast)
+- [webc-component](../../webc-component)
 
 ### Graph
 ```mermaid
@@ -33,6 +35,7 @@ graph TD;
   webc-app-root --> webc-app-container
   webc-app-root --> webc-app-menu
   webc-app-root --> webc-app-error-toast
+  webc-app-root --> webc-component
   webc-app-container --> webc-app-router
   webc-app-router --> stencil-route
   webc-app-router --> stencil-router
@@ -41,6 +44,7 @@ graph TD;
   webc-app-menu --> webc-app-identity
   webc-app-menu-item --> webc-app-menu-item
   webc-app-menu-item --> stencil-route-link
+  webc-component --> webc-container
   style webc-app-root fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

@@ -10,13 +10,15 @@
   "dependencies": [
     "webc-app-container",
     "webc-app-menu",
-    "webc-app-error-toast"
+    "webc-app-error-toast",
+    "webc-component"
   ],
   "dependencyGraph": {
     "webc-app-root": [
       "webc-app-container",
       "webc-app-menu",
-      "webc-app-error-toast"
+      "webc-app-error-toast",
+      "webc-component"
     ],
     "webc-app-container": [
       "webc-app-router"
@@ -33,18 +35,37 @@
     "webc-app-menu-item": [
       "webc-app-menu-item",
       "stencil-route-link"
+    ],
+    "webc-component": [
+      "webc-container"
     ]
   },
   "props": [
     {
-      "name": "loaderName",
+      "name": "loader",
       "type": "string",
       "mutable": false,
       "attr": "loader",
       "reflectToAttr": false,
-      "docs": "Component tag name (in lowercase) for a UI loader.",
+      "docs": "Component tag name for a UI loader.",
       "docsTags": [],
       "default": "'webc-spinner'",
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "preload",
+      "type": "string",
+      "mutable": false,
+      "attr": "preload",
+      "reflectToAttr": false,
+      "docs": "Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br>",
+      "docsTags": [],
       "values": [
         {
           "type": "string"

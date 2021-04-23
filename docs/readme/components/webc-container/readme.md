@@ -16,9 +16,11 @@
 
 ## Events
 
-| Event                     | Description                                                       | Type                        |
-| ------------------------- | ----------------------------------------------------------------- | --------------------------- |
-| `webcardinal:routing:get` | Routing configuration received from <code>webc-app-router</code>. | `CustomEvent<RoutingState>` |
+| Event                              | Description                                                       | Type                        |
+| ---------------------------------- | ----------------------------------------------------------------- | --------------------------- |
+| `webcardinal:model:get`            | Through this event the model is received.                         | `CustomEvent<any>`          |
+| `webcardinal:routing:get`          | Routing configuration received from <code>webc-app-router</code>. | `CustomEvent<RoutingState>` |
+| `webcardinal:translationModel:get` | Through this event the translation model is received.             | `CustomEvent<any>`          |
 
 
 ## Methods
@@ -48,11 +50,13 @@ Type: `Promise<any>`
 
 ### Used by
 
+ - [webc-component](../webc-component)
  - [webc-modal](../webc-modal)
 
 ### Graph
 ```mermaid
 graph TD;
+  webc-component --> webc-container
   webc-modal --> webc-container
   style webc-container fill:#f9f,stroke:#333,stroke-width:4px
 ```
