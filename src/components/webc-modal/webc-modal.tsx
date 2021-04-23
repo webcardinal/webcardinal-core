@@ -1,7 +1,7 @@
 import { Component, Event, EventEmitter, h, Method, Prop, State } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
-import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
+// import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService } from '../../services';
 import { resolveEnableTranslationState } from '../../utils';
@@ -305,13 +305,12 @@ export class WebcModal {
         </div>
       </div>
     );
-
     if (this.controller) {
-      this.host.setAttribute(VIEW_MODEL_KEY, MODEL_CHAIN_PREFIX);
       const props = {
         'controller': this.controller,
-        [`${VIEW_MODEL_KEY}`]: MODEL_CHAIN_PREFIX,
         'disableTranslations': this.disableTranslations,
+        // TODO: known issue, webc-container from shadow-root of webc-modal can not have access to models
+        // [`${VIEW_MODEL_KEY}`]: MODEL_CHAIN_PREFIX,
         'bind-modal': '',
       };
       return <webc-container {...props}>{modal}</webc-container>;

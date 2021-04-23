@@ -12,6 +12,7 @@ import {
   ControllerTranslationService,
 } from '../../services';
 import { resolveRoutingState, resolveEnableTranslationState, extractChain, promisifyEventEmit } from '../../utils';
+import { VIEW_MODEL_KEY } from '../../constants';
 
 @Component({
   tag: 'webc-container',
@@ -84,12 +85,15 @@ export class WebcContainer {
     if (enableTranslations) {
       const routingState = await resolveRoutingState(this);
       if (!(await ControllerTranslationService.loadAndSetTranslationsForPage(routingState))) {
-        // console.warn('TODO: future optimization, do not load any translations for this page in the current context (while the user is in the same page)');
+        // TODO: future optimization, do not load any translations for this page in the current context
+        // while the user is in the same page;
       }
     }
 
     const [controllerElement, bindingElement] = this.resolveControllerElement();
-    let model, translationModel, history = this.history;
+    let model,
+      translationModel,
+      history = this.history;
 
     this.chain = extractChain(this.host);
 
@@ -107,8 +111,10 @@ export class WebcContainer {
       translationModel = this.controllerInstance.model;
     }
 
-    // TODO:
-    if (this.host.hasAttribute('default-controller')) {
+    // "default-controller" is attached when container does binding of undefined models or when controllers are not found
+    // but if 'data-view-model="@"' is present binding is supported
+    // (if there is a global model upper in the DOM, otherwise the webc-container can not hydrate)
+    if (this.host.hasAttribute('default-controller') && !this.host.hasAttribute(VIEW_MODEL_KEY)) {
       return;
     }
 

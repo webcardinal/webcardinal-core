@@ -479,7 +479,7 @@ export default class Controller {
   setModel(model) {
     console.warn(
       [
-        `Function "setModel" is applied in redundant manner and it is also deprecated.`,
+        `Function "setModel" is applied in a redundant manner and it is also deprecated.`,
         `This function will be removed in a future release`,
         `Use "this.model = <YOUR_MODEL>" instead`,
       ].join('\n'),
