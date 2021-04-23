@@ -1,11 +1,13 @@
-import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop, State } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Prop, State } from '@stencil/core';
+import { HTMLStencilElement } from '@stencil/core/internal';
+
 import type { RouterHistory } from '@stencil/router';
 import { injectHistory } from '@stencil/router';
 
-import { ApplicationController } from '../../../controllers';
 import { HostElement } from '../../../decorators';
 import { promisifyEventEmit } from '../../../utils';
+
+import ApplicationController from '../../../controllers/ApplicationController';
 
 import { subscribeToLogs } from './webc-app-root-utils';
 
@@ -17,12 +19,17 @@ import { subscribeToLogs } from './webc-app-root-utils';
   shadow: true,
 })
 export class WebcAppRoot {
-  @HostElement() host: HTMLElement;
+  @HostElement() host: HTMLStencilElement;
 
   /**
-   * Component tag name (in lowercase) for a UI loader.
+   * Component tag name for a UI loader.
    */
-  @Prop({ attribute: 'loader' }) loaderName = 'webc-spinner';
+  @Prop() loader = 'webc-spinner';
+
+  /**
+   * Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br>
+   */
+  @Prop() preload: string;
 
   @State() history: RouterHistory;
 
@@ -40,26 +47,22 @@ export class WebcAppRoot {
   private _loaderElement: HTMLElement;
 
   async componentWillLoad() {
-    if (this.host.parentElement && this.loaderName) {
-      this._loaderElement = document.createElement(this.loaderName);
+    if (this.host.parentElement && this.loader) {
+      this._loaderElement = document.createElement(this.loader);
       this.host.parentElement.appendChild(this._loaderElement);
     }
 
-    new ApplicationController(this.host);
+    new ApplicationController(this.host, this.preload);
 
     if (this.host.children.length === 0) {
       const computedStyles = window.getComputedStyle(this.host);
-      const initialMode = computedStyles
-        .getPropertyValue('--webc-app-menu-mode')
-        .trim();
+      const initialMode = computedStyles.getPropertyValue('--webc-app-menu-mode').trim();
 
       if (initialMode === 'none') {
         this.host.setAttribute('layout', 'container');
         this.host.append(document.createElement('webc-app-container'));
       } else {
-        const breakpoint = computedStyles.getPropertyValue(
-          '--webc-app-menu-mobile-breakpoint',
-        );
+        const breakpoint = computedStyles.getPropertyValue('--webc-app-menu-mobile-breakpoint');
         const mediaQuery = window.matchMedia(`(max-width: ${breakpoint})`);
 
         const mode = initialMode;
@@ -87,18 +90,12 @@ export class WebcAppRoot {
 
         mediaQuery.addEventListener('change', e => {
           if (e.matches) {
-            document.documentElement.style.setProperty(
-              '--webc-app-menu-mode',
-              ` ${mobileMode}`,
-            );
+            document.documentElement.style.setProperty('--webc-app-menu-mode', ` ${mobileMode}`);
             elements.menu.remove();
             this.host.setAttribute('layout', mobileMode);
             this.host.insertBefore(mobileElements.menu, elements.container);
           } else {
-            document.documentElement.style.setProperty(
-              '--webc-app-menu-mode',
-              ` ${initialMode}`,
-            );
+            document.documentElement.style.setProperty('--webc-app-menu-mode', ` ${initialMode}`);
             mobileElements.menu.remove();
             this.host.setAttribute('layout', initialMode);
             this.host.insertBefore(elements.menu, elements.container);
@@ -119,10 +116,6 @@ export class WebcAppRoot {
     }
   }
 
-  render() {
-    return <slot />;
-  }
-
   private async registerAppErrorComponentAndListeners() {
     this.host.appendChild(document.createElement('webc-app-error-toast'));
 
@@ -132,6 +125,10 @@ export class WebcAppRoot {
     } catch (error) {
       console.error(error);
     }
+  }
+
+  render() {
+    return <slot />;
   }
 }
 

@@ -77,9 +77,13 @@ export namespace Components {
     }
     interface WebcAppRoot {
         /**
-          * Component tag name (in lowercase) for a UI loader.
+          * Component tag name for a UI loader.
          */
-        "loaderName": string;
+        "loader": string;
+        /**
+          * Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br>
+         */
+        "preload": string;
     }
     interface WebcAppRouter {
         /**
@@ -94,6 +98,32 @@ export namespace Components {
           * This Array is received from <code>ApplicationController</code>.
          */
         "routes": any[];
+    }
+    interface WebcComponent {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
+        "controller": string;
+        /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations": boolean;
+        /**
+          * The reference to actual CustomElement / Component that is created.
+         */
+        "element": HTMLElement;
+        /**
+          * The model from controller is exposed by this method.
+         */
+        "getModel": () => Promise<any>;
+        /**
+          * The translation model from controller is exposed by this method.
+         */
+        "getTranslationModel": () => Promise<any>;
+        /**
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.
+         */
+        "template": string;
     }
     interface WebcContainer {
         /**
@@ -304,6 +334,12 @@ declare global {
         prototype: HTMLWebcAppRouterElement;
         new (): HTMLWebcAppRouterElement;
     };
+    interface HTMLWebcComponentElement extends Components.WebcComponent, HTMLStencilElement {
+    }
+    var HTMLWebcComponentElement: {
+        prototype: HTMLWebcComponentElement;
+        new (): HTMLWebcComponentElement;
+    };
     interface HTMLWebcContainerElement extends Components.WebcContainer, HTMLStencilElement {
     }
     var HTMLWebcContainerElement: {
@@ -356,6 +392,7 @@ declare global {
         "webc-app-redirect": HTMLWebcAppRedirectElement;
         "webc-app-root": HTMLWebcAppRootElement;
         "webc-app-router": HTMLWebcAppRouterElement;
+        "webc-component": HTMLWebcComponentElement;
         "webc-container": HTMLWebcContainerElement;
         "webc-docs": HTMLWebcDocsElement;
         "webc-link": HTMLWebcLinkElement;
@@ -442,13 +479,17 @@ declare namespace LocalJSX {
     }
     interface WebcAppRoot {
         /**
-          * Component tag name (in lowercase) for a UI loader.
+          * Component tag name for a UI loader.
          */
-        "loaderName"?: string;
+        "loader"?: string;
         /**
           * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
          */
         "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
+        /**
+          * Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br>
+         */
+        "preload"?: string;
     }
     interface WebcAppRouter {
         /**
@@ -468,6 +509,32 @@ declare namespace LocalJSX {
          */
         "routes"?: any[];
     }
+    interface WebcComponent {
+        /**
+          * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
+         */
+        "controller"?: string;
+        /**
+          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
+         */
+        "disableTranslations"?: boolean;
+        /**
+          * The reference to actual CustomElement / Component that is created.
+         */
+        "element"?: HTMLElement;
+        /**
+          * Through this event the model is received.
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event the translation model is received.
+         */
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.
+         */
+        "template"?: string;
+    }
     interface WebcContainer {
         /**
           * This property is a string that will permit the developer to choose his own controller. If no value is set then the null default value will be taken and the component will use the basic Controller.
@@ -482,9 +549,17 @@ declare namespace LocalJSX {
          */
         "disableTranslations"?: boolean;
         /**
+          * Through this event the model is received.
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        /**
           * Routing configuration received from <code>webc-app-router</code>.
          */
         "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
+        /**
+          * Through this event the translation model is received.
+         */
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
     interface WebcDocs {
         /**
@@ -635,6 +710,7 @@ declare namespace LocalJSX {
         "webc-app-redirect": WebcAppRedirect;
         "webc-app-root": WebcAppRoot;
         "webc-app-router": WebcAppRouter;
+        "webc-component": WebcComponent;
         "webc-container": WebcContainer;
         "webc-docs": WebcDocs;
         "webc-link": WebcLink;
@@ -657,6 +733,7 @@ declare module "@stencil/core" {
             "webc-app-redirect": LocalJSX.WebcAppRedirect & JSXBase.HTMLAttributes<HTMLWebcAppRedirectElement>;
             "webc-app-root": LocalJSX.WebcAppRoot & JSXBase.HTMLAttributes<HTMLWebcAppRootElement>;
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
+            "webc-component": LocalJSX.WebcComponent & JSXBase.HTMLAttributes<HTMLWebcComponentElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
             "webc-docs": LocalJSX.WebcDocs & JSXBase.HTMLAttributes<HTMLWebcDocsElement>;
             "webc-link": LocalJSX.WebcLink & JSXBase.HTMLAttributes<HTMLWebcLinkElement>;

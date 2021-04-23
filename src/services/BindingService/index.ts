@@ -9,6 +9,7 @@ import {
   PSK_CARDINAL_PREFIX,
   SKIP_BINDING_FOR_COMPONENTS,
   TRANSLATION_CHAIN_PREFIX,
+  DISABLE_BINDING
 } from '../../constants';
 import {
   bindElementAttributes,
@@ -95,64 +96,68 @@ const BindingService = {
       } else {
         const hasViewModelAttribute = element.hasAttribute(VIEW_MODEL_KEY);
         const hasModelAttribute = element.hasAttribute(MODEL_KEY);
-        if (hasViewModelAttribute || hasModelAttribute) {
-          let chain;
-          if (hasViewModelAttribute) {
-            chain = element.getAttribute(VIEW_MODEL_KEY);
-          } else {
-            console.warn(
-              `Attribute "${MODEL_KEY}" is deprecated for binding! Use the "${VIEW_MODEL_KEY}" key attribute instead.`,
-              element,
-            );
-            chain = element.getAttribute(MODEL_KEY);
-          }
+        const hasDisableBinding = element.hasAttribute(DISABLE_BINDING);
 
-          if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
-            chain = chain.slice(1);
-            const completeChain = getCompleteChain(chainPrefix, chain);
-
-            // update VIEW_MODEL_KEY
-            element.setAttribute(VIEW_MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
-            if (hasModelAttribute) {
-              // temporary update deprecated MODEL_KEY attribute
-              element.setAttribute(MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+        if (!hasDisableBinding) {
+          if (hasViewModelAttribute || hasModelAttribute) {
+            let chain;
+            if (hasViewModelAttribute) {
+              chain = element.getAttribute(VIEW_MODEL_KEY);
+            } else {
+              console.warn(
+                `Attribute "${MODEL_KEY}" is deprecated for binding! Use the "${VIEW_MODEL_KEY}" key attribute instead.`,
+                element,
+              );
+              chain = element.getAttribute(MODEL_KEY);
             }
 
-            // initial binding
-            setElementModel(element, model, completeChain);
-            bindElementChangeToModel(element, model, completeChain);
+            if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
+              chain = chain.slice(1);
+              const completeChain = getCompleteChain(chainPrefix, chain);
 
-            // onChange
-            model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+              // update VIEW_MODEL_KEY
+              element.setAttribute(VIEW_MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+              if (hasModelAttribute) {
+                // temporary update deprecated MODEL_KEY attribute
+                element.setAttribute(MODEL_KEY, `${MODEL_CHAIN_PREFIX}${completeChain}`);
+              }
 
-            // onChangeExpressionChain
-            if (model.hasExpression(completeChain)) {
-              model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+              // initial binding
+              setElementModel(element, model, completeChain);
+              bindElementChangeToModel(element, model, completeChain);
+
+              // onChange
+              model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+
+              // onChangeExpressionChain
+              if (model.hasExpression(completeChain)) {
+                model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+              }
+            } else {
+              console.warn(
+                `Invalid chain found! (chain: "${chain}")!\n`,
+                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
+                `target element:`,
+                element,
+              );
             }
-          } else {
-            console.warn(
-              `Invalid chain found! (chain: "${chain}")!\n`,
-              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".\n`,
-              `target element:`,
-              element,
-            );
           }
-        }
 
-        // for psk-<components> @BindModel decorator is design for this task
-        if (!element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
-          bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
-        }
+          // for psk-<components> @BindModel decorator is design for this task
+          if (!element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
+            bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
+          }
 
-        if (enableTranslations) {
-          bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
-        }
+          if (enableTranslations) {
+            bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
+          }
 
-        Array.from(element.childNodes)
-          .filter(isTextNode)
-          .forEach(node => {
-            bindNodeValue(node, model, translationModel, chainPrefix);
-          });
+          Array.from(element.childNodes)
+            .filter(isTextNode)
+            .forEach(node => {
+              bindNodeValue(node, model, translationModel, chainPrefix);
+            });
+        }
 
         if (recursive) {
           Array.from(element.children).forEach(child => {
@@ -163,7 +168,7 @@ const BindingService = {
     }
   },
 
-  bindChildNodes: (element: Element, options: BindElementOptions) => {
+  bindChildNodes: (element: Element | ShadowRoot, options: BindElementOptions) => {
     Array.from(element.childNodes).forEach(child => {
       BindingService.bindElement(child, { ...options });
     });

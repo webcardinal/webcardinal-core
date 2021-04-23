@@ -1,5 +1,6 @@
 import DSUStorage from '../libs/DSUStorage';
 import PskBindableModel from '../libs/bindableModel.js';
+import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../src/constants';
 
 export const DATA_TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
 
@@ -109,7 +110,16 @@ export function proxifyModelProperty(model) {
 }
 
 export default class Controller {
-  constructor(element, history) {
+  /**
+   * Controller exposes the main functions used in the WebCardinal
+   * (WebCardinal Controllers API)
+   *
+   * @param {HTMLElement} element - Controller is applied to this element
+   * @param {RouterHistory} history - Custom History object received from Stencil Router
+   * @param {Proxy | undefined} [_model]  - The model received from another WebcComponent if data-view-model is present
+   * @param {Proxy | {}} [_translationModel] - The translationModel received from an above WebcComponent
+   */
+  constructor(element, history, _model, _translationModel) {
     this.DSUStorage = new DSUStorage();
 
     this.element = element;
@@ -117,6 +127,18 @@ export default class Controller {
     this.tagEventListeners = [];
 
     let model;
+    if (_model && this.element.hasAttribute(VIEW_MODEL_KEY)) {
+      let chain = this.element.getAttribute(VIEW_MODEL_KEY);
+      if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
+        chain = chain.slice(1);
+      }
+      if (chain) {
+        model = PskBindableModel.setModel(getValueFromModelByChain(_model, chain));
+      } else {
+        model = _model;
+      }
+    }
+
     Object.defineProperty(this, 'model', {
       get() {
         return model;
@@ -135,7 +157,7 @@ export default class Controller {
 
     this.setLegacyGetModelEventListener();
 
-    this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
+    this.translationModel = _translationModel || PskBindableModel.setModel(getTranslationModel() || {});
 
     // will need to be called when the controller will be removed
     this.disconnectedCallback = () => {
@@ -150,16 +172,35 @@ export default class Controller {
     }
   }
 
-  createElement(elementName, props) {
-    if (props && props.model) {
-      props.model = proxifyModelProperty(props.model);
+  /**
+   * It creates an element by its tag name and applies all the given properties
+   *
+   * @param {string} tagName - The name of the HTMLElement that will be created
+   * @param {object} properties - Properties of the new created element
+   *
+   * @returns {HTMLElement}
+   *
+   * If "is" functionality from ElementCreationOptions is desired, use "document.createElement instead
+   */
+  createElement(tagName, properties) {
+    if (properties && properties.model) {
+      properties.model = proxifyModelProperty(properties.model);
     }
-    return Object.assign(document.createElement(elementName), props);
+    return Object.assign(document.createElement(tagName), properties);
   }
 
-  createAndAddElement(elementName, props) {
-    const element = this.createElement(elementName, props);
-    this.element.appendChild(element);
+  /**
+   * It creates an element by its tag name, applies all the given properties
+   * then the element is appended in current context of this Controller (this.element)
+   *
+   * @param {string} tagName - The name of the HTMLElement that will be created
+   * @param {object} properties - Properties of the new created element
+   *
+   * @returns {HTMLElement}
+   */
+  createAndAddElement(tagName, properties) {
+    const element = this.createElement(tagName, properties);
+    this.element.append(element);
     return element;
   }
 
@@ -304,10 +345,6 @@ export default class Controller {
     this.element.dispatchEvent(new CustomEvent(eventName, eventOptions));
   }
 
-  setModel(model) {
-    this.model = model;
-  }
-
   setLegacyGetModelEventListener() {
     let dispatchModel = function (bindValue, model, callback) {
       if (bindValue && model[bindValue]) {
@@ -341,16 +378,7 @@ export default class Controller {
     return this.history.location.state;
   }
 
-  setLanguage() {
-    console.warn(
-      [
-        `'Functions "setLanguage" is deprecated!'`,
-        'Use "setSkin" with a new skin if changing of the translations is desired',
-      ].join('\n'),
-    );
-  }
-
-  setPreferredSkin(skin, { saveOption } = { saveOption: true }) {
+  setSkin(skin, { save } = { save: true }) {
     if (!isSkinEnabled()) {
       console.warn('WebCardinal skin is not set by your Application!');
       return;
@@ -361,14 +389,14 @@ export default class Controller {
       return;
     }
 
-    if (saveOption && 'localStorage' in window) {
+    if (save && 'localStorage' in window) {
       window.localStorage.setItem('webcardinal.skin', skin);
     }
 
     window.WebCardinal.state.skin = skin;
   }
 
-  getPreferredSkin() {
+  getSkin() {
     if (!isSkinEnabled()) {
       console.warn('WebCardinal skin is not set by your Application!');
       return;
@@ -377,7 +405,7 @@ export default class Controller {
     return window.WebCardinal.state.skin;
   }
 
-  changeSkinForCurrentPage(skin) {
+  applySkinForCurrentPage(skin) {
     if (!isSkinEnabled()) {
       console.warn('WebCardinal skin is not set by your Application!');
       return;
@@ -441,5 +469,64 @@ export default class Controller {
 
   querySelectorAll(selector) {
     return this.element.querySelectorAll(selector);
+  }
+
+  /**
+   * @deprecated
+   *
+   * Use "this.model = <YOUR_MODEL>" instead
+   */
+  setModel(model) {
+    console.warn(
+      [
+        `Function "setModel" is applied in redundant manner and it is also deprecated.`,
+        `This function will be removed in a future release`,
+        `Use "this.model = <YOUR_MODEL>" instead`,
+      ].join('\n'),
+    );
+    this.model = model;
+  }
+
+  /**
+   * @deprecated
+   */
+  setLanguage() {
+    console.warn(
+      [
+        `Function "setLanguage" is deprecated!`,
+        'Use "setSkin" with a new skin if changing of the translations is desired',
+      ].join('\n'),
+    );
+  }
+
+  /**
+   * @deprecated
+   */
+  setPreferredSkin(skin, { saveOption } = { saveOption: true }) {
+    console.warn(
+      [
+        `Function "setPreferredSkin" is deprecated!`,
+        `Use "setSkin" instead, "saveOptions" flag is now "save" (store your skin in localStorage).`,
+      ].join('\n'),
+    );
+    this.setSkin(skin, { save: saveOption });
+  }
+
+  /**
+   * @deprecated
+   */
+  getPreferredSkin() {
+    console.warn([`Function "getPreferredSkin" is deprecated!`, `Use "getSkin" instead!`].join('\n'));
+    return this.getSkin();
+  }
+
+  /**
+   * @deprecated
+   */
+  changeSkinForCurrentPage(skin) {
+    console.warn(
+      [`Function "changeSkinForCurrentPage" is deprecated!`, `Use "applySkinForCurrentPage" instead!`].join('\n'),
+    );
+    this.applySkinForCurrentPage(skin);
   }
 }

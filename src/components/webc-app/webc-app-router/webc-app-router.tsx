@@ -1,9 +1,9 @@
 import { Component, Event, EventEmitter, h, Prop, State } from '@stencil/core';
 
-import { PAGES_PATH } from '../../../constants';
+import { ASSETS_PATH, ID_CUSTOM_SKIN_CSS, ID_DEFAULT_SKIN_CSS, PAGES_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
-import { promisifyEventEmit, URLHelper } from '../../../utils';
+import { getSkinFromState, getSkinPathFromState, promisifyEventEmit, URLHelper } from '../../../utils';
 
 const { join, trimEnd } = URLHelper;
 
@@ -87,7 +87,7 @@ export class WebcAppRouter {
         componentProps: { url: '/' },
       };
       propsClone.component = 'webc-app-redirect';
-      this.content.push(<stencil-route data-path={propsClone.url} data-redirect {...propsClone} />);
+      this.content.push(<stencil-route data-path={propsClone.url} data-redirect="" {...propsClone} />);
     }
 
     return <stencil-route data-path={props.url} data-src={src} {...props} />;
@@ -104,7 +104,7 @@ export class WebcAppRouter {
       const payload: RoutesPayload = {
         path: join('', path, route.path).pathname,
         src: join('', src, route.src).pathname,
-        skin: 'none'
+        skin: 'none',
       };
 
       if (route.children) {
@@ -146,7 +146,7 @@ export class WebcAppRouter {
     return <stencil-route data-src={src} {...props} />;
   };
 
-  private __manageLandingPage = () => {
+  private manageLandingPage = () => {
     // fix regarding WebCardinal in a non-updated location context of an psk-ssapp
     if (window && window.frameElement && window.frameElement.hasAttribute('landing-page')) {
       this.landingPage = window.frameElement.getAttribute('landing-page');
@@ -167,11 +167,51 @@ export class WebcAppRouter {
         component: 'webc-app-redirect',
         componentProps: { url: this.landingPage },
       };
-      this.content.push(<stencil-route data-path={props.url} data-redirect {...props} />);
+      this.content.push(<stencil-route data-path={props.url} data-redirect="" {...props} />);
     }
   };
 
+  private manageSkinCSS() {
+    const skin = getSkinFromState();
+    const skinPath = getSkinPathFromState();
+
+    // in order to make local imports of the user with higher priority then skin.css
+    let webcardinalStylesheet = document.head.querySelector('link[href$="webcardinal.css"]');
+
+    if (!webcardinalStylesheet) {
+      console.error([
+        `WebCardinal stylesheet not found!`,
+        `Add <link rel="stylesheet" href="webcardinal/webcardinal.css"> in your "index.html"`
+      ].join('\n'));
+
+      // if stylesheet is missing, insert skins after WebCardinal distribution
+      webcardinalStylesheet = document.head.querySelector('script[src$="webcardinal.js"]');
+    }
+
+    const defaultSkinStylesheet = Object.assign(document.createElement('link'), {
+      rel: 'stylesheet',
+      href: join(this.basePath, ASSETS_PATH, 'skin.css').pathname.slice(1),
+      id: ID_DEFAULT_SKIN_CSS,
+    });
+
+    webcardinalStylesheet.insertAdjacentElement('afterend', defaultSkinStylesheet);
+
+    if (skin !== 'default') {
+      const customSkinStylesheet = Object.assign(document.createElement('link'), {
+        rel: 'stylesheet',
+        href: join(this.basePath, skinPath, ASSETS_PATH, 'skin.css').pathname.slice(1),
+        id: ID_CUSTOM_SKIN_CSS,
+      });
+
+      defaultSkinStylesheet.insertAdjacentElement('afterend', customSkinStylesheet);
+    }
+  }
+
   async componentWillLoad() {
+    if (!this.host.isConnected) {
+      return;
+    }
+
     try {
       const routing = await promisifyEventEmit(this.getRoutingConfigEvent);
       this.routes = routing.pages;
@@ -180,7 +220,8 @@ export class WebcAppRouter {
 
       this.pagesPathRegExp = new RegExp(`^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
 
-      this.__manageLandingPage();
+      this.manageSkinCSS();
+      this.manageLandingPage();
 
       this.content.push(this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage));
 

@@ -8,12 +8,8 @@ const ControllerRegistryService = {
     const { controllers, basePath } = window.WebCardinal;
     const skin = getSkinFromState();
 
-    if (!controllers[skin]) {
-      controllers[skin] = {};
-    }
-
-    if (controllers[skin][controllerPath]) {
-      return controllers[skin][controllerPath];
+    if (controllers[controllerPath]) {
+      return controllers[controllerPath];
     }
 
     // check if there is a controller for current skin
@@ -22,6 +18,7 @@ const ControllerRegistryService = {
     );
 
     if (controller) {
+      controllers[controllerPath] = controller;
       return controller;
     }
 
@@ -31,7 +28,13 @@ const ControllerRegistryService = {
     }
 
     // if there is no controller from skin, fallback is to default skin (root level)
-    return await loadJS(join(basePath, SCRIPTS_PATH, 'controllers', controllerPath).pathname);
+    controller = await loadJS(join(basePath, SCRIPTS_PATH, 'controllers', controllerPath).pathname);
+    if (controller) {
+      controllers[controllerPath] = controller;
+      return controller;
+    }
+
+    return;
   },
 };
 

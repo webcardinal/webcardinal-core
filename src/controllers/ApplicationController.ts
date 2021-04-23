@@ -1,5 +1,9 @@
+import { HTMLStencilElement } from '@stencil/core/internal';
+
 import controllers from '../../base/controllers';
 import fetch from '../../base/utils/fetch.js';
+import defaultConfig from './config/default';
+import { FallbackPage, LogLevel } from './config/types';
 import {
   LOG_LEVEL,
   EVENT_CONFIG_GET_ROUTING,
@@ -8,9 +12,8 @@ import {
   EVENT_CONFIG_GET_CORE_TYPE,
   EVENT_CONFIG_GET_DOCS_SOURCE,
 } from '../constants';
-
-import defaultConfig from './config/default';
-import { FallbackPage, LogLevel } from './config/types';
+import getPreloadAPI, { applyPreloadMiddleware } from './prelaod';
+import getCustomElementsAPI from './custom-elements';
 
 const CONFIG_PATH = 'webcardinal.json';
 
@@ -19,6 +22,7 @@ export default class ApplicationController {
   private readonly basePath: URL;
   private readonly configURL: URL;
   private config: Record<string, unknown>;
+  private injectedControllers: object;
   private isConfigLoaded: boolean;
   private pendingRequests: [any?];
 
@@ -80,8 +84,8 @@ export default class ApplicationController {
     };
 
     loadConfiguration()
-      .then(data => callback(null, data))
-      .catch(error => callback(error));
+      .then(async data => await callback(null, data))
+      .catch(async error => await callback(error));
   }
 
   private _prepareConfiguration(rawConfig) {
@@ -181,7 +185,7 @@ export default class ApplicationController {
       const fallback = getPages(this.baseURL.href, [getRaw('pagesFallback')])[0];
       const { name, src, loader, tag } = fallback;
       const result = { name, src, loader, tag };
-      Object.keys(result).forEach(key => result[key] === undefined && delete result[key])
+      Object.keys(result).forEach(key => result[key] === undefined && delete result[key]);
       return result;
     };
 
@@ -227,7 +231,7 @@ export default class ApplicationController {
         return 'default';
       }
       return skin;
-    }
+    };
 
     const translations = getTranslations() || getEnableTranslations();
     const skin = getSkin();
@@ -295,28 +299,41 @@ export default class ApplicationController {
     };
   }
 
-  constructor(element) {
+  constructor(element: HTMLStencilElement, preloadPath: string) {
     this.baseURL = this._initBaseURL();
     this.basePath = this._initBasePath();
     this.configURL = this._initResourceURL(CONFIG_PATH);
     this.config = {};
+    this.injectedControllers = {};
     this.pendingRequests = [];
     this.isConfigLoaded = false;
 
-    this._readConfiguration((error, rawConfig) => {
+    this._readConfiguration(async (error, rawConfig) => {
       if (error) {
         console.error(error);
         return;
       }
 
       this.config = this._prepareConfiguration(rawConfig);
-      console.log('WebCardinal initialization config:', this.config);
+
+      window.WebCardinal = {
+        controllers,
+        preload: getPreloadAPI.bind(this)(),
+        components: getCustomElementsAPI(),
+      };
+
+      await applyPreloadMiddleware.bind(this)(preloadPath);
+
+      console.log('[WebCardinal] Config:', this.config);
       this.isConfigLoaded = true;
 
       window.WebCardinal = {
         ...window.WebCardinal,
         basePath: this.basePath,
-        controllers,
+        controllers: {
+          ...this.injectedControllers,
+          ...controllers,
+        },
         state: {
           translations: this.config.translations,
           skin: this.config.skin,

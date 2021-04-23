@@ -11,7 +11,7 @@ import {
   ControllerRegistryService,
   ControllerTranslationService,
 } from '../../services';
-import { resolveRoutingState, resolveEnableTranslationState } from '../../utils';
+import { resolveRoutingState, resolveEnableTranslationState, extractChain, promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -23,6 +23,7 @@ export class WebcContainer {
 
   private controllerInstance;
   private listeners: ComponentListenersService;
+  private chain;
 
   /**
    * This property is a string that will permit the developer to choose his own controller.
@@ -52,13 +53,34 @@ export class WebcContainer {
   })
   getRoutingStateEvent: EventEmitter<RoutingState>;
 
+  /**
+   * Through this event the model is received.
+   */
+  @Event({
+    eventName: 'webcardinal:model:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getModelEvent: EventEmitter;
+
+  /**
+   * Through this event the translation model is received.
+   */
+  @Event({
+    eventName: 'webcardinal:translationModel:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationModelEvent: EventEmitter;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
 
     const enableTranslations = resolveEnableTranslationState(this);
-
     if (enableTranslations) {
       const routingState = await resolveRoutingState(this);
       if (!(await ControllerTranslationService.loadAndSetTranslationsForPage(routingState))) {
@@ -66,19 +88,36 @@ export class WebcContainer {
       }
     }
 
-    const controllerElement = this.resolveControllerElement();
-    this.controllerInstance = await this.loadController(controllerElement);
+    const [controllerElement, bindingElement] = this.resolveControllerElement();
+    let model, translationModel, history = this.history;
 
+    this.chain = extractChain(this.host);
+
+    if (this.chain) {
+      try {
+        model = await promisifyEventEmit(this.getModelEvent);
+        translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
+        this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      this.controllerInstance = await this.loadController(controllerElement, history);
+      model = this.controllerInstance.model;
+      translationModel = this.controllerInstance.model;
+    }
+
+    // TODO:
     if (this.host.hasAttribute('default-controller')) {
       return;
     }
 
-    const { model, translationModel } = this.controllerInstance;
-    if (translationModel || model) {
-      BindingService.bindChildNodes(controllerElement, {
+    if (model || translationModel) {
+      BindingService.bindChildNodes(bindingElement, {
         model,
         translationModel,
         recursive: true,
+        chainPrefix: this.chain ? this.chain.slice(1) : null,
         enableTranslations,
       });
       this.listeners = new ComponentListenersService(this.host, {
@@ -144,25 +183,39 @@ export class WebcContainer {
   }
 
   // It resolves "this.element" from any type of WebCardinal Controller
-  private resolveControllerElement() {
+  private resolveControllerElement(): [Element, Element] {
     let target = this.host as HTMLElement;
-    const shadowRoot = this.host.parentNode;
-    if (shadowRoot instanceof ShadowRoot) {
-      if (this.host.hasAttribute('data-modal')) {
-        target = shadowRoot.host as HTMLElement;
+
+    if (this.host.hasAttribute('bind-modal')) {
+      const parentNode = this.host.parentNode;
+      if (parentNode instanceof ShadowRoot) {
+        // bind webc-modal slots
+        return [parentNode.host, parentNode.host];
       }
     }
-    if (this.disableContainer) {
-      target = target.parentElement;
+
+    if (this.host.hasAttribute('bind-component')) {
+      const parentNode = this.host.parentNode;
+      if (parentNode instanceof ShadowRoot) {
+        return [parentNode.host, this.host];
+      }
+      if (parentNode instanceof HTMLElement) {
+        return [parentNode, this.host];
+      }
     }
-    return target;
+
+    if (this.disableContainer) {
+      return [target.parentElement, target.parentElement];
+    }
+
+    return [target, target];
   }
 
   // It loads the controller specified as property or a default controller
-  private async loadController(element: HTMLElement) {
+  private async loadController(element: Element, history: RouterHistory, model?, translationModel?) {
     const loadDefaultController = () => {
       this.host.setAttribute('default-controller', '');
-      return new DefaultController(element, this.history);
+      return new DefaultController(element, history, model, translationModel);
     };
 
     if (this.host.hasAttribute('controller-name') && !this.controller) {
@@ -185,7 +238,7 @@ export class WebcContainer {
 
     try {
       const Controller = await ControllerRegistryService.getController(this.controller);
-      return new Controller(element, this.history);
+      return new Controller(element, history, model, translationModel);
     } catch (error) {
       console.error(`Error while loading controller "${this.controller}"`, error);
       return loadDefaultController();

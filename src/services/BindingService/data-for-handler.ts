@@ -48,11 +48,9 @@ export function handleDataForAttributePresence(
   let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
 
   const forOptions = (element.getAttribute(FOR_OPTIONS) || '').split(' ').filter(String);
-  console.log({ forOptions });
 
   const isOptimisticMode = forOptions.includes(FOR_OPTIMISTIC);
   let isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
-  console.log({ isOptimisticMode, isWrapperRerenderMode });
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];

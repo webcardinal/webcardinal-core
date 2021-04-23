@@ -1,8 +1,8 @@
 import Controller, { proxifyModelProperty } from './Controller';
 
 export default class WebcController extends Controller {
-  constructor(element, history) {
-    super(element, history);
+  constructor(...props) {
+    super(...props);
   }
 
   showModal(content, title, onConfirm, onClose, props = {}) {
