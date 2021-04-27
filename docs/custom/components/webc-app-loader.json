@@ -89,6 +89,22 @@
       ],
       "optional": false,
       "required": false
+    },
+    {
+      "name": "tag",
+      "type": "string",
+      "mutable": false,
+      "attr": "tag",
+      "reflectToAttr": true,
+      "docs": "Tag of the page set in <code>webcardinal.json</code>.",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
     }
   ],
   "methods": [],

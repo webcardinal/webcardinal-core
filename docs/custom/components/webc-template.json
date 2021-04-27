@@ -16,7 +16,7 @@
       "mutable": false,
       "attr": "disable-container",
       "reflectToAttr": true,
-      "docs": "If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.\nOtherwise the content will replace the <code>webc-template</code> element form DOM.",
+      "docs": "If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot.\r\nOtherwise the content will replace the <code>webc-template</code> element form DOM.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -50,7 +50,7 @@
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.",
+      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.",
       "docsTags": [],
       "values": [
         {
