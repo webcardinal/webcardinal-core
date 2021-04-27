@@ -108,7 +108,7 @@ export class WebcContainer {
     } else {
       this.controllerInstance = await this.loadController(controllerElement, history);
       model = this.controllerInstance.model;
-      translationModel = this.controllerInstance.model;
+      translationModel = this.controllerInstance.translationModel;
     }
 
     // "default-controller" is attached when container does binding of undefined models or when controllers are not found

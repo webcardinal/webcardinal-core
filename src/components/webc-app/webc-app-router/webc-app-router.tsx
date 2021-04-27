@@ -12,6 +12,7 @@ interface RoutesPayload {
   src: string;
   loader?: string;
   skin?: string;
+  tag?: string;
 }
 
 function isSSAppContext() {
@@ -71,13 +72,16 @@ export class WebcAppRouter {
   private mapping = {};
   private pagesPathRegExp: RegExp;
 
-  private _renderRoute = ({ path, src, loader, skin }: RoutesPayload) => {
+  private _renderRoute = ({ path, src, loader, skin, tag }: RoutesPayload) => {
     const props = {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, basePath: this.basePath },
+      componentProps: { src, loader, skin, basePath: this.basePath } as any,
     };
+    if (tag) {
+      props.componentProps.tag = tag;
+    }
 
     // fix regarding WebCardinal in a non-updated location context of an iframe
     if (props.url === '/' && isSSAppContext()) {
@@ -123,6 +127,7 @@ export class WebcAppRouter {
 
         if (route.tag) {
           this.tags[route.tag] = payload.path;
+          payload.tag = route.tag;
         }
 
         if (route.loader) {
@@ -141,8 +146,11 @@ export class WebcAppRouter {
     const skin = 'none';
     const props = {
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, basePath: this.basePath },
+      componentProps: { src, loader, skin, basePath: this.basePath } as any,
     };
+    if (fallback.tag) {
+      props.componentProps.tag = fallback.tag;
+    }
     return <stencil-route data-src={src} {...props} />;
   };
 
@@ -179,10 +187,12 @@ export class WebcAppRouter {
     let webcardinalStylesheet = document.head.querySelector('link[href$="webcardinal.css"]');
 
     if (!webcardinalStylesheet) {
-      console.error([
-        `WebCardinal stylesheet not found!`,
-        `Add <link rel="stylesheet" href="webcardinal/webcardinal.css"> in your "index.html"`
-      ].join('\n'));
+      console.error(
+        [
+          `WebCardinal stylesheet not found!`,
+          `Add <link rel="stylesheet" href="webcardinal/webcardinal.css"> in your "index.html"`,
+        ].join('\n'),
+      );
 
       // if stylesheet is missing, insert skins after WebCardinal distribution
       webcardinalStylesheet = document.head.querySelector('script[src$="webcardinal.js"]');
@@ -207,6 +217,24 @@ export class WebcAppRouter {
     }
   }
 
+  private manageHooks() {
+    if (!window.WebCardinal.hooks) {
+      return;
+    }
+    const hooks = window.WebCardinal.hooks;
+    for (let tag of Object.keys(hooks)) {
+      if (!this.tags[tag]) {
+        console.warn(
+          [
+            `"addHook(tag: string, when: whenType, hook: Function)": tag "${tag}" does not belong to any page`,
+            `The hook can not be called for any page, the hook is removed!`,
+          ].join('\n'),
+        );
+        delete hooks[tag];
+      }
+    }
+  }
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -218,12 +246,18 @@ export class WebcAppRouter {
       this.fallbackPage = routing.pagesFallback;
       this.basePath = trimEnd(new URL(routing.baseURL).pathname);
 
-      this.pagesPathRegExp = new RegExp(`^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
+      this.pagesPathRegExp = new RegExp(
+        `^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)
+
+`,
+      );
 
       this.manageSkinCSS();
       this.manageLandingPage();
 
       this.content.push(this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage));
+
+      this.manageHooks();
 
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,

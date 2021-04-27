@@ -1,4 +1,4 @@
-import type { LogLevel } from '../interfaces';
+import type { HookType, LogLevel } from '../interfaces';
 
 // events
 export * from './events';
@@ -49,4 +49,12 @@ export const LOG_LEVEL: {
   NONE: 'none',
   WARN: 'warn',
   ERROR: 'error',
+};
+
+export const HOOK_TYPE: {
+  [key: string]: HookType;
+} = {
+  BEFORE_PAGE: 'beforePageLoads',
+  AFTER_PAGE: 'afterPageLoads',
+  CLOSED_PAGE: 'whenPageClose'
 };

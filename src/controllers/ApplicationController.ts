@@ -23,6 +23,7 @@ export default class ApplicationController {
   private readonly configURL: URL;
   private config: Record<string, unknown>;
   private injectedControllers: object;
+  private injectedHooks: object;
   private isConfigLoaded: boolean;
   private pendingRequests: [any?];
 
@@ -305,6 +306,7 @@ export default class ApplicationController {
     this.configURL = this._initResourceURL(CONFIG_PATH);
     this.config = {};
     this.injectedControllers = {};
+    this.injectedHooks = {};
     this.pendingRequests = [];
     this.isConfigLoaded = false;
 
@@ -318,6 +320,7 @@ export default class ApplicationController {
 
       window.WebCardinal = {
         controllers,
+        hooks: this.injectedHooks,
         preload: getPreloadAPI.bind(this)(),
         components: getCustomElementsAPI(),
       };

@@ -2,8 +2,8 @@ import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../../decorators';
-import { SKINS_PATH } from '../../../constants';
-import { WebcAppLoaderType } from '../../../interfaces';
+import { HOOK_TYPE, SKINS_PATH } from '../../../constants';
+import { HookType, WebcAppLoaderType } from '../../../interfaces';
 import { getSkinFromState, URLHelper } from '../../../utils';
 
 import { checkPageExistence, loadPageContent } from './webc-app-loader.utils';
@@ -21,6 +21,7 @@ export class WebcAppLoader {
   private activeSrc;
   private watchSkin = false;
   private skinSet = false;
+  private hooks = {};
 
   /**
    * Source path for a HTML page.
@@ -42,15 +43,30 @@ export class WebcAppLoader {
    */
   @Prop({ reflect: true, mutable: true }) skin: string = 'default';
 
+  /**
+   * Tag of the page set in <code>webcardinal.json</code>.
+   */
+  @Prop({ reflect: true }) tag: string;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
 
+    await this.activateHooks();
+    await this.callHook(HOOK_TYPE.BEFORE_PAGE);
     await this.setSkinContext();
     await this.setPageContent();
     this.updateActivePage();
     this.watchSkin = true;
+  }
+
+  async componentDidLoad() {
+    await this.callHook(HOOK_TYPE.AFTER_PAGE);
+  }
+
+  async disconnectedCallback() {
+    await this.callHook(HOOK_TYPE.CLOSED_PAGE);
   }
 
   @Watch('skin')
@@ -68,6 +84,14 @@ export class WebcAppLoader {
     await this.setSkinContext();
     await this.setPageContent();
     this.updateActivePage();
+  }
+
+  private async activateHooks() {
+    if (!window.WebCardinal.hooks || !window.WebCardinal.hooks[this.tag]) {
+      return;
+    }
+
+    this.hooks = window.WebCardinal.hooks[this.tag];
   }
 
   private async setSkinContext() {
@@ -127,8 +151,14 @@ export class WebcAppLoader {
   private updateActivePage() {
     window.WebCardinal.state.page = {
       loader: this.host,
-      src: this.activeSrc
+      src: this.activeSrc,
     };
+  }
+
+  private async callHook(type: HookType) {
+    if (typeof this.hooks[type] === 'function') {
+      await this.hooks[type]();
+    }
   }
 
   render() {

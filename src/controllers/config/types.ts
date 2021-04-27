@@ -26,6 +26,8 @@ export type FallbackPage = {
   loader?: string;
 }
 
+export type HookType = 'beforePageLoads' | 'afterPageLoads' | 'whenPageClose';
+
 export type LogLevel = 'none' | 'warn' | 'error';
 
 export type DocsSource = 'github' | 'local';

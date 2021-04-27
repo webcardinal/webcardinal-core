@@ -42,6 +42,10 @@ export namespace Components {
           * Source path for a HTML page.
          */
         "src": string;
+        /**
+          * Tag of the page set in <code>webcardinal.json</code>.
+         */
+        "tag": string;
     }
     interface WebcAppMenu {
         /**
@@ -442,6 +446,10 @@ declare namespace LocalJSX {
           * Source path for a HTML page.
          */
         "src"?: string;
+        /**
+          * Tag of the page set in <code>webcardinal.json</code>.
+         */
+        "tag"?: string;
     }
     interface WebcAppMenu {
         /**
