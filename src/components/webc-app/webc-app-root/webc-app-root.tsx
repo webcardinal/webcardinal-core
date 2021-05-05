@@ -60,6 +60,27 @@ export class WebcAppRoot {
     const controller = new ApplicationController(this.host);
     await controller.process(this.preload);
 
+    if (this.host.children.length !== 0) {
+      await this.registerAppErrorComponentAndListeners();
+      return;
+    }
+
+    await this.renderDefault();
+  }
+
+  async componentDidLoad() {
+    if (this._loaderElement) {
+      this._loaderElement.hidden = true;
+
+      // TODO: expose those in other manner
+      window.WebCardinal.root = this.host;
+      window.WebCardinal.loader = this._loaderElement;
+    }
+
+    this.callHook(HOOK_TYPE.AFTER_APP);
+  }
+
+  private async renderDefault() {
     const computedStyles = window.getComputedStyle(this.host);
     const initialMode = computedStyles.getPropertyValue(CP_WEBC_APP_ROOT_MODE).trim();
 
@@ -109,18 +130,6 @@ export class WebcAppRoot {
         }
       });
     }
-  }
-
-  async componentDidLoad() {
-    if (this._loaderElement) {
-      this._loaderElement.hidden = true;
-
-      // TODO: expose those in other manner
-      window.WebCardinal.root = this.host;
-      window.WebCardinal.loader = this._loaderElement;
-    }
-
-    this.callHook(HOOK_TYPE.AFTER_APP);
   }
 
   private async registerAppErrorComponentAndListeners() {

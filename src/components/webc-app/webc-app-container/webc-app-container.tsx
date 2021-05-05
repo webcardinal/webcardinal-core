@@ -25,6 +25,10 @@ export class WebcAppContainer {
   };
 
   async componentWillLoad() {
+    if (!this.host.isConnected) {
+      return;
+    }
+
     // manage slots
     this.slots.unnamed = this.host.children.length > 0;
     for (const key of Object.keys(this.slots)) {
