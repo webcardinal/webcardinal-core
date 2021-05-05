@@ -25,14 +25,14 @@ function isValidWebCardinalPlacement() {
 function applyCustomSkin(container) {
   const stylesheet = Object.assign(document.createElement('link'), {
     rel: 'stylesheet',
-    href: join(this.basePath, skinPath, ASSETS_PATH, 'skin.css').pathname.slice(1),
+    href: join(this.basePath, skinPath, ASSETS_PATH, 'skin.css').pathname,
     id: ID_CUSTOM_SKIN_CSS,
   });
   container.insertAdjacentElement('afterend', stylesheet);
   return new Promise<void>(resolve => {
     stylesheet.addEventListener('load', () => resolve());
     stylesheet.addEventListener('error', () => {
-      console.log('error for skin.css');
+      console.error(`"skin.css" of "${skin}" skin must be present in order to style webc-<component>s via Custom Properties!`);
     })
   });
 }
@@ -40,7 +40,7 @@ function applyCustomSkin(container) {
 function applySkins(container) {
   const stylesheet = Object.assign(document.createElement('link'), {
     rel: 'stylesheet',
-    href: join(this.basePath, ASSETS_PATH, 'skin.css').pathname.slice(1),
+    href: join(this.basePath, ASSETS_PATH, 'skin.css').pathname,
     id: ID_DEFAULT_SKIN_CSS,
   });
   container.insertAdjacentElement('afterend', stylesheet);
@@ -53,7 +53,7 @@ function applySkins(container) {
       resolve();
     });
     stylesheet.addEventListener('error', () => {
-      console.log('error for default skin.css');
+      console.error(`"skin.css" of "default" skin must be present in order to style webc-<component>s via Custom Properties!`);
     })
   });
 }
