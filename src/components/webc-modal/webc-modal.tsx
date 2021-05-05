@@ -1,10 +1,11 @@
 import { Component, Event, EventEmitter, h, Method, Prop, State } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
+import { injectHistory, RouterHistory } from '@stencil/router';
 
-// import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
+import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
-import { BindingService } from '../../services';
-import { resolveEnableTranslationState } from '../../utils';
+import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
+import { getTranslationsFromState } from '../../utils';
 
 import { getModalTemplate } from './webc-modal.utils';
 
@@ -23,8 +24,17 @@ import { getModalTemplate } from './webc-modal.utils';
 export class WebcModal {
   @HostElement() host: HTMLStencilElement;
 
+  private listeners: ComponentListenersService;
+
+  @State() history: RouterHistory;
+
   @State() isLoading = false;
+
   @State() isVisible = false;
+
+  @Prop() model: any;
+
+  @Prop() translationModel: any;
 
   /**
    * This property is a string that will permit the developer to choose his own controller.
@@ -36,15 +46,6 @@ export class WebcModal {
    * The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.
    */
   @Prop({ reflect: true }) template: string;
-
-  /**
-   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-   */
-  @Prop({ reflect: true }) disableTranslations: boolean = false;
-
-  @Prop() model: any;
-
-  @Prop() translationModel: any;
 
   /**
    * The text that will be shown in the modal's header, if the "header" slot is not provided.
@@ -147,29 +148,56 @@ export class WebcModal {
       this.isLoading = false;
     }
 
-    const enableTranslations = resolveEnableTranslationState(this);
+    if (this.controller) {
+      const Controller = await ControllerRegistryService.getController(this.controller);
+      if (Controller) {
+        try {
+          this.host.setAttribute(VIEW_MODEL_KEY, MODEL_CHAIN_PREFIX);
+          const instance = new Controller(this.host, this.history, this.model, this.translationModel);
+          if (!this.model) {
+            this.model = instance.model;
+          }
+          if (!this.translationModel) {
+            this.translationModel = instance.translationModel;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
+    BindingService.bindChildNodes(this.host, {
+      model: this.model,
+      translationModel: this.translationModel,
+      recursive: true,
+      enableTranslations: getTranslationsFromState(),
+    });
+
+    this.listeners = new ComponentListenersService(this.host, {
+      model: this.model,
+      translationModel: this.translationModel,
+    });
+    this.listeners.getModel.add();
+    this.listeners.getTranslationModel.add();
+
+    this.addDataListeners();
+
     this.initialised.emit(this.host);
+  }
 
-    if (!this.controller) {
-      const { model, translationModel } = this;
-
-      BindingService.bindChildNodes(this.host, {
-        model,
-        translationModel,
-        // chainPrefix: chain ? chain.slice(1) : null,
-        recursive: true,
-        enableTranslations,
-      });
+  async connectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel } = this.listeners;
+      getModel?.add();
+      getTranslationModel?.add();
     }
+  }
 
-    const closingItems = this.host.querySelectorAll('[data-close]');
-    const confirmingItems = this.host.querySelectorAll('[data-confirm]');
-
-    if (closingItems) {
-      closingItems.forEach(item => item.addEventListener('click', this.handleClose.bind(this)));
-    }
-    if (confirmingItems) {
-      confirmingItems.forEach(item => item.addEventListener('click', this.handleConfirm.bind(this)));
+  async disconnectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel } = this.listeners;
+      getModel?.remove();
+      getTranslationModel?.remove();
     }
   }
 
@@ -227,6 +255,18 @@ export class WebcModal {
     return !!this.host.querySelector(`[slot="${slotName}"]`);
   }
 
+  private addDataListeners() {
+    const closingItems = this.host.querySelectorAll('[data-close]');
+    const confirmingItems = this.host.querySelectorAll('[data-confirm]');
+
+    if (closingItems) {
+      closingItems.forEach(item => item.addEventListener('click', this.handleClose.bind(this)));
+    }
+    if (confirmingItems) {
+      confirmingItems.forEach(item => item.addEventListener('click', this.handleConfirm.bind(this)));
+    }
+  }
+
   private getTitleContent() {
     if (this.hasSlot('header')) return <slot name="header" />;
 
@@ -252,9 +292,11 @@ export class WebcModal {
   }
 
   render() {
-    if (!this.isVisible) return null;
+    if (!this.isVisible) {
+      return null;
+    }
 
-    const modal = (
+    return (
       <div class="webc-modal fade show" tabindex="-1" role="dialog" onClick={this.handleBackdropClick.bind(this)}>
         <div class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `} role="document" part="dialog">
           <div class="webc-modal-content" part="content">
@@ -305,17 +347,7 @@ export class WebcModal {
         </div>
       </div>
     );
-    if (this.controller) {
-      const props = {
-        'controller': this.controller,
-        'disableTranslations': this.disableTranslations,
-        // TODO: known issue, webc-container from shadow-root of webc-modal can not have access to models
-        // [`${VIEW_MODEL_KEY}`]: MODEL_CHAIN_PREFIX,
-        'bind-modal': '',
-      };
-      return <webc-container {...props}>{modal}</webc-container>;
-    }
-
-    return modal;
   }
 }
+
+injectHistory(WebcModal);

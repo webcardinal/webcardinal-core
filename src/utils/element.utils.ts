@@ -203,15 +203,18 @@ export function bindElementChangeToModelProperty(element: Element, model, proper
   if (['input', 'textarea'].includes(tagName)) {
     element.addEventListener('input', e => {
       const target = e.target as any;
+
       if (tagName === 'input' && element.getAttribute('type') === 'checkbox') {
         model.setChainValue(propertyChain, target.checked);
+        return;
       }
       if (tagName === 'input' && element.getAttribute('type') === 'file') {
         model.setChainValue(propertyChain, Array.from(target.files));
-      } else {
-        const updatedValue = target.value;
-        model.setChainValue(propertyChain, updatedValue);
+        return;
       }
+
+      const updatedValue = target.value;
+      model.setChainValue(propertyChain, updatedValue);
     });
   } else if (tagName === 'select') {
     element.addEventListener('change', e => {

@@ -12,8 +12,10 @@ import {
   EVENT_CONFIG_GET_CORE_TYPE,
   EVENT_CONFIG_GET_DOCS_SOURCE,
 } from '../constants';
+
 import getPreloadAPI, { applyPreloadMiddleware } from './prelaod';
 import getCustomElementsAPI from './custom-elements';
+import applySkinCSS from './skin';
 
 const CONFIG_PATH = 'webcardinal.json';
 
@@ -70,23 +72,14 @@ export default class ApplicationController {
     return new URL(this._trimPathname(this.baseURL.href) + '/' + this._trimPathname(resource));
   }
 
-  private _readConfiguration(callback) {
-    const fetchJSON = async path => {
-      const response = await fetch(path);
-      return response.json();
-    };
-
-    const loadConfiguration = async () => {
-      try {
-        return fetchJSON(this.configURL.href);
-      } catch (error) {
-        return error;
-      }
-    };
-
-    loadConfiguration()
-      .then(async data => await callback(null, data))
-      .catch(async error => await callback(error));
+  private async _readConfiguration() {
+    try {
+      const response = await fetch(this.configURL.href);
+      const config = await response.json();
+      return [null, config]
+    } catch (error) {
+      return [error];
+    }
   }
 
   private _prepareConfiguration(rawConfig) {
@@ -300,7 +293,7 @@ export default class ApplicationController {
     };
   }
 
-  constructor(element: HTMLStencilElement, preloadPath: string) {
+  constructor(element: HTMLStencilElement) {
     this.baseURL = this._initBaseURL();
     this.basePath = this._initBasePath();
     this.configURL = this._initResourceURL(CONFIG_PATH);
@@ -309,56 +302,6 @@ export default class ApplicationController {
     this.injectedHooks = {};
     this.pendingRequests = [];
     this.isConfigLoaded = false;
-
-    this._readConfiguration(async (error, rawConfig) => {
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      this.config = this._prepareConfiguration(rawConfig);
-
-      window.WebCardinal = {
-        controllers,
-        hooks: this.injectedHooks,
-        preload: getPreloadAPI.bind(this)(),
-        components: getCustomElementsAPI(),
-      };
-
-      await applyPreloadMiddleware.bind(this)(preloadPath);
-
-      console.log('[WebCardinal] Config:', this.config);
-      this.isConfigLoaded = true;
-
-      window.WebCardinal = {
-        ...window.WebCardinal,
-        basePath: this.basePath,
-        controllers: {
-          ...this.injectedControllers,
-          ...controllers,
-        },
-        state: {
-          translations: this.config.translations,
-          skin: this.config.skin,
-        },
-      };
-
-      if (window.localStorage) {
-        const savedSkin = localStorage.getItem('webcardinal.skin');
-        if (savedSkin) {
-          window.WebCardinal.state.skin = savedSkin;
-        }
-        const savedTranslations = localStorage.getItem('webcardinal.translations');
-        if (savedTranslations) {
-          window.WebCardinal.state.translations = savedTranslations === 'true';
-        }
-      }
-
-      while (this.pendingRequests.length) {
-        const request = this.pendingRequests.pop();
-        this._provideConfiguration(request.configKey, request.callback);
-      }
-    });
 
     // Necessary events for @webcardinal/core
     element.addEventListener(EVENT_CONFIG_GET_ROUTING, this._registerListener('routing'));
@@ -381,5 +324,59 @@ export default class ApplicationController {
     //   'getConfiguration',
     //   'validateUrl',
     //   'getCustomLandingPage'
+  }
+
+  async process(preloadPath: string) {
+    const [error, rawConfig] = await this._readConfiguration();
+
+    if (error) {
+      console.error(error);
+      return;
+    }
+
+    this.config = this._prepareConfiguration(rawConfig);
+
+    window.WebCardinal = {
+      controllers,
+      hooks: this.injectedHooks,
+      preload: getPreloadAPI.bind(this)(),
+      components: getCustomElementsAPI(),
+    };
+
+    await applyPreloadMiddleware.bind(this)(preloadPath);
+
+    console.log('[WebCardinal] Config:', this.config);
+    this.isConfigLoaded = true;
+
+    window.WebCardinal = {
+      ...window.WebCardinal,
+      basePath: this.basePath,
+      controllers: {
+        ...this.injectedControllers,
+        ...controllers,
+      },
+      state: {
+        translations: this.config.translations,
+        skin: this.config.skin,
+      },
+    };
+
+    if (window.localStorage) {
+      const savedSkin = localStorage.getItem('webcardinal.skin');
+      if (savedSkin) {
+        window.WebCardinal.state.skin = savedSkin;
+      }
+      const savedTranslations = localStorage.getItem('webcardinal.translations');
+      if (savedTranslations) {
+        window.WebCardinal.state.translations = savedTranslations === 'true';
+      }
+    }
+
+    await applySkinCSS.bind(this)();
+
+    while (this.pendingRequests.length) {
+      const request = this.pendingRequests.pop();
+      this._provideConfiguration(request.configKey, request.callback);
+    }
   }
 }

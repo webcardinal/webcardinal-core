@@ -1,16 +1,16 @@
 webc-app-container {
   /**
-   * @prop --webc-app-container-gap: Gap between slots.
-   * @prop --webc-app-container-background: Background for all your pages.
+   * @prop --gap: Gap between slots.
+   * @prop --background: Background for all your pages.
    */
 
   width: 100%; height: 100%;
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: var(--webc-app-container-gap);
+  gap: var(--gap);
   overflow-y: auto;
-  background: var(--webc-app-container-background);
+  background: var(--background);
 
   .container {
     // bootstrap override

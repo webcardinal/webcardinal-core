@@ -1,8 +1,12 @@
 import DSUStorage from '../libs/DSUStorage';
 import PskBindableModel from '../libs/bindableModel.js';
-import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../src/constants';
-
-export const DATA_TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
+import {
+  getSkinFromState,
+  getTranslationsFromState,
+  MODEL_CHAIN_PREFIX,
+  VIEW_MODEL_KEY,
+  TAG_MODEL_FUNCTION_PROPERTY,
+} from '../../src';
 
 function checkEventListener(eventName, listener, options) {
   if (typeof eventName !== 'string' || eventName.trim().length === 0) {
@@ -33,11 +37,6 @@ function isSkinEnabled() {
   return state && state.skin && typeof state.skin === 'string';
 }
 
-function areTranslationsEnabled() {
-  const { state } = window.WebCardinal || {};
-  return state && typeof state.translations === 'boolean';
-}
-
 function getPathname() {
   let { pathname } = window.location;
   if (pathname === '/') {
@@ -58,12 +57,12 @@ function getValueFromModelByChain(model, chain) {
 }
 
 function getTranslationModel() {
-  if (!areTranslationsEnabled()) {
+  if (!getTranslationsFromState()) {
     return;
   }
 
-  const { state, translations } = window.WebCardinal;
-  const { skin } = state;
+  let { translations } = window.WebCardinal;
+  const skin = getSkinFromState();
   const pathname = getPathname();
 
   const skinTranslations = translations[skin];
@@ -238,21 +237,23 @@ export default class Controller {
 
       const eventListener = event => {
         let target = event.target;
+
         while (target && target !== this.element) {
           const targetTag = target.getAttribute('data-tag');
           if (targetTag === tag) {
             event.preventDefault(); // Cancel the native event
             event.stopPropagation(); // Don't bubble/capture the event any further
 
-            const attachedModel = target[DATA_TAG_MODEL_FUNCTION_PROPERTY]
-              ? target[DATA_TAG_MODEL_FUNCTION_PROPERTY]()
-              : null;
+            const attachedModel = target[TAG_MODEL_FUNCTION_PROPERTY] ? target[TAG_MODEL_FUNCTION_PROPERTY]() : null;
 
             listener(attachedModel, target, event);
             break;
           }
 
-          target = target.parentElement;
+          if (target.parentElement) {
+            target = target.parentElement;
+            continue;
+          }
         }
       };
 
@@ -265,7 +266,14 @@ export default class Controller {
       };
       this.tagEventListeners.push(tagEventListener);
 
-      this.element.addEventListener(eventName, eventListener, options);
+      // if this.element is a custom element with "shadow" created with webc-component
+      // all the listeners must be attached inside of the shadowRoot
+      // (if this custom element has a Controller, listeners are attached to webc-container)
+      let listenersElement = this.element;
+      if (this.element.hasAttribute('shadow') && this.element.shadowRoot) {
+        listenersElement = this.element.shadowRoot;
+      }
+      listenersElement.addEventListener(eventName, eventListener, options);
     } catch (err) {
       console.error(err);
     }
@@ -420,7 +428,7 @@ export default class Controller {
   }
 
   translate(translationChain) {
-    if (!areTranslationsEnabled()) {
+    if (!getTranslationsFromState()) {
       console.warn(
         [`Function "translate" must be called only when translations are enabled!`, `Check WebCardinal.state`].join(
           '\n',
@@ -429,7 +437,7 @@ export default class Controller {
       return;
     }
 
-    const { skin } = window.WebCardinal.state;
+    const skin = getSkinFromState();
     const pathname = getPathname();
 
     if (!this.translationModel) {

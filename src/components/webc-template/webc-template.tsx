@@ -1,10 +1,9 @@
-import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Method, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Method, Prop } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
 import { BindingService } from '../../services';
-import { extractChain, promisifyEventEmit, resolveEnableTranslationState } from '../../utils';
+import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
 
 import { getTemplate } from './webc-template.utils';
 
@@ -26,11 +25,6 @@ export class WebcTemplate {
    *  Otherwise the content will replace the <code>webc-template</code> element form DOM.
    */
   @Prop({ reflect: true }) disableContainer: boolean = false;
-
-  /**
-   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-   */
-  @Prop({ reflect: true }) disableTranslations: boolean = false;
 
   /**
    * Through this event the model is received.
@@ -77,8 +71,6 @@ export class WebcTemplate {
     this.chain = extractChain(this.host);
 
     if (this.chain) {
-      const enableTranslations = resolveEnableTranslationState(this);
-
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
         this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
@@ -91,7 +83,7 @@ export class WebcTemplate {
         translationModel: this.translationModel,
         recursive: true,
         chainPrefix: this.chain ? this.chain.slice(1) : null,
-        enableTranslations,
+        enableTranslations: getTranslationsFromState(),
       });
     }
   }

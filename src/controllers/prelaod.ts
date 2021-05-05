@@ -1,5 +1,6 @@
 import { URLHelper } from '../utils';
 import { HookType } from './config/types';
+import { HOOK_TYPE } from '../constants';
 
 export default function getPreloadAPI() {
   return {
@@ -63,24 +64,42 @@ export default function getPreloadAPI() {
       }
     },
 
-    addHook: (tag: string, type: HookType, hook: Function) => {
+    addHook: (type: HookType, tag: string | Function, hook: Function) => {
+      let types = Object.values(HOOK_TYPE);
+      if (!types.includes(type)) {
+        console.error(
+          [`Function "addHook": "${type}" is not a valid HookType (values: "${types.join('", "')}")`].join('\n'),
+        );
+        return;
+      }
+
       let hooks = this.injectedHooks;
 
       if (this.isConfigLoaded) {
         hooks = window.WebCardinal.hooks;
       }
 
-      if (!tag || typeof tag !== 'string') {
-        console.warn(
-          [`Function "addHook(tag: string, when: whenType, hook: Function)" must receive a valid page tag!`].join('\n'),
+      if (typeof tag === 'function') {
+        hook = tag;
+        hooks[type] = hook;
+        return;
+      }
+
+      if (!tag || typeof tag !== 'string' || typeof hook !== 'function') {
+        console.error(
+          [
+            `Function "addHook" has the following interface:`,
+            `"addHook(type: HookType, hook: Function)"`,
+            `"addHook(type: HookType, tag: string, hook: Function)"`,
+          ].join('\n'),
         );
+        return;
       }
 
-      if (!hooks[tag]) {
-        hooks[tag] = {};
+      if (!hooks[type]) {
+        hooks[type] = {};
       }
-
-      hooks[tag][type] = hook;
+      hooks[type][tag as string] = hook;
     },
 
     setConfig: (config: object) => {

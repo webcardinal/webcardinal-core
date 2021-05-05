@@ -1,4 +1,3 @@
-export * from './AppError';
-export * from './WebcAppLoaderType'
-export * from './events';
+export * from './components';
 export * from '../controllers/config/types';
+export * from './events';

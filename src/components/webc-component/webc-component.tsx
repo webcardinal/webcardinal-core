@@ -1,10 +1,11 @@
-import { Component, Event, EventEmitter, Method, Prop } from '@stencil/core';
+import { Component, Event, EventEmitter, Method, Prop, State } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
+import { injectHistory, RouterHistory } from '@stencil/router';
 
 import { MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
-import { BindingService } from '../../services';
-import { extractChain, promisifyEventEmit, resolveEnableTranslationState } from '../../utils';
+import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
+import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
 
 import { getTemplate } from './webc-component.utils';
 
@@ -13,6 +14,8 @@ import { getTemplate } from './webc-component.utils';
 })
 export class WebcComponent {
   @HostElement() host: HTMLStencilElement;
+
+  @State() history: RouterHistory;
 
   /**
    * This property is a string that will permit the developer to choose his own controller.
@@ -30,11 +33,6 @@ export class WebcComponent {
    * The reference to actual CustomElement / Component that is created.
    */
   @Prop() element: HTMLElement;
-
-  /**
-   * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-   */
-  @Prop({ reflect: true }) disableTranslations: boolean = false;
 
   /**
    * Through this event the model is received.
@@ -58,11 +56,11 @@ export class WebcComponent {
   })
   getTranslationModelEvent: EventEmitter;
 
-  private container;
   private model;
   private translationModel;
-  private chain;
   private html;
+  private chain; // data-view-model
+  private listeners: ComponentListenersService;
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
@@ -74,22 +72,6 @@ export class WebcComponent {
       return;
     }
 
-    this.chain = extractChain(this.element);
-
-    if (this.controller) {
-      this.container = Object.assign(document.createElement('webc-container'), {
-        controller: this.controller,
-        innerHTML: this.html,
-      }) as HTMLWebcContainerElement;
-      if (this.chain) {
-        this.container.setAttribute(VIEW_MODEL_KEY, this.chain);
-      }
-      this.container.setAttribute('bind-component', '');
-      // this.container.setAttribute('disable-container', '');
-      this.host.insertAdjacentElement('afterend', this.container);
-      return;
-    }
-
     try {
       this.model = await promisifyEventEmit(this.getModelEvent);
       this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
@@ -97,25 +79,80 @@ export class WebcComponent {
       console.error(error);
     }
 
+    if (this.controller) {
+      const Controller = await ControllerRegistryService.getController(this.controller);
+      if (Controller) {
+        try {
+          const instance = new Controller(this.element, this.history, this.model, this.translationModel);
+          if (!this.model) {
+            this.model = instance.model;
+          }
+          if (!this.translationModel) {
+            this.translationModel = instance.translationModel;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    }
+
     this.host.insertAdjacentHTML('afterend', this.html);
-    BindingService.bindChildNodes(this.element.shadowRoot || this.element, {
+
+    this.chain = extractChain(this.element);
+
+    const model = this.model;
+    const translationModel = this.translationModel;
+    const recursive = true;
+    const chainPrefix = this.chain ? this.chain.slice(1) : null;
+    const enableTranslations = getTranslationsFromState();
+
+    if (this.element.shadowRoot) {
+      BindingService.bindChildNodes(this.element.shadowRoot, {
+        model,
+        translationModel,
+        recursive,
+        chainPrefix,
+        enableTranslations,
+      });
+    }
+
+    BindingService.bindChildNodes(this.element, {
+      model,
+      translationModel,
+      recursive,
+      chainPrefix,
+      enableTranslations,
+    });
+
+    this.listeners = new ComponentListenersService(this.element, {
       model: this.model,
       translationModel: this.translationModel,
-      recursive: true,
-      chainPrefix: this.chain ? this.chain.slice(1) : null,
-      enableTranslations: resolveEnableTranslationState(this),
     });
+    this.listeners.getModel.add();
+    this.listeners.getTranslationModel.add();
+  }
+
+  async connectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel } = this.listeners;
+      getModel?.add();
+      getTranslationModel?.add();
+    }
+  }
+
+  async disconnectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel } = this.listeners;
+      getModel?.remove();
+      getTranslationModel?.remove();
+    }
   }
 
   /**
-   * The model from controller is exposed by this method.
+   * The model is exposed by this method.
    */
   @Method()
   async getModel() {
-    if (this.container) {
-      return await this.container.getModel();
-    }
-
     if (this.model) {
       return this.model;
     }
@@ -124,19 +161,23 @@ export class WebcComponent {
   }
 
   /**
-   * The translation model from controller is exposed by this method.
+   * The translation model is exposed by this method.
    */
   @Method()
   async getTranslationModel() {
-    if (this.container) {
-      return await this.container.getTranslationModel();
-    }
-
     if (this.translationModel) {
       return this.translationModel;
     }
 
     return undefined;
+  }
+
+  /**
+   * The listeners are exposed by this method.
+   */
+  @Method()
+  async getListeners() {
+    return this.listeners;
   }
 
   private replaceWithActualChain(plainHTML) {
@@ -195,3 +236,5 @@ export class WebcComponent {
     return;
   }
 }
+
+injectHistory(WebcComponent);

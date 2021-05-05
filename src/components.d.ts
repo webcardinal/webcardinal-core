@@ -5,7 +5,8 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
-import { RoutingState, WebcAppLoaderType } from "./interfaces";
+import { RoutingState, WebcAppLoaderType, WebcAppMenuMode } from "./interfaces";
+import { ComponentListenersService } from "./services";
 export namespace Components {
     interface WebcAppContainer {
     }
@@ -53,14 +54,14 @@ export namespace Components {
          */
         "basePath": string;
         /**
-          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--disable-identity</code>.
          */
         "disableIdentity": boolean;
         /**
           * This Array is received from <code>ApplicationController</code>.
          */
         "items": any[];
-        "mode": string;
+        "mode": WebcAppMenuMode;
     }
     interface WebcAppMenuItem {
         "activate": () => Promise<void>;
@@ -109,19 +110,19 @@ export namespace Components {
          */
         "controller": string;
         /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations": boolean;
-        /**
           * The reference to actual CustomElement / Component that is created.
          */
         "element": HTMLElement;
         /**
-          * The model from controller is exposed by this method.
+          * The listeners are exposed by this method.
+         */
+        "getListeners": () => Promise<ComponentListenersService>;
+        /**
+          * The model is exposed by this method.
          */
         "getModel": () => Promise<any>;
         /**
-          * The translation model from controller is exposed by this method.
+          * The translation model is exposed by this method.
          */
         "getTranslationModel": () => Promise<any>;
         /**
@@ -138,10 +139,6 @@ export namespace Components {
           * If it is not specified, all the innerHTML will be placed inside the unnamed slot. Otherwise the content will replace the <code>webc-container</code> element form DOM.
          */
         "disableContainer": boolean;
-        /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations": boolean;
         /**
           * The model from controller is exposed by this method.
          */
@@ -214,10 +211,6 @@ export namespace Components {
          */
         "disableFooter": boolean;
         /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations": boolean;
-        /**
           * Sets if the modal expands to full screen.
          */
         "expanded": boolean;
@@ -265,10 +258,6 @@ export namespace Components {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer": boolean;
-        /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations": boolean;
         /**
           * The model from controller is exposed by this method.
          */
@@ -439,6 +428,10 @@ declare namespace LocalJSX {
          */
         "loader"?: WebcAppLoaderType;
         /**
+          * Routing configuration received from <code>webc-app-router</code>.
+         */
+        "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
+        /**
           * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
          */
         "skin"?: string;
@@ -457,14 +450,14 @@ declare namespace LocalJSX {
          */
         "basePath"?: string;
         /**
-          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+          * Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--disable-identity</code>.
          */
         "disableIdentity"?: boolean;
         /**
           * This Array is received from <code>ApplicationController</code>.
          */
         "items"?: any[];
-        "mode"?: string;
+        "mode"?: WebcAppMenuMode;
         /**
           * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
@@ -523,10 +516,6 @@ declare namespace LocalJSX {
          */
         "controller"?: string;
         /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations"?: boolean;
-        /**
           * The reference to actual CustomElement / Component that is created.
          */
         "element"?: HTMLElement;
@@ -553,17 +542,9 @@ declare namespace LocalJSX {
          */
         "disableContainer"?: boolean;
         /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations"?: boolean;
-        /**
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-        /**
-          * Routing configuration received from <code>webc-app-router</code>.
-         */
-        "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
         /**
           * Through this event the translation model is received.
          */
@@ -636,10 +617,6 @@ declare namespace LocalJSX {
          */
         "disableFooter"?: boolean;
         /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations"?: boolean;
-        /**
           * Sets if the modal expands to full screen.
          */
         "expanded"?: boolean;
@@ -691,10 +668,6 @@ declare namespace LocalJSX {
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
          */
         "disableContainer"?: boolean;
-        /**
-          * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-         */
-        "disableTranslations"?: boolean;
         /**
           * Through this event the model is received.
          */

@@ -1,16 +1,16 @@
 webc-spinner {
   /**
-   * @prop --width
-   * @prop --height
-   * @prop --radius
-   * @prop --dot-size
-   * @prop --dot-radius
-   * @prop --color
+   * @prop --animation
+   * @prop --animation-delay
    * @prop --background
    * @prop --border
    * @prop --box-shadow
-   * @prop --animation
-   * @prop --animation-delay
+   * @prop --color
+   * @prop --dot-radius
+   * @prop --dot-size
+   * @prop --height
+   * @prop --radius
+   * @prop --width
    * @prop --z-index
    */
 
@@ -44,7 +44,7 @@ webc-spinner {
         height: var(--dot-size);
         background-color: var(--color);
         border-radius: var(--dot-radius);
-        animation: spinner-default-animation var(--animation) infinite linear;
+        animation: var(--animation);
       }
     }
   }

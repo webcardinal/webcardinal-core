@@ -5,6 +5,7 @@ import { injectHistory } from '@stencil/router';
 
 import { HostElement } from '../../../../decorators';
 import { promisifyEventEmit, convertCSSTimeToMs, URLHelper } from '../../../../utils';
+import { WebcAppMenuMode } from '../../../../interfaces';
 
 const { trimEnd } = URLHelper;
 
@@ -38,7 +39,7 @@ export class WebcAppMenu {
 
   /**
    * Decides if <code>webc-app-identity</code> is rendered.<br>
-   * This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.
+   * This property is set by Custom Variable <code>--disable-identity</code>.
    */
   @Prop({ mutable: true, reflect: true }) disableIdentity = false;
 
@@ -49,10 +50,10 @@ export class WebcAppMenu {
     after: false,
   };
   private modes = Object.keys(this._menu);
-  private defaultMode = this.modes[0];
+  private defaultMode = this.modes[0] as WebcAppMenuMode;
   private computedStyles: CSSStyleDeclaration;
 
-  @Prop({ reflect: true, mutable: true }) mode = this.defaultMode;
+  @Prop({ reflect: true, mutable: true }) mode: WebcAppMenuMode = this.defaultMode;
 
   /**
    * Routing configuration received from <code>ApplicationController</code>.<br>
@@ -110,9 +111,13 @@ export class WebcAppMenu {
   }
 
   async componentWillLoad() {
+    if (!this.host.isConnected) {
+      return;
+    }
+
     // disable flag for webc-app-identity
     this.computedStyles = window.getComputedStyle(this.host);
-    this.disableIdentity = this.computedStyles.getPropertyValue('--webc-app-menu-disable-identity').trim() === 'true';
+    this.disableIdentity = this.computedStyles.getPropertyValue('--disable-identity').trim() === 'true';
 
     // get routing data
     if (this.items.length === 0) {
@@ -168,7 +173,7 @@ export class WebcAppMenu {
           this.host.removeAttribute('visible');
           setTimeout(() => {
             this.host.removeAttribute('active');
-          }, convertCSSTimeToMs(this.computedStyles.getPropertyValue('--webc-app-menu-mobile-backdrop-transition-delay')) || 200);
+          }, convertCSSTimeToMs(this.computedStyles.getPropertyValue('--backdrop-transition-delay')) || 200);
         } else {
           this.host.setAttribute('active', '');
           setTimeout(() => {

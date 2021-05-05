@@ -1,9 +1,10 @@
 import { Component, Event, EventEmitter, h, Prop, State } from '@stencil/core';
 
-import { ASSETS_PATH, ID_CUSTOM_SKIN_CSS, ID_DEFAULT_SKIN_CSS, PAGES_PATH } from '../../../constants';
+import { proxifyModelProperty } from '../../../../base/controllers/Controller';
+import { HOOK_TYPE, PAGES_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
-import { getSkinFromState, getSkinPathFromState, promisifyEventEmit, URLHelper } from '../../../utils';
+import { promisifyEventEmit, URLHelper } from '../../../utils';
 
 const { join, trimEnd } = URLHelper;
 
@@ -179,58 +180,22 @@ export class WebcAppRouter {
     }
   };
 
-  private manageSkinCSS() {
-    const skin = getSkinFromState();
-    const skinPath = getSkinPathFromState();
-
-    // in order to make local imports of the user with higher priority then skin.css
-    let webcardinalStylesheet = document.head.querySelector('link[href$="webcardinal.css"]');
-
-    if (!webcardinalStylesheet) {
-      console.error(
-        [
-          `WebCardinal stylesheet not found!`,
-          `Add <link rel="stylesheet" href="webcardinal/webcardinal.css"> in your "index.html"`,
-        ].join('\n'),
-      );
-
-      // if stylesheet is missing, insert skins after WebCardinal distribution
-      webcardinalStylesheet = document.head.querySelector('script[src$="webcardinal.js"]');
-    }
-
-    const defaultSkinStylesheet = Object.assign(document.createElement('link'), {
-      rel: 'stylesheet',
-      href: join(this.basePath, ASSETS_PATH, 'skin.css').pathname.slice(1),
-      id: ID_DEFAULT_SKIN_CSS,
-    });
-
-    webcardinalStylesheet.insertAdjacentElement('afterend', defaultSkinStylesheet);
-
-    if (skin !== 'default') {
-      const customSkinStylesheet = Object.assign(document.createElement('link'), {
-        rel: 'stylesheet',
-        href: join(this.basePath, skinPath, ASSETS_PATH, 'skin.css').pathname.slice(1),
-        id: ID_CUSTOM_SKIN_CSS,
-      });
-
-      defaultSkinStylesheet.insertAdjacentElement('afterend', customSkinStylesheet);
-    }
-  }
-
   private manageHooks() {
     if (!window.WebCardinal.hooks) {
       return;
     }
     const hooks = window.WebCardinal.hooks;
-    for (let tag of Object.keys(hooks)) {
-      if (!this.tags[tag]) {
-        console.warn(
-          [
-            `"addHook(tag: string, when: whenType, hook: Function)": tag "${tag}" does not belong to any page`,
-            `The hook can not be called for any page, the hook is removed!`,
-          ].join('\n'),
-        );
-        delete hooks[tag];
+    for (let type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE]) {
+      for (let tag of Object.keys(hooks[type] || [])) {
+        if (!this.tags[tag]) {
+          console.warn(
+            [
+              `"addHook(tag: string, when: whenType, hook: Function)": tag "${tag}" does not belong to any page`,
+              `The hook can not be called for any page, the hook is removed!`,
+            ].join('\n'),
+          );
+          delete hooks[tag];
+        }
       }
     }
   }
@@ -246,13 +211,8 @@ export class WebcAppRouter {
       this.fallbackPage = routing.pagesFallback;
       this.basePath = trimEnd(new URL(routing.baseURL).pathname);
 
-      this.pagesPathRegExp = new RegExp(
-        `^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)
+      this.pagesPathRegExp = new RegExp(`^(${PAGES_PATH.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&')}\)`);
 
-`,
-      );
-
-      this.manageSkinCSS();
       this.manageLandingPage();
 
       this.content.push(this._renderRoutes(this.routes), this._renderFallback(this.fallbackPage));
@@ -262,11 +222,38 @@ export class WebcAppRouter {
       this.listeners = new ComponentListenersService(this.host, {
         tags: this.tags,
         routing: { basePath: this.basePath, mapping: this.mapping },
+        model: proxifyModelProperty({}),
+        translationModel: {
+          error: 'Translations can be used only inside <webc-app-loader>'
+        },
       });
-      this.listeners.getTags.add();
-      this.listeners.getRouting.add();
+      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      getModel?.add();
+      getTranslationModel?.add();
+      getTags?.add();
+      getRouting?.add();
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async connectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      getModel?.add();
+      getTranslationModel?.add();
+      getTags?.add();
+      getRouting?.add();
+    }
+  }
+
+  async disconnectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      getModel?.remove();
+      getTranslationModel?.remove();
+      getTags?.remove();
+      getRouting?.remove();
     }
   }
 

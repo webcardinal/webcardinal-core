@@ -3,13 +3,29 @@
 webc-app-menu[mode=vertical] {
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
-  gap: var(--webc-app-menu-gap);
+  gap: var(--gap);
   overflow-y: auto;
-  min-width: var(--webc-app-menu-vertical-min-width);
-  max-width: var(--webc-app-menu-vertical-max-width);
-  color: var(--webc-app-menu-vertical-color);
-  background: var(--webc-app-menu-vertical-background);
-  padding: var(--webc-app-menu-vertical-padding);
+  min-width: var(--min-width);
+  max-width: var(--max-width);
+  color: var(--color);
+  background: var(--background, var(--webc-primary-background));
+  padding: var(--padding);
+
+  &::-webkit-scrollbar {
+    width: 8px; height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb-background);
+    border: var(--scrollbar-thumb-border);
+    border-radius: 0;
+  }
+  &::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover-background);
+  }
+  &::-webkit-scrollbar-track {
+    background: var(--scrollbar-track-background);
+    border-radius: 0;
+  }
 
   &.slot-before {
     grid-template-rows: auto 1fr;
@@ -25,7 +41,7 @@ webc-app-menu[mode=vertical] {
 
   .content {
     display: grid;
-    row-gap: var(--webc-app-menu-gap);
+    row-gap: var(--gap);
     grid-template-rows: auto 1fr;
   }
 
@@ -36,9 +52,9 @@ webc-app-menu[mode=vertical] {
       & > .dropdown {
         & > .items {
           display: none;
-          margin: var(--webc-app-menu-vertical-dropdown-margin);
-          row-gap: var(--webc-app-menu-vertical-dropdown-gap);
-          padding: var(--webc-app-menu-vertical-dropdown-items-padding);
+          margin: var(--dropdown-margin);
+          row-gap: var(--dropdown-gap);
+          padding: var(--dropdown-items-padding);
         }
 
         &[active] {
@@ -49,16 +65,20 @@ webc-app-menu[mode=vertical] {
       }
 
       &[level="0"] {
-        padding: var(--webc-app-menu-vertical-items-padding);
-        border-top: 1px solid var(--webc-app-menu-vertical-border-color);
+        padding: var(--items-padding);
+        border-top: 1px solid var(--border-color);
 
         &:last-child {
-          border-bottom: 1px solid var(--webc-app-menu-vertical-border-color);
+          border-bottom: 1px solid var(--border-color);
         }
       }
 
       &[active] {
         font-weight: bold;
+      }
+
+      &, & a {
+        color: var(--color);
       }
     }
   }

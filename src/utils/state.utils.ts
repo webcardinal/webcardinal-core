@@ -1,19 +1,9 @@
-import type { EventEmitter } from '@stencil/core';
+import { EventEmitter } from '@stencil/core';
 
 import { RoutingState } from '../interfaces';
 import { promisifyEventEmit } from './promisify';
-import { getTranslationsFromState } from './path.utils';
 
 // WebCardinal State
-
-export function resolveEnableTranslationState(self: { disableTranslations: boolean }) {
-  // /**
-  //  * If this flag is specified, when translations are enabled, it will disable binding and loading of translations.
-  //  */
-  // @Prop({ reflect: true }) disableTranslations: boolean = false;
-
-  return !self.disableTranslations && getTranslationsFromState();
-}
 
 export async function resolveRoutingState(self: {
   getRoutingStateEvent: EventEmitter<RoutingState>;

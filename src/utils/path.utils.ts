@@ -77,7 +77,7 @@ export async function loadJSON(path) {
 }
 
 export function getTranslationsFromState(): boolean {
-  if (!window.WebCardinal?.state?.translations || typeof window.WebCardinal?.state?.translations !== 'boolean') {
+  if (!window.WebCardinal?.state || typeof window.WebCardinal?.state?.translations !== 'boolean') {
     console.warn([
       `Preferred "translations" can not be found in WebCardinal.state!`,
       `The fallback for translations is "true".`

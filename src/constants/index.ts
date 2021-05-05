@@ -56,5 +56,10 @@ export const HOOK_TYPE: {
 } = {
   BEFORE_PAGE: 'beforePageLoads',
   AFTER_PAGE: 'afterPageLoads',
-  CLOSED_PAGE: 'whenPageClose'
+  CLOSED_PAGE: 'whenPageClose',
+  AFTER_APP: 'afterAppLoads',
 };
+
+// custom properties
+export const CP_WEBC_APP_ROOT_MODE = '--mode';
+export const CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT = '--mode-mobile-breakpoint'

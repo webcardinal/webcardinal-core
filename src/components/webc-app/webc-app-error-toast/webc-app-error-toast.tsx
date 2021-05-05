@@ -1,7 +1,7 @@
 import { Component, Listen } from '@stencil/core';
 
 import { HostElement } from '../../../decorators';
-import type { AppError } from '../../../interfaces';
+import type { WebcAppError } from '../../../interfaces';
 
 @Component({
   tag: 'webc-app-error-toast',
@@ -20,15 +20,18 @@ export class WebcAppErrorToast {
   }
 
   @Listen('webcAppError', { target: 'window' })
-  handleAppError(event: CustomEvent<AppError>) {
+  handleAppError(event: CustomEvent<WebcAppError>) {
     this.addToast('error', this.getErrorToastContent(event.detail));
   }
 
-  getErrorToastContent(appError: AppError) {
+  getErrorToastContent(appError: WebcAppError) {
     const { message, url, lineNo, columnNo, error, isScriptError } = appError;
 
     let detailsSection = '';
+    let seeMore = '';
+
     if (!isScriptError) {
+      seeMore = `<span class="see-more">[See more]</span>`;
       detailsSection = `
             <div class="see-more-content">${
               error ? error.stack.replace(/(?:\r\n|\r|\n)/g, '<br>').replace(/ /g, '\u00a0') : ''
@@ -45,7 +48,7 @@ export class WebcAppErrorToast {
             <button type="button" class="close">
                 <span aria-hidden="true">&times;</span>
             </button>
-            <div class="message">${message} <span class="see-more">[See more]<span></div>
+            <div class="message">${message} ${seeMore}</div>
         </div>
         ${detailsSection}
     `;
@@ -81,7 +84,8 @@ export class WebcAppErrorToast {
     }
 
     toast.querySelector('button.close').addEventListener('click', () => {
-      toast.remove();
+      toast.classList.add('closing');
+      setTimeout(() => toast.remove(), 490);
     });
   }
 
@@ -89,5 +93,3 @@ export class WebcAppErrorToast {
     return null;
   }
 }
-
-WebcAppErrorToast;

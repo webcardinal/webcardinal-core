@@ -1,4 +1,5 @@
 import { DISABLE_BINDING, VIEW_MODEL_KEY } from '../constants';
+import { ComponentListenersService } from '../services';
 
 export default function getCustomElementsAPI() {
   return {
@@ -14,17 +15,25 @@ export default function getCustomElementsAPI() {
       customElements.define(
         tagName,
         class _ extends HTMLElement {
-          private readonly _element: HTMLWebcComponentElement;
-          private _shadow: ShadowRoot | null;
+          private _element: HTMLWebcComponentElement | null;
           private _model: any;
           private _translationModel: any;
+          private _listeners: ComponentListenersService;
 
           constructor() {
             super();
 
             // decides if this CustomElement should have #shadow-root (open)
             if (this.hasAttribute('shadow')) {
-              this._shadow = this.attachShadow({ mode: 'open' });
+              this.attachShadow({ mode: 'open' });
+            }
+          }
+
+          connectedCallback() {
+            // prevents some effects from Stencil (double invocation of connectedCallback)
+            let target = this.shadowRoot || this;
+            if (target.children.length !== 0) {
+              return;
             }
 
             // creates webc-component witch renders the template, create a constructor if needed and binds the models
@@ -32,9 +41,7 @@ export default function getCustomElementsAPI() {
               template,
               element: this,
             });
-          }
 
-          connectedCallback() {
             // disable data-view-model for attributes of this CustomElement
             this.setAttribute(DISABLE_BINDING, '');
 
@@ -51,16 +58,32 @@ export default function getCustomElementsAPI() {
             this._element.componentOnReady().then(async () => {
               this._model = await this._element.getModel();
               this._translationModel = await this._element.getTranslationModel();
+              this._listeners = await this._element.getListeners();
+              this._listeners.getModel.add();
+              this._listeners.getTranslationModel.add();
               this._element.remove();
+              this.classList.add('hydrated');
               this.removeAttribute(DISABLE_BINDING);
             });
 
             // append webc-component in shadow or not
-            if (this.hasAttribute('shadow')) {
-              this._shadow.append(this._element);
+            if (this.shadowRoot) {
+              if (!this.hasAttribute('shadow')) {
+                this.setAttribute('shadow', '');
+              }
+              this.shadowRoot.append(this._element);
             } else {
               this.append(this._element);
             }
+          }
+
+          disconnectedCallback() {
+            if (!this._listeners) {
+              return;
+            }
+
+            this._listeners.getModel.remove();
+            this._listeners.getTranslationModel.remove();
           }
 
           async getModel() {
@@ -69,6 +92,10 @@ export default function getCustomElementsAPI() {
 
           async getTranslationModel() {
             return this._translationModel;
+          }
+
+          set controller(controller) {
+            this.setAttribute('controller', `${controller}`);
           }
         },
       );

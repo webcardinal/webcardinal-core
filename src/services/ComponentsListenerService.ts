@@ -31,9 +31,7 @@ interface ComponentsListenerServiceOptions {
 }
 
 class ComponentsListenerService {
-  private readonly host: HTMLElement;
-  private readonly model: any;
-  private readonly translationModel: any;
+  private readonly host: Element;
   private readonly tags: any;
   private readonly routing: any;
   private listeners: {
@@ -45,66 +43,60 @@ class ComponentsListenerService {
     getRouting: () => null,
   };
 
-  constructor(host: HTMLElement, { model, translationModel, tags, routing }: ComponentsListenerServiceOptions) {
+  constructor(host: Element, { model, translationModel, tags, routing }: ComponentsListenerServiceOptions) {
     this.host = host;
 
-    if (model) {
-      this.model = model;
-      this.listeners.getModel = (event: CustomEvent) => {
-        event.stopImmediatePropagation();
+    this.listeners.getModel = (event: CustomEvent) => {
+      event.stopImmediatePropagation();
 
-        const callback = extractCallback(event);
-        if (!callback) return;
+      const callback = extractCallback(event);
+      if (!callback) return;
 
-        if (event.detail.chain) {
-          let chain = event.detail.chain;
-          if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-            console.warn(
-              [
-                `Invalid chain found for ${event} (chain: "${chain}")!`,
-                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
-              ].join('\n'),
-            );
-            callback(undefined, model);
-            return;
-          }
-          chain = chain.slice(1);
-          callback(undefined, model.getChainValue(chain));
+      if (event.detail.chain) {
+        let chain = event.detail.chain;
+        if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
+          console.warn(
+            [
+              `Invalid chain found for ${event} (chain: "${chain}")!`,
+              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
+            ].join('\n'),
+          );
+          callback(undefined, model);
           return;
         }
+        chain = chain.slice(1);
+        callback(undefined, model.getChainValue(chain));
+        return;
+      }
 
-        callback(undefined, model);
-      };
-    }
+      callback(undefined, model);
+    };
 
-    if (translationModel) {
-      this.translationModel = translationModel;
-      this.listeners.getTranslationModel = (event: CustomEvent) => {
-        event.stopImmediatePropagation();
+    this.listeners.getTranslationModel = (event: CustomEvent) => {
+      event.stopImmediatePropagation();
 
-        const callback = extractCallback(event);
-        if (!callback) return;
+      const callback = extractCallback(event);
+      if (!callback) return;
 
-        if (event.detail.chain) {
-          let chain = event.detail.chain;
-          if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
-            console.warn(
-              [
-                `Invalid chain found for ${event} (chain: "${chain}")!`,
-                `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
-              ].join('\n'),
-            );
-            callback(undefined, translationModel);
-            return;
-          }
-          chain = chain.slice(1);
-          callback(undefined, translationModel.getChainValue(chain));
+      if (event.detail.chain) {
+        let chain = event.detail.chain;
+        if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
+          console.warn(
+            [
+              `Invalid chain found for ${event} (chain: "${chain}")!`,
+              `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
+            ].join('\n'),
+          );
+          callback(undefined, translationModel);
           return;
         }
+        chain = chain.slice(1);
+        callback(undefined, translationModel.getChainValue(chain));
+        return;
+      }
 
-        callback(undefined, translationModel);
-      };
-    }
+      callback(undefined, translationModel);
+    };
 
     if (tags) {
       this.tags = tags;
@@ -141,8 +133,6 @@ class ComponentsListenerService {
   }
 
   get getModel() {
-    if (!this.model) return;
-
     const eventName = EVENT_MODEL_GET;
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getModel),
@@ -152,8 +142,6 @@ class ComponentsListenerService {
   }
 
   get getTranslationModel() {
-    if (!this.translationModel) return;
-
     const eventName = EVENT_TRANSLATION_MODEL_GET;
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getTranslationModel),

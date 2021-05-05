@@ -1,10 +1,16 @@
-import { Component, h, Host, Prop, State, Watch } from '@stencil/core';
+import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
-import { HostElement } from '../../../decorators';
 import { HOOK_TYPE, SKINS_PATH } from '../../../constants';
-import { HookType, WebcAppLoaderType } from '../../../interfaces';
-import { getSkinFromState, URLHelper } from '../../../utils';
+import { HostElement } from '../../../decorators';
+import { HookType, RoutingState, WebcAppLoaderType } from '../../../interfaces';
+import { ControllerTranslationService } from '../../../services';
+import {
+  getSkinFromState,
+  getTranslationsFromState,
+  resolveRoutingState,
+  URLHelper
+} from '../../../utils';
 
 import { checkPageExistence, loadPageContent } from './webc-app-loader.utils';
 
@@ -18,6 +24,7 @@ export class WebcAppLoader {
   @HostElement() host: HTMLStencilElement;
 
   @State() content = '';
+
   private activeSrc;
   private watchSkin = false;
   private skinSet = false;
@@ -48,6 +55,17 @@ export class WebcAppLoader {
    */
   @Prop({ reflect: true }) tag: string;
 
+  /**
+   * Routing configuration received from <code>webc-app-router</code>.
+   */
+  @Event({
+    eventName: 'webcardinal:routing:get',
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+  })
+  getRoutingStateEvent: EventEmitter<RoutingState>;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -59,6 +77,11 @@ export class WebcAppLoader {
     await this.setPageContent();
     this.updateActivePage();
     this.watchSkin = true;
+
+    if (getTranslationsFromState()) {
+      const routingState = await resolveRoutingState(this);
+      await ControllerTranslationService.loadAndSetTranslationsForPage(routingState);
+    }
   }
 
   async componentDidLoad() {
@@ -87,11 +110,17 @@ export class WebcAppLoader {
   }
 
   private async activateHooks() {
-    if (!window.WebCardinal.hooks || !window.WebCardinal.hooks[this.tag]) {
+    if (!window.WebCardinal.hooks) {
       return;
     }
 
-    this.hooks = window.WebCardinal.hooks[this.tag];
+    this.hooks = {};
+    const { hooks } = window.WebCardinal;
+    for (let type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE, HOOK_TYPE.CLOSED_PAGE]) {
+      if (hooks[type]?.[this.tag]) {
+        this.hooks[type] = hooks[type][this.tag];
+      }
+    }
   }
 
   private async setSkinContext() {

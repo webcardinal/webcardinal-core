@@ -1,40 +1,40 @@
 :host {
   /**
-   * @prop --webc-app-identity-color: Color of all text elements.
-   * @prop --webc-app-identity-avatar-width: Size of the picture.
-   * @prop --webc-app-identity-avatar-radius: Picture radius.
-   * @prop --webc-app-identity-row-gap: Vertical space between "name" and "email".
-   * @prop --webc-app-identity-column-gap: Horizontal space.
-   * @prop --webc-app-identity-name-font-size: Size of font for "name".
-   * @prop --webc-app-identity-email-font-size: Size of font for "email".
+   * @prop --avatar-width: Size of the picture.
+   * @prop --avatar-radius: Picture radius.
+   * @prop --color: Color of all text elements.
+   * @prop --column-gap: Horizontal space.
+   * @prop --email-font-size: Size of font for "email".
+   * @prop --name-font-size: Size of font for "name".
+   * @prop --row-gap: Vertical space between "name" and "email".
    */
 
   display: grid;
-  row-gap: var(--webc-app-identity-row-gap);
+  row-gap: var(--row-gap);
   place-content: center;
   justify-content: stretch;
 
   a {
-    color: var(--webc-app-identity-color);
+    color: var(--color);
     text-decoration: none;
   }
 
   & > img {
-    border-radius: var(--webc-app-identity-avatar-radius);
+    border-radius: var(--avatar-radius);
   }
 
   & > .name {
-    font-size: var(--webc-app-identity-name-font-size);
+    font-size: var(--name-font-size);
   }
 
   & > .email {
-    font-size: var(--webc-app-identity-email-font-size);
+    font-size: var(--email-font-size);
   }
 }
 
 :host(.has-avatar) {
-  grid-template-columns: var(--webc-app-identity-avatar-width) 1fr;
-  column-gap: var(--webc-app-identity-column-gap);
+  grid-template-columns: var(--avatar-width) 1fr;
+  column-gap: var(--column-gap);
 
   & > img {
     width: 100%;

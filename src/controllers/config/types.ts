@@ -26,7 +26,7 @@ export type FallbackPage = {
   loader?: string;
 }
 
-export type HookType = 'beforePageLoads' | 'afterPageLoads' | 'whenPageClose';
+export type HookType = 'beforePageLoads' | 'afterPageLoads' | 'whenPageClose' | 'afterAppLoads';
 
 export type LogLevel = 'none' | 'warn' | 'error';
 

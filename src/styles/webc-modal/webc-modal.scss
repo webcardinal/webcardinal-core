@@ -28,6 +28,10 @@
   display: block;
   visibility: visible;
 
+  button {
+    cursor: pointer;
+  }
+
   .webc-modal {
     position: fixed;
     overflow: hidden;
@@ -35,6 +39,7 @@
     width: 100%; height: 100%;
     z-index: var(--z-index);
     background: var(--backdrop-background);
+    filter: var(--backdrop-filter);
 
     .webc-modal-dialog {
       position: relative;

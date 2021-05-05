@@ -2,69 +2,73 @@ webc-app-menu {
   /**
    * All modes
    *
-   * @prop --webc-app-menu-color: Color of menu.
-   * @prop --webc-app-menu-disable-identity: Default value is <code>false</code>.
-   * @prop --webc-app-menu-gap: Space between slots.
-   * @prop --webc-app-menu-items-gap: Space between <code>webc-app-menu-item</code>s.
-   * @prop --webc-app-menu-mode: Default value is <code>vertical</code>.<br>
-   *                             Other values: <small><code>none</code>, <code>horizontal</code> and <code>mobile</code>.</small>
-   * @prop --webc-app-menu-z-index
+   * @prop --gap: Space between slots.
+   * @prop --items-gap: Space between <code>webc-app-menu-item</code>s.
+   * @prop --z-index
+   * Other values: <small><code>none</code>, <code>horizontal</code> and <code>mobile</code>.</small>
+   * @prop --disable-identity: Default value is <code>false</code>.<br>
+   * Other values: <small><code>true</code>.
    */
+
+  // The following props are excluded from docs, but all of them are valid
 
   /* Vertical mode
    *
-   * @prop --webc-app-menu-vertical-background
-   * @prop --webc-app-menu-vertical-border-color
-   * @prop --webc-app-menu-vertical-color
-   * @prop --webc-app-menu-vertical-dropdown-gap
-   * @prop --webc-app-menu-vertical-dropdown-items-padding
-   * @prop --webc-app-menu-vertical-dropdown-margin
-   * @prop --webc-app-menu-vertical-items-padding
-   * @prop --webc-app-menu-vertical-max-width
-   * @prop --webc-app-menu-vertical-min-width
-   * @prop --webc-app-menu-vertical-padding
+   * @prop --vertical-menu-background
+   * @prop --vertical-menu-border-color
+   * @prop --vertical-menu-color
+   * @prop --vertical-menu-dropdown-gap
+   * @prop --vertical-menu-dropdown-margin
+   * @prop --vertical-menu-dropdown-items-padding
+   * @prop --vertical-menu-items-padding
+   * @prop --vertical-menu-max-width
+   * @prop --vertical-menu-min-width
+   * @prop --vertical-menu-padding
+   * @prop --scrollbar-thumb-background
+   * @prop --scrollbar-thumb-hover-background
+   * @prop --scrollbar-thumb-border
+   * @prop --scrollbar-track-background
    */
 
   /* Horizontal mode
    *
-   * @prop --webc-app-menu-horizontal-background
-   * @prop --webc-app-menu-horizontal-box-shadow
-   * @prop --webc-app-menu-horizontal-color
-   * @prop --webc-app-menu-horizontal-dropdown-background
-   * @prop --webc-app-menu-horizontal-dropdown-box-shadow
-   * @prop --webc-app-menu-horizontal-dropdown-color
-   * @prop --webc-app-menu-horizontal-dropdown-items-padding
-   * @prop --webc-app-menu-horizontal-dropdown-margin
-   * @prop --webc-app-menu-horizontal-dropdown-padding
-   * @prop --webc-app-menu-horizontal-dropdown-radius
-   * @prop --webc-app-menu-horizontal-dropdown-width
-   * @prop --webc-app-menu-horizontal-height
-   * @prop --webc-app-menu-horizontal-items-padding
-   * @prop --webc-app-menu-horizontal-padding
-   * @prop --webc-app-menu-horizontal-triangle-size
+   * @prop --horizontal-menu-background
+   * @prop --horizontal-menu-box-shadow
+   * @prop --horizontal-menu-color
+   * @prop --horizontal-menu-dropdown-color
+   * @prop --horizontal-menu-dropdown-background
+   * @prop --horizontal-menu-dropdown-margin
+   * @prop --horizontal-menu-dropdown-padding
+   * @prop --horizontal-menu-dropdown-width
+   * @prop --horizontal-menu-dropdown-radius
+   * @prop --horizontal-menu-dropdown-box-shadow
+   * @prop --horizontal-menu-dropdown-items-padding
+   * @prop --horizontal-menu-height
+   * @prop --horizontal-menu-items-padding
+   * @prop --horizontal-menu-padding
+   * @prop --horizontal-menu-triangle-size
    */
 
   /* Mobile mode
    *
-   * @prop --webc-app-menu-mobile-backdrop-transition-duration
-   * @prop --webc-app-menu-mobile-background
-   * @prop --webc-app-menu-mobile-box-shadow
-   * @prop --webc-app-menu-mobile-breakpoint
-   * @prop --webc-app-menu-mobile-burger-color
-   * @prop --webc-app-menu-mobile-burger-transition-duration
-   * @prop --webc-app-menu-mobile-color
-   * @prop --webc-app-menu-mobile-dropdown-gap
-   * @prop --webc-app-menu-mobile-dropdown-items-padding
-   * @prop --webc-app-menu-mobile-dropdown-margin
-   * @prop --webc-app-menu-mobile-items-border-color
-   * @prop --webc-app-menu-mobile-items-padding
-   * @prop --webc-app-menu-mobile-height
-   * @prop --webc-app-menu-mobile-padding
+   * @prop --mobile-menu-backdrop-transition-duration
+   * @prop --mobile-menu-background
+   * @prop --mobile-menu-box-shadow
+   * @prop --mobile-menu-breakpoint
+   * @prop --mobile-menu-burger-color
+   * @prop --mobile-menu-burger-transition-duration
+   * @prop --mobile-menu-color
+   * @prop --mobile-menu-dropdown-gap
+   * @prop --mobile-menu-dropdown-items-padding
+   * @prop --mobile-menu-dropdown-margin
+   * @prop --mobile-menu-items-border-color
+   * @prop --mobile-menu-items-padding
+   * @prop --mobile-menu-height
+   * @prop --mobile-menu-padding
    */
 
   display: grid;
-  padding: var(--webc-app-menu-padding);
-  z-index: var(--webc-app-menu-z-index);
+  z-index: var(--z-index);
 
   .container {
     // bootstrap override
@@ -78,7 +82,6 @@ webc-app-menu {
       cursor: pointer;
 
       &, & a {
-        color: var(--webc-app-menu-color);
         text-decoration: none;
       }
     }
