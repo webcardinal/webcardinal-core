@@ -79,37 +79,37 @@
   ],
   "styles": [
     {
-      "name": "--webc-app-identity-avatar-radius",
+      "name": "--avatar-radius",
       "annotation": "prop",
       "docs": "Picture radius."
     },
     {
-      "name": "--webc-app-identity-avatar-width",
+      "name": "--avatar-width",
       "annotation": "prop",
       "docs": "Size of the picture."
     },
     {
-      "name": "--webc-app-identity-color",
+      "name": "--color",
       "annotation": "prop",
       "docs": "Color of all text elements."
     },
     {
-      "name": "--webc-app-identity-column-gap",
+      "name": "--column-gap",
       "annotation": "prop",
       "docs": "Horizontal space."
     },
     {
-      "name": "--webc-app-identity-email-font-size",
+      "name": "--email-font-size",
       "annotation": "prop",
       "docs": "Size of font for \"email\"."
     },
     {
-      "name": "--webc-app-identity-name-font-size",
+      "name": "--name-font-size",
       "annotation": "prop",
       "docs": "Size of font for \"name\"."
     },
     {
-      "name": "--webc-app-identity-row-gap",
+      "name": "--row-gap",
       "annotation": "prop",
       "docs": "Vertical space between \"name\" and \"email\"."
     }

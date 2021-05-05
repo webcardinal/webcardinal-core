@@ -16,6 +16,13 @@
 | `tag`      | `tag`       | Tag of the page set in <code>webcardinal.json</code>.                                                 | `string`                                        | `undefined` |
 
 
+## Events
+
+| Event                     | Description                                                       | Type                        |
+| ------------------------- | ----------------------------------------------------------------- | --------------------------- |
+| `webcardinal:routing:get` | Routing configuration received from <code>webc-app-router</code>. | `CustomEvent<RoutingState>` |
+
+
 ----------------------------------------------
 
 *Made by [WebCardinal](https://github.com/webcardinal) contributors.*

@@ -35,9 +35,6 @@
     "webc-app-menu-item": [
       "webc-app-menu-item",
       "stencil-route-link"
-    ],
-    "webc-component": [
-      "webc-container"
     ]
   },
   "props": [

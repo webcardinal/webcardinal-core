@@ -23,15 +23,15 @@
 
 ## CSS Custom Properties
 
-| Name                                  | Description                                |
-| ------------------------------------- | ------------------------------------------ |
-| `--webc-app-identity-avatar-radius`   | Picture radius.                            |
-| `--webc-app-identity-avatar-width`    | Size of the picture.                       |
-| `--webc-app-identity-color`           | Color of all text elements.                |
-| `--webc-app-identity-column-gap`      | Horizontal space.                          |
-| `--webc-app-identity-email-font-size` | Size of font for "email".                  |
-| `--webc-app-identity-name-font-size`  | Size of font for "name".                   |
-| `--webc-app-identity-row-gap`         | Vertical space between "name" and "email". |
+| Name                | Description                                |
+| ------------------- | ------------------------------------------ |
+| `--avatar-radius`   | Picture radius.                            |
+| `--avatar-width`    | Size of the picture.                       |
+| `--color`           | Color of all text elements.                |
+| `--column-gap`      | Horizontal space.                          |
+| `--email-font-size` | Size of font for "email".                  |
+| `--name-font-size`  | Size of font for "name".                   |
+| `--row-gap`         | Vertical space between "name" and "email". |
 
 
 ## Dependencies

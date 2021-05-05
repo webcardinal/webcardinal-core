@@ -44,7 +44,6 @@ graph TD;
   webc-app-menu --> webc-app-identity
   webc-app-menu-item --> webc-app-menu-item
   webc-app-menu-item --> stencil-route-link
-  webc-component --> webc-container
   style webc-app-root fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

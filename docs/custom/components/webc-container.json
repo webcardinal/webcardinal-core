@@ -6,19 +6,9 @@
   "docs": "",
   "docsTags": [],
   "encapsulation": "none",
-  "dependents": [
-    "webc-component",
-    "webc-modal"
-  ],
+  "dependents": [],
   "dependencies": [],
-  "dependencyGraph": {
-    "webc-component": [
-      "webc-container"
-    ],
-    "webc-modal": [
-      "webc-container"
-    ]
-  },
+  "dependencyGraph": {},
   "props": [
     {
       "name": "controller",
@@ -44,23 +34,6 @@
       "attr": "disable-container",
       "reflectToAttr": true,
       "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "disableTranslations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "disable-translations",
-      "reflectToAttr": true,
-      "docs": "If this flag is specified, when translations are enabled, it will disable binding and loading of translations.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -104,15 +77,6 @@
       "cancelable": true,
       "composed": true,
       "docs": "Through this event the model is received.",
-      "docsTags": []
-    },
-    {
-      "event": "webcardinal:routing:get",
-      "detail": "RoutingState",
-      "bubbles": true,
-      "cancelable": true,
-      "composed": true,
-      "docs": "Routing configuration received from <code>webc-app-router</code>.",
       "docsTags": []
     },
     {

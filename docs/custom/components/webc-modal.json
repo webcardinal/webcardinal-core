@@ -21,13 +21,11 @@
   "encapsulation": "shadow",
   "dependents": [],
   "dependencies": [
-    "webc-spinner",
-    "webc-container"
+    "webc-spinner"
   ],
   "dependencyGraph": {
     "webc-modal": [
-      "webc-spinner",
-      "webc-container"
+      "webc-spinner"
     ]
   },
   "props": [
@@ -190,23 +188,6 @@
       "attr": "disable-footer",
       "reflectToAttr": true,
       "docs": "Sets if the modal has the footer displayed.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "disableTranslations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "disable-translations",
-      "reflectToAttr": true,
-      "docs": "If this flag is specified, when translations are enabled, it will disable binding and loading of translations.",
       "docsTags": [],
       "default": "false",
       "values": [

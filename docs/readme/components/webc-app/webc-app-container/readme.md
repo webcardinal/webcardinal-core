@@ -16,10 +16,10 @@
 
 ## CSS Custom Properties
 
-| Name                              | Description                    |
-| --------------------------------- | ------------------------------ |
-| `--webc-app-container-background` | Background for all your pages. |
-| `--webc-app-container-gap`        | Gap between slots.             |
+| Name           | Description                    |
+| -------------- | ------------------------------ |
+| `--background` | Background for all your pages. |
+| `--gap`        | Gap between slots.             |
 
 
 ## Dependencies

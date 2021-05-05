@@ -43,12 +43,12 @@
   "events": [],
   "styles": [
     {
-      "name": "--webc-app-container-background",
+      "name": "--background",
       "annotation": "prop",
       "docs": "Background for all your pages."
     },
     {
-      "name": "--webc-app-container-gap",
+      "name": "--gap",
       "annotation": "prop",
       "docs": "Gap between slots."
     }

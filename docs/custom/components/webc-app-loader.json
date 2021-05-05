@@ -108,7 +108,17 @@
     }
   ],
   "methods": [],
-  "events": [],
+  "events": [
+    {
+      "event": "webcardinal:routing:get",
+      "detail": "RoutingState",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Routing configuration received from <code>webc-app-router</code>.",
+      "docsTags": []
+    }
+  ],
   "styles": [],
   "slots": [],
   "parts": [],

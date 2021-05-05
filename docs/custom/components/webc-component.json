@@ -9,13 +9,8 @@
   "dependents": [
     "webc-app-root"
   ],
-  "dependencies": [
-    "webc-container"
-  ],
+  "dependencies": [],
   "dependencyGraph": {
-    "webc-component": [
-      "webc-container"
-    ],
     "webc-app-root": [
       "webc-component"
     ]
@@ -27,29 +22,12 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": false,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "default": "''",
       "values": [
         {
           "type": "string"
-        }
-      ],
-      "optional": false,
-      "required": false
-    },
-    {
-      "name": "disableTranslations",
-      "type": "boolean",
-      "mutable": false,
-      "attr": "disable-translations",
-      "reflectToAttr": true,
-      "docs": "If this flag is specified, when translations are enabled, it will disable binding and loading of translations.",
-      "docsTags": [],
-      "default": "false",
-      "values": [
-        {
-          "type": "boolean"
         }
       ],
       "optional": false,
@@ -76,7 +54,7 @@
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.",
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -89,6 +67,17 @@
   ],
   "methods": [
     {
+      "name": "getListeners",
+      "returns": {
+        "type": "Promise<ComponentsListenerService>",
+        "docs": ""
+      },
+      "signature": "getListeners() => Promise<ComponentListenersService>",
+      "parameters": [],
+      "docs": "The listeners are exposed by this method.",
+      "docsTags": []
+    },
+    {
       "name": "getModel",
       "returns": {
         "type": "Promise<any>",
@@ -96,7 +85,7 @@
       },
       "signature": "getModel() => Promise<any>",
       "parameters": [],
-      "docs": "The model from controller is exposed by this method.",
+      "docs": "The model is exposed by this method.",
       "docsTags": []
     },
     {
@@ -107,7 +96,7 @@
       },
       "signature": "getTranslationModel() => Promise<any>",
       "parameters": [],
-      "docs": "The translation model from controller is exposed by this method.",
+      "docs": "The translation model is exposed by this method.",
       "docsTags": []
     }
   ],

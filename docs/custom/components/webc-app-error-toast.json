@@ -20,24 +20,54 @@
   "events": [],
   "styles": [
     {
-      "name": "--webc-app-error-toast-error-background-color",
+      "name": "--error-background",
       "annotation": "prop",
-      "docs": "Background for error toast"
+      "docs": ""
     },
     {
-      "name": "--webc-app-error-toast-error-color",
+      "name": "--error-color",
       "annotation": "prop",
-      "docs": "Color for error toast"
+      "docs": ""
     },
     {
-      "name": "--webc-app-error-toast-warning-background-color",
+      "name": "--margin",
       "annotation": "prop",
-      "docs": "Background for warning toast"
+      "docs": ""
     },
     {
-      "name": "--webc-app-error-toast-warning-color",
+      "name": "--max-height",
       "annotation": "prop",
-      "docs": "Color for warning toast"
+      "docs": ""
+    },
+    {
+      "name": "--padding",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--radius",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--warning-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--warning-color",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--width",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--z-index",
+      "annotation": "prop",
+      "docs": ""
     }
   ],
   "slots": [],

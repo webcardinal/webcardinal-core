@@ -7,12 +7,12 @@
 
 ## Properties
 
-| Property          | Attribute          | Description                                                                                                                                                                                                                                                                                                          | Type      | Default            |
-| ----------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------------------ |
-| `basePath`        | `base-path`        | There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>. | `string`  | `''`               |
-| `disableIdentity` | `disable-identity` | Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--webc-app-menu-disable-identity</code>.                                                                                                                                                                    | `boolean` | `false`            |
-| `items`           | --                 | This Array is received from <code>ApplicationController</code>.                                                                                                                                                                                                                                                      | `any[]`   | `[]`               |
-| `mode`            | `mode`             |                                                                                                                                                                                                                                                                                                                      | `string`  | `this.defaultMode` |
+| Property          | Attribute          | Description                                                                                                                                                                                                                                                                                                          | Type                                     | Default            |
+| ----------------- | ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------ |
+| `basePath`        | `base-path`        | There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>. | `string`                                 | `''`               |
+| `disableIdentity` | `disable-identity` | Decides if <code>webc-app-identity</code> is rendered.<br> This property is set by Custom Variable <code>--disable-identity</code>.                                                                                                                                                                                  | `boolean`                                | `false`            |
+| `items`           | --                 | This Array is received from <code>ApplicationController</code>.                                                                                                                                                                                                                                                      | `any[]`                                  | `[]`               |
+| `mode`            | `mode`             |                                                                                                                                                                                                                                                                                                                      | `"horizontal" \| "mobile" \| "vertical"` | `this.defaultMode` |
 
 
 ## Events
@@ -24,14 +24,12 @@
 
 ## CSS Custom Properties
 
-| Name                               | Description                                                                                                                                  |
-| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| `--webc-app-menu-color`            | Color of menu.                                                                                                                               |
-| `--webc-app-menu-disable-identity` | Default value is <code>false</code>.                                                                                                         |
-| `--webc-app-menu-gap`              | Space between slots.                                                                                                                         |
-| `--webc-app-menu-items-gap`        | Space between <code>webc-app-menu-item</code>s.                                                                                              |
-| `--webc-app-menu-mode`             | Default value is <code>vertical</code>.<br> Other values: <small><code>none</code>, <code>horizontal</code> and <code>mobile</code>.</small> |
-| `--webc-app-menu-z-index`          |                                                                                                                                              |
+| Name                     | Description                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------- |
+| `--disable-identity`     | Default value is <code>false</code>.<br> Other values: <small><code>true</code>.   |
+| `--gap`                  | Space between slots.                                                               |
+| `--items-gap`            | Space between <code>webc-app-menu-item</code>s.                                    |
+| `--z-index Other values` | <small><code>none</code>, <code>horizontal</code> and <code>mobile</code>.</small> |
 
 
 ## Dependencies
