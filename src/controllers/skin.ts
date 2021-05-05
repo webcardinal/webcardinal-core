@@ -32,8 +32,11 @@ function applyCustomSkin(container) {
   return new Promise<void>(resolve => {
     stylesheet.addEventListener('load', () => resolve());
     stylesheet.addEventListener('error', () => {
-      console.error(`"skin.css" of "${skin}" skin must be present in order to style webc-<component>s via Custom Properties!`);
-    })
+      console.error(
+        `"skin.css" of "${skin}" skin must be present in order to style webc-<component>s via Custom Properties!`,
+      );
+      resolve();
+    });
   });
 }
 
@@ -52,9 +55,16 @@ function applySkins(container) {
       await applyCustomSkin.bind(this)(stylesheet);
       resolve();
     });
-    stylesheet.addEventListener('error', () => {
-      console.error(`"skin.css" of "default" skin must be present in order to style webc-<component>s via Custom Properties!`);
-    })
+    stylesheet.addEventListener('error', async () => {
+      console.error(
+        `"skin.css" of "default" skin must be present in order to style webc-<component>s via Custom Properties!`,
+      );
+      if (skin === 'default') {
+        resolve();
+      }
+      await applyCustomSkin.bind(this)(stylesheet);
+      resolve();
+    });
   });
 }
 
