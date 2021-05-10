@@ -14,7 +14,7 @@ import {
 } from '../constants';
 
 import getPreloadAPI, { applyPreloadMiddleware } from './prelaod';
-import getCustomElementsAPI from './custom-elements';
+import getCustomElementsAPI, { getCustomElementsTagNames } from './custom-elements';
 import applySkinCSS from './skin';
 
 const CONFIG_PATH = 'webcardinal.json';
@@ -340,7 +340,10 @@ export default class ApplicationController {
       controllers,
       hooks: this.injectedHooks,
       preload: getPreloadAPI.bind(this)(),
-      components: getCustomElementsAPI(),
+      components: {
+        ...getCustomElementsAPI(),
+        tags: getCustomElementsTagNames()
+      },
     };
 
     await applyPreloadMiddleware.bind(this)(preloadPath);

@@ -1,6 +1,12 @@
 import { DISABLE_BINDING, VIEW_MODEL_KEY } from '../constants';
 import { ComponentListenersService } from '../services';
 
+let tagNames = new Set();
+
+export function getCustomElementsTagNames() {
+  return tagNames;
+}
+
 export default function getCustomElementsAPI() {
   return {
     /**
@@ -11,6 +17,8 @@ export default function getCustomElementsAPI() {
       if (!template) {
         template = `${tagName}/${tagName}`;
       }
+
+      tagName = tagName.toLowerCase();
 
       customElements.define(
         tagName,
@@ -99,6 +107,7 @@ export default function getCustomElementsAPI() {
           }
         },
       );
+      tagNames.add(tagName);
     },
   };
 }
