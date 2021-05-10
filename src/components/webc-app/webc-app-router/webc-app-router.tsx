@@ -223,9 +223,7 @@ export class WebcAppRouter {
         tags: this.tags,
         routing: { basePath: this.basePath, mapping: this.mapping },
         model: proxifyModelProperty({}),
-        translationModel: {
-          error: 'Translations can be used only inside <webc-app-loader>'
-        },
+        translationModel: null,
       });
       const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
       getModel?.add();
