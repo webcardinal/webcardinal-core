@@ -36,6 +36,10 @@ export namespace Components {
          */
         "loader": WebcAppLoaderType;
         /**
+          * If this property is set, WebCardinal.state.page will be saved for current page session.
+         */
+        "saveState": boolean;
+        /**
           * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
          */
         "skin": string;
@@ -431,6 +435,10 @@ declare namespace LocalJSX {
           * Routing configuration received from <code>webc-app-router</code>.
          */
         "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
+        /**
+          * If this property is set, WebCardinal.state.page will be saved for current page session.
+         */
+        "saveState"?: boolean;
         /**
           * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
          */

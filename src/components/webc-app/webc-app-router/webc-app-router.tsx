@@ -78,7 +78,7 @@ export class WebcAppRouter {
       url: path,
       exact: true,
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, basePath: this.basePath } as any,
+      componentProps: { src, loader, skin, basePath: this.basePath, saveState: true } as any,
     };
     if (tag) {
       props.componentProps.tag = tag;
@@ -147,7 +147,7 @@ export class WebcAppRouter {
     const skin = 'none';
     const props = {
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, basePath: this.basePath } as any,
+      componentProps: { src, loader, skin, basePath: this.basePath, saveState: true } as any,
     };
     if (fallback.tag) {
       props.componentProps.tag = fallback.tag;

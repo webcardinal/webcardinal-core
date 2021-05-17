@@ -56,6 +56,11 @@ export class WebcAppLoader {
   @Prop({ reflect: true }) tag: string;
 
   /**
+   * If this property is set, WebCardinal.state.page will be saved for current page session.
+   */
+  @Prop({ reflect: true }) saveState: boolean = false;
+
+  /**
    * Routing configuration received from <code>webc-app-router</code>.
    */
   @Event({
@@ -178,10 +183,15 @@ export class WebcAppLoader {
   }
 
   private updateActivePage() {
-    window.WebCardinal.state.page = {
-      loader: this.host,
-      src: this.activeSrc,
-    };
+    if (this.saveState) {
+      window.WebCardinal.state.page = {
+        loader: this.host,
+        src: this.activeSrc,
+      };
+      if (this.tag) {
+        window.WebCardinal.state.page.tag = this.tag;
+      }
+    }
   }
 
   private async callHook(type: HookType) {
