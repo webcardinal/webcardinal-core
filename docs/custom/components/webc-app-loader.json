@@ -58,6 +58,23 @@
       "required": false
     },
     {
+      "name": "saveState",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "save-state",
+      "reflectToAttr": true,
+      "docs": "If this property is set, WebCardinal.state.page will be saved for current page session.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "skin",
       "type": "string",
       "mutable": true,

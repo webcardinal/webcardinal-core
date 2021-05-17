@@ -16,7 +16,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": false,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "default": "''",
       "values": [
@@ -33,7 +33,7 @@
       "mutable": false,
       "attr": "disable-container",
       "reflectToAttr": true,
-      "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
+      "docs": "If it is not specified, all the innerHTML will be placed inside the unnamed slot.\r\nOtherwise the content will replace the <code>webc-container</code> element form DOM.",
       "docsTags": [],
       "default": "false",
       "values": [
