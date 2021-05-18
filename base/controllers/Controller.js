@@ -5,6 +5,7 @@ import {
   getTranslationsFromState,
   MODEL_CHAIN_PREFIX,
   VIEW_MODEL_KEY,
+  TAG_ATTRIBUTE,
   TAG_MODEL_FUNCTION_PROPERTY,
 } from '../../src';
 
@@ -239,8 +240,7 @@ export default class Controller {
         let target = event.target;
 
         while (target && target !== this.element) {
-          const targetTag = target.getAttribute('data-tag');
-          if (targetTag === tag) {
+          if (target.getAttribute(TAG_ATTRIBUTE) === tag) {
             event.preventDefault(); // Cancel the native event
             event.stopPropagation(); // Don't bubble/capture the event any further
 
@@ -250,10 +250,7 @@ export default class Controller {
             break;
           }
 
-          if (target.parentElement) {
-            target = target.parentElement;
-            continue;
-          }
+          target = target.parentElement;
         }
       };
 
@@ -464,11 +461,11 @@ export default class Controller {
   }
 
   getElementByTag(tag) {
-    return this.element.querySelector(`[data-tag="${tag}"]`);
+    return this.element.querySelector(`[${TAG_ATTRIBUTE}="${tag}"]`);
   }
 
   getElementsByTag(tag) {
-    return this.element.querySelectorAll(`[data-tag="${tag}"]`);
+    return this.element.querySelectorAll(`[${TAG_ATTRIBUTE}="${tag}"]`);
   }
 
   querySelector(selector) {
