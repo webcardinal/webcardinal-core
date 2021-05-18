@@ -144,6 +144,10 @@ export async function applyPreloadMiddleware(preloadPath) {
   try {
     await import(URLHelper.join(this.basePath, preloadPath).pathname);
     console.log('[WebCardinal] Preload middleware was used!');
+
+    if (typeof this.injectedHooks[HOOK_TYPE.BEFORE_APP] === 'function') {
+      await this.injectedHooks[HOOK_TYPE.BEFORE_APP]();
+    }
   } catch (error) {
     console.error(error);
   }

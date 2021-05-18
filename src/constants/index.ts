@@ -54,10 +54,11 @@ export const LOG_LEVEL: {
 export const HOOK_TYPE: {
   [key: string]: HookType;
 } = {
+  BEFORE_APP: 'beforeAppLoads',
+  AFTER_APP: 'afterAppLoads',
   BEFORE_PAGE: 'beforePageLoads',
   AFTER_PAGE: 'afterPageLoads',
   CLOSED_PAGE: 'whenPageClose',
-  AFTER_APP: 'afterAppLoads',
 };
 
 // custom properties
