@@ -72,12 +72,11 @@ export class WebcAppRoot {
     if (this._loaderElement) {
       this._loaderElement.hidden = true;
 
-      // TODO: expose those in other manner
       window.WebCardinal.root = this.host;
       window.WebCardinal.loader = this._loaderElement;
     }
 
-    this.callHook(HOOK_TYPE.AFTER_APP);
+    await this.callHook(HOOK_TYPE.AFTER_APP);
   }
 
   private async renderDefault() {
@@ -143,13 +142,13 @@ export class WebcAppRoot {
     }
   }
 
-  private callHook = type => {
+  private callHook = async (type) => {
     if (!window.WebCardinal.hooks) {
       return;
     }
     const hooks = window.WebCardinal.hooks;
     if (typeof hooks[type] === 'function') {
-      hooks[type]();
+      await hooks[type]();
     }
   };
 
