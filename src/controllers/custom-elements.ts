@@ -105,6 +105,12 @@ export default function getCustomElementsAPI() {
           set controller(controller) {
             this.setAttribute('controller', `${controller}`);
           }
+
+          async componentOnReady() {
+            if (this._element) {
+              await this._element.componentOnReady();
+            }
+          }
         },
       );
       tagNames.add(tagName);
