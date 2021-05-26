@@ -19,6 +19,7 @@ export class WebcContainer {
   private controllerInstance;
   private listeners: ComponentListenersService;
   private chain;
+  private controllerElement;
 
   /**
    * This property is a string that will permit the developer to choose his own controller.
@@ -60,6 +61,7 @@ export class WebcContainer {
     }
 
     const [controllerElement, bindingElement] = this.resolveControllerElement();
+    this.controllerElement = controllerElement;
     let model,
       translationModel,
       history = this.history;
@@ -85,7 +87,6 @@ export class WebcContainer {
     if (this.host.hasAttribute('default-controller') && !this.host.hasAttribute(VIEW_MODEL_KEY)) {
       return;
     }
-
     BindingService.bindChildNodes(bindingElement, {
       model,
       translationModel,
@@ -120,7 +121,7 @@ export class WebcContainer {
     // disconnectedCallback can be called multiple times
     // there is no way to listen to a "onDestroy" like event so we check if the host is still attached to the DOM
     setTimeout(() => {
-      if (!document.body.contains(this.host)) {
+      if (!document.body.contains(this.controllerElement)) {
         this.controllerInstance?.disconnectedCallback();
       }
     }, 100);
@@ -160,7 +161,7 @@ export class WebcContainer {
     let target = this.host as HTMLElement;
 
     if (this.disableContainer) {
-      return [target.parentElement, target.parentElement];
+      return [target.parentElement, target];
     }
 
     return [target, target];
