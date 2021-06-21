@@ -188,11 +188,19 @@ export function handleDataForAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  model.onChange(completeChain, ({ targetChain }) => {
+  const modelChangeHandler =  ({ targetChain,chain }) => {
+    //TODO:temporary fix in order to overcome critical bug for nested data-for elements
+    //please investigate how to remove listeners from deleted n-th data-for layer element
+    if(typeof model.getChainValue(completeChain) === "undefined"){
+      model.offChange(chain, modelChangeHandler);
+      return;
+    }
+
     // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
     const forceRefresh = completeChain === targetChain;
     updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
-  });
+  }
+  model.onChange(completeChain, modelChangeHandler);
 
   if (model.hasExpression(completeChain)) {
     model.onChangeExpressionChain(completeChain, () => {
