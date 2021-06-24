@@ -152,7 +152,8 @@ export function handleDataForAttributePresence(
 
   const updateAndRenderTemplate = (newValue, forceRefresh = false) => {
     if (!Array.isArray(newValue)) {
-      console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
+      //TODO uncomment this when offChain were properly handled
+      //console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
       newValue = [];
     }
 
