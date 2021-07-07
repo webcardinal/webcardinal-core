@@ -11,9 +11,9 @@ import {
   bindElementAttributes,
   createDomMap,
   diffDomMap,
-  getCompleteChain,
+  getCompleteChain, removeChangeHandler,
   removeElementChildNodes,
-  removeSlotInfoFromElement,
+  removeSlotInfoFromElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -62,7 +62,7 @@ export function handleDataForAttributePresence(
     } else {
       templates.push(firstChild);
     }
-
+    removeChangeHandler(firstChild,model);
     firstChild.remove();
   }
 
@@ -70,7 +70,7 @@ export function handleDataForAttributePresence(
 
   const renderTemplate = () => {
     if (!dataForAttributeModelValueLength) {
-      removeElementChildNodes(element);
+      removeElementChildNodes(element, model);
       noDataTemplates.forEach(templateNode => {
         const childElement = templateNode.cloneNode(true) as HTMLElement;
         // when nesting multiple data-for attributes, the inner slots will have the hidden property set automatically
@@ -143,7 +143,7 @@ export function handleDataForAttributePresence(
     for (let index = dataForAttributeModelValueLength; index < existingNodes.length; index++) {
       const nodes = existingNodes[index];
       nodes.forEach(node => {
-        removeElementChildNodes(node);
+        removeElementChildNodes(node,model);
         node.remove();
       });
     }
@@ -152,8 +152,7 @@ export function handleDataForAttributePresence(
 
   const updateAndRenderTemplate = (newValue, forceRefresh = false) => {
     if (!Array.isArray(newValue)) {
-      //TODO uncomment this when offChain were properly handled
-      //console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
+      console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
       newValue = [];
     }
 
@@ -174,7 +173,7 @@ export function handleDataForAttributePresence(
       // if we have a force refresh or the length of the list has changed,
       // then we will cleanup the existing content and recreated it from scratch
       // to make sure there are no leftover content/binding that could generate issues
-      removeElementChildNodes(element);
+      removeElementChildNodes(element, model);
       existingNodes = [];
       renderTemplate();
     }
@@ -189,23 +188,20 @@ export function handleDataForAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  const modelChangeHandler =  ({ targetChain,chain }) => {
-    //TODO:temporary fix in order to overcome critical bug for nested data-for elements
-    //please investigate how to remove listeners from deleted n-th data-for layer element
-    if(typeof model.getChainValue(completeChain) === "undefined"){
-      model.offChange(chain, modelChangeHandler);
-      return;
-    }
-
+  const modelChangeHandler =  ({ targetChain }) => {
     // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
     const forceRefresh = completeChain === targetChain;
     updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
   }
   model.onChange(completeChain, modelChangeHandler);
+  setElementChainChangeHandler(element, completeChain, modelChangeHandler);
 
   if (model.hasExpression(completeChain)) {
-    model.onChangeExpressionChain(completeChain, () => {
+    const expressionChangeHandler = () => {
       updateAndRenderTemplate(model.evaluateExpression(completeChain));
-    });
+    };
+
+    model.onChangeExpressionChain(completeChain, expressionChangeHandler);
+    setElementExpressionChangeHandler(element, completeChain, expressionChangeHandler)
   }
 }

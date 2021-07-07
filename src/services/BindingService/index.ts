@@ -15,7 +15,7 @@ import {
   bindElementAttributes,
   bindElementChangeToModel,
   getCompleteChain,
-  isAttributePresentOnElement,
+  isAttributePresentOnElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -127,11 +127,15 @@ const BindingService = {
               bindElementChangeToModel(element, model, completeChain);
 
               // onChange
-              model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+              const changeHandler = () => setElementModel(element, model, completeChain);
+              model.onChange(completeChain, changeHandler);
+              setElementChainChangeHandler(element,chain, changeHandler)
 
               // onChangeExpressionChain
               if (model.hasExpression(completeChain)) {
-                model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+                const changeExpressionChainHandler = () => setElementModel(element, model, completeChain)
+                model.onChangeExpressionChain(completeChain, changeExpressionChainHandler);
+                setElementExpressionChangeHandler(element, completeChain, changeExpressionChainHandler);
               }
             } else {
               console.warn(

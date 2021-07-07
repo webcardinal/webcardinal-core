@@ -7,6 +7,8 @@ import {
   VIEW_MODEL_KEY,
 } from '../constants';
 
+import {removeChangeHandler, setElementChainChangeHandler, setElementExpressionChangeHandler} from "./model.utils";
+
 export function getClosestParentElement(element: HTMLElement, selector: string, stopSelector?: string): HTMLElement {
   let closestParent = null;
   while (element) {
@@ -171,9 +173,11 @@ export function bindElementAttributes(
       bindElementChangeToModelProperty(element, model, chain);
     }
 
-    model.onChange(chain, _ => {
+    const chainChangeHandler = () => {
       setElementValue(element, { key, value: model.getChainValue(chain) });
-    });
+    }
+    model.onChange(chain, chainChangeHandler);
+    setElementChainChangeHandler(element, chain, chainChangeHandler)
 
     if (model.hasExpression(chain)) {
       setElementValue(element, { key, value: model.evaluateExpression(chain) });
@@ -181,9 +185,11 @@ export function bindElementAttributes(
         bindElementChangeToModelProperty(element, model, chain);
       }
 
-      model.onChangeExpressionChain(chain, _ => {
-        setElementValue(element, { key, value: model.evaluateExpression(chain) });
-      });
+      const expresionChangeHandler = () => {
+        setElementValue(element, {key, value: model.evaluateExpression(chain)});
+      }
+      model.onChangeExpressionChain(chain, expresionChangeHandler);
+      setElementExpressionChangeHandler(element, chain, expresionChangeHandler)
     }
   });
 }
@@ -256,13 +262,16 @@ export function getSlotContent(elements: Element[], slotName: string) {
     .join('');
 }
 
-export function removeElementChildren(element: Element) {
+//is this used anymore?
+export function removeElementChildren(element: Element, model) {
+  removeChangeHandler(element,model);
   while (element.children.length > 0) {
     element.children[0].remove();
   }
 }
 
-export function removeElementChildNodes(element: Element) {
+export function removeElementChildNodes(element: Element, model) {
+  removeChangeHandler(element,model);
   while (element.childNodes.length > 0) {
     element.childNodes[0].remove();
   }
