@@ -26,6 +26,8 @@ export class WebcModal {
 
   private listeners: ComponentListenersService;
 
+  private controllerInstance;
+
   @State() history: RouterHistory;
 
   @State() isLoading = false;
@@ -153,12 +155,12 @@ export class WebcModal {
       if (Controller) {
         try {
           this.host.setAttribute(VIEW_MODEL_KEY, MODEL_CHAIN_PREFIX);
-          const instance = new Controller(this.host, this.history, this.model, this.translationModel);
+          this.controllerInstance = new Controller(this.host, this.history, this.model, this.translationModel);
           if (!this.model) {
-            this.model = instance.model;
+            this.model = this.controllerInstance.model;
           }
           if (!this.translationModel) {
-            this.translationModel = instance.translationModel;
+            this.translationModel = this.controllerInstance.translationModel;
           }
         } catch (error) {
           console.error(error);
@@ -199,6 +201,9 @@ export class WebcModal {
       getModel?.remove();
       getTranslationModel?.remove();
     }
+
+    this.controllerInstance?.disconnectedCallback();
+    this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
   }
 
   /**
@@ -270,7 +275,7 @@ export class WebcModal {
   private getTitleContent() {
     if (this.hasSlot('header')) return <slot name="header" />;
 
-    let content = [];
+    const content = [];
     if (this.modalTitle) content.push(<h2 class="modal-title">{this.modalTitle}</h2>);
     if (this.modalDescription) content.push(<p class="modal-description">{this.modalDescription}</p>);
     return content;

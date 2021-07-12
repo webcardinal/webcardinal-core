@@ -13,6 +13,7 @@ import { getTemplate } from './webc-component.utils';
   tag: 'webc-component',
 })
 export class WebcComponent {
+  private controllerInstance;
   @HostElement() host: HTMLStencilElement;
 
   @State() history: RouterHistory;
@@ -83,12 +84,12 @@ export class WebcComponent {
       const Controller = await ControllerRegistryService.getController(this.controller);
       if (Controller) {
         try {
-          const instance = new Controller(this.element, this.history, this.model, this.translationModel);
+          this.controllerInstance = new Controller(this.element, this.history, this.model, this.translationModel);
           if (!this.model) {
-            this.model = instance.model;
+            this.model = this.controllerInstance.model;
           }
           if (!this.translationModel) {
-            this.translationModel = instance.translationModel;
+            this.translationModel = this.controllerInstance.translationModel;
           }
         } catch (error) {
           console.error(error);
@@ -146,6 +147,8 @@ export class WebcComponent {
       getModel?.remove();
       getTranslationModel?.remove();
     }
+    this.controllerInstance?.disconnectedCallback();
+    this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
   }
 
   /**
