@@ -93,13 +93,6 @@ export function handleDataIfAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  const chainChangeHandler = () => {
-    setExtractedConditionValue(model.getChainValue(completeConditionChain));
-  };
-
-  model.onChange(completeConditionChain, chainChangeHandler);
-  setElementChainChangeHandler(element, completeConditionChain, chainChangeHandler)
-
   if (model.hasExpression(completeConditionChain)) {
     setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
     const expressionChangeHandler = () => {
@@ -108,6 +101,12 @@ export function handleDataIfAttributePresence(
 
     model.onChangeExpressionChain(completeConditionChain, expressionChangeHandler);
     setElementExpressionChangeHandler(element, completeConditionChain, expressionChangeHandler);
-
+  }
+  else{
+    const chainChangeHandler = () => {
+      setExtractedConditionValue(model.getChainValue(completeConditionChain));
+    };
+    model.onChange(completeConditionChain, chainChangeHandler);
+    setElementChainChangeHandler(element, completeConditionChain, chainChangeHandler)
   }
 }
