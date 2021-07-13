@@ -148,7 +148,10 @@ export class WebcComponent {
       getTranslationModel?.remove();
     }
     this.controllerInstance?.disconnectedCallback();
-    this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
+    //prevent cleaning models change callbacks that are shared with current controller instance
+    if(!this.chain){
+      this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
+    }
   }
 
   /**

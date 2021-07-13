@@ -203,7 +203,6 @@ export class WebcModal {
     }
 
     this.controllerInstance?.disconnectedCallback();
-    this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
   }
 
   /**
