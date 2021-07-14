@@ -30,6 +30,16 @@ export function extractChain(element) {
   return chain;
 }
 
+export function mergeChains(prefixChain, chain) {
+  prefixChain = prefixChain.split("@").join("");
+  chain = chain.split("@").join("");
+
+  if(chain){
+    return `@${prefixChain}.${chain}`
+  }
+    return  prefixChain? `@${prefixChain}`:"";
+}
+
 export function setElementChainChangeHandler(element, chain, changeHandler){
   modelChangeHandlersRegistry.set(element, {chain, changeHandler})
 }
@@ -42,8 +52,7 @@ export function removeChangeHandler(element, model){
 
   const seekForElementChainChangeHandlers = (element) => {
     if (element.childNodes.length > 0) {
-      for (let i = 0; i < element.childNodes.length; i++) {
-        const child = element.childNodes[i];
+      for (const child of element.childNodes) {
         if (modelChangeHandlersRegistry.has(child)) {
           const elementChangeChainHandler = modelChangeHandlersRegistry.get(child);
 

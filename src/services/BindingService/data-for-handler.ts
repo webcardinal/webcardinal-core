@@ -11,7 +11,7 @@ import {
   bindElementAttributes,
   createDomMap,
   diffDomMap,
-  getCompleteChain, removeChangeHandler,
+  getCompleteChain, listenForPrefixChainEvents, removeChangeHandler,
   removeElementChildNodes,
   removeSlotInfoFromElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
 } from '../../utils';
@@ -54,6 +54,9 @@ export function handleDataForAttributePresence(
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];
+
+  //Event delegation:Custom handling on the parent instead of using ComponentsListenerService for each child
+  listenForPrefixChainEvents(element,completeChain);
 
   while (element.childNodes.length > 0) {
     const firstChild = element.childNodes[0];

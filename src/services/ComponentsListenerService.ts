@@ -1,102 +1,96 @@
 import {
   EVENT_MODEL_GET,
+  EVENT_PARENT_CHAIN_GET,
   EVENT_ROUTING_GET,
   EVENT_TAGS_GET,
   EVENT_TRANSLATION_MODEL_GET,
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
 } from '../constants';
-
-function extractCallback(event) {
-  let callback;
-  if (typeof event.detail === 'function') {
-    callback = event.detail;
-  } else if (event.detail && typeof event.detail.callback === 'function') {
-    callback = event.detail.callback;
-  }
-
-  if (!callback) {
-    console.warn(`Invalid callback for event`, event);
-    return;
-  }
-
-  return callback;
-}
+import {extractCallback} from "../utils";
 
 interface ComponentsListenerServiceOptions {
   model?: any;
   translationModel?: any;
   tags?: any;
   routing?: any;
+  chain?:any
 }
 
 class ComponentsListenerService {
   private readonly host: Element;
   private readonly tags: any;
   private readonly routing: any;
+  private readonly chain:any;
   private listeners: {
-    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting']: (event: CustomEvent) => void;
+    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting' | 'getParentChain']: (event: CustomEvent) => void;
   } = {
     getModel: () => null,
     getTranslationModel: () => null,
     getTags: () => null,
     getRouting: () => null,
+    getParentChain:()=>null
   };
 
-  constructor(host: Element, { model, translationModel, tags, routing }: ComponentsListenerServiceOptions) {
+  constructor(host: Element, { model, translationModel, tags, routing, chain }: ComponentsListenerServiceOptions) {
     this.host = host;
 
-    this.listeners.getModel = (event: CustomEvent) => {
-      event.stopImmediatePropagation();
+    if (model) {
+      this.listeners.getModel = (event: CustomEvent) => {
+        event.stopImmediatePropagation();
 
-      const callback = extractCallback(event);
-      if (!callback) return;
+        const callback = extractCallback(event);
+        if (!callback) return;
 
-      if (event.detail.chain) {
-        let chain = event.detail.chain;
-        if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
-          console.warn(
-            [
-              `Invalid chain found for ${event} (chain: "${chain}")!`,
-              `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
-            ].join('\n'),
-          );
-          callback(undefined, model);
+        if (event.detail.chain) {
+          let chain = event.detail.chain;
+          if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
+            console.warn(
+                [
+                  `Invalid chain found for ${event} (chain: "${chain}")!`,
+                  `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
+                ].join('\n'),
+            );
+            callback(undefined, model);
+            return;
+          }
+          chain = chain.slice(1);
+          callback(undefined, model.getChainValue(chain));
           return;
         }
-        chain = chain.slice(1);
-        callback(undefined, model.getChainValue(chain));
-        return;
-      }
 
-      callback(undefined, model);
-    };
+        callback(undefined, model);
+      };
+    }
 
-    this.listeners.getTranslationModel = (event: CustomEvent) => {
-      event.stopImmediatePropagation();
+    if (translationModel) {
 
-      const callback = extractCallback(event);
-      if (!callback) return;
+      this.listeners.getTranslationModel = (event: CustomEvent) => {
+        event.stopImmediatePropagation();
 
-      if (event.detail.chain) {
-        let chain = event.detail.chain;
-        if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
-          console.warn(
-            [
-              `Invalid chain found for ${event} (chain: "${chain}")!`,
-              `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
-            ].join('\n'),
-          );
-          callback(undefined, translationModel);
+        const callback = extractCallback(event);
+        if (!callback) return;
+
+        if (event.detail.chain) {
+          let chain = event.detail.chain;
+          if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
+            console.warn(
+                [
+                  `Invalid chain found for ${event} (chain: "${chain}")!`,
+                  `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
+                ].join('\n'),
+            );
+            callback(undefined, translationModel);
+            return;
+          }
+          chain = chain.slice(1);
+          callback(undefined, translationModel.getChainValue(chain));
           return;
         }
-        chain = chain.slice(1);
-        callback(undefined, translationModel.getChainValue(chain));
-        return;
-      }
 
-      callback(undefined, translationModel);
-    };
+        callback(undefined, translationModel);
+      };
+    }
 
     if (tags) {
       this.tags = tags;
@@ -128,6 +122,16 @@ class ComponentsListenerService {
         callback(undefined, this.routing);
       };
     }
+
+    if (typeof chain !== "undefined") {
+      this.chain = chain;
+      this.listeners.getParentChain = (event: CustomEvent) => {
+        event.stopImmediatePropagation();
+        const callback = extractCallback(event);
+        if (!callback) return;
+        callback(undefined, this.chain);
+      }
+    }
   }
 
   get getModel() {
@@ -144,6 +148,15 @@ class ComponentsListenerService {
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getTranslationModel),
       remove: () => this.host.removeEventListener(eventName, this.listeners.getTranslationModel),
+      eventName,
+    };
+  }
+
+  get getParentChain(){
+    const eventName = EVENT_PARENT_CHAIN_GET;
+    return {
+      add: () => this.host.addEventListener(eventName, this.listeners.getParentChain),
+      remove: () => this.host.removeEventListener(eventName, this.listeners.getParentChain),
       eventName,
     };
   }

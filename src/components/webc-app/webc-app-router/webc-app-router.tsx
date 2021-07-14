@@ -224,12 +224,14 @@ export class WebcAppRouter {
         routing: { basePath: this.basePath, mapping: this.mapping },
         model: proxifyModelProperty({}),
         translationModel: null,
+        chain:""
       });
-      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      const { getModel, getTranslationModel, getTags, getRouting,getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
       getTags?.add();
       getRouting?.add();
+      getParentChain?.add();
     } catch (error) {
       console.error(error);
     }
@@ -237,21 +239,23 @@ export class WebcAppRouter {
 
   async connectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      const { getModel, getTranslationModel, getTags, getRouting, getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
       getTags?.add();
       getRouting?.add();
+      getParentChain?.add();
     }
   }
 
   async disconnectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel, getTags, getRouting } = this.listeners;
+      const { getModel, getTranslationModel, getTags, getRouting,getParentChain } = this.listeners;
       getModel?.remove();
       getTranslationModel?.remove();
       getTags?.remove();
       getRouting?.remove();
+      getParentChain?.remove();
     }
   }
 

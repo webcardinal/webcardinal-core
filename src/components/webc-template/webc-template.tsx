@@ -3,7 +3,7 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
 import { BindingService } from '../../services';
-import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
+import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
 
 import { getTemplate } from './webc-template.utils';
 
@@ -48,6 +48,14 @@ export class WebcTemplate {
   })
   getTranslationModelEvent: EventEmitter;
 
+  @Event({
+    eventName: 'webcardinal:parentChain:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getChainPrefix: EventEmitter;
+
   private model;
   private translationModel;
   private chain = '';
@@ -67,10 +75,11 @@ export class WebcTemplate {
     }
 
     this.host.innerHTML = await getTemplate(this.template);
-
+    const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
     this.chain = extractChain(this.host);
+    this.chain = mergeChains(chainPrefix, this.chain);
 
-    if (this.chain) {
+    if (typeof this.chain !== "undefined") {
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
         this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
