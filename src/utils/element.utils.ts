@@ -140,10 +140,6 @@ export function bindElementAttributes(
   chainPrefix = MODEL_CHAIN_PREFIX,
   modelChainPrefix: string = null,
 ) {
-  // for some webc-<components> binding is managed by component itself
-  if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
-    return;
-  }
 
   // for psk-<components> @BindModel decorator is design for this task
   if (element.tagName.startsWith(PSK_CARDINAL_PREFIX.toUpperCase())) {
@@ -169,6 +165,10 @@ export function bindElementAttributes(
     }
 
     setElementValue(element, { key, value: model.getChainValue(chain) });
+    // for some webc-<components> binding is managed by component itself
+    if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
+      return;
+    }
     if (chainPrefix === MODEL_CHAIN_PREFIX && isAttributeForModelChange(element, key)) {
       bindElementChangeToModelProperty(element, model, chain);
     }

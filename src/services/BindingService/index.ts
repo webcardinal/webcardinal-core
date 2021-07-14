@@ -49,8 +49,9 @@ const BindingService = {
     if (isElementNode(elementOrChildNode)) {
       const element = elementOrChildNode as Element;
       // for some webc-<components> binding is managed by component itself
+      //but let the attributes binding to pass
       if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
-        return;
+        return bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
       }
 
       if (element.hasAttribute(TAG_ATTRIBUTE)) {
