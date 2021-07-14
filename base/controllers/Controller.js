@@ -141,6 +141,10 @@ export default class Controller {
 
     Object.defineProperty(this, 'model', {
       get() {
+        //return a friendly non-undefined model that will be well digested by the binding services
+        if(!model){
+            model = PskBindableModel.setModel({});
+        }
         return model;
       },
       set(modelToSet) {
