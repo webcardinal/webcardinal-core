@@ -34,10 +34,14 @@ export function mergeChains(prefixChain, chain) {
   prefixChain = prefixChain.split("@").join("");
   chain = chain.split("@").join("");
 
-  if(chain){
+  if (prefixChain && chain) {
     return `@${prefixChain}.${chain}`
+  } else {
+    if (chain) {
+      return `@${chain}`
+    }
   }
-    return  prefixChain? `@${prefixChain}`:"";
+  return prefixChain ? `@${prefixChain}` : "@";
 }
 
 export function setElementChainChangeHandler(element, chain, changeHandler){
