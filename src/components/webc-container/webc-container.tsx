@@ -76,14 +76,12 @@ export class WebcContainer {
       history = this.history;
 
     this.chain = extractChain(this.host);
-    const isNewModel = this.chain.indexOf("@") === -1;
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
 
-    if(!isNewModel){
+    if(hasInheritedModel){
       const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
       this.chain = mergeChains(chainPrefix, this.chain);
-    }
 
-    if (!isNewModel && this.chain) {
       try {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);

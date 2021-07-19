@@ -76,11 +76,13 @@ export class WebcTemplate {
     }
 
     this.host.innerHTML = await getTemplate(this.template);
-    const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
     this.chain = extractChain(this.host);
-    this.chain = mergeChains(chainPrefix, this.chain);
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
 
-    if (typeof this.chain !== "undefined") {
+    if(hasInheritedModel){
+      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+      this.chain = mergeChains(chainPrefix, this.chain);
+
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
         this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);

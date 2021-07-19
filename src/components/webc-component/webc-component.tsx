@@ -108,9 +108,13 @@ export class WebcComponent {
     this.host.insertAdjacentHTML('afterend', this.html);
 
     this.chain = extractChain(this.element);
-    const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
-    this.chain = extractChain(this.host);
-    this.chain = mergeChains(chainPrefix, this.chain);
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
+
+    if(hasInheritedModel){
+      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+      this.chain = mergeChains(chainPrefix, this.chain);
+    }
+
 
     const model = this.model;
     const translationModel = this.translationModel;
