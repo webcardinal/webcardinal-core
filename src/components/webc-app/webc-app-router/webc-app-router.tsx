@@ -223,7 +223,7 @@ export class WebcAppRouter {
         tags: this.tags,
         routing: { basePath: this.basePath, mapping: this.mapping },
         model: proxifyModelProperty({}),
-        translationModel: null,
+        translationModel: proxifyModelProperty({}),
         chain:""
       });
       const { getModel, getTranslationModel, getTags, getRouting,getParentChain } = this.listeners;
