@@ -10,7 +10,7 @@ import {
   getCompleteChain,
   getSlots,
   removeElementChildNodes,
-  removeSlotInfoFromElement,
+  removeSlotInfoFromElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -42,11 +42,11 @@ export function handleDataIfAttributePresence(
     trueSlotElements = Array.from(element.childNodes);
   }
 
-  removeElementChildNodes(element);
+  removeElementChildNodes(element, model);
 
   const setVisibleContent = () => {
     const visibleSlots = conditionValue ? trueSlotElements : falseSlotElements;
-    removeElementChildNodes(element);
+    removeElementChildNodes(element, model);
     visibleSlots.forEach(slot => {
       const slotElement = slot.cloneNode(true) as HTMLElement;
       removeSlotInfoFromElement(slotElement);
@@ -93,15 +93,20 @@ export function handleDataIfAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  model.onChange(completeConditionChain, () => {
-    setExtractedConditionValue(model.getChainValue(completeConditionChain));
-  });
-
   if (model.hasExpression(completeConditionChain)) {
     setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
-
-    model.onChangeExpressionChain(completeConditionChain, () => {
+    const expressionChangeHandler = () => {
       setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
-    });
+    };
+
+    model.onChangeExpressionChain(completeConditionChain, expressionChangeHandler);
+    setElementExpressionChangeHandler(element, completeConditionChain, expressionChangeHandler);
+  }
+  else{
+    const chainChangeHandler = () => {
+      setExtractedConditionValue(model.getChainValue(completeConditionChain));
+    };
+    model.onChange(completeConditionChain, chainChangeHandler);
+    setElementChainChangeHandler(element, completeConditionChain, chainChangeHandler)
   }
 }

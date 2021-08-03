@@ -5,7 +5,7 @@ import { injectHistory, RouterHistory } from '@stencil/router';
 import { MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
-import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
+import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
 
 import { getTemplate } from './webc-component.utils';
 
@@ -13,6 +13,7 @@ import { getTemplate } from './webc-component.utils';
   tag: 'webc-component',
 })
 export class WebcComponent {
+  private controllerInstance;
   @HostElement() host: HTMLStencilElement;
 
   @State() history: RouterHistory;
@@ -56,6 +57,14 @@ export class WebcComponent {
   })
   getTranslationModelEvent: EventEmitter;
 
+  @Event({
+    eventName: 'webcardinal:parentChain:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getChainPrefix: EventEmitter;
+
   private model;
   private translationModel;
   private html;
@@ -83,12 +92,12 @@ export class WebcComponent {
       const Controller = await ControllerRegistryService.getController(this.controller);
       if (Controller) {
         try {
-          const instance = new Controller(this.element, this.history, this.model, this.translationModel);
+          this.controllerInstance = new Controller(this.element, this.history, this.model, this.translationModel);
           if (!this.model) {
-            this.model = instance.model;
+            this.model = this.controllerInstance.model;
           }
           if (!this.translationModel) {
-            this.translationModel = instance.translationModel;
+            this.translationModel = this.controllerInstance.translationModel;
           }
         } catch (error) {
           console.error(error);
@@ -99,11 +108,18 @@ export class WebcComponent {
     this.host.insertAdjacentHTML('afterend', this.html);
 
     this.chain = extractChain(this.element);
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
+
+    if(hasInheritedModel){
+      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+      this.chain = mergeChains(chainPrefix, this.chain);
+    }
+
 
     const model = this.model;
     const translationModel = this.translationModel;
     const recursive = true;
-    const chainPrefix = this.chain ? this.chain.slice(1) : null;
+    const chain = this.chain ? this.chain.slice(1) : null;
     const enableTranslations = getTranslationsFromState();
 
     if (this.element.shadowRoot) {
@@ -111,7 +127,7 @@ export class WebcComponent {
         model,
         translationModel,
         recursive,
-        chainPrefix,
+        chainPrefix:chain,
         enableTranslations,
       });
     }
@@ -120,31 +136,40 @@ export class WebcComponent {
       model,
       translationModel,
       recursive,
-      chainPrefix,
+      chainPrefix:chain,
       enableTranslations,
     });
 
     this.listeners = new ComponentListenersService(this.element, {
       model: this.model,
       translationModel: this.translationModel,
+      chain:this.chain
     });
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
+    this.listeners.getParentChain.add();
   }
 
   async connectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel,getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
+      getParentChain?.add();
     }
   }
 
   async disconnectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel, getParentChain } = this.listeners;
       getModel?.remove();
       getTranslationModel?.remove();
+      getParentChain?.remove();
+    }
+    this.controllerInstance?.disconnectedCallback();
+    //prevent cleaning models change callbacks that are shared with current controller instance
+    if(!this.chain){
+      this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
     }
   }
 

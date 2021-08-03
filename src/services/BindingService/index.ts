@@ -15,7 +15,7 @@ import {
   bindElementAttributes,
   bindElementChangeToModel,
   getCompleteChain,
-  isAttributePresentOnElement,
+  isAttributePresentOnElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -49,8 +49,9 @@ const BindingService = {
     if (isElementNode(elementOrChildNode)) {
       const element = elementOrChildNode as Element;
       // for some webc-<components> binding is managed by component itself
+      //but let the attributes binding to pass
       if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
-        return;
+        return bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
       }
 
       if (element.hasAttribute(TAG_ATTRIBUTE)) {
@@ -127,11 +128,15 @@ const BindingService = {
               bindElementChangeToModel(element, model, completeChain);
 
               // onChange
-              model.onChange(completeChain, () => setElementModel(element, model, completeChain));
+              const changeHandler = () => setElementModel(element, model, completeChain);
+              model.onChange(completeChain, changeHandler);
+              setElementChainChangeHandler(element,chain, changeHandler)
 
               // onChangeExpressionChain
               if (model.hasExpression(completeChain)) {
-                model.onChangeExpressionChain(completeChain, () => setElementModel(element, model, completeChain));
+                const changeExpressionChainHandler = () => setElementModel(element, model, completeChain)
+                model.onChangeExpressionChain(completeChain, changeExpressionChainHandler);
+                setElementExpressionChangeHandler(element, completeChain, changeExpressionChainHandler);
               }
             } else {
               console.warn(

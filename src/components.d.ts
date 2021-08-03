@@ -531,6 +531,7 @@ declare namespace LocalJSX {
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:parentChain:get"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */
@@ -553,6 +554,7 @@ declare namespace LocalJSX {
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:parentChain:get"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */
@@ -680,6 +682,7 @@ declare namespace LocalJSX {
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:parentChain:get"?: (event: CustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */

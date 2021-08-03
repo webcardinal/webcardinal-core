@@ -1,20 +1,18 @@
-bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"D:\\work\\epi-workspace\\privatesky\\builds\\tmp\\bindableModel.js":[function(require,module,exports){
+bindableModelRequire=(function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({"D:\\privatesky\\builds\\tmp\\bindableModel.js":[function(require,module,exports){
 (function (global){(function (){
 if (typeof window !== "undefined" && typeof window.process === "undefined") {
 	window.process = {};
 }
 
 if (typeof File === "undefined") {
-	global.File = function (){
-
-	}
+	global.File = function (){}
 }
 
 require("./bindableModel_intermediar");
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./bindableModel_intermediar":"D:\\work\\epi-workspace\\privatesky\\builds\\tmp\\bindableModel_intermediar.js"}],"D:\\work\\epi-workspace\\privatesky\\builds\\tmp\\bindableModel_intermediar.js":[function(require,module,exports){
+},{"./bindableModel_intermediar":"D:\\privatesky\\builds\\tmp\\bindableModel_intermediar.js"}],"D:\\privatesky\\builds\\tmp\\bindableModel_intermediar.js":[function(require,module,exports){
 (function (global){(function (){
 global.bindableModelLoadModules = function(){
 
@@ -44,7 +42,7 @@ if (typeof $$ !== "undefined") {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"overwrite-require":"overwrite-require","psk-bindable-model":"psk-bindable-model","queue":"queue","soundpubsub":"soundpubsub"}],"D:\\work\\epi-workspace\\privatesky\\modules\\overwrite-require\\moduleConstants.js":[function(require,module,exports){
+},{"overwrite-require":"overwrite-require","psk-bindable-model":"psk-bindable-model","queue":"queue","soundpubsub":"soundpubsub"}],"D:\\privatesky\\modules\\overwrite-require\\moduleConstants.js":[function(require,module,exports){
 module.exports = {
   BROWSER_ENVIRONMENT_TYPE: 'browser',
   MOBILE_BROWSER_ENVIRONMENT_TYPE: 'mobile-browser',
@@ -55,7 +53,7 @@ module.exports = {
   NODEJS_ENVIRONMENT_TYPE: 'nodejs'
 };
 
-},{}],"D:\\work\\epi-workspace\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js":[function(require,module,exports){
+},{}],"D:\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js":[function(require,module,exports){
 (function (global){(function (){
 let logger = console;
 
@@ -378,7 +376,7 @@ $$.registerGlobalSymbol("throttlingEvent", function (...args) {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"buffer":false,"psklogger":false,"swarmutils":false}],"D:\\work\\epi-workspace\\privatesky\\modules\\psk-bindable-model\\lib\\PskBindableModel.js":[function(require,module,exports){
+},{"buffer":false,"psklogger":false,"swarmutils":false}],"D:\\privatesky\\modules\\psk-bindable-model\\lib\\PskBindableModel.js":[function(require,module,exports){
 const SoundPubSub = require("soundpubsub").soundPubSub;
 const CHAIN_CHANGED = 'chainChanged';
 const WILDCARD = "*";
@@ -400,6 +398,7 @@ class PskBindableModel {
         let root = undefined;
         let targetPrefix = MODEL_PREFIX + CHAIN_SEPARATOR + modelCounter + CHAIN_SEPARATOR;
         let observedChains = new Set();
+        let referencedChangeCallbacks = [];
         const expressions = {};
 
         modelCounter++;
@@ -487,7 +486,7 @@ class PskBindableModel {
             }
 
             let isRoot = !parentChain;
-            let notify, onChange,offChange, getChainValue, setChainValue;
+            let notify, onChange,offChange, getChainValue, setChainValue, cleanReferencedChangeCallbacks;
             if (isRoot) {
                 notify = function(changedChain) {
 
@@ -565,11 +564,24 @@ class PskBindableModel {
                 onChange = function(chain, callback) {
                     observedChains.add(chain);
                     SoundPubSub.subscribe(createChannelName(chain), callback);
+                    referencedChangeCallbacks.push({chain:chain, callback:callback});
                 }
 
                 offChange = function (chain, callback){
-                    if(observedChains.has(chain)){
+                    if (observedChains.has(chain)) {
+                        let index = referencedChangeCallbacks.findIndex(referenceChangeCallback => {
+                            return referenceChangeCallback.callback === callback
+                        })
+                        if (index !== -1) {
+                            referencedChangeCallbacks.splice(index, 1);
+                        }
                         SoundPubSub.unsubscribe(createChannelName(chain), callback);
+                    }
+                }
+                cleanReferencedChangeCallbacks = function () {
+                    for (let i = 0; i < referencedChangeCallbacks.length; i++) {
+                        let {chain, callback} = referencedChangeCallbacks[i];
+                        offChange.call(this, chain, callback)
                     }
                 }
             }
@@ -580,7 +592,8 @@ class PskBindableModel {
                     "addExpression",
                     "evaluateExpression",
                     "hasExpression",
-                    "onChangeExpressionChain"
+                    "onChangeExpressionChain",
+                    "offChangeExpressionChain"
                 ];
                 return function(target, prop) {
                     if (isRoot) {
@@ -595,6 +608,8 @@ class PskBindableModel {
                                 return getChainValue;
                             case "setChainValue":
                                 return setChainValue;
+                            case "cleanReferencedChangeCallbacks":
+                                return cleanReferencedChangeCallbacks;
                             default:
                                 if(PROXY_ROOT_METHODS.includes(prop)) {
                                     return target[prop];
@@ -647,6 +662,8 @@ class PskBindableModel {
                                 return getChainValue;
                             case "setChainValue":
                                 return setChainValue;
+                            case "cleanReferencedChangeCallbacks":
+                                return cleanReferencedChangeCallbacks;
                         }
                     }
 
@@ -826,6 +843,19 @@ class PskBindableModel {
                 this.onChange(expr.watchChain[i], callback);
             }
         }
+        root.offChangeExpressionChain = function(expressionName, callback) {
+            if (!this.hasExpression(expressionName)) {
+                throw new Error(`Expression "${expressionName}" is not defined`);
+            }
+            const expr = expressions[expressionName];
+            if (!expr.watchChain.length) {
+                return;
+            }
+
+            for (let i = 0; i < expr.watchChain.length; i++) {
+                this.offChange(expr.watchChain[i], callback);
+            }
+        }
 
         return root;
     }
@@ -833,7 +863,7 @@ class PskBindableModel {
 
 module.exports = PskBindableModel;
 
-},{"soundpubsub":"soundpubsub"}],"D:\\work\\epi-workspace\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js":[function(require,module,exports){
+},{"soundpubsub":"soundpubsub"}],"D:\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js":[function(require,module,exports){
 /*
 Initial License: (c) Axiologic Research & Alboaie Sînică.
 Contributors: Axiologic Research , PrivateSky project
@@ -890,6 +920,8 @@ const Queue = require('queue');
 
 function SoundPubSub(){
 
+	let subscriberCbkRefHandler = new SubscriberCallbackReferenceHandler();
+
 	/**
 	 * publish
 	 *      Publish a message {Object} to a list of subscribers on a specific topic
@@ -924,13 +956,12 @@ function SoundPubSub(){
 	 */
 	this.subscribe = function(target, callBack, waitForMore, filter){
 		if(!invalidChannelName(target) && !invalidFunction(callBack)){
-			var subscriber = {"callBack":callBack, "waitForMore":waitForMore, "filter":filter};
-			var arr = channelSubscribers[target];
-			if(typeof arr == 'undefined'){
-				arr = [];
-				channelSubscribers[target] = arr;
+			let subscriber = {"waitForMore": waitForMore, "filter": filter};
+			if(typeof channelSubscribers[target] === 'undefined'){
+				channelSubscribers[target] = [];
 			}
-			arr.push(subscriber);
+			subscriberCbkRefHandler.setSubscriberCallback(subscriber, target, callBack);
+			channelSubscribers[target].push(subscriber);
 		}
 	};
 
@@ -947,21 +978,24 @@ function SoundPubSub(){
 	 */
 	this.unsubscribe = function(target, callBack, filter){
 		if(!invalidFunction(callBack)){
-			var gotit = false;
+			//let gotIt = false;
 			if(channelSubscribers[target]){
-				for(var i = 0; i < channelSubscribers[target].length;i++){
-					var subscriber =  channelSubscribers[target][i];
-					if(subscriber.callBack === callBack && ( typeof filter === 'undefined' || subscriber.filter === filter )){
-						gotit = true;
+				for(let i = 0; i < channelSubscribers[target].length;i++){
+					let subscriber =  channelSubscribers[target][i];
+					let callback = subscriberCbkRefHandler.getSubscriberCallback(subscriber);
+
+					if(callback === callBack && ( typeof filter === 'undefined' || subscriber.filter === filter )){
+						//gotIt = true;
 						subscriber.forDelete = true;
 						subscriber.callBack = undefined;
 						subscriber.filter = undefined;
 					}
 				}
 			}
-			if(!gotit){
-				console.log("Unable to unsubscribe a callback that was not subscribed!");
-			}
+			//not valid always since we introduced WeakRef. A subscriber callback could not exists
+			// if(!gotIt){
+			// 	console.log("Unable to unsubscribe a callback that was not subscribed!");
+			// }
 		}
 	};
 
@@ -1115,10 +1149,15 @@ function SoundPubSub(){
 						channelsStorage[channelName].pop();
 					} else{
 						if(subscriber.filter === null || typeof subscriber.filter === "undefined" || (!invalidFunction(subscriber.filter) && subscriber.filter(message))){
-							if(!subscriber.forDelete){
-								subscriber.callBack(message);
-								if(subscriber.waitForMore && !invalidFunction(subscriber.waitForMore) && !subscriber.waitForMore(message)){
+							if (!subscriber.forDelete) {
+								let callback = subscriberCbkRefHandler.getSubscriberCallback(subscriber);
+								if (typeof callback === "undefined") {
 									subscriber.forDelete = true;
+								} else {
+									callback(message);
+									if (subscriber.waitForMore && !invalidFunction(subscriber.waitForMore) && !subscriber.waitForMore(message)) {
+										subscriber.forDelete = true;
+									}
 								}
 							}
 						}
@@ -1205,6 +1244,46 @@ function SoundPubSub(){
 		}
 		return result;
 	}
+
+	//weak references are not supported by all browsers
+	function SubscriberCallbackReferenceHandler(){
+		let finalizationRegistry;
+		let hasWeakReferenceSupport = weakReferencesAreSupported();
+
+
+		if (hasWeakReferenceSupport) {
+			finalizationRegistry = new FinalizationRegistry((heldValue) => {
+		   		//console.log(`Cleanup ${heldValue}`);
+			});
+		}
+
+		this.setSubscriberCallback  = function (subscriber, target, callback){
+			if(hasWeakReferenceSupport){
+				subscriber.callBack = new WeakRef(callback);
+				finalizationRegistry.register(subscriber.callBack, target);
+			}
+			else{
+				subscriber.callBack = callback;
+			}
+		}
+
+		this.getSubscriberCallback = function (subscriber){
+			if(hasWeakReferenceSupport){
+				if(subscriber.callBack){
+					return subscriber.callBack.deref();
+				}
+				return undefined;
+
+			}
+			return subscriber.callBack;
+		}
+
+		function weakReferencesAreSupported() {
+			return typeof FinalizationRegistry === "function" && typeof WeakRef === "function";
+		}
+	}
+
+
 }
 
 exports.soundPubSub = new SoundPubSub();
@@ -1252,8 +1331,8 @@ function enableForEnvironment(envType){
         $$.__global = {};
     }
 
-    if (typeof global.console.log === "undefined") {
-        global.console.log = console.warn;
+    if (typeof global.wprint === "undefined") {
+        global.wprint = console.warn;
     }
     Object.defineProperty($$, "environmentType", {
         get: function(){
@@ -1580,12 +1659,16 @@ function enableForEnvironment(envType){
 
     $$.makeSaneCallback = function makeSaneCallback(fn) {
         let alreadyCalled = false;
-        return (...args) => {
+        return (err, res, ...args) => {
             if (alreadyCalled) {
-                throw new Error("Callback called 2 times! Second call was stopped. Function code:\n" + fn.toString());
+                if (err) {
+                    console.log('Sane callback error:', err);
+                }
+
+                throw new Error(`Callback called 2 times! Second call was stopped. Function code:\n${fn.toString()}\n`);
             }
             alreadyCalled = true;
-            return fn(...args);
+            return fn(err, res, ...args);
         };
     };
 }
@@ -1599,9 +1682,9 @@ module.exports = {
 
 }).call(this)}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./moduleConstants":"D:\\work\\epi-workspace\\privatesky\\modules\\overwrite-require\\moduleConstants.js","./standardGlobalSymbols.js":"D:\\work\\epi-workspace\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js"}],"psk-bindable-model":[function(require,module,exports){
+},{"./moduleConstants":"D:\\privatesky\\modules\\overwrite-require\\moduleConstants.js","./standardGlobalSymbols.js":"D:\\privatesky\\modules\\overwrite-require\\standardGlobalSymbols.js"}],"psk-bindable-model":[function(require,module,exports){
 module.exports = require("./lib/PskBindableModel");
-},{"./lib/PskBindableModel":"D:\\work\\epi-workspace\\privatesky\\modules\\psk-bindable-model\\lib\\PskBindableModel.js"}],"queue":[function(require,module,exports){
+},{"./lib/PskBindableModel":"D:\\privatesky\\modules\\psk-bindable-model\\lib\\PskBindableModel.js"}],"queue":[function(require,module,exports){
 function QueueElement(content) {
 	this.content = content;
 	this.next = null;
@@ -1674,9 +1757,9 @@ module.exports = Queue;
 module.exports = {
 					soundPubSub: require("./lib/soundPubSub").soundPubSub
 };
-},{"./lib/soundPubSub":"D:\\work\\epi-workspace\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js"}]},{},["D:\\work\\epi-workspace\\privatesky\\builds\\tmp\\bindableModel.js"])
+},{"./lib/soundPubSub":"D:\\privatesky\\modules\\soundpubsub\\lib\\soundPubSub.js"}]},{},["D:\\privatesky\\builds\\tmp\\bindableModel.js"])
                     ;(function(global) {
-                        global.bundlePaths = {"webshims":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"D:\\work\\epi-workspace\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
+                        global.bundlePaths = {"webshims":"D:\\privatesky\\psknode\\bundles\\webshims.js","pskruntime":"D:\\privatesky\\psknode\\bundles\\pskruntime.js","pskWebServer":"D:\\privatesky\\psknode\\bundles\\pskWebServer.js","consoleTools":"D:\\privatesky\\psknode\\bundles\\consoleTools.js","blockchain":"D:\\privatesky\\psknode\\bundles\\blockchain.js","openDSU":"D:\\privatesky\\psknode\\bundles\\openDSU.js","nodeBoot":"D:\\privatesky\\psknode\\bundles\\nodeBoot.js","testsRuntime":"D:\\privatesky\\psknode\\bundles\\testsRuntime.js","bindableModel":"D:\\privatesky\\psknode\\bundles\\bindableModel.js","loaderBoot":"D:\\privatesky\\psknode\\bundles\\loaderBoot.js","swBoot":"D:\\privatesky\\psknode\\bundles\\swBoot.js","iframeBoot":"D:\\privatesky\\psknode\\bundles\\iframeBoot.js","launcherBoot":"D:\\privatesky\\psknode\\bundles\\launcherBoot.js","testRunnerBoot":"D:\\privatesky\\psknode\\bundles\\testRunnerBoot.js"};
                     })(typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {});
 
 export default bindableModelRequire('psk-bindable-model')

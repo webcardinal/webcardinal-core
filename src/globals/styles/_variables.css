@@ -156,6 +156,8 @@ webc-modal {
   --radius: 3px;
   --shadow: 0 0.125rem 0.5rem rgba(0, 0, 0, 0.075);
   --z-index: 998;
+  --width: auto;
+  --max-width: 500px;
 
   /* modal header */
   --header-border: 1px solid #E9E9E9;

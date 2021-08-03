@@ -1,5 +1,7 @@
 :host {
   /**
+   * @prop --width
+   * @prop --max-width
    * @prop --margin
    * @prop --padding
    * @prop --color
@@ -43,7 +45,7 @@
 
     .webc-modal-dialog {
       position: relative;
-      width: auto;
+      width: var(--width);
       margin: var(--margin);
       pointer-events: none;
 
@@ -195,7 +197,7 @@
 
   @media (min-width: 500px) {
     .webc-modal-dialog {
-      max-width: 500px;
+      max-width: var(--max-width);
       margin: 1.75rem auto;
     }
   }

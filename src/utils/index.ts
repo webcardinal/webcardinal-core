@@ -5,3 +5,4 @@ export * from './promisify';
 export * from './dom.utils';
 export * from './state.utils';
 export * from './path.utils';
+export * from './events.utils';

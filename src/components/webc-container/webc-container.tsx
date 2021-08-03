@@ -6,7 +6,7 @@ import DefaultController from '../../../base/controllers/Controller.js';
 import { VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
-import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
+import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -55,6 +55,15 @@ export class WebcContainer {
   })
   getTranslationModelEvent: EventEmitter;
 
+  @Event({
+    eventName: 'webcardinal:parentChain:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getChainPrefix: EventEmitter;
+
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -67,7 +76,12 @@ export class WebcContainer {
       history = this.history;
 
     this.chain = extractChain(this.host);
-    if (this.chain) {
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
+
+    if(hasInheritedModel){
+      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+      this.chain = mergeChains(chainPrefix, this.chain);
+
       try {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
@@ -98,24 +112,28 @@ export class WebcContainer {
     this.listeners = new ComponentListenersService(bindingElement, {
       model,
       translationModel,
+      chain:this.chain
     });
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
+    this.listeners.getParentChain.add();
   }
 
   async connectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel,getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
+      getParentChain?.add()
     }
   }
 
   async disconnectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel } = this.listeners;
+      const { getModel, getTranslationModel, getParentChain } = this.listeners;
       getModel?.remove();
       getTranslationModel?.remove();
+      getParentChain?.remove();
     }
 
     // disconnectedCallback can be called multiple times
@@ -123,6 +141,10 @@ export class WebcContainer {
     setTimeout(() => {
       if (!document.body.contains(this.controllerElement)) {
         this.controllerInstance?.disconnectedCallback();
+        //prevent cleaning models change callbacks that are shared with current controller instance
+        if (!this.chain) {
+          this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
+        }
       }
     }, 100);
   }

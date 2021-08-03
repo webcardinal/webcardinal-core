@@ -2,8 +2,8 @@ import { Component, Event, EventEmitter, h, Method, Prop } from '@stencil/core';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HostElement } from '../../decorators';
-import { BindingService } from '../../services';
-import { extractChain, getTranslationsFromState, promisifyEventEmit } from '../../utils';
+import {BindingService, ComponentListenersService} from '../../services';
+import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
 
 import { getTemplate } from './webc-template.utils';
 
@@ -48,8 +48,17 @@ export class WebcTemplate {
   })
   getTranslationModelEvent: EventEmitter;
 
+  @Event({
+    eventName: 'webcardinal:parentChain:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getChainPrefix: EventEmitter;
+
   private model;
   private translationModel;
+  private listeners: ComponentListenersService;
   private chain = '';
 
   async componentWillLoad() {
@@ -67,10 +76,13 @@ export class WebcTemplate {
     }
 
     this.host.innerHTML = await getTemplate(this.template);
-
     this.chain = extractChain(this.host);
+    const hasInheritedModel = this.chain.indexOf("@") !== -1;
 
-    if (this.chain) {
+    if(hasInheritedModel){
+      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+      this.chain = mergeChains(chainPrefix, this.chain);
+
       try {
         this.model = await promisifyEventEmit(this.getModelEvent);
         this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
@@ -85,6 +97,12 @@ export class WebcTemplate {
         chainPrefix: this.chain ? this.chain.slice(1) : null,
         enableTranslations: getTranslationsFromState(),
       });
+
+      this.listeners = new ComponentListenersService(this.host, {
+        chain:this.chain
+      });
+      this.listeners.getParentChain.add();
+
     }
   }
 
@@ -95,7 +113,21 @@ export class WebcTemplate {
     }
   }
 
-  /**
+  async connectedCallback() {
+    if (this.listeners) {
+      const {getParentChain } = this.listeners;
+      getParentChain?.add()
+    }
+  }
+
+  async disconnectedCallback() {
+    if (this.listeners) {
+      const {getParentChain} = this.listeners;
+      getParentChain?.remove();
+    }
+  }
+
+    /**
    * The model from controller is exposed by this method.
    */
   @Method()

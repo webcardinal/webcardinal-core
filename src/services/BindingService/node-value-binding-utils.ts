@@ -1,5 +1,10 @@
 import { MODEL_CHAIN_PREFIX, SKIP_BINDING_FOR_COMPONENTS, TRANSLATION_CHAIN_PREFIX } from '../../constants';
-import { getCompleteChain, getSkinFromState } from '../../utils';
+import {
+  getCompleteChain,
+  getSkinFromState,
+  setElementChainChangeHandler,
+  setElementExpressionChangeHandler
+} from '../../utils';
 
 export function bindNodeValue(node: ChildNode, model: any, translationModel: any, modelChainPrefix: string = null) {
   // for some webc-<components> binding is managed by component itself
@@ -89,14 +94,20 @@ export function bindNodeValue(node: ChildNode, model: any, translationModel: any
   bindingExpressions
     .filter(x => x.isModel)
     .forEach(({ model, chain, isModelExpression }) => {
-      model.onChange(chain, () => {
+
+      const chainChangeHandler = () => {
         updateNodeValue();
-      });
+      };
+
+      model.onChange(chain, chainChangeHandler);
+      setElementChainChangeHandler(node, chain, chainChangeHandler)
 
       if (isModelExpression) {
-        model.onChangeExpressionChain(chain, () => {
+        const expressionChangeHandler = () => {
           updateNodeValue();
-        });
+        }
+        model.onChangeExpressionChain(chain, expressionChangeHandler);
+        setElementExpressionChangeHandler(node, chain, expressionChangeHandler)
       }
     });
 }
