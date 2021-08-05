@@ -120,7 +120,7 @@ export default class Controller {
    * @param {Proxy | {}} [_translationModel] - The translationModel received from an above WebcComponent
    */
   constructor(element, history, _model, _translationModel) {
-    this.DSUStorage = new DSUStorage();
+    this.DSUStorage = DSUStorage.getDSUStorageInstance();
 
     this.element = element;
     this.history = history;

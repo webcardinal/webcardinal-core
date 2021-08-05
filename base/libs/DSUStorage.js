@@ -126,13 +126,18 @@ function performRemoval(filePathList, callback) {
 }
 
 class DSUStorage {
-    constructor(height, width) {
-      this.directAccessEnabled = false;
-    }
+  constructor(height, width) {
+    this.directAccessEnabled = false;
+    this.enablingDirectAccessInProgress = false;
+    this.enablingDirectAccessRequests = [];
+  }
 
   enableDirectAccess(callback){
     let self = this;
 
+    if(self.enablingDirectAccessInProgress){
+      return self.enablingDirectAccessRequests.push(callback);
+    }
     function addFunctionsFromMainDSU() {
       if (!self.directAccessEnabled) {
         let sc = require("opendsu").loadAPI("sc");
@@ -162,14 +167,22 @@ class DSUStorage {
           "cancelBatch"
         ];
 
-
+        self.enablingDirectAccessInProgress = true;
         sc.getMainDSU((err, mainDSU) => {
           for (let f of availableFunctions) {
             self[f] = mainDSU[f];
           }
+
+          self.enablingDirectAccessInProgress = false;
           self.directAccessEnabled = true;
+
+          while (self.enablingDirectAccessRequests.length > 0) {
+            let accessRequestCbk = self.enablingDirectAccessRequests.shift();
+            accessRequestCbk(undefined, true);
+          }
+
           callback(undefined, true);
-        })
+        });
       } else {
         callback(undefined, true);
       }
@@ -213,7 +226,7 @@ class DSUStorage {
   getObject(path, callback) {
     this.getItem(path, "json", function(err,res){
       if(err || !res){
-          return callback(undefined,undefined);
+        return callback(undefined,undefined);
       }
       callback(undefined,res);
     })
@@ -230,7 +243,7 @@ class DSUStorage {
       let url = `/upload?path=${path}&filename=${fileName}`;
       doUpload(url, data, callback);
     } else {
-        this.writeFile(path, data, callback);
+      this.writeFile(path, data, callback);
     }
   }
 
@@ -287,4 +300,12 @@ class DSUStorage {
   }
 }
 
-export default DSUStorage;
+let instance;
+export default {
+  getDSUStorageInstance: function() {
+    if (!instance) {
+      instance = new DSUStorage();
+    }
+    return instance;
+  }
+};
