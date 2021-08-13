@@ -32,6 +32,11 @@ function checkEventListener(eventName, listener, options) {
   }
 }
 
+function isRequireAvailable() {
+  // eslint-disable-next-line no-undef
+  return window['$$'] && $$.require;
+}
+
 function isSkinEnabled() {
   const { state } = window.WebCardinal || {};
   return state && state.skin && typeof state.skin === 'string';
@@ -479,9 +484,14 @@ export default class Controller {
   }
 
   getWalletStorage(domainName, databaseName) {
+    if (!isRequireAvailable()) {
+      console.error('"this.getWalletStorage" is available only inside an SSApp!');
+      return undefined;
+    }
+
     // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
     const persistence = require('opendsu').loadAPI('persistence');
-    return persistence.getWalletStorage(domainName, databaseName, { useDirectAccess: true });
+    return persistence.getWalletStorage(domainName, databaseName);
   }
 
   /**
@@ -547,6 +557,11 @@ export default class Controller {
    * @deprecated
    */
   get DSUStorage() {
+    if (!isRequireAvailable()) {
+      console.error('"this.DSUStorage" is available only inside an SSApp!');
+      return this._dsuStorage;
+    }
+
     console.warn([`"this.DSUStorage" is deprecated!`, 'Use "this.getStorage" instead!'].join('\n'));
 
     if (!this._dsuStorage) {
