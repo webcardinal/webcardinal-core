@@ -37,7 +37,7 @@
       "mutable": false,
       "attr": "local",
       "reflectToAttr": false,
-      "docs": "If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your\r\nlocal workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.",
+      "docs": "If this prop is set to <code>true</code> the source of fetched docs for current webc-docs component must be on your\nlocal workspace. Otherwise the source is <small><code>https://raw.githubusercontent.com</code></small>.",
       "docsTags": [],
       "default": "false",
       "values": [
@@ -57,7 +57,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "Gets the docs source for current component.<br>\r\nIn <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>,\r\nall webc-docs components will be configured for local docs.<br>\r\nDefault value for <code>docsSource</code> is <code>'github'</code>.",
+      "docs": "Gets the docs source for current component.<br>\nIn <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>,\nall webc-docs components will be configured for local docs.<br>\nDefault value for <code>docsSource</code> is <code>'github'</code>.",
       "docsTags": []
     }
   ],

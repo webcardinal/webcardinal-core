@@ -115,10 +115,12 @@ Type: `Promise<void>`
 | `--header-button-color`       |             |
 | `--header-button-radius`      |             |
 | `--margin`                    |             |
+| `--max-width`                 |             |
 | `--padding`                   |             |
 | `--radius`                    |             |
 | `--shadow`                    |             |
 | `--title-color`               |             |
+| `--width`                     |             |
 | `--z-index`                   |             |
 
 

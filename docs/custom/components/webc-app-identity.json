@@ -73,7 +73,7 @@
       "bubbles": true,
       "cancelable": true,
       "composed": true,
-      "docs": "All properties enumerated before are automatically filled by webc-app-identity when this event is fired from\r\n<code>ApplicationController</code>.",
+      "docs": "All properties enumerated before are automatically filled by webc-app-identity when this event is fired from\n<code>ApplicationController</code>.",
       "docsTags": []
     }
   ],

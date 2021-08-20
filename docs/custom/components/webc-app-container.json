@@ -6,15 +6,15 @@
   "docs": "",
   "docsTags": [
     {
-      "text": "- Your content or if nothing, your routing point <code>webc-app-router</code>.<br>\r\n  Using this slot you can wrap all pages with a custom component;",
+      "text": "- Your content or if nothing, your routing point <code>webc-app-router</code>.<br>\n  Using this slot you can wrap all pages with a custom component;",
       "name": "slot"
     },
     {
-      "text": "before - Content that goes behind this component in the DOM.<br>\r\n         A \"header\" can be easily implemented using this slot;",
+      "text": "before - Content that goes behind this component in the DOM.<br>\n         A \"header\" can be easily implemented using this slot;",
       "name": "slot"
     },
     {
-      "text": "after - Place for final content.<br>\r\n        A \"footer\" can be easily implemented using this slot;",
+      "text": "after - Place for final content.<br>\n        A \"footer\" can be easily implemented using this slot;",
       "name": "slot"
     }
   ],
@@ -56,15 +56,15 @@
   "slots": [
     {
       "name": "",
-      "docs": "Your content or if nothing, your routing point <code>webc-app-router</code>.<br>\r\n  Using this slot you can wrap all pages with a custom component;"
+      "docs": "Your content or if nothing, your routing point <code>webc-app-router</code>.<br>\n  Using this slot you can wrap all pages with a custom component;"
     },
     {
       "name": "after",
-      "docs": "Place for final content.<br>\r\n        A \"footer\" can be easily implemented using this slot;"
+      "docs": "Place for final content.<br>\n        A \"footer\" can be easily implemented using this slot;"
     },
     {
       "name": "before",
-      "docs": "Content that goes behind this component in the DOM.<br>\r\n         A \"header\" can be easily implemented using this slot;"
+      "docs": "Content that goes behind this component in the DOM.<br>\n         A \"header\" can be easily implemented using this slot;"
     }
   ],
   "parts": [],

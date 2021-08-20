@@ -22,7 +22,7 @@
       "mutable": false,
       "attr": "controller",
       "reflectToAttr": false,
-      "docs": "This property is a string that will permit the developer to choose his own controller.\r\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
+      "docs": "This property is a string that will permit the developer to choose his own controller.\nIf no value is set then the null default value will be taken and the component will use the basic Controller.",
       "docsTags": [],
       "default": "''",
       "values": [
@@ -54,7 +54,7 @@
       "mutable": false,
       "attr": "template",
       "reflectToAttr": true,
-      "docs": "The name of the template that will be loaded.\r\nThe generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.",
+      "docs": "The name of the template that will be loaded.\nThe generated path will have the format <code>${basePath + skinPath}/elements/${template}.html</code>.",
       "docsTags": [],
       "values": [
         {
@@ -108,6 +108,15 @@
       "cancelable": true,
       "composed": true,
       "docs": "Through this event the model is received.",
+      "docsTags": []
+    },
+    {
+      "event": "webcardinal:parentChain:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "",
       "docsTags": []
     },
     {
