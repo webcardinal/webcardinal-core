@@ -1,16 +1,12 @@
 import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@stencil/core';
+import { injectHistory, RouterHistory } from '@stencil/router';
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import { HOOK_TYPE, SKINS_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { HookType, RoutingState, WebcAppLoaderType } from '../../../interfaces';
 import { ControllerTranslationService } from '../../../services';
-import {
-  getSkinFromState,
-  getTranslationsFromState,
-  resolveRoutingState,
-  URLHelper
-} from '../../../utils';
+import { getSkinFromState, getTranslationsFromState, resolveRoutingState, URLHelper } from '../../../utils';
 
 import { checkPageExistence, loadPageContent } from './webc-app-loader.utils';
 
@@ -22,6 +18,8 @@ const { join } = URLHelper;
 })
 export class WebcAppLoader {
   @HostElement() host: HTMLStencilElement;
+
+  @State() history: RouterHistory;
 
   @State() content = '';
 
@@ -77,7 +75,16 @@ export class WebcAppLoader {
     }
 
     await this.activateHooks();
+
+    window.WebCardinal.history = this.history;
+    const initialLocation = this.history.location.pathname;
     await this.callHook(HOOK_TYPE.BEFORE_PAGE);
+    const finalLocation = this.history.location.pathname;
+    if (initialLocation !== finalLocation) {
+      this.loader = 'none';
+      return;
+    }
+
     await this.setSkinContext();
     await this.setPageContent();
     this.updateActivePage();
@@ -238,6 +245,8 @@ export class WebcAppLoader {
         };
         return <object {...attributes} />;
       }
+      case 'none':
+        return '';
       default: {
         const attributes = { style: { width: '100%', height: '100%' } };
         this.host.innerHTML = this.content;
@@ -250,3 +259,5 @@ export class WebcAppLoader {
     }
   }
 }
+
+injectHistory(WebcAppLoader);

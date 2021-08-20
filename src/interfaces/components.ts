@@ -7,6 +7,6 @@ export type WebcAppError = {
   isScriptError?: boolean;
 }
 
-export type WebcAppLoaderType = 'default' | 'iframe' | 'object' | 'parser';
+export type WebcAppLoaderType = 'default' | 'iframe' | 'object' | 'parser' | 'none';
 
 export type WebcAppMenuMode = 'horizontal' | 'mobile' | 'vertical';

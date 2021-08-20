@@ -129,6 +129,33 @@ export default function getPreloadAPI() {
 
       return this.config;
     },
+
+    navigateToUrl: (url: string, state: object) => {
+      const { WebCardinal } = window;
+      WebCardinal.history.push(url, state);
+    },
+
+    navigateToPageTag: async (tag: string, state: object) => {
+      return new Promise((resolve, reject) => {
+        const { WebCardinal } = window;
+        const router = WebCardinal.root.querySelector("webc-app-router");
+        router.dispatchEvent(
+          new CustomEvent("webcardinal:tags:get", {
+            detail: {
+              tag,
+              callback: (error, path) => {
+                if (error) {
+                  console.error(error);
+                  return reject(error);
+                }
+                WebCardinal.history.push(path, state);
+                resolve(path);
+              },
+            },
+          })
+        );
+      })
+    }
   };
 }
 
