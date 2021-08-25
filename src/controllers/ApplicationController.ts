@@ -1,7 +1,6 @@
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import controllers from '../../base/controllers';
-import fetch from '../../base/utils/fetch.js';
 import defaultConfig from './config/default';
 import { FallbackPage, LogLevel } from './config/types';
 import {
