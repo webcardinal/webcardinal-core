@@ -29,7 +29,7 @@
     },
     {
       "name": "loader",
-      "type": "\"default\" | \"iframe\" | \"object\" | \"parser\"",
+      "type": "\"default\" | \"iframe\" | \"none\" | \"object\" | \"parser\"",
       "mutable": false,
       "attr": "loader",
       "reflectToAttr": false,
@@ -43,6 +43,10 @@
         },
         {
           "value": "iframe",
+          "type": "string"
+        },
+        {
+          "value": "none",
           "type": "string"
         },
         {
