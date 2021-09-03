@@ -7,7 +7,7 @@ import { injectHistory } from '@stencil/router';
 import { HostElement } from '../../../decorators';
 import { promisifyEventEmit } from '../../../utils';
 
-import ApplicationController from '../../../controllers/ApplicationController';
+import ApplicationController from '../../../boot/ApplicationController';
 
 import { subscribeToLogs } from './webc-app-root.utils';
 import { CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT, CP_WEBC_APP_ROOT_MODE, HOOK_TYPE } from '../../../constants';

@@ -23,7 +23,7 @@ export default function getPreloadAPI() {
     },
 
     addControllers: (controllers: { [controllerName: string]: any }) => {
-      console.warn('Function "addControllers(controllers: object)" is an experimental!');
+      console.warn('Function "addControllers(boot: object)" is an experimental!');
 
       if (this.isConfigLoaded) {
         console.warn(
