@@ -3,10 +3,10 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 import { injectHistory, RouterHistory } from '@stencil/router';
 
 import DefaultController from '../../../base/controllers/Controller.js';
-import { VIEW_MODEL_KEY } from '../../constants';
+import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
-import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
+import { extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: 'webc-container',
@@ -63,7 +63,6 @@ export class WebcContainer {
   })
   getChainPrefix: EventEmitter;
 
-
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
@@ -76,10 +75,10 @@ export class WebcContainer {
       history = this.history;
 
     this.chain = extractChain(this.host);
-    const hasInheritedModel = this.chain.indexOf("@") !== -1;
+    const hasInheritedModel = this.chain.indexOf(MODEL_CHAIN_PREFIX) !== -1;
 
-    if(hasInheritedModel){
-      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
+    if (hasInheritedModel) {
+      const chainPrefix = await promisifyEventEmit(this.getChainPrefix);
       this.chain = mergeChains(chainPrefix, this.chain);
 
       try {
@@ -95,7 +94,7 @@ export class WebcContainer {
       translationModel = this.controllerInstance.translationModel;
     }
 
-    // "default-controller" is attached when container does binding of undefined models or when controllers are not found
+    // "default-controller" is set when container does binding of undefined models or when controller is not found
     // but if 'data-view-model="@"' is present binding is supported
     // (if there is a global model upper in the DOM, otherwise the webc-container can not hydrate)
     if (this.host.hasAttribute('default-controller') && !this.host.hasAttribute(VIEW_MODEL_KEY)) {
@@ -112,7 +111,7 @@ export class WebcContainer {
     this.listeners = new ComponentListenersService(bindingElement, {
       model,
       translationModel,
-      chain:this.chain
+      chain: this.chain,
     });
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
@@ -121,10 +120,10 @@ export class WebcContainer {
 
   async connectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel,getParentChain } = this.listeners;
+      const { getModel, getTranslationModel, getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
-      getParentChain?.add()
+      getParentChain?.add();
     }
   }
 
@@ -216,7 +215,16 @@ export class WebcContainer {
 
     try {
       const Controller = await ControllerRegistryService.getController(this.controller);
-      return new Controller(element, history, model, translationModel);
+      try {
+        return new Controller(element, history, model, translationModel);
+      } catch (error) {
+        console.error(
+          `Controller "${this.controller}" has runtime errors!`,
+          error.message !== 'Controller is not a constructor' ? error : '',
+        );
+
+        return loadDefaultController();
+      }
     } catch (error) {
       console.error(`Error while loading controller "${this.controller}"`, error);
       return loadDefaultController();
