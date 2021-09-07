@@ -34,6 +34,9 @@
   "webc-container": {
     "source": "@webcardinal/core"
   },
+  "webc-datatable": {
+    "source": "@webcardinal/core"
+  },
   "webc-docs": {
     "source": "@webcardinal/core"
   },

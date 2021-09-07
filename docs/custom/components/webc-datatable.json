@@ -1,0 +1,215 @@
+{
+  "filePath": "./src/components/webc-datatable/webc-datatable.tsx",
+  "fileName": "webc-datatable.tsx",
+  "tag": "webc-datatable",
+  "usage": {},
+  "docs": "",
+  "docsTags": [
+    {
+      "text": "-",
+      "name": "slot"
+    },
+    {
+      "text": "before -",
+      "name": "slot"
+    },
+    {
+      "text": "header -",
+      "name": "slot"
+    },
+    {
+      "text": "footer -",
+      "name": "slot"
+    },
+    {
+      "text": "after -",
+      "name": "slot"
+    }
+  ],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "chain",
+      "type": "string",
+      "mutable": false,
+      "attr": "datasource",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "curentPageIndex",
+      "type": "number",
+      "mutable": false,
+      "attr": "curent-page-index",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "0",
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "dataSize",
+      "type": "number",
+      "mutable": false,
+      "attr": "data-size",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "hidePagination",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "hide-pagination",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "pageSize",
+      "type": "number",
+      "mutable": false,
+      "attr": "page-size",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "20",
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [
+    {
+      "name": "clearCurrentPage",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "clearCurrentPage() => Promise<void>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    },
+    {
+      "name": "fillCurrentPage",
+      "returns": {
+        "type": "Promise<void>",
+        "docs": ""
+      },
+      "signature": "fillCurrentPage(data: any) => Promise<void>",
+      "parameters": [],
+      "docs": "",
+      "docsTags": []
+    }
+  ],
+  "events": [
+    {
+      "event": "webcardinal:model:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Through this event the model is received.",
+      "docsTags": []
+    }
+  ],
+  "styles": [
+    {
+      "name": "--pagination-button-background",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--pagination-button-border",
+      "annotation": "prop",
+      "docs": ""
+    },
+    {
+      "name": "--pagination-gap",
+      "annotation": "prop",
+      "docs": ""
+    }
+  ],
+  "slots": [
+    {
+      "name": "-",
+      "docs": ""
+    },
+    {
+      "name": "after -",
+      "docs": ""
+    },
+    {
+      "name": "before -",
+      "docs": ""
+    },
+    {
+      "name": "footer -",
+      "docs": ""
+    },
+    {
+      "name": "header -",
+      "docs": ""
+    }
+  ],
+  "parts": [
+    {
+      "name": "pagination",
+      "docs": ""
+    },
+    {
+      "name": "pagination-button",
+      "docs": ""
+    },
+    {
+      "name": "pagination-button--active",
+      "docs": ""
+    },
+    {
+      "name": "pagination-button--next",
+      "docs": ""
+    },
+    {
+      "name": "pagination-button--previous",
+      "docs": ""
+    }
+  ],
+  "listeners": []
+}
