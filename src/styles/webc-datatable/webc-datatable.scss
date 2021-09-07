@@ -1,0 +1,27 @@
+/**
+ * @prop --pagination-gap
+ * @prop --pagination-button-border
+ * @prop --pagination-button-background
+ */
+:host {
+  .pagination {
+    display: flex;
+    gap: var(--pagination-gap);
+    justify-content: center;
+
+    & > button {
+      font-size: inherit;
+      border: var(--pagination-button-border);
+      background: var(--pagination-button-background);
+
+      &:not([disabled]) {
+        cursor: pointer;
+      }
+
+      &[active] {
+        color: inherit;
+        font-weight: bold;
+      }
+    }
+  }
+}

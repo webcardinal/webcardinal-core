@@ -152,6 +152,15 @@ export namespace Components {
          */
         "getTranslationModel": () => Promise<any>;
     }
+    interface WebcDatatable {
+        "chain": string;
+        "clearCurrentPage": () => Promise<void>;
+        "curentPageIndex": number;
+        "dataSize": number | undefined;
+        "fillCurrentPage": (data: any) => Promise<void>;
+        "hidePagination": boolean;
+        "pageSize": number;
+    }
     interface WebcDocs {
         /**
           * Component tag name (in lowercase) for which documentation is desired.
@@ -343,6 +352,12 @@ declare global {
         prototype: HTMLWebcContainerElement;
         new (): HTMLWebcContainerElement;
     };
+    interface HTMLWebcDatatableElement extends Components.WebcDatatable, HTMLStencilElement {
+    }
+    var HTMLWebcDatatableElement: {
+        prototype: HTMLWebcDatatableElement;
+        new (): HTMLWebcDatatableElement;
+    };
     interface HTMLWebcDocsElement extends Components.WebcDocs, HTMLStencilElement {
     }
     var HTMLWebcDocsElement: {
@@ -391,6 +406,7 @@ declare global {
         "webc-app-router": HTMLWebcAppRouterElement;
         "webc-component": HTMLWebcComponentElement;
         "webc-container": HTMLWebcContainerElement;
+        "webc-datatable": HTMLWebcDatatableElement;
         "webc-docs": HTMLWebcDocsElement;
         "webc-link": HTMLWebcLinkElement;
         "webc-modal": HTMLWebcModalElement;
@@ -560,6 +576,17 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
     }
+    interface WebcDatatable {
+        "chain"?: string;
+        "curentPageIndex"?: number;
+        "dataSize"?: number | undefined;
+        "hidePagination"?: boolean;
+        /**
+          * Through this event the model is received.
+         */
+        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "pageSize"?: number;
+    }
     interface WebcDocs {
         /**
           * Component tag name (in lowercase) for which documentation is desired.
@@ -704,6 +731,7 @@ declare namespace LocalJSX {
         "webc-app-router": WebcAppRouter;
         "webc-component": WebcComponent;
         "webc-container": WebcContainer;
+        "webc-datatable": WebcDatatable;
         "webc-docs": WebcDocs;
         "webc-link": WebcLink;
         "webc-modal": WebcModal;
@@ -727,6 +755,7 @@ declare module "@stencil/core" {
             "webc-app-router": LocalJSX.WebcAppRouter & JSXBase.HTMLAttributes<HTMLWebcAppRouterElement>;
             "webc-component": LocalJSX.WebcComponent & JSXBase.HTMLAttributes<HTMLWebcComponentElement>;
             "webc-container": LocalJSX.WebcContainer & JSXBase.HTMLAttributes<HTMLWebcContainerElement>;
+            "webc-datatable": LocalJSX.WebcDatatable & JSXBase.HTMLAttributes<HTMLWebcDatatableElement>;
             "webc-docs": LocalJSX.WebcDocs & JSXBase.HTMLAttributes<HTMLWebcDocsElement>;
             "webc-link": LocalJSX.WebcLink & JSXBase.HTMLAttributes<HTMLWebcLinkElement>;
             "webc-modal": LocalJSX.WebcModal & JSXBase.HTMLAttributes<HTMLWebcModalElement>;

@@ -6,6 +6,9 @@ import {
   FOR_OPTIONS,
   FOR_OPTIMISTIC,
   FOR_WRAPPER_RERENDER,
+  FOR_EVENTS,
+  FOR_CONTENT_REPLACED_EVENT,
+  FOR_CONTENT_UPDATED_EVENT,
 } from '../../constants';
 import {
   bindElementAttributes,
@@ -49,6 +52,7 @@ export function handleDataForAttributePresence(
 
   const forOptions = (element.getAttribute(FOR_OPTIONS) || '').split(' ').filter(String);
 
+  const areEventsActivated = forOptions.includes(FOR_EVENTS);
   const isOptimisticMode = forOptions.includes(FOR_OPTIMISTIC);
   let isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
 
@@ -169,6 +173,9 @@ export function handleDataForAttributePresence(
       // in optimistic mode there is no need to cleanup the existing content,
       // since there is an optimized comparison process that is being executed instead
       renderTemplate();
+      if (areEventsActivated) {
+        element.dispatchEvent(new CustomEvent(FOR_CONTENT_UPDATED_EVENT));
+      }
       return;
     }
 
@@ -179,6 +186,9 @@ export function handleDataForAttributePresence(
       removeElementChildNodes(element, model);
       existingNodes = [];
       renderTemplate();
+      if (areEventsActivated) {
+        element.dispatchEvent(new CustomEvent(FOR_CONTENT_REPLACED_EVENT));
+      }
     }
   };
 

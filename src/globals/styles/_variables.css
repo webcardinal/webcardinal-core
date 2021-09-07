@@ -177,6 +177,12 @@ webc-modal {
   --confirm-button-background: var(--webc-secondary-background);
 }
 
+webc-datatable {
+  --pagination-gap: 1rem;
+  --pagination-button-border: none;
+  --pagination-button-background: transparent;
+}
+
 [data-theme="dark"] webc-modal {
   --header-border: 1px solid rgba(255, 255, 255, 0.2);
   --footer-border: 1px solid rgba(255, 255, 255, 0.15);

@@ -1,6 +1,7 @@
 import { HTMLStencilElement } from '@stencil/core/internal';
 
 import controllers from '../../base/controllers';
+import dataSources from '../../base/dataSources';
 import defaultConfig from './config/default';
 import { FallbackPage, LogLevel } from './config/types';
 import {
@@ -357,6 +358,7 @@ export default class ApplicationController {
         ...this.injectedControllers,
         ...controllers,
       },
+      dataSources,
       state: {
         translations: this.config.translations,
         skin: this.config.skin,

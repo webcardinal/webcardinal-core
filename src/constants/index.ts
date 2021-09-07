@@ -19,7 +19,7 @@ export const DISABLE_BINDING = `disable-binding`;
 export const MODEL_CHAIN_PREFIX = '@';
 export const TRANSLATION_CHAIN_PREFIX = '$';
 export const SKIP_BINDING_FOR_PROPERTIES = ['_saveElement'];
-export const SKIP_BINDING_FOR_COMPONENTS = ['webc-template', 'webc-container', 'webc-component'];
+export const SKIP_BINDING_FOR_COMPONENTS = ['webc-template', 'webc-container', 'webc-component', 'webc-datatable'];
 export const PSK_CARDINAL_PREFIX = 'psk-';
 
 // data-tag
@@ -30,8 +30,11 @@ export const TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
 export const FOR_ATTRIBUTE = 'data-for';
 export const FOR_NO_DATA_SLOT_NAME = 'no-data';
 export const FOR_OPTIONS = `${FOR_ATTRIBUTE}-options`;
+export const FOR_EVENTS = 'events';
 export const FOR_OPTIMISTIC = 'optimistic';
 export const FOR_WRAPPER_RERENDER = 'rerender';
+export const FOR_CONTENT_UPDATED_EVENT = 'content-updated';
+export const FOR_CONTENT_REPLACED_EVENT = 'content-replaced';
 
 // data-if
 export const IF_ATTRIBUTE = 'data-if';
@@ -63,4 +66,4 @@ export const HOOK_TYPE: {
 
 // custom properties
 export const CP_WEBC_APP_ROOT_MODE = '--mode';
-export const CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT = '--mode-mobile-breakpoint'
+export const CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT = '--mode-mobile-breakpoint';
