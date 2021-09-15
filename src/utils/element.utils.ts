@@ -164,6 +164,11 @@ export function bindElementAttributes(
       chain = getCompleteChain(modelChainPrefix, chain);
     }
 
+    if(!element['webcModelChains']){
+      element['webcModelChains'] = {};
+    }
+    element['webcModelChains'][key] = chain;
+
     setElementValue(element, { key, value: model.getChainValue(chain) });
     // for some webc-<components> binding is managed by component itself
     if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
