@@ -483,15 +483,15 @@ export default class Controller {
     return this.element.querySelectorAll(selector);
   }
 
-  getWalletStorage(domainName, databaseName) {
+  getMainEnclaveDB() {
     if (!isRequireAvailable()) {
       console.error('"this.getWalletStorage" is available only inside an SSApp!');
       return undefined;
     }
 
     // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
-    const persistence = require('opendsu').loadAPI('persistence');
-    return persistence.getWalletStorage(domainName, databaseName);
+    const dbAPI = require('opendsu').loadAPI('db');
+    return dbAPI.getMainEnclaveDB();
   }
 
   /**
