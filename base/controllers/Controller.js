@@ -566,7 +566,7 @@ export default class Controller {
 
     if (!this._dsuStorage) {
       // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
-      const { getDSUStorage } = require('opendsu').loadAPI('persistence');
+      const { getDSUStorage } = require('opendsu').loadAPI('storage');
       this._dsuStorage = getDSUStorage();
     }
 
