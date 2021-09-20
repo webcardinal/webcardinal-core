@@ -483,7 +483,7 @@ export default class Controller {
     return this.element.querySelectorAll(selector);
   }
 
-  getMainEnclaveDB() {
+  getMainEnclaveDB(callback) {
     if (!isRequireAvailable()) {
       console.error('"this.getWalletStorage" is available only inside an SSApp!');
       return undefined;
@@ -491,7 +491,7 @@ export default class Controller {
 
     // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires
     const dbAPI = require('opendsu').loadAPI('db');
-    return dbAPI.getMainEnclaveDB();
+    dbAPI.getMainEnclaveDB(callback);
   }
 
   /**
