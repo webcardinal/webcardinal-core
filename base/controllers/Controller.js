@@ -5,8 +5,13 @@ import {
   VIEW_MODEL_KEY,
   TAG_ATTRIBUTE,
   TAG_MODEL_FUNCTION_PROPERTY,
+  URLHelper,
+  PAGES_PATH,
 } from '../../src';
 import PskBindableModel from '../libs/bindableModel.js';
+
+const virtualHistory = new Set();
+let isLocationListenerActive = false;
 
 function checkEventListener(eventName, listener, options) {
   if (typeof eventName !== 'string' || eventName.trim().length === 0) {
@@ -96,6 +101,81 @@ function getTranslationModel() {
   return pageTranslations;
 }
 
+function clearVirtualHistory() {
+  if (!document.querySelector('webc-app-loader[data-key]')) {
+    virtualHistory.clear();
+  }
+}
+
+function locationListener_v1(history) {
+  /**
+   It supports: goBack(), goForward()
+   But the DOM is full with instances of webc-app-loader when a new page is requested
+   */
+  const inactiveKeys = Array.from(virtualHistory).filter(key => key !== history.location.key);
+
+  const loaders = document.querySelectorAll('webc-app-loader[data-key]');
+  const originalLoader = document.querySelector('webc-app-loader:not([data-key])');
+  originalLoader.setAttribute('hidden', '');
+
+  for (const loader of Array.from(loaders)) {
+    if (inactiveKeys.includes(loader.dataset.key)) {
+      loader.setAttribute('hidden', '');
+      continue;
+    }
+
+    loader.removeAttribute('hidden');
+  }
+
+  for (const loader of Array.from(loaders)) {
+    if (!loader.hasAttribute('hidden')) {
+      return;
+    }
+  }
+
+  originalLoader.removeAttribute('hidden');
+}
+
+function locationListener_v2(history) {
+  /**
+   It supports: goBack() only
+   The DOM is managed better then @ref locationListener_v1
+   */
+  const activeKey = history.location.key;
+  const inactiveKeys = Array.from(virtualHistory).filter(key => key !== activeKey);
+
+  let shouldBeRemove = true;
+  let loaders = document.querySelectorAll('webc-app-loader[data-key]');
+  for (const loader of Array.from(loaders)) {
+    if (loader.dataset.key === activeKey || loader.dataset.key === 'not-generated-yet') {
+      loader.removeAttribute('hidden');
+      WebCardinal.state.page.loader = loader;
+      WebCardinal.state.page.src = loader.src;
+      shouldBeRemove = false;
+      continue;
+    }
+
+    if (shouldBeRemove) {
+      loader.remove();
+      continue;
+    }
+
+    loader.setAttribute('hidden', '');
+  }
+
+  const originalLoader = document.querySelector('webc-app-loader:not([data-key])');
+  originalLoader.setAttribute('hidden', '');
+
+  loaders = document.querySelectorAll('webc-app-loader[data-key]');
+  for (const loader of Array.from(loaders)) {
+    if (!loader.hasAttribute('hidden')) {
+      return;
+    }
+  }
+
+  originalLoader.removeAttribute('hidden');
+}
+
 export function proxifyModelProperty(model) {
   if (!model || typeof model !== 'object') {
     console.warn('A model must be an object!');
@@ -176,6 +256,12 @@ export default class Controller {
       this.element.componentOnReady().then(this.onReady.bind(this));
     } else {
       this.onReady();
+    }
+
+    // listener required for virtual pages created with "this.pushPage"
+    if (!isLocationListenerActive) {
+      this.history.listen(() => locationListener_v2(this.history));
+      isLocationListenerActive = true;
     }
   }
 
@@ -345,6 +431,61 @@ export default class Controller {
     );
   }
 
+  async pushPage(src, options) {
+    clearVirtualHistory();
+
+    if (!options) {
+      options = {};
+    }
+    if (!options.parentElement) {
+      options.parentElement = document.querySelector('stencil-route:not([style="display: none;"])');
+    }
+    if (!options.namespace) {
+      options.namespace = PAGES_PATH;
+    }
+    if (!options.skin) {
+      options.skin = this.getSkin();
+    }
+
+    const { basePath } = WebCardinal;
+    const { parentElement, namespace, skin } = options;
+    const { pathname } = this.history.location;
+
+    src = URLHelper.join('', namespace, src).pathname;
+    if (src.startsWith('/')) {
+      src = `.${src}`;
+    }
+
+    const backData = {
+      src: WebCardinal.state.page.loader.src,
+      key: this.history.location.key,
+    };
+
+    const oldLoader = WebCardinal.state.page.loader;
+    const pageLoader = this.createElement('webc-app-loader', { src, basePath, skin, saveState: true });
+    pageLoader.setAttribute('hidden', '');
+    pageLoader.dataset.key = 'not-generated-yet';
+    parentElement.prepend(pageLoader);
+
+    await pageLoader.componentOnReady();
+    oldLoader.setAttribute('hidden', '');
+    pageLoader.removeAttribute('hidden');
+
+    this.history.push(pathname, options.state);
+    const forwardData = {
+      src,
+      key: this.history.location.key,
+    };
+    pageLoader.dataset.key = forwardData.key;
+
+    virtualHistory.add(forwardData.key);
+    virtualHistory.add(backData.key);
+  }
+
+  getVirtualHistory() {
+    return Object.freeze(virtualHistory);
+  }
+
   send(eventName, detail, options = {}) {
     let eventOptions = {
       bubbles: true,
@@ -388,6 +529,19 @@ export default class Controller {
 
   getState() {
     return this.history.location.state;
+  }
+
+  updateState(key, value) {
+    this.setState({
+      ...(this.getState() || {}),
+      [key]: value,
+    });
+  }
+
+  removeFromState(key) {
+    const state = this.getState();
+    delete state[key];
+    this.setState(state);
   }
 
   setSkin(skin, { save } = { save: true }) {
@@ -485,7 +639,7 @@ export default class Controller {
 
   getMainEnclaveDB(callback) {
     if (!isRequireAvailable()) {
-      console.error('"this.getWalletStorage" is available only inside an SSApp!');
+      console.error('"this.getMainEnclaveDB" is available only inside an SSApp!');
       return undefined;
     }
 
@@ -561,8 +715,6 @@ export default class Controller {
       console.error('"this.DSUStorage" is available only inside an SSApp!');
       return this._dsuStorage;
     }
-
-    console.warn([`"this.DSUStorage" is deprecated!`, 'Use "this.getStorage" instead!'].join('\n'));
 
     if (!this._dsuStorage) {
       // eslint-disable-next-line no-undef, @typescript-eslint/no-var-requires

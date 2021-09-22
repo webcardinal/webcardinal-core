@@ -36,7 +36,7 @@ export class WebcAppLoader {
   /**
    * Source path is prefixed with this path.
    */
-  @Prop({ mutable: true, reflect: true }) basePath: string = '/';
+  @Prop({ mutable: true }) basePath: string = '/';
 
   /**
    * Fetch a HTML file and loads inside as normal children or in a wrapper.

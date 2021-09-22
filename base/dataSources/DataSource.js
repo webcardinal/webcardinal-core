@@ -7,8 +7,6 @@ export default class DataSource {
    * @param {number} [options.pageSize=20]
    */
   constructor(options) {
-    console.log('DataSource: ctor');
-
     if (!options) {
       options = {};
     }
