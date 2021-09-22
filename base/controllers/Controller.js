@@ -446,9 +446,12 @@ export default class Controller {
     if (!options.skin) {
       options.skin = this.getSkin();
     }
+    if (typeof options.tag !== 'string') {
+      options.tag = undefined;
+    }
 
     const { basePath } = WebCardinal;
-    const { parentElement, namespace, skin } = options;
+    const { parentElement, namespace, skin, tag } = options;
     const { pathname } = this.history.location;
 
     src = URLHelper.join('', namespace, src).pathname;
@@ -465,7 +468,7 @@ export default class Controller {
     };
 
     const oldLoader = WebCardinal.state.page.loader;
-    const pageLoader = this.createElement('webc-app-loader', { src, basePath, skin, saveState: true });
+    const pageLoader = this.createElement('webc-app-loader', { src, basePath, skin, tag, saveState: true });
     pageLoader.setAttribute('hidden', '');
     pageLoader.dataset.key = 'not-generated-yet';
     parentElement.prepend(pageLoader);
