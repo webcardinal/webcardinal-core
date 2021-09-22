@@ -220,14 +220,10 @@ export class WebcDatatable {
     dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}`);
     dataTable.append(...data);
     dataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, event => {
-      console.log('data-for: rerender');
-
       event.stopImmediatePropagation();
       dataTable.prepend(...header);
     });
     dataTable.addEventListener(FOR_CONTENT_UPDATED_EVENT, event => {
-      console.log('data-for: update');
-
       event.stopImmediatePropagation();
     });
 
@@ -242,24 +238,12 @@ export class WebcDatatable {
 
     dataTable.prepend(...header);
 
-    console.log('webc-datatable: componentWillLoad', {
-      dataSize: this.dataSize,
-      pageSize: this.pageSize,
-      model: JSON.stringify(this.model.data),
-    });
-
     this.dataSource._renderPageAsync();
   }
 
   @Method()
   async fillCurrentPage(data) {
     this.model.data = data;
-
-    console.log('webc-datatable: fillCurrentPage', {
-      dataSize: this.dataSize,
-      pageSize: this.pageSize,
-      model: JSON.stringify(this.model.data),
-    });
   }
 
   @Method()
