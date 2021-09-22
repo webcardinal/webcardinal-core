@@ -455,6 +455,9 @@ export default class Controller {
     if (src.startsWith('/')) {
       src = `.${src}`;
     }
+    if (!src.endsWith('.html')) {
+      src += '.html';
+    }
 
     const backData = {
       src: WebCardinal.state.page.loader.src,
