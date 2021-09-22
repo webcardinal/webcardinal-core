@@ -115,7 +115,7 @@ function locationListener_v1(history) {
   const inactiveKeys = Array.from(virtualHistory).filter(key => key !== history.location.key);
 
   const loaders = document.querySelectorAll('webc-app-loader[data-key]');
-  const originalLoader = document.querySelector('webc-app-loader:not([data-key])');
+  const originalLoader = document.querySelector('webc-app-loader[save-state]:not([data-key])');
   originalLoader.setAttribute('hidden', '');
 
   for (const loader of Array.from(loaders)) {
@@ -163,7 +163,7 @@ function locationListener_v2(history) {
     loader.setAttribute('hidden', '');
   }
 
-  const originalLoader = document.querySelector('webc-app-loader:not([data-key])');
+  const originalLoader = document.querySelector('webc-app-loader[save-state]:not([data-key])');
   originalLoader.setAttribute('hidden', '');
 
   loaders = document.querySelectorAll('webc-app-loader[data-key]');
