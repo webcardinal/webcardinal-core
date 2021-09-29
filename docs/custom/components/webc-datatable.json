@@ -113,6 +113,23 @@
       ],
       "optional": false,
       "required": false
+    },
+    {
+      "name": "pageSizeDelta",
+      "type": "number",
+      "mutable": false,
+      "attr": "page-size-delta",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "2",
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
     }
   ],
   "methods": [

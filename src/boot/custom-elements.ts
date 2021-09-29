@@ -49,6 +49,7 @@ export default function getCustomElementsAPI() {
               template,
               element: this,
             });
+            this._element.style.display = 'none';
 
             // disable data-view-model for attributes of this CustomElement
             this.setAttribute(DISABLE_BINDING, '');

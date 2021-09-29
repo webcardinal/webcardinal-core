@@ -15,7 +15,7 @@
       "type": "string",
       "mutable": true,
       "attr": "base-path",
-      "reflectToAttr": true,
+      "reflectToAttr": false,
       "docs": "Source path is prefixed with this path.",
       "docsTags": [],
       "default": "'/'",
