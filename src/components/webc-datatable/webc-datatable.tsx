@@ -1,4 +1,4 @@
-import { Component, Host, h, Prop, Event, EventEmitter, Method } from '@stencil/core';
+import { Component, Host, h, Prop, Event, EventEmitter, Method, Watch } from '@stencil/core';
 import {
   FOR_ATTRIBUTE,
   FOR_OPTIONS,
@@ -69,6 +69,8 @@ export class WebcDatatable {
 
   @Prop() pageSize: number = 20;
 
+  @Prop() pageSizeDelta: number = 2;
+
   @Prop() curentPageIndex: number = 0;
 
   @Prop() hidePagination: boolean = false;
@@ -135,7 +137,7 @@ export class WebcDatatable {
     const numberOfPages = this.dataSize ? Math.ceil(this.dataSize / this.pageSize) : 1;
 
     const result = [];
-    const pagination = getPagination(pageIndex, numberOfPages);
+    const pagination = getPagination(pageIndex, numberOfPages, this.pageSizeDelta);
 
     for (const i of pagination) {
       if (typeof i === 'number') {
@@ -249,6 +251,11 @@ export class WebcDatatable {
   @Method()
   async clearCurrentPage() {
     this.model.data.length = 0;
+  }
+
+  @Watch('pageSize')
+  pageSizeHandler() {
+    this.dataSource._renderPageAsync();
   }
 
   render() {

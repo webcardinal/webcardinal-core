@@ -5,6 +5,7 @@ export default class DataSource {
    * @param {object} [options]
    * @param {number | undefined} [options.recordsNumber]
    * @param {number} [options.pageSize=20]
+   * @param {number} [options.pageSizeDelta=2]
    */
   constructor(options) {
     if (!options) {
@@ -15,6 +16,9 @@ export default class DataSource {
     }
     if (typeof options.pageSize !== 'number') {
       options.pageSize = 20;
+    }
+    if (typeof options.pageSizeDelta !== 'number') {
+      options.pageSizeDelta = 2;
     }
 
     this.options = options;
@@ -108,6 +112,10 @@ export default class DataSource {
 
   _init = getElement => {
     this.getElement = getElement;
+
+    const element = this.getElement();
+    element.pageSizeDelta = this.options.pageSizeDelta;
+
     this.setPageSize(this.options.pageSize);
     this.setRecordsNumber(this.options.recordsNumber);
     return PskBindableModel.setModel({ data: [] });

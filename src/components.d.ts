@@ -160,6 +160,7 @@ export namespace Components {
         "fillCurrentPage": (data: any) => Promise<void>;
         "hidePagination": boolean;
         "pageSize": number;
+        "pageSizeDelta": number;
     }
     interface WebcDocs {
         /**
@@ -586,6 +587,7 @@ declare namespace LocalJSX {
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "pageSize"?: number;
+        "pageSizeDelta"?: number;
     }
     interface WebcDocs {
         /**
