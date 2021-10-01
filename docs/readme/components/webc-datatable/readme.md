@@ -14,6 +14,7 @@
 | `dataSize`        | `data-size`         |             | `number`  | `undefined` |
 | `hidePagination`  | `hide-pagination`   |             | `boolean` | `false`     |
 | `pageSize`        | `page-size`         |             | `number`  | `20`        |
+| `pageSizeDelta`   | `page-size-delta`   |             | `number`  | `2`         |
 
 
 ## Events
