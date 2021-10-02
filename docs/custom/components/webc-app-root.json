@@ -39,6 +39,23 @@
   },
   "props": [
     {
+      "name": "disableHeader",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-header",
+      "reflectToAttr": true,
+      "docs": "It decides if the header is disabled or not.",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "loader",
       "type": "string",
       "mutable": false,

@@ -86,6 +86,10 @@ export namespace Components {
     }
     interface WebcAppRoot {
         /**
+          * It decides if the header is disabled or not.
+         */
+        "disableHeader": boolean;
+        /**
           * Component tag name for a UI loader.
          */
         "loader": string;
@@ -504,6 +508,10 @@ declare namespace LocalJSX {
         "url"?: string;
     }
     interface WebcAppRoot {
+        /**
+          * It decides if the header is disabled or not.
+         */
+        "disableHeader"?: boolean;
         /**
           * Component tag name for a UI loader.
          */
