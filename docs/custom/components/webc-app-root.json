@@ -56,6 +56,23 @@
       "required": false
     },
     {
+      "name": "disableLoaderHiding",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "disable-loader-hiding",
+      "reflectToAttr": true,
+      "docs": "It decides if the spinner of application should be automatically hidden",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "loader",
       "type": "string",
       "mutable": false,

@@ -90,6 +90,10 @@ export namespace Components {
          */
         "disableHeader": boolean;
         /**
+          * It decides if the spinner of application should be automatically hidden
+         */
+        "disableLoaderHiding": boolean;
+        /**
           * Component tag name for a UI loader.
          */
         "loader": string;
@@ -512,6 +516,10 @@ declare namespace LocalJSX {
           * It decides if the header is disabled or not.
          */
         "disableHeader"?: boolean;
+        /**
+          * It decides if the spinner of application should be automatically hidden
+         */
+        "disableLoaderHiding"?: boolean;
         /**
           * Component tag name for a UI loader.
          */

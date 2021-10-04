@@ -134,7 +134,7 @@ webc-app-error-toast {
 webc-spinner {
   --animation: spinner-default-animation 1s infinite linear;
   --animation-delay: 1.2s;
-  --background: transparent;
+  --background: var(--webc-basic-background);
   --border: 0.15em solid transparent;
   --box-shadow: 0 0 5px rgba(0, 0, 0, 0.25);
   --color: var(--webc-primary-background);

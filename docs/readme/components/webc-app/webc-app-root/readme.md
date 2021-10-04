@@ -7,11 +7,12 @@
 
 ## Properties
 
-| Property        | Attribute        | Description                                                                                                       | Type      | Default          |
-| --------------- | ---------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | ---------------- |
-| `disableHeader` | `disable-header` | It decides if the header is disabled or not.                                                                      | `boolean` | `false`          |
-| `loader`        | `loader`         | Component tag name for a UI loader.                                                                               | `string`  | `'webc-spinner'` |
-| `preload`       | `preload`        | Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br> | `string`  | `undefined`      |
+| Property              | Attribute               | Description                                                                                                       | Type      | Default          |
+| --------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------- | --------- | ---------------- |
+| `disableHeader`       | `disable-header`        | It decides if the header is disabled or not.                                                                      | `boolean` | `false`          |
+| `disableLoaderHiding` | `disable-loader-hiding` | It decides if the spinner of application should be automatically hidden                                           | `boolean` | `false`          |
+| `loader`              | `loader`                | Component tag name for a UI loader.                                                                               | `string`  | `'webc-spinner'` |
+| `preload`             | `preload`               | Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br> | `string`  | `undefined`      |
 
 
 ## Events

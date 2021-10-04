@@ -37,6 +37,11 @@ export class WebcAppRoot {
    */
   @Prop({ reflect: true }) disableHeader: boolean = false;
 
+  /**
+   * It decides if the spinner of application should be automatically hidden
+   */
+  @Prop({ reflect: true }) disableLoaderHiding: boolean = false;
+
   @State() history: RouterHistory;
 
   /**
@@ -85,6 +90,9 @@ export class WebcAppRoot {
     const controller = new ApplicationController(this.host);
     await controller.process(this.preload);
 
+    window.WebCardinal.root = this.host;
+    window.WebCardinal.loader = this._loaderElement;
+
     if (this.host.children.length !== 0) {
       await this.registerAppErrorComponentAndListeners();
       return;
@@ -95,10 +103,9 @@ export class WebcAppRoot {
 
   async componentDidLoad() {
     if (this._loaderElement) {
-      this._loaderElement.hidden = true;
-
-      window.WebCardinal.root = this.host;
-      window.WebCardinal.loader = this._loaderElement;
+      if (!this.disableLoaderHiding) {
+        this._loaderElement.hidden = true;
+      }
     }
 
     await this.callHook(HOOK_TYPE.AFTER_APP);
