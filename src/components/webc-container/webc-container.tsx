@@ -3,7 +3,7 @@ import { HTMLStencilElement } from '@stencil/core/internal';
 import { injectHistory, RouterHistory } from '@stencil/router';
 
 import DefaultController from '../../../base/controllers/Controller.js';
-import { MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
+import { DEFAULT_CONTROLLER_KEY, MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
 import { extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit } from '../../utils';
@@ -97,7 +97,7 @@ export class WebcContainer {
     // "default-controller" is set when container does binding of undefined models or when controller is not found
     // but if 'data-view-model="@"' is present binding is supported
     // (if there is a global model upper in the DOM, otherwise the webc-container can not hydrate)
-    if (this.host.hasAttribute('default-controller') && !this.host.hasAttribute(VIEW_MODEL_KEY)) {
+    if (this.host.hasAttribute(DEFAULT_CONTROLLER_KEY) && !this.host.hasAttribute(VIEW_MODEL_KEY)) {
       return;
     }
     BindingService.bindChildNodes(bindingElement, {
@@ -191,7 +191,7 @@ export class WebcContainer {
   // It loads the controller specified as property or a default controller
   private async loadController(element: Element, history: RouterHistory, model?, translationModel?) {
     const loadDefaultController = () => {
-      this.host.setAttribute('controller-default', '');
+      this.host.setAttribute(DEFAULT_CONTROLLER_KEY, '');
       return new DefaultController(element, history, model, translationModel);
     };
 

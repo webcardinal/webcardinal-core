@@ -16,6 +16,7 @@ export const ASSETS_PATH = 'assets';
 export const MODEL_KEY = 'data-model';
 export const VIEW_MODEL_KEY = 'data-view-model';
 export const DISABLE_BINDING = `disable-binding`;
+export const DEFAULT_CONTROLLER_KEY = 'default-controller';
 export const MODEL_CHAIN_PREFIX = '@';
 export const TRANSLATION_CHAIN_PREFIX = '$';
 export const SKIP_BINDING_FOR_PROPERTIES = ['_saveElement'];
