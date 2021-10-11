@@ -169,6 +169,7 @@ export namespace Components {
         "hidePagination": boolean;
         "pageSize": number;
         "pageSizeDelta": number;
+        "templateChildrenCount": number;
     }
     interface WebcDocs {
         /**
@@ -604,6 +605,7 @@ declare namespace LocalJSX {
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
         "pageSize"?: number;
         "pageSizeDelta"?: number;
+        "templateChildrenCount"?: number;
     }
     interface WebcDocs {
         /**

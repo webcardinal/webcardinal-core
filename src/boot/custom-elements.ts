@@ -68,8 +68,10 @@ export default function getCustomElementsAPI() {
               this._model = await this._element.getModel();
               this._translationModel = await this._element.getTranslationModel();
               this._listeners = await this._element.getListeners();
-              this._listeners.getModel.add();
-              this._listeners.getTranslationModel.add();
+              if (this._listeners) {
+                this._listeners.getModel.add();
+                this._listeners.getTranslationModel.add();
+              }
               this._element.remove();
               this.classList.add('hydrated');
               this.removeAttribute(DISABLE_BINDING);

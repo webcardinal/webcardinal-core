@@ -7,14 +7,15 @@
 
 ## Properties
 
-| Property          | Attribute           | Description | Type      | Default     |
-| ----------------- | ------------------- | ----------- | --------- | ----------- |
-| `chain`           | `datasource`        |             | `string`  | `undefined` |
-| `curentPageIndex` | `curent-page-index` |             | `number`  | `0`         |
-| `dataSize`        | `data-size`         |             | `number`  | `undefined` |
-| `hidePagination`  | `hide-pagination`   |             | `boolean` | `false`     |
-| `pageSize`        | `page-size`         |             | `number`  | `20`        |
-| `pageSizeDelta`   | `page-size-delta`   |             | `number`  | `2`         |
+| Property                | Attribute                 | Description | Type      | Default     |
+| ----------------------- | ------------------------- | ----------- | --------- | ----------- |
+| `chain`                 | `datasource`              |             | `string`  | `undefined` |
+| `curentPageIndex`       | `curent-page-index`       |             | `number`  | `0`         |
+| `dataSize`              | `data-size`               |             | `number`  | `undefined` |
+| `hidePagination`        | `hide-pagination`         |             | `boolean` | `false`     |
+| `pageSize`              | `page-size`               |             | `number`  | `20`        |
+| `pageSizeDelta`         | `page-size-delta`         |             | `number`  | `2`         |
+| `templateChildrenCount` | `template-children-count` |             | `number`  | `0`         |
 
 
 ## Events

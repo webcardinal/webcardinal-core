@@ -48,8 +48,14 @@ const BindingService = {
 
     if (isElementNode(elementOrChildNode)) {
       const element = elementOrChildNode as Element;
-      // for some webc-<components> binding is managed by component itself
-      //but let the attributes binding to pass
+
+      // for WebCardinal <components> made with define and webc-component
+      if (window.WebCardinal.components.tags.has(element.tagName.toLowerCase())) {
+        return;
+      }
+
+      // for some webc-<components> binding of innerHTML of component is managed by component itself
+      // but attributes binding is allowed
       if (SKIP_BINDING_FOR_COMPONENTS.includes(element.tagName.toLowerCase())) {
         return bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
       }

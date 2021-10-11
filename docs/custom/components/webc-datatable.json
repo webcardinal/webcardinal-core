@@ -130,6 +130,23 @@
       ],
       "optional": false,
       "required": false
+    },
+    {
+      "name": "templateChildrenCount",
+      "type": "number",
+      "mutable": true,
+      "attr": "template-children-count",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "0",
+      "values": [
+        {
+          "type": "number"
+        }
+      ],
+      "optional": false,
+      "required": false
     }
   ],
   "methods": [

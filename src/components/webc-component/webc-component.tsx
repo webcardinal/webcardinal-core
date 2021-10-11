@@ -5,7 +5,7 @@ import { injectHistory, RouterHistory } from '@stencil/router';
 import { MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService, ControllerRegistryService } from '../../services';
-import {extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit} from '../../utils';
+import { extractChain, getTranslationsFromState, mergeChains, promisifyEventEmit } from '../../utils';
 
 import { getTemplate } from './webc-component.utils';
 
@@ -13,7 +13,6 @@ import { getTemplate } from './webc-component.utils';
   tag: 'webc-component',
 })
 export class WebcComponent {
-  private controllerInstance;
   @HostElement() host: HTMLStencilElement;
 
   @State() history: RouterHistory;
@@ -70,6 +69,7 @@ export class WebcComponent {
   private html;
   private chain; // data-view-model
   private listeners: ComponentListenersService;
+  private controllerInstance;
 
   async componentWillLoad() {
     if (!this.host.isConnected) {
@@ -108,13 +108,9 @@ export class WebcComponent {
     this.host.insertAdjacentHTML('afterend', this.html);
 
     this.chain = extractChain(this.element);
-    const hasInheritedModel = this.chain.indexOf("@") !== -1;
 
-    if(hasInheritedModel){
-      const chainPrefix = await  promisifyEventEmit(this.getChainPrefix);
-      this.chain = mergeChains(chainPrefix, this.chain);
-    }
-
+    const chainPrefix = await promisifyEventEmit(this.getChainPrefix);
+    this.chain = mergeChains(chainPrefix, this.chain);
 
     const model = this.model;
     const translationModel = this.translationModel;
@@ -141,9 +137,9 @@ export class WebcComponent {
     });
 
     this.listeners = new ComponentListenersService(this.element, {
-      model: this.model,
-      translationModel: this.translationModel,
-      chain:this.chain
+      model,
+      translationModel: translationModel,
+      chain
     });
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
@@ -167,8 +163,8 @@ export class WebcComponent {
       getParentChain?.remove();
     }
     this.controllerInstance?.disconnectedCallback();
-    //prevent cleaning models change callbacks that are shared with current controller instance
-    if(!this.chain){
+    // prevent cleaning models change callbacks that are shared with current controller instance
+    if (!this.chain) {
       this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
     }
   }
@@ -224,7 +220,6 @@ export class WebcComponent {
             const key = attr.nodeValue.slice(1);
             if (this.host.hasAttribute(key)) {
               element.setAttribute(attr.nodeName, this.host.getAttribute(key));
-              this.host.removeAttribute(attr.nodeName);
             }
           }
         }
@@ -242,8 +237,8 @@ export class WebcComponent {
       Array.from(this.host.attributes).forEach(attr => {
         if (attr.nodeName === VIEW_MODEL_KEY) return;
         const innerSyntaxRegEx = new RegExp(
-          `{{.*[${MODEL_CHAIN_PREFIX}${TRANSLATION_CHAIN_PREFIX}]${attr.nodeName}.*}}`,
-          'g',
+          `{{\\s*[${MODEL_CHAIN_PREFIX}${TRANSLATION_CHAIN_PREFIX}](${attr.nodeName})\\s*}}`,
+          'gm'
         );
         if ([MODEL_CHAIN_PREFIX, TRANSLATION_CHAIN_PREFIX].includes(attr.nodeValue[0])) {
           plainHTML = plainHTML.replace(innerSyntaxRegEx, `{{ ${attr.nodeValue} }}`);

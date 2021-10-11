@@ -8,7 +8,8 @@ import {
   MODEL_CHAIN_PREFIX,
 } from '../../constants';
 import { HostElement } from '../../decorators';
-import { BindingService } from '../../services';
+import { BindingService, ComponentListenersService } from '../../services';
+import { isElementNode, isTextNode } from "../../services/BindingService/binding-service-utils";
 import { promisifyEventEmit } from '../../utils';
 import { getPagination } from './webc-datatable.utils';
 
@@ -45,6 +46,7 @@ const DATA_SORTABLE_STYLES = `
     top: 55%;
 }
 `;
+const DATA_INTERNAL_CHAIN = `data`;
 
 /**
  * @slot -
@@ -75,6 +77,8 @@ export class WebcDatatable {
 
   @Prop() hidePagination: boolean = false;
 
+  @Prop({ mutable: true }) templateChildrenCount: number = 0;
+
   /**
    * Through this event the model is received.
    */
@@ -86,8 +90,10 @@ export class WebcDatatable {
   })
   getModelEvent: EventEmitter;
 
+  private listeners: ComponentListenersService;
   private dataSource;
   private model;
+  private childrenCount = 0;
 
   private getTemplatesFromDOM = () => {
     const templates = {
@@ -95,17 +101,26 @@ export class WebcDatatable {
       data: [],
     };
     const slots = Object.keys(templates);
-    for (const child of Array.from(this.host.children)) {
-      if (!child.hasAttribute('slot')) {
-        templates['data'].push(child);
+    for (const childNode of Array.from(this.host.childNodes)) {
+      if (isTextNode(childNode)) {
+        templates['data'].push(childNode);
         continue;
       }
+      if (isElementNode(childNode)) {
+        const child = childNode as HTMLElement;
+        if (!child.hasAttribute('slot')) {
+          templates['data'].push(child);
+          this.childrenCount++;
+          continue;
+        }
 
-      if (slots.includes(child.slot)) {
-        const { slot } = child;
-        child.removeAttribute('slot');
-        child.classList.add(`webc-datatable--${slot}`);
-        templates[slot].push(child);
+        if (slots.includes(child.slot)) {
+          const { slot } = child;
+          child.removeAttribute('slot');
+          child.classList.add(`webc-datatable--${slot}`);
+          templates[slot].push(child);
+          this.childrenCount++;
+        }
       }
     }
     return templates;
@@ -218,7 +233,8 @@ export class WebcDatatable {
     const dataTable = document.createElement('div');
     dataTable.setAttribute('slot', 'data');
     dataTable.classList.add('webc-datatable--container');
-    dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}data`);
+    dataTable.setAttribute('data-for-children-count', `${this.childrenCount}`)
+    dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
     dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}`);
     dataTable.append(...data);
     dataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, event => {
@@ -238,9 +254,36 @@ export class WebcDatatable {
       enableTranslations: false,
     });
 
+    this.listeners = new ComponentListenersService(this.host, {
+      model: this.model,
+      translationModel: {},
+      chain: `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`
+    });
+    this.listeners.getModel.add();
+    this.listeners.getTranslationModel.add();
+    this.listeners.getParentChain.add();
+
     dataTable.prepend(...header);
 
     this.dataSource._renderPageAsync();
+  }
+
+  async connectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel, getParentChain } = this.listeners;
+      getModel?.add();
+      getTranslationModel?.add();
+      getParentChain?.add();
+    }
+  }
+
+  async disconnectedCallback() {
+    if (this.listeners) {
+      const { getModel, getTranslationModel, getParentChain } = this.listeners;
+      getModel?.remove();
+      getTranslationModel?.remove();
+      getParentChain?.remove();
+    }
   }
 
   @Method()
