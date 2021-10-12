@@ -4,18 +4,19 @@ import { HOOK_TYPE } from '../constants';
 
 export default function getPreloadAPI() {
   return {
-    setSkin: (skin: string = 'default') => {
+    setSkin: async (skin: string = 'default') => {
       if (!skin || typeof skin !== 'string') {
         console.warn(
           [
-            `Function "setSkin(skin: string)" must receive a string as parameter!`,
-            `Example of parameter: "advanced-skin"`,
+            `Function "setSkin(skin: string)" must receive a string as parameter!`
           ].join('\n'),
         );
       }
 
       if (this.isConfigLoaded) {
         window.WebCardinal.state.skin = skin;
+        await window.WebCardinal.root.componentOnReady();
+        window.WebCardinal.state.page.loader.skin = skin;
         return;
       }
 

@@ -25,7 +25,6 @@ export class WebcAppLoader {
 
   private activeSrc;
   private watchSkin = false;
-  private skinSet = false;
   private hooks = {};
 
   /**
@@ -69,9 +68,15 @@ export class WebcAppLoader {
   })
   getRoutingStateEvent: EventEmitter<RoutingState>;
 
+  private routingState: RoutingState;
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
+    }
+
+    if (window.WebCardinal.state.skin !== this.skin) {
+      this.skin = window.WebCardinal.state.skin;
     }
 
     await this.activateHooks();
@@ -91,8 +96,8 @@ export class WebcAppLoader {
     this.watchSkin = true;
 
     if (getTranslationsFromState()) {
-      const routingState = await resolveRoutingState(this);
-      await ControllerTranslationService.loadAndSetTranslationsForPage(routingState);
+      this.routingState = await resolveRoutingState(this);
+      await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState);
     }
   }
 
@@ -110,15 +115,14 @@ export class WebcAppLoader {
       return;
     }
 
-    if (this.skinSet) {
-      this.skinSet = false;
-      return;
-    }
-
     this.content = '';
     await this.setSkinContext();
     await this.setPageContent();
     this.updateActivePage();
+
+    if (getTranslationsFromState()) {
+      await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState);
+    }
   }
 
   private async activateHooks() {
@@ -161,16 +165,12 @@ export class WebcAppLoader {
       const src = join(this.basePath, SKINS_PATH, preferredSkin, this.src).pathname;
       if (await checkPageExistence(src)) {
         this.activeSrc = src;
-        this.skin = preferredSkin;
-        this.skinSet = true;
         return;
       }
     }
 
     // otherwise the fallback is "default" skin
     this.activeSrc = join(this.basePath, this.src).pathname;
-    this.skin = 'default';
-    this.skinSet = true;
     return;
   }
 
@@ -191,10 +191,8 @@ export class WebcAppLoader {
 
   private updateActivePage() {
     if (this.saveState) {
-      window.WebCardinal.state.page = {
-        loader: this.host,
-        src: this.activeSrc,
-      };
+      window.WebCardinal.state.skin = this.skin;
+      window.WebCardinal.state.page = { loader: this.host, src: this.activeSrc };
       if (this.tag) {
         window.WebCardinal.state.page.tag = this.tag;
       }
