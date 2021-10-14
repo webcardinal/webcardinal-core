@@ -1,4 +1,5 @@
-import { Component, Event, EventEmitter, h, Prop, State } from '@stencil/core';
+import type { EventEmitter } from '@stencil/core';
+import { Component, Event, h, Prop, State } from '@stencil/core';
 
 import { proxifyModelProperty } from '../../../../base/controllers/Controller';
 import { HOOK_TYPE, PAGES_PATH } from '../../../constants';
@@ -123,7 +124,7 @@ export class WebcAppRouter {
           payload.src = '.' + join(PAGES_PATH, payload.src).pathname;
         }
 
-        let joinedPath = join(this.basePath, payload.path).pathname;
+        const joinedPath = join(this.basePath, payload.path).pathname;
         this.mapping[joinedPath] = payload.src.replace(this.pagesPathRegExp, '');
 
         if (route.tag) {
@@ -144,10 +145,16 @@ export class WebcAppRouter {
     if (!fallback || !fallback.src) return null;
     const src = '.' + join(PAGES_PATH, fallback.src).pathname;
     const loader = fallback.loader || 'default';
-    const skin = 'none';
     const props = {
       component: 'webc-app-loader',
-      componentProps: { src, loader, skin, basePath: this.basePath, saveState: true } as any,
+      componentProps: {
+        src,
+        loader,
+        skin: 'none',
+        basePath: this.basePath,
+        saveState: true,
+        isFallbackPage: true,
+      } as any,
     };
     if (fallback.tag) {
       props.componentProps.tag = fallback.tag;
@@ -185,8 +192,8 @@ export class WebcAppRouter {
       return;
     }
     const hooks = window.WebCardinal.hooks;
-    for (let type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE]) {
-      for (let tag of Object.keys(hooks[type] || [])) {
+    for (const type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE]) {
+      for (const tag of Object.keys(hooks[type] || [])) {
         if (!this.tags[tag]) {
           console.warn(
             [
@@ -224,9 +231,9 @@ export class WebcAppRouter {
         routing: { basePath: this.basePath, mapping: this.mapping },
         model: proxifyModelProperty({}),
         translationModel: proxifyModelProperty({}),
-        chain:""
+        chain: '',
       });
-      const { getModel, getTranslationModel, getTags, getRouting,getParentChain } = this.listeners;
+      const { getModel, getTranslationModel, getTags, getRouting, getParentChain } = this.listeners;
       getModel?.add();
       getTranslationModel?.add();
       getTags?.add();
@@ -250,7 +257,7 @@ export class WebcAppRouter {
 
   async disconnectedCallback() {
     if (this.listeners) {
-      const { getModel, getTranslationModel, getTags, getRouting,getParentChain } = this.listeners;
+      const { getModel, getTranslationModel, getTags, getRouting, getParentChain } = this.listeners;
       getModel?.remove();
       getTranslationModel?.remove();
       getTags?.remove();

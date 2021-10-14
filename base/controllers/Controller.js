@@ -48,14 +48,7 @@ function isSkinEnabled() {
 }
 
 function getPathname() {
-  let { pathname } = window.location;
-  if (pathname === '/') {
-    return pathname;
-  }
-  if (pathname.endsWith('/')) {
-    return pathname.slice(0, -1);
-  }
-  return pathname;
+  return URLHelper.join(WebCardinal.basePath, window.location.pathname).pathname;
 }
 
 function getValueFromModelByChain(model, chain) {

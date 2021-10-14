@@ -1,10 +1,12 @@
-import { Component, Event, EventEmitter, h, Host, Prop, State, Watch } from '@stencil/core';
-import { injectHistory, RouterHistory } from '@stencil/router';
-import { HTMLStencilElement } from '@stencil/core/internal';
+import { Component, Event, h, Host, Prop, State, Watch } from '@stencil/core';
+import type { EventEmitter } from '@stencil/core';
+import type { HTMLStencilElement } from '@stencil/core/internal';
+import type { RouterHistory } from '@stencil/router';
+import { injectHistory } from '@stencil/router';
 
 import { HOOK_TYPE, SKINS_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
-import { HookType, RoutingState, WebcAppLoaderType } from '../../../interfaces';
+import type { HookType, RoutingState, WebcAppLoaderType } from '../../../interfaces';
 import { ControllerTranslationService } from '../../../services';
 import { getSkinFromState, getTranslationsFromState, resolveRoutingState, URLHelper } from '../../../utils';
 
@@ -35,7 +37,7 @@ export class WebcAppLoader {
   /**
    * Source path is prefixed with this path.
    */
-  @Prop({ mutable: true }) basePath: string = '/';
+  @Prop({ mutable: true }) basePath = '/';
 
   /**
    * Fetch a HTML file and loads inside as normal children or in a wrapper.
@@ -45,7 +47,7 @@ export class WebcAppLoader {
   /**
    * If a skin is set for this page, this property will be set according to <code>webcardinal.json</code>.
    */
-  @Prop({ reflect: true, mutable: true }) skin: string = 'default';
+  @Prop({ reflect: true, mutable: true }) skin = 'default';
 
   /**
    * Tag of the page set in <code>webcardinal.json</code>.
@@ -55,7 +57,13 @@ export class WebcAppLoader {
   /**
    * If this property is set, WebCardinal.state.page will be saved for current page session.
    */
-  @Prop({ reflect: true }) saveState: boolean = false;
+  @Prop({ reflect: true }) saveState = false;
+
+  /**
+   * A webc-app-loader for a page or for a fallback page
+   * This information is required for translations
+   */
+  @Prop({ reflect: true }) isFallbackPage = false;
 
   /**
    * Routing configuration received from <code>webc-app-router</code>.
@@ -92,13 +100,10 @@ export class WebcAppLoader {
 
     await this.setSkinContext();
     await this.setPageContent();
-    this.updateActivePage();
     this.watchSkin = true;
-
-    if (getTranslationsFromState()) {
-      this.routingState = await resolveRoutingState(this);
-      await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState);
-    }
+    this.routingState = await resolveRoutingState(this);
+    await this.setTranslationsContext();
+    this.setWebCardinalState();
   }
 
   async componentDidLoad() {
@@ -118,11 +123,8 @@ export class WebcAppLoader {
     this.content = '';
     await this.setSkinContext();
     await this.setPageContent();
-    this.updateActivePage();
-
-    if (getTranslationsFromState()) {
-      await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState);
-    }
+    await this.setTranslationsContext();
+    this.setWebCardinalState();
   }
 
   private async activateHooks() {
@@ -132,7 +134,7 @@ export class WebcAppLoader {
 
     this.hooks = {};
     const { hooks } = window.WebCardinal;
-    for (let type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE, HOOK_TYPE.CLOSED_PAGE]) {
+    for (const type of [HOOK_TYPE.BEFORE_PAGE, HOOK_TYPE.AFTER_PAGE, HOOK_TYPE.CLOSED_PAGE]) {
       if (hooks[type]?.[this.tag]) {
         this.hooks[type] = hooks[type][this.tag];
       }
@@ -189,7 +191,18 @@ export class WebcAppLoader {
     this.content = content;
   }
 
-  private updateActivePage() {
+  private async setTranslationsContext() {
+    if (getTranslationsFromState()) {
+      if (this.isFallbackPage) {
+        await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState, this.src);
+        return;
+      }
+
+      await ControllerTranslationService.loadAndSetTranslationsForPage(this.routingState);
+    }
+  }
+
+  private setWebCardinalState() {
     if (this.saveState) {
       window.WebCardinal.state.skin = this.skin;
       window.WebCardinal.state.page = { loader: this.host, src: this.activeSrc };

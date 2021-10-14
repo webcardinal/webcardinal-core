@@ -4,7 +4,7 @@ import { getSkinFromState, getSkinPathFromState, loadJSON, URLHelper } from '../
 const { join } = URLHelper;
 
 const ControllerTranslationService = {
-  loadAndSetTranslationsForPage: async (routingContext: RoutingState): Promise<boolean> => {
+  loadAndSetTranslationsForPage: async (routingContext: RoutingState, customSrc?: string): Promise<boolean> => {
     const { basePath, mapping } = routingContext;
     const skin = getSkinFromState();
 
@@ -13,7 +13,7 @@ const ControllerTranslationService = {
     }
     const { translations } = window.WebCardinal;
 
-    let { pathname } = window.location;
+    let pathname = join(basePath, window.location.pathname).pathname;
     if (pathname.endsWith('/') && pathname !== '/') {
       // trim pathname if ends with "/", except for the corner case when pathname === "/"
       pathname = pathname.slice(0, -1);
@@ -24,7 +24,14 @@ const ControllerTranslationService = {
       return true;
     }
 
-    const source = mapping[pathname];
+    let source;
+    if (typeof customSrc === 'string') {
+      // fallback page will be loaded, prepare translations
+      source = customSrc;
+    } else {
+      source = mapping[pathname];
+    }
+
     if (!source) {
       console.warn(`No HTML page mapping was found for the current pathname: ${pathname}`);
       return false;
@@ -35,8 +42,8 @@ const ControllerTranslationService = {
       return false;
     }
 
-    let pathWithoutExtension = source.slice(0, source.lastIndexOf('.'));
-    let pathWithExtension = `${pathWithoutExtension}.translate`;
+    const pathWithoutExtension = source.slice(0, source.lastIndexOf('.'));
+    const pathWithExtension = `${pathWithoutExtension}.translate`;
 
     // check if there is a translation for current skin
     let [error, translationFile] = await loadJSON(join(basePath, getSkinPathFromState(), pathWithExtension).pathname);
@@ -65,7 +72,7 @@ const ControllerTranslationService = {
     }
 
     return false;
-  },
+  }
 };
 
 export default ControllerTranslationService;

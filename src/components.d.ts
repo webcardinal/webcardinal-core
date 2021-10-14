@@ -32,6 +32,10 @@ export namespace Components {
          */
         "basePath": string;
         /**
+          * A webc-app-loader for a page or for a fallback page This information is required for translations
+         */
+        "isFallbackPage": boolean;
+        /**
           * Fetch a HTML file and loads inside as normal children or in a wrapper.
          */
         "loader": WebcAppLoaderType;
@@ -453,6 +457,10 @@ declare namespace LocalJSX {
           * Source path is prefixed with this path.
          */
         "basePath"?: string;
+        /**
+          * A webc-app-loader for a page or for a fallback page This information is required for translations
+         */
+        "isFallbackPage"?: boolean;
         /**
           * Fetch a HTML file and loads inside as normal children or in a wrapper.
          */
