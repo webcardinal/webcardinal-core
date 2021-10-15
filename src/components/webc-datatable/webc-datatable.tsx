@@ -9,7 +9,7 @@ import {
 } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService } from '../../services';
-import { isElementNode, isTextNode } from "../../services/BindingService/binding-service-utils";
+import { isElementNode, isTextNode } from '../../services/BindingService/binding-service-utils';
 import { promisifyEventEmit } from '../../utils';
 import { getPagination } from './webc-datatable.utils';
 
@@ -233,7 +233,7 @@ export class WebcDatatable {
     const dataTable = document.createElement('div');
     dataTable.setAttribute('slot', 'data');
     dataTable.classList.add('webc-datatable--container');
-    dataTable.setAttribute('data-for-children-count', `${this.childrenCount}`)
+    dataTable.setAttribute('data-for-children-count', `${this.childrenCount}`);
     dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
     dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}`);
     dataTable.append(...data);
@@ -257,7 +257,7 @@ export class WebcDatatable {
     this.listeners = new ComponentListenersService(this.host, {
       model: this.model,
       translationModel: {},
-      chain: `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`
+      chain: `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`,
     });
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
@@ -288,6 +288,31 @@ export class WebcDatatable {
 
   @Method()
   async fillCurrentPage(data) {
+    const getSlot = (slot) => this.host.shadowRoot.querySelector(`slot[name="${slot}"]`) as HTMLSlotElement | undefined;
+    const createSlot = (slot) => Object.assign(document.createElement('slot'), { name: slot });
+    const injectSlot = (slot) => {
+      const beforeSlot = getSlot('before');
+      beforeSlot.insertAdjacentElement("afterend", createSlot(slot));
+    }
+
+    const dataSlot = getSlot('data');
+
+    if (!data || data.length === 0) {
+      dataSlot?.remove();
+      if (!getSlot('no-data')) {
+        injectSlot('no-data')
+      }
+      this.hidePagination = true;
+      this.model.data = [];
+      return;
+    }
+
+    if (!dataSlot) {
+      getSlot('no-data')?.remove();
+      injectSlot('data');
+    }
+
+    this.hidePagination = false;
     this.model.data = data;
   }
 

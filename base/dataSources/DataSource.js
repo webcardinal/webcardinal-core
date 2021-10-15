@@ -88,6 +88,11 @@ export default class DataSource {
     return [];
   }
 
+  async clearPageDataAsync() {
+    const dataTableElement = this.getElement();
+    await dataTableElement.fillCurrentPage([]);
+  }
+
   // Optional await
   // When some action is required only after the page was changed
 
