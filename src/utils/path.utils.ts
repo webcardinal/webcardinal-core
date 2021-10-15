@@ -102,3 +102,12 @@ export function getSkinPathFromState(): string {
   const skin = getSkinFromState();
   return skin !== 'default' ? `${SKINS_PATH}/${skin}` : '';
 }
+
+export function getPathname(): string {
+  let { pathname } = window.location;
+  if (pathname.endsWith('/') && pathname !== '/') {
+    // trim pathname if ends with "/", except for the corner case when pathname === "/"
+    pathname = pathname.slice(0, -1);
+  }
+  return pathname;
+}

@@ -28,6 +28,23 @@
       "required": false
     },
     {
+      "name": "isFallbackPage",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "is-fallback-page",
+      "reflectToAttr": true,
+      "docs": "A webc-app-loader for a page or for a fallback page\nThis information is required for translations",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "loader",
       "type": "\"default\" | \"iframe\" | \"none\" | \"object\" | \"parser\"",
       "mutable": false,

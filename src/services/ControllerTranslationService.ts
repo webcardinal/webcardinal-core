@@ -1,5 +1,5 @@
 import { RoutingState } from '../interfaces';
-import { getSkinFromState, getSkinPathFromState, loadJSON, URLHelper } from '../utils';
+import { getPathname, getSkinFromState, getSkinPathFromState, loadJSON, URLHelper } from '../utils';
 
 const { join } = URLHelper;
 
@@ -12,12 +12,7 @@ const ControllerTranslationService = {
       window.WebCardinal.translations = {};
     }
     const { translations } = window.WebCardinal;
-
-    let pathname = join(basePath, window.location.pathname).pathname;
-    if (pathname.endsWith('/') && pathname !== '/') {
-      // trim pathname if ends with "/", except for the corner case when pathname === "/"
-      pathname = pathname.slice(0, -1);
-    }
+    const pathname = getPathname();
 
     if (translations[skin]?.[pathname]) {
       // the translations are already set for the current skin and page
