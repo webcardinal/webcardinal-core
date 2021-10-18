@@ -611,6 +611,10 @@ declare namespace LocalJSX {
           * Through this event the model is received.
          */
         "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        /**
+          * Through this event the translation model is received.
+         */
+        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         "pageSize"?: number;
         "pageSizeDelta"?: number;
         "templateChildrenCount"?: number;

@@ -20,9 +20,10 @@
 
 ## Events
 
-| Event                   | Description                               | Type               |
-| ----------------------- | ----------------------------------------- | ------------------ |
-| `webcardinal:model:get` | Through this event the model is received. | `CustomEvent<any>` |
+| Event                              | Description                                           | Type               |
+| ---------------------------------- | ----------------------------------------------------- | ------------------ |
+| `webcardinal:model:get`            | Through this event the model is received.             | `CustomEvent<any>` |
+| `webcardinal:translationModel:get` | Through this event the translation model is received. | `CustomEvent<any>` |
 
 
 ## Methods

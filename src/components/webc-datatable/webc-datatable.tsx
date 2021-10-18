@@ -90,6 +90,17 @@ export class WebcDatatable {
   })
   getModelEvent: EventEmitter;
 
+  /**
+   * Through this event the translation model is received.
+   */
+  @Event({
+    eventName: 'webcardinal:translationModel:get',
+    bubbles: true,
+    composed: true,
+    cancelable: true,
+  })
+  getTranslationModelEvent: EventEmitter;
+
   private listeners: ComponentListenersService;
   private dataSource;
   private model;
@@ -209,6 +220,8 @@ export class WebcDatatable {
     }
 
     this.dataSource = await this.getDataSourceFromModel();
+    const translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
+
     const { DataSource } = window.WebCardinal.dataSources;
     if (!this.dataSource || typeof this.dataSource !== 'object' || !(this.dataSource instanceof DataSource)) {
       console.error(`An invalid WebCardinal DataSource instance received: "${this.chain}"! [1]`, this.dataSource);
@@ -249,14 +262,14 @@ export class WebcDatatable {
 
     BindingService.bindChildNodes(this.host, {
       model: this.model,
-      translationModel: {},
+      translationModel,
       recursive: true,
-      enableTranslations: false,
+      enableTranslations: true,
     });
 
     this.listeners = new ComponentListenersService(this.host, {
       model: this.model,
-      translationModel: {},
+      translationModel,
       chain: `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`,
     });
     this.listeners.getModel.add();

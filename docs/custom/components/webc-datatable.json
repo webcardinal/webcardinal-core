@@ -182,6 +182,15 @@
       "composed": true,
       "docs": "Through this event the model is received.",
       "docsTags": []
+    },
+    {
+      "event": "webcardinal:translationModel:get",
+      "detail": "any",
+      "bubbles": true,
+      "cancelable": true,
+      "composed": true,
+      "docs": "Through this event the translation model is received.",
+      "docsTags": []
     }
   ],
   "styles": [
