@@ -70,9 +70,8 @@ export class WebcContainer {
 
     const [controllerElement, bindingElement] = this.resolveControllerElement();
     this.controllerElement = controllerElement;
-    let model,
-      translationModel,
-      history = this.history;
+    let model, translationModel;
+    const history = this.history;
 
     this.chain = extractChain(this.host);
     const hasInheritedModel = this.chain.indexOf(MODEL_CHAIN_PREFIX) !== -1;
@@ -80,11 +79,12 @@ export class WebcContainer {
     if (hasInheritedModel) {
       const chainPrefix = await promisifyEventEmit(this.getChainPrefix);
       this.chain = mergeChains(chainPrefix, this.chain);
+      const chain = this.chain ? this.chain.slice(1) : null;
 
       try {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
-        this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
+        this.controllerInstance = await this.loadController(controllerElement, history, model.getChainValue(chain), translationModel);
       } catch (error) {
         console.error(error);
       }
