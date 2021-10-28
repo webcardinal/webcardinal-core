@@ -79,12 +79,15 @@ export class WebcContainer {
     if (hasInheritedModel) {
       const chainPrefix = await promisifyEventEmit(this.getChainPrefix);
       this.chain = mergeChains(chainPrefix, this.chain);
-      const chain = this.chain ? this.chain.slice(1) : null;
+      //const chain = this.chain ? this.chain.slice(1) : null;
 
       try {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
-        this.controllerInstance = await this.loadController(controllerElement, history, model.getChainValue(chain), translationModel);
+        //temporary fix - prevent undefined model on "@" chains in data-for cases
+        //chain does not contain the array index in data-for cases
+        //this.controllerInstance = await this.loadController(controllerElement, history, model.getChainValue(chain), translationModel);
+        this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
       } catch (error) {
         console.error(error);
       }
