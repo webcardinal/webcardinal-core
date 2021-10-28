@@ -20,7 +20,7 @@ export const DEFAULT_CONTROLLER_KEY = 'default-controller';
 export const MODEL_CHAIN_PREFIX = '@';
 export const TRANSLATION_CHAIN_PREFIX = '$';
 export const SKIP_BINDING_FOR_PROPERTIES = ['_saveElement'];
-export const SKIP_BINDING_FOR_COMPONENTS = ['webc-template', 'webc-container', 'webc-component', 'webc-datatable', 'psk-code'];
+export const SKIP_BINDING_FOR_COMPONENTS = ['webc-template', 'webc-container', 'webc-component', 'webc-datatable'];
 export const PSK_CARDINAL_PREFIX = 'psk-';
 
 // data-tag
