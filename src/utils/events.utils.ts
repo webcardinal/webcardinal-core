@@ -1,5 +1,6 @@
-import {EVENT_PARENT_CHAIN_GET} from "../constants";
-import {getCompleteChain} from "./element.utils";
+import { EVENT_PARENT_CHAIN_GET, FOR_ATTRIBUTE, FOR_TEMPLATE_SIZE } from '../constants';
+
+import { getCompleteChain } from './element.utils';
 
 export function extractCallback(event) {
   let callback;
@@ -18,8 +19,12 @@ export function extractCallback(event) {
 }
 
 export function listenForPrefixChainEvents(element, completeChain) {
+  if (!element.hasAttribute(FOR_TEMPLATE_SIZE)) {
+    element.setAttribute(FOR_TEMPLATE_SIZE, `${element.children.length}`);
+  }
+
   element.addEventListener(EVENT_PARENT_CHAIN_GET, (evt: CustomEvent) => {
-    evt.stopImmediatePropagation()
+    evt.stopImmediatePropagation();
     const callback = extractCallback(evt);
     if (!callback) {
       return;
@@ -34,21 +39,26 @@ export function listenForPrefixChainEvents(element, completeChain) {
       node = node.parentElement;
     }
 
-    const index = Array.from(element.children).indexOf(node);
+    let curentIterationNode = node;
+    while (curentIterationNode.parentElement && !curentIterationNode.parentElement.hasAttribute(FOR_ATTRIBUTE)) {
+      curentIterationNode = curentIterationNode.parentElement;
+    }
 
-    node.dataset.count = element.children.length;
-    node.dataset.index = `${index}`;
+    if (!curentIterationNode) {
+      return callback(undefined, completeChain);
+    }
 
+    let index = Array.from(element.children).indexOf(curentIterationNode);
     if (index < 0) {
       return callback(undefined, completeChain);
     }
 
-    let stepper = Number.parseInt(element.dataset.forChildrenCount);
+    let stepper = Number.parseInt(element.getAttribute(FOR_TEMPLATE_SIZE));
     if (Number.isNaN(stepper) || stepper <= 0) {
       stepper = 1;
     }
-
-    const chain = getCompleteChain(completeChain, Math.floor(index / stepper));
+    index = Math.floor(index / stepper);
+    const chain = getCompleteChain(completeChain, index);
     return callback(undefined, chain);
   });
 }

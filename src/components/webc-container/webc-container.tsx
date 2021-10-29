@@ -79,14 +79,14 @@ export class WebcContainer {
     if (hasInheritedModel) {
       const chainPrefix = await promisifyEventEmit(this.getChainPrefix);
       this.chain = mergeChains(chainPrefix, this.chain);
-      //const chain = this.chain ? this.chain.slice(1) : null;
 
       try {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
-        //temporary fix - prevent undefined model on "@" chains in data-for cases
-        //chain does not contain the array index in data-for cases
-        //this.controllerInstance = await this.loadController(controllerElement, history, model.getChainValue(chain), translationModel);
+
+        const chain = this.chain ? this.chain.slice(1) : null;
+        model = model.getChainValue(chain);
+
         this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
       } catch (error) {
         console.error(error);
@@ -143,7 +143,7 @@ export class WebcContainer {
     setTimeout(() => {
       if (!document.body.contains(this.controllerElement)) {
         this.controllerInstance?.disconnectedCallback();
-        //prevent cleaning models change callbacks that are shared with current controller instance
+        // prevent cleaning models change callbacks that are shared with current controller instance
         if (!this.chain) {
           this.controllerInstance?.model?.cleanReferencedChangeCallbacks();
         }
@@ -182,7 +182,7 @@ export class WebcContainer {
 
   // It resolves "this.element" from any type of WebCardinal Controller
   private resolveControllerElement(): [Element, Element] {
-    let target = this.host as HTMLElement;
+    const target = this.host as HTMLElement;
 
     if (this.disableContainer) {
       return [target.parentElement, target];

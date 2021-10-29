@@ -10,15 +10,13 @@
   "dependencies": [
     "webc-app-container",
     "webc-app-menu",
-    "webc-app-error-toast",
-    "webc-component"
+    "webc-app-error-toast"
   ],
   "dependencyGraph": {
     "webc-app-root": [
       "webc-app-container",
       "webc-app-menu",
-      "webc-app-error-toast",
-      "webc-component"
+      "webc-app-error-toast"
     ],
     "webc-app-container": [
       "webc-app-router"

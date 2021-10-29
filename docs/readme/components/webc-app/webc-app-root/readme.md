@@ -29,7 +29,6 @@
 - [webc-app-container](../webc-app-container)
 - [webc-app-menu](../webc-app-menu/webc-app-menu)
 - [webc-app-error-toast](../webc-app-error-toast)
-- [webc-component](../../webc-component)
 
 ### Graph
 ```mermaid
@@ -37,7 +36,6 @@ graph TD;
   webc-app-root --> webc-app-container
   webc-app-root --> webc-app-menu
   webc-app-root --> webc-app-error-toast
-  webc-app-root --> webc-component
   webc-app-container --> webc-app-router
   webc-app-router --> stencil-route
   webc-app-router --> stencil-router

@@ -1,16 +1,20 @@
-import { Component, Host, h, Prop, Event, EventEmitter, Method, Watch } from '@stencil/core';
+import type { EventEmitter } from '@stencil/core';
+import { Component, Host, h, Prop, Event, Method, Watch } from '@stencil/core';
+
 import {
   FOR_ATTRIBUTE,
   FOR_OPTIONS,
   FOR_EVENTS,
   FOR_CONTENT_REPLACED_EVENT,
   FOR_CONTENT_UPDATED_EVENT,
+  FOR_TEMPLATE_SIZE,
   MODEL_CHAIN_PREFIX,
 } from '../../constants';
 import { HostElement } from '../../decorators';
 import { BindingService, ComponentListenersService } from '../../services';
 import { isElementNode, isTextNode } from '../../services/BindingService/binding-service-utils';
 import { promisifyEventEmit } from '../../utils';
+
 import { getPagination } from './webc-datatable.utils';
 
 const DATA_SORTABLE_STYLES = `
@@ -170,7 +174,7 @@ export class WebcDatatable {
         if (i === pageIndex) {
           result.push(
             // @ts-ignore
-            <button active part="pagination-button pagination-button--active" disabled>
+            <button active part='pagination-button pagination-button--active' disabled>
               {i}
             </button>,
           );
@@ -178,7 +182,7 @@ export class WebcDatatable {
         }
 
         result.push(
-          <button part="pagination-button" onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
+          <button part='pagination-button' onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
             {i}
           </button>,
         );
@@ -192,7 +196,7 @@ export class WebcDatatable {
     if (numberOfPages !== 1) {
       result.unshift(
         <button
-          part="pagination-button pagination-button--previous"
+          part='pagination-button pagination-button--previous'
           disabled={pageIndex === 1}
           onClick={() => this.dataSource.goToPreviousPage()}
         >
@@ -202,7 +206,7 @@ export class WebcDatatable {
 
       result.push(
         <button
-          part="pagination-button pagination-button--next"
+          part='pagination-button pagination-button--next'
           disabled={pageIndex === numberOfPages}
           onClick={() => this.dataSource.goToNextPage()}
         >
@@ -246,7 +250,7 @@ export class WebcDatatable {
     const dataTable = document.createElement('div');
     dataTable.setAttribute('slot', 'data');
     dataTable.classList.add('webc-datatable--container');
-    dataTable.setAttribute('data-for-children-count', `${this.childrenCount}`);
+    dataTable.setAttribute(FOR_TEMPLATE_SIZE, `${this.childrenCount}`);
     dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
     dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}`);
     dataTable.append(...data);
@@ -305,15 +309,15 @@ export class WebcDatatable {
     const createSlot = (slot) => Object.assign(document.createElement('slot'), { name: slot });
     const injectSlot = (slot) => {
       const beforeSlot = getSlot('before');
-      beforeSlot.insertAdjacentElement("afterend", createSlot(slot));
-    }
+      beforeSlot.insertAdjacentElement('afterend', createSlot(slot));
+    };
 
     const dataSlot = getSlot('data');
 
     if (!data || data.length === 0) {
       dataSlot?.remove();
       if (!getSlot('no-data')) {
-        injectSlot('no-data')
+        injectSlot('no-data');
       }
       this.hidePagination = true;
       this.model.data = [];
@@ -342,15 +346,15 @@ export class WebcDatatable {
   render() {
     return this.dataSource ? (
       <Host>
-        <slot name="before" />
-        <slot name="data" />
+        <slot name='before' />
+        <slot name='data' />
         {this.hidePagination ? null : (
-          <div part="pagination" class="pagination">
+          <div part='pagination' class='pagination'>
             {this.renderPagination()}
           </div>
         )}
-        <slot name="footer" />
-        <slot name="after" />
+        <slot name='footer' />
+        <slot name='after' />
       </Host>
     ) : null;
   }

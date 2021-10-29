@@ -28,9 +28,6 @@
   "webc-app-router": {
     "source": "@webcardinal/core"
   },
-  "webc-component": {
-    "source": "@webcardinal/core"
-  },
   "webc-container": {
     "source": "@webcardinal/core"
   },

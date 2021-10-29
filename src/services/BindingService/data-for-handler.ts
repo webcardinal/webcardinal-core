@@ -14,9 +14,13 @@ import {
   bindElementAttributes,
   createDomMap,
   diffDomMap,
-  getCompleteChain, listenForPrefixChainEvents, removeChangeHandler,
+  getCompleteChain,
+  listenForPrefixChainEvents,
+  removeChangeHandler,
   removeElementChildNodes,
-  removeSlotInfoFromElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
+  removeSlotInfoFromElement,
+  setElementChainChangeHandler,
+  setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -54,13 +58,13 @@ export function handleDataForAttributePresence(
 
   const areEventsActivated = forOptions.includes(FOR_EVENTS);
   const isOptimisticMode = forOptions.includes(FOR_OPTIMISTIC);
-  let isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
+  const isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
 
   const noDataTemplates = [];
   const templates: ChildNode[] = [];
 
-  //Event delegation:Custom handling on the parent instead of using ComponentsListenerService for each child
-  listenForPrefixChainEvents(element,completeChain);
+  // Event delegation: Custom handling on the parent instead of using ComponentsListenerService for each child
+  listenForPrefixChainEvents(element, completeChain);
 
   while (element.childNodes.length > 0) {
     const firstChild = element.childNodes[0];
@@ -69,7 +73,7 @@ export function handleDataForAttributePresence(
     } else {
       templates.push(firstChild);
     }
-    removeChangeHandler(firstChild,model);
+    removeChangeHandler(firstChild, model);
     firstChild.remove();
   }
 
@@ -150,7 +154,7 @@ export function handleDataForAttributePresence(
     for (let index = dataForAttributeModelValueLength; index < existingNodes.length; index++) {
       const nodes = existingNodes[index];
       nodes.forEach(node => {
-        removeElementChildNodes(node,model);
+        removeElementChildNodes(node, model);
         node.remove();
       });
     }
@@ -195,17 +199,16 @@ export function handleDataForAttributePresence(
   renderTemplate();
 
   // initial binding
-  //   bindElementChangeToModel(element, model, completeChain);
   bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
   if (enableTranslations) {
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  const modelChangeHandler =  ({ targetChain }) => {
+  const modelChangeHandler = ({ targetChain }) => {
     // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
     const forceRefresh = completeChain === targetChain;
     updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
-  }
+  };
   model.onChange(completeChain, modelChangeHandler);
   setElementChainChangeHandler(element, completeChain, modelChangeHandler);
 
@@ -215,6 +218,6 @@ export function handleDataForAttributePresence(
     };
 
     model.onChangeExpressionChain(completeChain, expressionChangeHandler);
-    setElementExpressionChangeHandler(element, completeChain, expressionChangeHandler)
+    setElementExpressionChangeHandler(element, completeChain, expressionChangeHandler);
   }
 }
