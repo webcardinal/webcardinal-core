@@ -84,8 +84,8 @@ export class WebcContainer {
         model = await promisifyEventEmit(this.getModelEvent);
         translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
 
-        const chain = this.chain ? this.chain.slice(1) : null;
-        model = model.getChainValue(chain);
+        // const chain = this.chain ? this.chain.slice(1) : null;
+        // model = model.getChainValue(chain);
 
         this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
       } catch (error) {
