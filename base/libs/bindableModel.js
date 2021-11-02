@@ -486,105 +486,105 @@ class PskBindableModel {
             }
 
             let isRoot = !parentChain;
-            let notify, onChange,offChange, getChainValue, setChainValue, cleanReferencedChangeCallbacks;
-            if (isRoot) {
-                notify = function(changedChain) {
+            let notify, onChange, offChange, getChainValue, setChainValue, cleanReferencedChangeCallbacks;
 
-                    function getRelatedChains(changedChain) {
-                        if (typeof changedChain !== 'string') {
-                            changedChain = `${changedChain}`;
-                        }
-                        let chainsRelatedSet = new Set();
-                        chainsRelatedSet.add(WILDCARD);
-                        let chainSequence = changedChain.split(CHAIN_SEPARATOR).map(el => el.trim());
+            notify = function (changedChain) {
 
-                        let chainPrefix = "";
-                        for (let i = 0; i < chainSequence.length; i++) {
-                            if (i !== 0) {
-                                chainPrefix += CHAIN_SEPARATOR + chainSequence[i];
-                            } else {
-                                chainPrefix = chainSequence[i];
-                            }
-                            chainsRelatedSet.add(chainPrefix);
-                        }
+              function getRelatedChains(changedChain) {
+                if (typeof changedChain !== 'string') {
+                  changedChain = `${changedChain}`;
+                }
+                let chainsRelatedSet = new Set();
+                chainsRelatedSet.add(WILDCARD);
+                let chainSequence = changedChain.split(CHAIN_SEPARATOR).map(el => el.trim());
 
-                        observedChains.forEach((chain) => {
-                            if (chain.startsWith(changedChain)) {
-                                chainsRelatedSet.add(chain);
-                            }
-                        });
-
-                        return chainsRelatedSet;
-                    }
-
-                    let changedChains = getRelatedChains(changedChain);
-
-                    changedChains.forEach(chain => {
-                        SoundPubSub.publish(createChannelName(chain), {
-                            type: CHAIN_CHANGED,
-                            chain: chain,
-                            targetChain: changedChain
-                        });
-                    })
-                };
-
-                getChainValue = function(chain) {
-
-                    if (!chain) {
-                        return root;
-                    }
-
-                    let chainSequence = chain.split(CHAIN_SEPARATOR).map(el => el.trim());
-                    let reducer = (accumulator, currentValue) => {
-                        if (accumulator !== null && typeof accumulator !== 'undefined') {
-                            return accumulator[currentValue];
-                        }
-                        return undefined;
-                    };
-                    return chainSequence.reduce(reducer, root);
-                };
-
-                setChainValue = function(chain, value) {
-                    let chainSequence = chain.split(CHAIN_SEPARATOR).map(el => el.trim());
-
-                    let reducer = (accumulator, currentValue, index, array) => {
-                        if (accumulator !== null && typeof accumulator !== 'undefined') {
-                            if (index === array.length - 1) {
-                                accumulator[currentValue] = value;
-                                return true;
-                            }
-                            accumulator = accumulator[currentValue];
-                            return accumulator;
-                        }
-                        return undefined;
-                    };
-                    return chainSequence.reduce(reducer, root);
-                };
-
-                onChange = function(chain, callback) {
-                    observedChains.add(chain);
-                    SoundPubSub.subscribe(createChannelName(chain), callback);
-                    referencedChangeCallbacks.push({chain:chain, callback:callback});
+                let chainPrefix = "";
+                for (let i = 0; i < chainSequence.length; i++) {
+                  if (i !== 0) {
+                    chainPrefix += CHAIN_SEPARATOR + chainSequence[i];
+                  } else {
+                    chainPrefix = chainSequence[i];
+                  }
+                  chainsRelatedSet.add(chainPrefix);
                 }
 
-                offChange = function (chain, callback){
-                    if (observedChains.has(chain)) {
-                        let index = referencedChangeCallbacks.findIndex(referenceChangeCallback => {
-                            return referenceChangeCallback.callback === callback
-                        })
-                        if (index !== -1) {
-                            referencedChangeCallbacks.splice(index, 1);
-                        }
-                        SoundPubSub.unsubscribe(createChannelName(chain), callback);
-                    }
+                observedChains.forEach((chain) => {
+                  if (chain.startsWith(changedChain)) {
+                    chainsRelatedSet.add(chain);
+                  }
+                });
+
+                return chainsRelatedSet;
+              }
+
+              let changedChains = getRelatedChains(changedChain);
+
+              changedChains.forEach(chain => {
+                SoundPubSub.publish(createChannelName(chain), {
+                  type: CHAIN_CHANGED,
+                  chain: chain,
+                  targetChain: changedChain
+                });
+              })
+            };
+
+            getChainValue = function (chain) {
+
+              if (!chain) {
+                return root;
+              }
+
+              let chainSequence = chain.split(CHAIN_SEPARATOR).map(el => el.trim());
+              let reducer = (accumulator, currentValue) => {
+                if (accumulator !== null && typeof accumulator !== 'undefined') {
+                  return accumulator[currentValue];
                 }
-                cleanReferencedChangeCallbacks = function () {
-                    for (let i = 0; i < referencedChangeCallbacks.length; i++) {
-                        let {chain, callback} = referencedChangeCallbacks[i];
-                        offChange.call(this, chain, callback)
-                    }
+                return undefined;
+              };
+              return chainSequence.reduce(reducer, root);
+            };
+
+            setChainValue = function (chain, value) {
+              let chainSequence = chain.split(CHAIN_SEPARATOR).map(el => el.trim());
+
+              let reducer = (accumulator, currentValue, index, array) => {
+                if (accumulator !== null && typeof accumulator !== 'undefined') {
+                  if (index === array.length - 1) {
+                    accumulator[currentValue] = value;
+                    return true;
+                  }
+                  accumulator = accumulator[currentValue];
+                  return accumulator;
                 }
+                return undefined;
+              };
+              return chainSequence.reduce(reducer, root);
+            };
+
+            onChange = function (chain, callback) {
+              observedChains.add(chain);
+              SoundPubSub.subscribe(createChannelName(chain), callback);
+              referencedChangeCallbacks.push({chain:chain, callback:callback});
             }
+
+            offChange = function (chain, callback) {
+              if (observedChains.has(chain)) {
+                let index = referencedChangeCallbacks.findIndex(referenceChangeCallback => {
+                  return referenceChangeCallback.callback === callback
+                })
+                if (index !== -1) {
+                  referencedChangeCallbacks.splice(index, 1);
+                }
+                SoundPubSub.unsubscribe(createChannelName(chain), callback);
+              }
+            };
+
+            cleanReferencedChangeCallbacks = function () {
+              for (let i = 0; i < referencedChangeCallbacks.length; i++) {
+                let {chain, callback} = referencedChangeCallbacks[i];
+                offChange.call(this, chain, callback)
+              }
+            };
 
             function makeArrayGetter(parentChain) {
                 const PROXY_ROOT_METHODS = [
@@ -665,6 +665,36 @@ class PskBindableModel {
                             case "cleanReferencedChangeCallbacks":
                                 return cleanReferencedChangeCallbacks;
                         }
+                    } else {
+                      switch (prop) {
+                        case "onChange":
+                          return (scopedChain, ...props) => {
+                            const chain = extendChain(parentChain, scopedChain);
+                            return onChange(chain, ...props);
+                          }
+                        case "offChange":
+                          return (scopedChain, ...props) => {
+                            const chain = extendChain(parentChain, scopedChain);
+                            return offChange(chain, ...props);
+                          }
+                        case "notify":
+                          return (scopedChain, ...props) => {
+                            const chain = extendChain(parentChain, scopedChain);
+                            return notify(chain, ...props);
+                          }
+                        case "getChainValue":
+                          return (scopedChain, ...props) => {
+                            const chain = extendChain(parentChain, scopedChain);
+                            return getChainValue(chain, ...props);
+                          }
+                        case "setChainValue":
+                          return (scopedChain, ...props) => {
+                            const chain = extendChain(parentChain, scopedChain);
+                            return setChainValue(chain, ...props);
+                          }
+                        case "cleanReferencedChangeCallbacks":
+                          return cleanReferencedChangeCallbacks;
+                      }
                     }
 
                     if (prop === "__isProxy") {

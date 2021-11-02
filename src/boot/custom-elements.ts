@@ -231,9 +231,8 @@ export default function getCustomElementsAPI() {
             if (this.hasAttribute('controller')) {
               html = `
                 <webc-container
-                  controller='${this.getAttribute('controller')}'
-                  data-view-model='@' disable-container>
-                    ${html}
+                  controller='${this.getAttribute('controller')}' disable-container>
+                  ${html}
                 </webc-container>
               `;
             }

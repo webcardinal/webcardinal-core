@@ -205,11 +205,7 @@ export default class Controller {
       if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
         chain = chain.slice(1);
       }
-      if (chain) {
-        model = PskBindableModel.setModel(getValueFromModelByChain(_model, chain));
-      } else {
-        model = _model;
-      }
+      model = PskBindableModel.setModel(_model);
     }
 
     Object.defineProperty(this, 'model', {
