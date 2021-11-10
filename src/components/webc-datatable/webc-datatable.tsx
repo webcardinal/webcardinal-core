@@ -73,15 +73,17 @@ export class WebcDatatable {
 
   @Prop() dataSize: number | undefined;
 
-  @Prop() pageSize: number = 20;
+  @Prop() pageSize = 20;
 
-  @Prop() pageSizeDelta: number = 2;
+  @Prop() pageSizeDelta = 2;
 
-  @Prop() curentPageIndex: number = 0;
+  @Prop() curentPageIndex = 0;
 
-  @Prop() hidePagination: boolean = false;
+  @Prop({ mutable: true }) lastPageIndex = 0;
 
-  @Prop({ mutable: true }) templateChildrenCount: number = 0;
+  @Prop({ reflect: true }) hidePagination = false;
+
+  @Prop({ mutable: true }) templateChildrenCount = 0;
 
   /**
    * Through this event the model is received.
@@ -109,6 +111,9 @@ export class WebcDatatable {
   private dataSource;
   private model;
   private childrenCount = 0;
+  private bootConfig = {
+    hidePagination: false,
+  };
 
   private getTemplatesFromDOM = () => {
     const templates = {
@@ -164,7 +169,7 @@ export class WebcDatatable {
 
   private renderPagination = () => {
     const pageIndex = this.curentPageIndex + 1;
-    const numberOfPages = this.dataSize ? Math.ceil(this.dataSize / this.pageSize) : 1;
+    const numberOfPages = this.lastPageIndex;
 
     const result = [];
     const pagination = getPagination(pageIndex, numberOfPages, this.pageSizeDelta);
@@ -173,8 +178,9 @@ export class WebcDatatable {
       if (typeof i === 'number') {
         if (i === pageIndex) {
           result.push(
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            <button active part='pagination-button pagination-button--active' disabled>
+            <button active part="pagination-button pagination-button--active" disabled>
               {i}
             </button>,
           );
@@ -182,7 +188,7 @@ export class WebcDatatable {
         }
 
         result.push(
-          <button part='pagination-button' onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
+          <button part="pagination-button" onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
             {i}
           </button>,
         );
@@ -196,7 +202,7 @@ export class WebcDatatable {
     if (numberOfPages !== 1) {
       result.unshift(
         <button
-          part='pagination-button pagination-button--previous'
+          part="pagination-button pagination-button--previous"
           disabled={pageIndex === 1}
           onClick={() => this.dataSource.goToPreviousPage()}
         >
@@ -206,7 +212,7 @@ export class WebcDatatable {
 
       result.push(
         <button
-          part='pagination-button pagination-button--next'
+          part="pagination-button pagination-button--next"
           disabled={pageIndex === numberOfPages}
           onClick={() => this.dataSource.goToNextPage()}
         >
@@ -218,10 +224,30 @@ export class WebcDatatable {
     return result;
   };
 
+  private managePagination = () => {
+    this.model.pageNumbers = {
+      current: this.curentPageIndex + 1,
+      start: 1,
+      end: this.lastPageIndex,
+    };
+
+    if (this.hidePagination) {
+      return null;
+    }
+
+    return (
+      <div part='pagination' class='pagination'>
+        {this.renderPagination()}
+      </div>
+    );
+  };
+
   async componentWillLoad() {
     if (!this.host.isConnected) {
       return;
     }
+
+    this.bootConfig.hidePagination = this.hidePagination;
 
     this.dataSource = await this.getDataSourceFromModel();
     const translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
@@ -285,6 +311,10 @@ export class WebcDatatable {
     this.dataSource._renderPageAsync();
   }
 
+  async componentWillRender() {
+    this.lastPageIndex = this.dataSize ? Math.ceil(this.dataSize / this.pageSize) : 1;
+  }
+
   async connectedCallback() {
     if (this.listeners) {
       const { getModel, getTranslationModel, getParentChain } = this.listeners;
@@ -305,9 +335,9 @@ export class WebcDatatable {
 
   @Method()
   async fillCurrentPage(data) {
-    const getSlot = (slot) => this.host.shadowRoot.querySelector(`slot[name="${slot}"]`) as HTMLSlotElement | undefined;
-    const createSlot = (slot) => Object.assign(document.createElement('slot'), { name: slot });
-    const injectSlot = (slot) => {
+    const getSlot = slot => this.host.shadowRoot.querySelector(`slot[name="${slot}"]`) as HTMLSlotElement | undefined;
+    const createSlot = slot => Object.assign(document.createElement('slot'), { name: slot });
+    const injectSlot = slot => {
       const beforeSlot = getSlot('before');
       beforeSlot.insertAdjacentElement('afterend', createSlot(slot));
     };
@@ -329,7 +359,9 @@ export class WebcDatatable {
       injectSlot('data');
     }
 
-    this.hidePagination = false;
+    if (!this.bootConfig.hidePagination) {
+      this.hidePagination = false;
+    }
     this.model.data = data;
   }
 
@@ -346,15 +378,11 @@ export class WebcDatatable {
   render() {
     return this.dataSource ? (
       <Host>
-        <slot name='before' />
-        <slot name='data' />
-        {this.hidePagination ? null : (
-          <div part='pagination' class='pagination'>
-            {this.renderPagination()}
-          </div>
-        )}
-        <slot name='footer' />
-        <slot name='after' />
+        <slot name="before" />
+        <slot name="data" />
+        {this.managePagination()}
+        <slot name="footer" />
+        <slot name="after" />
       </Host>
     ) : null;
   }

@@ -144,6 +144,7 @@ export namespace Components {
         "dataSize": number | undefined;
         "fillCurrentPage": (data: any) => Promise<void>;
         "hidePagination": boolean;
+        "lastPageIndex": number;
         "pageSize": number;
         "pageSizeDelta": number;
         "templateChildrenCount": number;
@@ -550,6 +551,7 @@ declare namespace LocalJSX {
         "curentPageIndex"?: number;
         "dataSize"?: number | undefined;
         "hidePagination"?: boolean;
+        "lastPageIndex"?: number;
         /**
           * Through this event the model is received.
          */

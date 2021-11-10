@@ -85,13 +85,30 @@
       "type": "boolean",
       "mutable": false,
       "attr": "hide-pagination",
-      "reflectToAttr": false,
+      "reflectToAttr": true,
       "docs": "",
       "docsTags": [],
       "default": "false",
       "values": [
         {
           "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "lastPageIndex",
+      "type": "number",
+      "mutable": true,
+      "attr": "last-page-index",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "default": "0",
+      "values": [
+        {
+          "type": "number"
         }
       ],
       "optional": false,

@@ -79,6 +79,14 @@ export default class DataSource {
   }
 
   /**
+   * @returns {number} pageIndex - last index from pagination
+   */
+  getLastPageIndex() {
+    const dataTableElement = this.getElement();
+    return dataTableElement.lastPageIndex;
+  }
+
+  /**
    * @param startOffset
    * @param dataLengthForCurrentPage
    *
@@ -105,12 +113,10 @@ export default class DataSource {
   }
 
   async goToPageByIndex(pageIndex = 0) {
-    await this._renderPageAsync(pageIndex);
+    if (pageIndex >= 0) {
+      await this._renderPageAsync(pageIndex);
+    }
   }
-
-  // TODO
-
-  changeFilter() {}
 
   // Private methods
   // Those are used for coupling between DataSource and webc-datatable
