@@ -391,6 +391,7 @@ const compactor = function(message, channel) {
 SoundPubSub.registerCompactor(CHAIN_CHANGED, compactor);
 
 let modelCounter = 0;
+const expressions = {};
 
 class PskBindableModel {
 
@@ -399,8 +400,6 @@ class PskBindableModel {
         let targetPrefix = MODEL_PREFIX + CHAIN_SEPARATOR + modelCounter + CHAIN_SEPARATOR;
         let observedChains = new Set();
         let referencedChangeCallbacks = [];
-        const expressions = {};
-
         modelCounter++;
 
         function extendChain(parentChain, currentChain) {
