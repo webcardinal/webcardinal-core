@@ -25,6 +25,10 @@ const tagNames = new Set();
 const components = {};
 const { join } = URLHelper;
 
+async function timeoutAsync(time) {
+  return new Promise(resolve => setTimeout(resolve, time));
+}
+
 async function getTemplate(templatePath) {
   const { basePath } = window.WebCardinal;
   const skin = getSkinFromState();
@@ -295,11 +299,7 @@ export default function getCustomElementsAPI() {
           }
 
           async componentOnReady() {
-            async function timeoutAsync(time) {
-              return new Promise(resolve => setTimeout(resolve, time));
-            }
-
-            while (!this.hasAttribute(HYDRATED)) {
+            while (!this.classList.contains(HYDRATED)) {
               await timeoutAsync(10);
             }
           }
