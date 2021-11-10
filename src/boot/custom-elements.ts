@@ -121,6 +121,7 @@ export default function getCustomElementsAPI() {
           private translationModel;
           private parentChain;
           private listeners: ComponentListenersService;
+          private initialHTML;
 
           constructor() {
             super();
@@ -242,7 +243,12 @@ export default function getCustomElementsAPI() {
                 this.setAttribute('shadow', '');
               }
 
+              if (!this.initialHTML) {
+                this.initialHTML = this.innerHTML;
+              }
+
               this.shadowRoot.innerHTML = html;
+              this.innerHTML = this.initialHTML;
 
               BindingService.bindChildNodes(this.shadowRoot, {
                 model,
