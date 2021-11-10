@@ -13,6 +13,7 @@
 | `curentPageIndex`       | `curent-page-index`       |             | `number`  | `0`         |
 | `dataSize`              | `data-size`               |             | `number`  | `undefined` |
 | `hidePagination`        | `hide-pagination`         |             | `boolean` | `false`     |
+| `lastPageIndex`         | `last-page-index`         |             | `number`  | `0`         |
 | `pageSize`              | `page-size`               |             | `number`  | `20`        |
 | `pageSizeDelta`         | `page-size-delta`         |             | `number`  | `2`         |
 | `templateChildrenCount` | `template-children-count` |             | `number`  | `0`         |
