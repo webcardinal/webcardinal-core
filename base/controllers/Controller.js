@@ -11,6 +11,7 @@ import {
 } from '../../src';
 import PskBindableModel from '../libs/bindableModel.js';
 
+const WebCardinal = window.WebCardinal;
 const virtualHistory = new Set();
 let isLocationListenerActive = false;
 
