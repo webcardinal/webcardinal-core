@@ -83,15 +83,15 @@ export class WebcAppLoader {
       return;
     }
 
-    if (window.WebCardinal.state.skin !== this.skin) {
-      this.skin = window.WebCardinal.state.skin;
-    }
-
     await this.activateHooks();
 
     window.WebCardinal.history = this.history;
     const initialLocation = this.history.location.pathname;
     await this.callHook(HOOK_TYPE.BEFORE_PAGE);
+    if (window.WebCardinal.state.skin !== this.skin) {
+      this.skin = window.WebCardinal.state.skin;
+    }
+
     const finalLocation = this.history.location.pathname;
     if (initialLocation !== finalLocation) {
       this.loader = 'none';
@@ -99,10 +99,10 @@ export class WebcAppLoader {
     }
 
     await this.setSkinContext();
-    await this.setPageContent();
     this.watchSkin = true;
     this.routingState = await resolveRoutingState(this);
     await this.setTranslationsContext();
+    await this.setPageContent();
     this.setWebCardinalState();
   }
 
@@ -122,8 +122,8 @@ export class WebcAppLoader {
 
     this.content = '';
     await this.setSkinContext();
-    await this.setPageContent();
     await this.setTranslationsContext();
+    await this.setPageContent();
     this.setWebCardinalState();
   }
 
