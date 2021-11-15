@@ -31,6 +31,7 @@ export const TAG_MODEL_FUNCTION_PROPERTY = 'getDataTagModel';
 // data-for
 export const FOR_ATTRIBUTE = 'data-for';
 export const FOR_NO_DATA_SLOT_NAME = 'no-data';
+export const FOR_LOADIBNG_SLOT_NAME = 'loading';
 export const FOR_OPTIONS = `${FOR_ATTRIBUTE}-options`;
 export const FOR_EVENTS = 'events';
 export const FOR_OPTIMISTIC = 'optimistic';
@@ -43,6 +44,7 @@ export const FOR_TEMPLATE_SIZE = 'data-for-template-size';
 export const IF_ATTRIBUTE = 'data-if';
 export const IF_TRUE_CONDITION_SLOT_NAME = 'true';
 export const IF_FALSE_CONDITION_SLOT_NAME = 'false';
+export const IF_LOADIBNG_SLOT_NAME = 'loading';
 
 // skin.css
 export const ID_DEFAULT_SKIN_CSS = 'webc-skin-default-stylesheet';

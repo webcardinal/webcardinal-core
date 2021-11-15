@@ -9,6 +9,7 @@ import {
   FOR_EVENTS,
   FOR_CONTENT_REPLACED_EVENT,
   FOR_CONTENT_UPDATED_EVENT,
+  FOR_LOADIBNG_SLOT_NAME,
 } from '../../constants';
 import {
   bindElementAttributes,
@@ -26,6 +27,14 @@ import {
 import type { BindElementOptions } from './binding-service-utils';
 import { isElementNode } from './binding-service-utils';
 
+function getForOptions(element: Element) {
+  return (element.getAttribute(FOR_OPTIONS) || '').split(' ').filter(String);
+}
+
+function isForSlot(node: ChildNode, slot: string) {
+  return isElementNode(node) && (node as Element).getAttribute('slot') === slot;
+}
+
 export function handleDataForAttributePresence(
   element: Element,
   bindElement: (element: Element | ChildNode, options: BindElementOptions) => void,
@@ -39,63 +48,58 @@ export function handleDataForAttributePresence(
     console.warn(`Attribute "${FOR_ATTRIBUTE}" doesn't start with the chain prefix!`);
     return;
   }
-
   dataForAttributeChain = dataForAttributeChain.slice(1);
+
   const completeChain = getCompleteChain(chainPrefix, dataForAttributeChain);
-
-  let dataForAttributeModelValue = model.getChainValue(completeChain);
-  if (!Array.isArray(dataForAttributeModelValue)) {
-    console.error(
-      `Attribute "${FOR_ATTRIBUTE}" (${dataForAttributeChain}) must be a chain to an array in the model!`,
-      element,
-    );
-    return;
-  }
-
-  let dataForAttributeModelValueLength = dataForAttributeModelValue.length;
-
-  const forOptions = (element.getAttribute(FOR_OPTIONS) || '').split(' ').filter(String);
-
+  const forOptions = getForOptions(element);
   const areEventsActivated = forOptions.includes(FOR_EVENTS);
   const isOptimisticMode = forOptions.includes(FOR_OPTIMISTIC);
   const isWrapperRerenderMode = forOptions.includes(FOR_WRAPPER_RERENDER);
-
   const noDataTemplates = [];
+  const loadingTemplates = [];
   const templates: ChildNode[] = [];
 
-  // Event delegation: Custom handling on the parent instead of using ComponentsListenerService for each child
-  listenForPrefixChainEvents(element, completeChain);
-
-  while (element.childNodes.length > 0) {
-    const firstChild = element.childNodes[0];
-    if (isElementNode(firstChild) && (firstChild as Element).getAttribute('slot') === FOR_NO_DATA_SLOT_NAME) {
-      noDataTemplates.push(firstChild);
-    } else {
-      templates.push(firstChild);
-    }
-    removeChangeHandler(firstChild, model);
-    firstChild.remove();
-  }
-
+  let dataForAttributeModelValue, dataForAttributeModelValueLength;
   let existingNodes = [];
 
-  const renderTemplate = () => {
-    if (!dataForAttributeModelValueLength) {
-      removeElementChildNodes(element, model);
-      noDataTemplates.forEach(templateNode => {
-        const childElement = templateNode.cloneNode(true) as HTMLElement;
-        // when nesting multiple data-for attributes, the inner slots will have the hidden property set automatically
-        removeSlotInfoFromElement(childElement);
+  const updateDataForAttributeModel = newValue => {
+    if (Array.isArray(newValue)) {
+      dataForAttributeModelValue = newValue;
+      dataForAttributeModelValueLength = newValue.length;
+    } else {
+      dataForAttributeModelValue = undefined;
+      dataForAttributeModelValueLength = -1;
+    }
+  };
 
-        element.appendChild(childElement);
-        bindElement(childElement, {
-          model,
-          translationModel,
-          chainPrefix: chainPrefix,
-          enableTranslations,
-          recursive: true,
-        });
+  const renderSlotFromTemplate = slots => {
+    slots.forEach(templateNode => {
+      const childElement = templateNode.cloneNode(true) as HTMLElement;
+
+      // when nesting multiple data-for attributes, the inner slots will have the hidden property set automatically
+      removeSlotInfoFromElement(childElement);
+
+      element.appendChild(childElement);
+      bindElement(childElement, {
+        model,
+        translationModel,
+        chainPrefix: chainPrefix,
+        enableTranslations,
+        recursive: true,
       });
+    });
+  };
+
+  const renderTemplate = () => {
+    if (dataForAttributeModelValueLength === -1) {
+      removeElementChildNodes(element, model);
+      renderSlotFromTemplate(loadingTemplates);
+      return;
+    }
+
+    if (dataForAttributeModelValueLength === 0) {
+      removeElementChildNodes(element, model);
+      renderSlotFromTemplate(noDataTemplates);
       return;
     }
 
@@ -162,23 +166,24 @@ export function handleDataForAttributePresence(
   };
 
   const updateAndRenderTemplate = (newValue, forceRefresh = false) => {
-    if (!Array.isArray(newValue)) {
-      console.error(`Attribute "${FOR_ATTRIBUTE}" must be an array in the model!`);
-      newValue = [];
-    }
+    const newLength = Array.isArray(newValue) ? newValue.length : -1;
+    const hasContentLengthChanged = dataForAttributeModelValueLength !== newLength;
 
-    newValue = newValue || [];
-    const hasContentLengthChanged = dataForAttributeModelValueLength !== newValue.length;
-
-    dataForAttributeModelValue = newValue;
-    dataForAttributeModelValueLength = dataForAttributeModelValue.length;
+    updateDataForAttributeModel(newValue);
 
     if (isOptimisticMode) {
       // in optimistic mode there is no need to cleanup the existing content,
       // since there is an optimized comparison process that is being executed instead
       renderTemplate();
+
       if (areEventsActivated) {
-        element.dispatchEvent(new CustomEvent(FOR_CONTENT_UPDATED_EVENT));
+        element.dispatchEvent(
+          new CustomEvent(FOR_CONTENT_UPDATED_EVENT, {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+          }),
+        );
       }
       return;
     }
@@ -190,11 +195,44 @@ export function handleDataForAttributePresence(
       removeElementChildNodes(element, model);
       existingNodes = [];
       renderTemplate();
+
       if (areEventsActivated) {
-        element.dispatchEvent(new CustomEvent(FOR_CONTENT_REPLACED_EVENT));
+        element.dispatchEvent(
+          new CustomEvent(FOR_CONTENT_REPLACED_EVENT, {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+          }),
+        );
       }
+      return;
     }
   };
+
+  const modelChangeHandler = ({ targetChain }) => {
+    // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
+    const forceRefresh = completeChain === targetChain;
+    updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
+  };
+
+  updateDataForAttributeModel(model.getChainValue(completeChain));
+
+  // Event delegation: Custom handling on the parent instead of using ComponentsListenerService for each child
+  listenForPrefixChainEvents(element, completeChain);
+
+  // fill all template arrays: templates, loadingTemplates, noDataTemplates
+  while (element.childNodes.length > 0) {
+    const child = element.childNodes[0];
+    if (isForSlot(child, FOR_NO_DATA_SLOT_NAME)) {
+      noDataTemplates.push(child);
+    } else if (isForSlot(child, FOR_LOADIBNG_SLOT_NAME)) {
+      loadingTemplates.push(child);
+    } else {
+      templates.push(child);
+    }
+    removeChangeHandler(child, model);
+    child.remove();
+  }
 
   renderTemplate();
 
@@ -204,11 +242,6 @@ export function handleDataForAttributePresence(
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
 
-  const modelChangeHandler = ({ targetChain }) => {
-    // if completeChain === targetChain then it means the array has been changed by an array method (e.g. splice)
-    const forceRefresh = completeChain === targetChain;
-    updateAndRenderTemplate(model.getChainValue(completeChain), forceRefresh);
-  };
   model.onChange(completeChain, modelChangeHandler);
   setElementChainChangeHandler(element, completeChain, modelChangeHandler);
 

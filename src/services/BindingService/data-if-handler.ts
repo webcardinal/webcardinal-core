@@ -1,6 +1,7 @@
 import {
   IF_ATTRIBUTE,
   IF_FALSE_CONDITION_SLOT_NAME,
+  IF_LOADIBNG_SLOT_NAME,
   IF_TRUE_CONDITION_SLOT_NAME,
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
@@ -10,7 +11,9 @@ import {
   getCompleteChain,
   getSlots,
   removeElementChildNodes,
-  removeSlotInfoFromElement, setElementChainChangeHandler, setElementExpressionChangeHandler,
+  removeSlotInfoFromElement,
+  setElementChainChangeHandler,
+  setElementExpressionChangeHandler,
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
@@ -34,9 +37,11 @@ export function handleDataIfAttributePresence(
 
   const children = Array.from(element.children);
 
-  let conditionValue;
+  let conditionValue: string | boolean | undefined = 'webcardinal:data-if:undefined';
+
   let trueSlotElements: ChildNode[] = getSlots(children, IF_TRUE_CONDITION_SLOT_NAME);
   const falseSlotElements = getSlots(children, IF_FALSE_CONDITION_SLOT_NAME);
+  const loadingSlotElements = getSlots(children, IF_LOADIBNG_SLOT_NAME);
 
   if (!trueSlotElements.length && !falseSlotElements.length) {
     trueSlotElements = Array.from(element.childNodes);
@@ -44,15 +49,51 @@ export function handleDataIfAttributePresence(
 
   removeElementChildNodes(element, model);
 
+  const parseConditionValue = async (value: unknown): Promise<boolean | undefined> => {
+    switch (typeof value) {
+      case 'boolean':
+        return value;
+      case 'function': {
+        if (value instanceof Promise) {
+          try {
+            return await value();
+          } catch (error) {
+            console.error('data-if condition async function failed!', error);
+            return undefined;
+          }
+        }
+
+        try {
+          return value();
+        } catch (error) {
+          console.error('data-if condition function failed!', error);
+          return undefined;
+        }
+      }
+      default:
+        return undefined;
+    }
+  };
+
   const setVisibleContent = () => {
-    const visibleSlots = conditionValue ? trueSlotElements : falseSlotElements;
+    let visibleSlots;
+    switch (conditionValue) {
+      case true:
+        visibleSlots = trueSlotElements;
+        break;
+      case false:
+        visibleSlots = falseSlotElements;
+        break;
+      default:
+        visibleSlots = loadingSlotElements;
+      }
+
     removeElementChildNodes(element, model);
+
     visibleSlots.forEach(slot => {
       const slotElement = slot.cloneNode(true) as HTMLElement;
       removeSlotInfoFromElement(slotElement);
-
       element.appendChild(slotElement);
-
       bindElement(slotElement, {
         model,
         translationModel,
@@ -64,21 +105,12 @@ export function handleDataIfAttributePresence(
   };
 
   const setExtractedConditionValue = async extractedConditionValue => {
-    let value;
-    if (extractedConditionValue instanceof Promise) {
-      try {
-        value = await extractedConditionValue;
-      } catch (error) {
-        console.error('data-if condition promise failed', error);
-        value = false;
-      }
-    } else {
-      value = !!extractedConditionValue; // ensure we have a boolean value
-    }
+    const value = await parseConditionValue(extractedConditionValue);
 
     // the value has changed so the visible content must be updated
     const mustUpdateVisibleContent = conditionValue !== value;
     conditionValue = value;
+
     if (mustUpdateVisibleContent) {
       setVisibleContent();
     }
@@ -86,9 +118,8 @@ export function handleDataIfAttributePresence(
 
   setExtractedConditionValue(model.getChainValue(completeConditionChain));
 
-  // initial binding
-  //   bindElementChangeToModel(element, model, completeConditionChain);
   bindElementAttributes(element, model, MODEL_CHAIN_PREFIX, chainPrefix);
+
   if (enableTranslations) {
     bindElementAttributes(element, translationModel, TRANSLATION_CHAIN_PREFIX, chainPrefix);
   }
@@ -98,15 +129,13 @@ export function handleDataIfAttributePresence(
     const expressionChangeHandler = () => {
       setExtractedConditionValue(model.evaluateExpression(completeConditionChain));
     };
-
     model.onChangeExpressionChain(completeConditionChain, expressionChangeHandler);
     setElementExpressionChangeHandler(element, completeConditionChain, expressionChangeHandler);
-  }
-  else{
+  } else {
     const chainChangeHandler = () => {
       setExtractedConditionValue(model.getChainValue(completeConditionChain));
     };
     model.onChange(completeConditionChain, chainChangeHandler);
-    setElementChainChangeHandler(element, completeConditionChain, chainChangeHandler)
+    setElementChainChangeHandler(element, completeConditionChain, chainChangeHandler);
   }
 }
