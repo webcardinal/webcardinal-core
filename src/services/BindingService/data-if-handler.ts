@@ -53,22 +53,19 @@ export function handleDataIfAttributePresence(
     switch (typeof value) {
       case 'boolean':
         return value;
-      case 'function': {
+      case 'object': {
         if (value instanceof Promise) {
           try {
-            return await value();
+            // set loading state before promise awaiting
+            conditionValue = undefined;
+            setVisibleContent();
+
+            return await value;
           } catch (error) {
             console.error('data-if condition async function failed!', error);
-            return undefined;
           }
         }
-
-        try {
-          return value();
-        } catch (error) {
-          console.error('data-if condition function failed!', error);
-          return undefined;
-        }
+        return undefined;
       }
       default:
         return undefined;
