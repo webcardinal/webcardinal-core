@@ -111,7 +111,7 @@ export default class ApplicationController {
           continue;
         }
         if (rawPage.name.includes('/')) {
-          console.warn(`Page name must not include '/' (in "${rawPages.name}")`);
+          console.warn(`Page name must not include '/' (in "${rawPage.name}")`);
           continue;
         }
         page.name = rawPage.name;
