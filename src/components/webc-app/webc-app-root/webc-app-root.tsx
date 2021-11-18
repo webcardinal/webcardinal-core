@@ -1,16 +1,13 @@
-import { Component, Event, EventEmitter, h, Prop, State, Watch } from '@stencil/core';
-import { HTMLStencilElement } from '@stencil/core/internal';
+import type { EventEmitter} from '@stencil/core';
+import { Component, Event, h, Prop, Watch } from '@stencil/core';
+import type { HTMLStencilElement } from '@stencil/core/internal';
 
-import type { RouterHistory } from '@stencil/router';
-import { injectHistory } from '@stencil/router';
-
+import ApplicationController from '../../../boot/ApplicationController';
+import { CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT, CP_WEBC_APP_ROOT_MODE, HOOK_TYPE } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { promisifyEventEmit } from '../../../utils';
 
-import ApplicationController from '../../../boot/ApplicationController';
-
 import { subscribeToLogs } from './webc-app-root.utils';
-import { CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT, CP_WEBC_APP_ROOT_MODE, HOOK_TYPE } from '../../../constants';
 
 @Component({
   tag: 'webc-app-root',
@@ -35,14 +32,12 @@ export class WebcAppRoot {
   /**
    * It decides if the header is disabled or not.
    */
-  @Prop({ reflect: true }) disableHeader: boolean = false;
+  @Prop({ reflect: true }) disableHeader = false;
 
   /**
    * It decides if the spinner of application should be automatically hidden
    */
-  @Prop({ reflect: true }) disableLoaderHiding: boolean = false;
-
-  @State() history: RouterHistory;
+  @Prop({ reflect: true }) disableLoaderHiding = false;
 
   /**
    * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
@@ -217,4 +212,3 @@ export class WebcAppRoot {
   }
 }
 
-injectHistory(WebcAppRoot);
