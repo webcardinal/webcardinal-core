@@ -1,3 +1,5 @@
+import { HYDRATED } from "../../../constants";
+
 export async function checkPageExistence(pageSrc) {
   try {
     // method 'head' is not supported by APIHUB
@@ -28,3 +30,18 @@ export async function loadPageContent(pageSrc) {
     return null;
   }
 }
+
+export function emitCompleteEventForSSAPP() {
+  if (!window.frameElement) {
+    return;
+  }
+  const iframeIdentity = window.frameElement.getAttribute('identity');
+  const isHydrated = window.frameElement.classList.contains(HYDRATED);
+  if (iframeIdentity && !isHydrated) {
+    window.frameElement.classList.add(HYDRATED);
+    window.parent.document.dispatchEvent(new CustomEvent(iframeIdentity, {
+      detail: { status: 'completed' }
+    }));
+  }
+}
+

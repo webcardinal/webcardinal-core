@@ -10,7 +10,7 @@ import type { HookType, RoutingState, WebcAppLoaderType } from '../../../interfa
 import { ControllerTranslationService } from '../../../services';
 import { getSkinFromState, getTranslationsFromState, resolveRoutingState, URLHelper } from '../../../utils';
 
-import { checkPageExistence, loadPageContent } from './webc-app-loader.utils';
+import { checkPageExistence, emitCompleteEventForSSAPP, loadPageContent } from './webc-app-loader.utils';
 
 const { join } = URLHelper;
 
@@ -107,6 +107,8 @@ export class WebcAppLoader {
   }
 
   async componentDidLoad() {
+    emitCompleteEventForSSAPP();
+
     await this.callHook(HOOK_TYPE.AFTER_PAGE);
   }
 
