@@ -225,22 +225,13 @@ export default function getCustomElementsAPI() {
               console.error(`Error while getting models for BindingService`, error);
             }
 
-            let html = this.replaceChains(template);
+            const html = this.replaceChains(template);
             const model = this.model;
             const translationModel = this.translationModel;
             const recursive = true;
             const chain = mergeChains(this.parentChain, extractChain(this));
             const chainWithoutPrefix = chain ? chain.slice(1) : null;
             const enableTranslations = getTranslationsFromState();
-
-            if (this.hasAttribute('controller')) {
-              html = `
-                <webc-container
-                  controller='${this.getAttribute('controller')}' disable-container>
-                  ${html}
-                </webc-container>
-              `;
-            }
 
             if (this.shadowRoot) {
               if (!this.hasAttribute('shadow')) {
