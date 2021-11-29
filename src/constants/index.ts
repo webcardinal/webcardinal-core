@@ -44,6 +44,7 @@ export const FOR_TEMPLATE_SIZE = 'data-for-template-size';
 export const IF_ATTRIBUTE = 'data-if';
 export const IF_TRUE_CONDITION_SLOT_NAME = 'true';
 export const IF_FALSE_CONDITION_SLOT_NAME = 'false';
+export const IF_NO_DATA_SLOT_NAME = 'no-data';
 export const IF_LOADIBNG_SLOT_NAME = 'loading';
 
 // skin.css

@@ -2,6 +2,7 @@ import {
   IF_ATTRIBUTE,
   IF_FALSE_CONDITION_SLOT_NAME,
   IF_LOADIBNG_SLOT_NAME,
+  IF_NO_DATA_SLOT_NAME,
   IF_TRUE_CONDITION_SLOT_NAME,
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
@@ -37,53 +38,100 @@ export function handleDataIfAttributePresence(
 
   const children = Array.from(element.children);
 
-  let conditionValue: string | boolean | undefined = 'webcardinal:data-if:undefined';
+  enum types {
+    TRUE = 'webcardinal:data-if:true',
+    FALSE = 'webcardinal:data-if:false',
+    LOADING = 'webcardinal:data-if:loading',
+    NO_DATA = 'webcardinal:data-if:no-data'
+  }
 
-  let trueSlotElements: ChildNode[] = getSlots(children, IF_TRUE_CONDITION_SLOT_NAME);
+  let conditionValue: string | undefined = 'webcardinal:data-if:first-render';
+
+  const trueSlotElements = getSlots(children, IF_TRUE_CONDITION_SLOT_NAME);
   const falseSlotElements = getSlots(children, IF_FALSE_CONDITION_SLOT_NAME);
   const loadingSlotElements = getSlots(children, IF_LOADIBNG_SLOT_NAME);
-
-  if (!trueSlotElements.length && !falseSlotElements.length) {
-    trueSlotElements = Array.from(element.childNodes);
-  }
+  const noDataSlotElements = getSlots(children, IF_NO_DATA_SLOT_NAME);
 
   removeElementChildNodes(element, model);
 
-  const parseConditionValue = async (value: unknown): Promise<boolean | undefined> => {
+  const parseConditionValue = async (value: unknown): Promise<string> => {
     switch (typeof value) {
       case 'boolean':
-        return value;
+        return value ? types.TRUE : types.FALSE;
+      case "number":
+        return Number.isNaN(value) ? types.FALSE : types.TRUE;
+      case "string":
+        return value.length === 0 ? types.FALSE : types.TRUE;
       case 'object': {
+        // parse Promises/Async functions
         if (value instanceof Promise) {
           try {
             // set loading state before promise awaiting
-            conditionValue = undefined;
+            conditionValue = types.LOADING;
             setVisibleContent();
 
-            return await value;
+            return parseConditionValue(await value);
           } catch (error) {
             console.error('data-if condition async function failed!', error);
+            return types.LOADING;
           }
         }
-        return undefined;
+
+        // check for null
+        if (value === null) {
+          return types.FALSE;
+        }
+
+        // parse Arrays
+        if (Array.isArray(value)) {
+          if (value.length === 0) {
+            return types.NO_DATA;
+          }
+          return types.TRUE;
+        }
+
+        // parse Objects
+        if (Object.keys(value).length === 0) {
+          return types.NO_DATA;
+        }
+
+        return types.TRUE;
       }
+      case "undefined":
+        return types.LOADING;
       default:
-        return undefined;
+        return types.TRUE;
     }
   };
 
   const setVisibleContent = () => {
     let visibleSlots;
     switch (conditionValue) {
-      case true:
-        visibleSlots = trueSlotElements;
+      // for slot="no-data" fallback is slot="true"
+      case types.NO_DATA: {
+        if (noDataSlotElements.length === 0) {
+          visibleSlots = trueSlotElements;
+          break;
+        }
+        visibleSlots = noDataSlotElements;
         break;
-      case false:
+      }
+      // for slot="loading" fallback is slot="false"
+      case types.LOADING: {
+        if (loadingSlotElements.length === 0) {
+          visibleSlots = falseSlotElements;
+          break;
+        }
+        visibleSlots = loadingSlotElements;
+        break;
+      }
+      case types.FALSE: {
         visibleSlots = falseSlotElements;
         break;
-      default:
-        visibleSlots = loadingSlotElements;
       }
+      default:
+        visibleSlots = trueSlotElements;
+    }
 
     removeElementChildNodes(element, model);
 
