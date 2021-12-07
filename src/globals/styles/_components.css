@@ -1,0 +1,48 @@
+/* webc-datatable */
+
+webc-datatable webc-spinner.webc-datatable--loading {
+  position: relative;
+  margin-top: 1rem;
+  grid-column: 1 / -1;
+}
+
+webc-datatable ion-infinite-scroll-content {
+  /* 0 or unset will break infinit scrolling */
+  min-height: 1px;
+}
+
+webc-datatable ion-infinite-scroll-content > .infinite-loading {
+  margin: unset;
+}
+
+webc-datatable [data-sortable] {
+  --header-arrow-size: 0.25rem;
+  --header-arrow-color: #BBBBBB;
+
+  cursor: pointer;
+  position: relative;
+  padding-right: calc(5 * var(--header-arrow-size));
+}
+
+webc-datatable [data-sortable]::before,
+webc-datatable [data-sortable]::after {
+  content: "";
+  height: 0;
+  width: 0;
+  position: absolute;
+  right: 4px;
+  border-left: var(--header-arrow-size) solid transparent;
+  border-right: var(--header-arrow-size) solid transparent;
+  opacity: 1;
+}
+
+webc-datatable [data-sortable]::before {
+  border-bottom: var(--header-arrow-size) solid var(--header-arrow-color);
+  border-top: var(--header-arrow-size) solid transparent;
+  bottom: 55%;
+}
+
+webc-datatable [data-sortable]::after {
+  border-top: var(--header-arrow-size) solid var(--header-arrow-color);
+  top: 55%;
+}

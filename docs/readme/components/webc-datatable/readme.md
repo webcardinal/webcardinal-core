@@ -7,16 +7,18 @@
 
 ## Properties
 
-| Property                | Attribute                 | Description | Type      | Default     |
-| ----------------------- | ------------------------- | ----------- | --------- | ----------- |
-| `chain`                 | `datasource`              |             | `string`  | `undefined` |
-| `curentPageIndex`       | `curent-page-index`       |             | `number`  | `0`         |
-| `dataSize`              | `data-size`               |             | `number`  | `undefined` |
-| `hidePagination`        | `hide-pagination`         |             | `boolean` | `false`     |
-| `lastPageIndex`         | `last-page-index`         |             | `number`  | `0`         |
-| `pageSize`              | `page-size`               |             | `number`  | `20`        |
-| `pageSizeDelta`         | `page-size-delta`         |             | `number`  | `2`         |
-| `templateChildrenCount` | `template-children-count` |             | `number`  | `0`         |
+| Property            | Attribute             | Description | Type      | Default     |
+| ------------------- | --------------------- | ----------- | --------- | ----------- |
+| `chain`             | `datasource`          |             | `string`  | `undefined` |
+| `curentPageIndex`   | `curent-page-index`   |             | `number`  | `0`         |
+| `dataSize`          | `data-size`           |             | `number`  | `undefined` |
+| `hidePagination`    | `hide-pagination`     |             | `boolean` | `false`     |
+| `lastPageIndex`     | `last-page-index`     |             | `number`  | `0`         |
+| `loading`           | `loading`             |             | `boolean` | `false`     |
+| `pageSize`          | `page-size`           |             | `number`  | `0`         |
+| `pageSizeDelta`     | `page-size-delta`     |             | `number`  | `2`         |
+| `useInfiniteScroll` | `use-infinite-scroll` |             | `boolean` | `false`     |
+| `useOptimisticMode` | `use-optimistic-mode` |             | `boolean` | `false`     |
 
 
 ## Events
@@ -80,6 +82,19 @@ Type: `Promise<void>`
 | `--pagination-button-border`     |             |
 | `--pagination-gap`               |             |
 
+
+## Dependencies
+
+### Depends on
+
+- [webc-spinner](../webc-spinner)
+
+### Graph
+```mermaid
+graph TD;
+  webc-datatable --> webc-spinner
+  style webc-datatable fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

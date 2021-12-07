@@ -7,6 +7,7 @@ import {
   FOR_EVENTS,
   FOR_CONTENT_REPLACED_EVENT,
   FOR_CONTENT_UPDATED_EVENT,
+  FOR_OPTIMISTIC,
   FOR_TEMPLATE_SIZE,
   MODEL_CHAIN_PREFIX,
 } from '../../constants';
@@ -17,39 +18,6 @@ import { promisifyEventEmit } from '../../utils';
 
 import { getPagination } from './webc-datatable.utils';
 
-const DATA_SORTABLE_STYLES = `
-[data-sortable] {
-    --header-arrow-size: 0.25rem;
-    --header-arrow-color: #BBBBBB;
-
-    cursor: pointer;
-    position: relative;
-    padding-right: calc(5 * var(--header-arrow-size));
-}
-
-[data-sortable]::before,
-[data-sortable]::after {
-    content: "";
-    height: 0;
-    width: 0;
-    position: absolute;
-    right: 4px;
-    border-left: var(--header-arrow-size) solid transparent;
-    border-right: var(--header-arrow-size) solid transparent;
-    opacity: 1;
-}
-
-[data-sortable]::before {
-    border-bottom: var(--header-arrow-size) solid var(--header-arrow-color);
-    border-top: var(--header-arrow-size) solid transparent;
-    bottom: 55%;
-}
-
-[data-sortable]::after {
-    border-top: var(--header-arrow-size) solid var(--header-arrow-color);
-    top: 55%;
-}
-`;
 const DATA_INTERNAL_CHAIN = `data`;
 
 /**
@@ -73,7 +41,7 @@ export class WebcDatatable {
 
   @Prop() dataSize: number | undefined;
 
-  @Prop() pageSize = 20;
+  @Prop() pageSize = 0;
 
   @Prop() pageSizeDelta = 2;
 
@@ -83,7 +51,11 @@ export class WebcDatatable {
 
   @Prop({ reflect: true }) hidePagination = false;
 
-  @Prop({ mutable: true }) templateChildrenCount = 0;
+  @Prop({ reflect: true }) useInfiniteScroll = false;
+
+  @Prop({ reflect: true }) useOptimisticMode = false;
+
+  @Prop({ reflect: true, mutable: true }) loading = false;
 
   /**
    * Through this event the model is received.
@@ -109,6 +81,7 @@ export class WebcDatatable {
 
   private listeners: ComponentListenersService;
   private dataSource;
+  private infinitScroll;
   private model;
   private childrenCount = 0;
   private bootConfig = {
@@ -119,6 +92,7 @@ export class WebcDatatable {
     const templates = {
       header: [],
       data: [],
+      loading: [],
     };
     const slots = Object.keys(templates);
     for (const childNode of Array.from(this.host.childNodes)) {
@@ -157,17 +131,144 @@ export class WebcDatatable {
     return model.getChainValue(chain);
   };
 
-  // private storeDataSourceToWindow = () => {
-  //   const { page } = window.WebCardinal.state;
-  //   if (!page.dataSources) {
-  //     page.dataSources = {};
-  //   }
-  //   if (!page.dataSources[this.datasource]) {
-  //     page.dataSources[this.datasource] = this.dataSource;
-  //   }
-  // };
+  private createDataTableWithPagination = () => {
+    const { header, data, loading } = this.getTemplatesFromDOM();
 
-  private renderPagination = () => {
+    if (!this.useInfiniteScroll) {
+      if (loading.length === 0) {
+        const webcSpinner = this.createDefaultSpinner();
+        webcSpinner.style.position = 'relative';
+        webcSpinner.style.margin = '0 auto';
+        loading.push(webcSpinner);
+      }
+
+      for (const element of loading) {
+        element.setAttribute('slot', 'loading');
+      }
+    }
+
+    const dataTable = document.createElement('div') as any;
+    dataTable.setAttribute('slot', 'data');
+    dataTable.classList.add('webc-datatable--container');
+    dataTable.setAttribute(FOR_TEMPLATE_SIZE, `${this.childrenCount}`);
+    dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
+    dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}${this.useOptimisticMode ? ` ${FOR_OPTIMISTIC}` : ''}`);
+    dataTable.append(...data, ...loading);
+    dataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, event => {
+      event.stopPropagation();
+      dataTable.prepend(...header);
+      console.log(event.type);
+    });
+    dataTable.addEventListener(FOR_CONTENT_UPDATED_EVENT, event => {
+      event.stopPropagation();
+      console.log(event.type);
+    });
+
+    const afterBindingCallback = () => {
+      dataTable.prepend(...header);
+    };
+
+    return {
+      dataTable,
+      afterBindingCallback,
+      loading,
+    };
+  };
+
+  private createDataTableWithInfiniteScroll = () => {
+    if (!customElements.get('ion-infinite-scroll') || !customElements.get('ion-infinite-scroll-content')) {
+      console.error(
+        [
+          `For Infinit Scroll webc-datatable uses Ionic (v5)!`,
+          `Please add Ionic distribution to your application!`,
+        ].join('\n'),
+      );
+      console.warn('Fallback to pagination mode for webc-datatable!');
+      return this.createDataTableWithPagination();
+    }
+
+    const {
+      dataTable: internDataTable,
+      afterBindingCallback: internAfterBindingCallback,
+      loading: loadingSlots,
+    } = this.createDataTableWithPagination();
+
+    internDataTable.removeAttribute('slot');
+
+    const ionContent = document.createElement('ion-content') as any;
+    ionContent.style.setProperty('--background', 'transparent');
+    ionContent.scrollY = false;
+    ionContent.append(internDataTable);
+
+    const dataTable = document.createElement('div');
+    dataTable.classList.add('webc-datatable--scroll');
+    dataTable.setAttribute('slot', 'data');
+    dataTable.append(ionContent);
+
+    // after first render of data-for, the height of ion-content (parent of .webc-datatable--container) must be set
+    // this is made automatically base on first bucket/page of items that are rendered
+    // watch property "height" in styles of ion-content, the main conclusion is that
+    // the height of webc-datasource in infinite scroll mode is equal with the height of first bucket of items
+    // if a static height is desired, set '--height' custom property for webc-datatable (or for ion-content)
+    const internDataTableCallback = event => {
+      event.stopPropagation();
+      internDataTable.removeEventListener(FOR_CONTENT_REPLACED_EVENT, internDataTableCallback);
+      internDataTable.removeEventListener(FOR_CONTENT_UPDATED_EVENT, internDataTableCallback);
+      ionContent.scrollY = true;
+      window.requestAnimationFrame(() => {
+        console.log('internDataTableCallback');
+        ionContent.style.height = `var(--height, ${internDataTable.scrollHeight}px)`;
+      });
+    };
+
+    // after BindingService does his job, other nodes must be injected into the webc-datatable
+    // for example ion-infinite-scroll and infinite-infinit-scroll-content
+    const afterBindingCallback = () => {
+      internAfterBindingCallback();
+
+      const ionInfiniteContent = document.createElement('ion-infinite-scroll-content') as any;
+      ionInfiniteContent.loadingSpinner = null;
+
+      if (loadingSlots.length > 0) {
+        const div = document.createElement('div');
+        div.append(...loadingSlots);
+        ionInfiniteContent.loadingText = div.innerHTML;
+      } else {
+        const webcSpinner = this.createDefaultSpinner();
+        ionInfiniteContent.loadingText = webcSpinner.outerHTML;
+      }
+      this.infinitScroll = document.createElement('ion-infinite-scroll');
+      this.infinitScroll.classList.add('infinite-scroll-enabled', 'infinite-scroll-loading');
+
+      let currentPageIndex = 0;
+      this.infinitScroll.addEventListener('ionInfinite', async event => {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        currentPageIndex++;
+        await this.dataSource._renderPageAsync(currentPageIndex);
+        window.requestAnimationFrame(() => this.infinitScroll.complete());
+      });
+      this.infinitScroll.append(ionInfiniteContent);
+      this.infinitScroll.componentOnReady().then(() => {
+        console.log('componentOnReady');
+        ionContent.style.height = `var(--height, ${internDataTable.scrollHeight + this.infinitScroll.scrollHeight}px)`;
+      });
+      ionContent.append(this.infinitScroll);
+    };
+
+    internDataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, internDataTableCallback);
+    internDataTable.addEventListener(FOR_CONTENT_UPDATED_EVENT, internDataTableCallback);
+
+    return { dataTable, afterBindingCallback };
+  };
+
+  private createDefaultSpinner = () => {
+    const webcSpinner = document.createElement('webc-spinner');
+    webcSpinner.classList.add('webc-datatable--loading');
+    return webcSpinner;
+  };
+
+  private createDefaultPagination = (): HTMLElement[] => {
     const pageIndex = this.curentPageIndex + 1;
     const numberOfPages = this.lastPageIndex;
 
@@ -231,13 +332,13 @@ export class WebcDatatable {
       end: this.lastPageIndex,
     };
 
-    if (this.hidePagination) {
+    if (this.hidePagination || this.useInfiniteScroll) {
       return null;
     }
 
     return (
-      <div part='pagination' class='pagination'>
-        {this.renderPagination()}
+      <div part="pagination" class="pagination">
+        {this.createDefaultPagination()}
       </div>
     );
   };
@@ -266,29 +367,12 @@ export class WebcDatatable {
       return;
     }
 
-    const { header, data } = this.getTemplatesFromDOM();
-
     this.host.classList.add('webc-datatable');
 
-    const dataSortableStyles = document.createElement('style');
-    dataSortableStyles.innerHTML = DATA_SORTABLE_STYLES;
-
-    const dataTable = document.createElement('div');
-    dataTable.setAttribute('slot', 'data');
-    dataTable.classList.add('webc-datatable--container');
-    dataTable.setAttribute(FOR_TEMPLATE_SIZE, `${this.childrenCount}`);
-    dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
-    dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}`);
-    dataTable.append(...data);
-    dataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, event => {
-      event.stopImmediatePropagation();
-      dataTable.prepend(...header);
-    });
-    dataTable.addEventListener(FOR_CONTENT_UPDATED_EVENT, event => {
-      event.stopImmediatePropagation();
-    });
-
-    this.host.append(dataSortableStyles, dataTable);
+    const { dataTable, afterBindingCallback } = this.useInfiniteScroll
+      ? this.createDataTableWithInfiniteScroll()
+      : this.createDataTableWithPagination();
+    this.host.append(dataTable);
 
     BindingService.bindChildNodes(this.host, {
       model: this.model,
@@ -296,6 +380,8 @@ export class WebcDatatable {
       recursive: true,
       enableTranslations: true,
     });
+
+    afterBindingCallback();
 
     this.listeners = new ComponentListenersService(this.host, {
       model: this.model,
@@ -305,10 +391,6 @@ export class WebcDatatable {
     this.listeners.getModel.add();
     this.listeners.getTranslationModel.add();
     this.listeners.getParentChain.add();
-
-    dataTable.prepend(...header);
-
-    this.dataSource._renderPageAsync();
   }
 
   async componentWillRender() {
@@ -339,39 +421,105 @@ export class WebcDatatable {
     const createSlot = slot => Object.assign(document.createElement('slot'), { name: slot });
     const injectSlot = slot => {
       const beforeSlot = getSlot('before');
-      beforeSlot.insertAdjacentElement('afterend', createSlot(slot));
+      const elementSlot = createSlot(slot);
+      beforeSlot.insertAdjacentElement('afterend', elementSlot);
+      return elementSlot;
     };
 
-    const dataSlot = getSlot('data');
+    let dataSlot = getSlot('data');
 
-    if (!data || data.length === 0) {
+    const renderNoDataSlotIfNotExist = () => {
       dataSlot?.remove();
+      dataSlot = undefined;
       if (!getSlot('no-data')) {
         injectSlot('no-data');
       }
       this.hidePagination = true;
       this.model.data = [];
+    };
+    const renderDataSlotIfNotExist = () => {
+      if (!dataSlot) {
+        getSlot('no-data')?.remove();
+        dataSlot = injectSlot('data');
+      }
+    };
+    const isDataEmpty = (newData = data) => Array.isArray(newData) && newData.length === 0;
+    const isLoading = () => typeof data === 'undefined';
+
+    // infinite scroll
+    if (this.useInfiniteScroll) {
+      if (isDataEmpty() && isDataEmpty(this.model.data)) {
+        renderNoDataSlotIfNotExist();
+        return;
+      }
+
+      if (isDataEmpty()) {
+        this.infinitScroll.disabled = true;
+        return;
+      }
+
+      if (isLoading()) {
+        this.model.data = undefined;
+        return;
+      }
+
+      this.infinitScroll.disabled = false;
+
+      renderDataSlotIfNotExist();
+
+      if (!Array.isArray(this.model.data)) {
+        this.model.data = [];
+      }
+
+      this.model.data.push(...data);
+
+      // if there will be no data to fetch in the future disable infinite scrolling
+      // more precise, all the date from the datasource is now shown in datatable
+      if (typeof this.dataSize === 'number' && this.dataSize === this.model.data.length) {
+        this.infinitScroll.disabled = true;
+        return;
+      }
+
       return;
     }
 
-    if (!dataSlot) {
-      getSlot('no-data')?.remove();
-      injectSlot('data');
+    // pagination
+    if (isDataEmpty()) {
+      renderNoDataSlotIfNotExist();
+      return;
+    }
+
+    if (isLoading()) {
+      this.model.data = undefined;
+      return;
+    }
+
+    renderDataSlotIfNotExist();
+
+    if (!Array.isArray(this.model.data)) {
+      this.model.data = [];
     }
 
     if (!this.bootConfig.hidePagination) {
       this.hidePagination = false;
     }
+
     this.model.data = data;
   }
 
   @Method()
   async clearCurrentPage() {
+    if (!this.model) {
+      return;
+    }
+
     this.model.data.length = 0;
   }
 
   @Watch('pageSize')
-  pageSizeHandler() {
+  async pageSizeHandler(...props) {
+    console.log('pageSizeHandler', props, this.pageSize);
+
     this.dataSource._renderPageAsync();
   }
 
@@ -381,6 +529,7 @@ export class WebcDatatable {
         <slot name="before" />
         <slot name="data" />
         {this.managePagination()}
+        <slot name="loading" />
         <slot name="footer" />
         <slot name="after" />
       </Host>

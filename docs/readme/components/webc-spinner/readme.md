@@ -27,11 +27,13 @@
 
 ### Used by
 
+ - [webc-datatable](../webc-datatable)
  - [webc-modal](../webc-modal)
 
 ### Graph
 ```mermaid
 graph TD;
+  webc-datatable --> webc-spinner
   webc-modal --> webc-spinner
   style webc-spinner fill:#f9f,stroke:#333,stroke-width:4px
 ```

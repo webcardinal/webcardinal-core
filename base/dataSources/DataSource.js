@@ -1,3 +1,4 @@
+import { getTranslationModel, translate } from '../controllers/Controller';
 import PskBindableModel from '../libs/bindableModel.js';
 
 export default class DataSource {
@@ -6,6 +7,8 @@ export default class DataSource {
    * @param {number | undefined} [options.recordsNumber]
    * @param {number} [options.pageSize=20]
    * @param {number} [options.pageSizeDelta=2]
+   * @param {boolean} [options.useOptimisticMode=false]
+   * @param {boolean} [options.useInfiniteScroll=false]
    */
   constructor(options) {
     if (!options) {
@@ -20,8 +23,15 @@ export default class DataSource {
     if (typeof options.pageSizeDelta !== 'number') {
       options.pageSizeDelta = 2;
     }
+    if (typeof options.useOptimisticMode !== 'boolean') {
+      options.useOptimisticMode = false;
+    }
+    if (typeof options.useInfiniteScroll !== 'boolean') {
+      options.useInfiniteScroll = false;
+    }
 
     this.options = options;
+    this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
   }
 
   // Public methods
@@ -92,6 +102,7 @@ export default class DataSource {
    *
    * @return Array - Items displayed for current page
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async getPageDataAsync(startOffset, dataLengthForCurrentPage) {
     return [];
   }
@@ -118,6 +129,10 @@ export default class DataSource {
     }
   }
 
+  translate(translationChain) {
+    return translate(translationChain, this.translationModel)
+  }
+
   // Private methods
   // Those are used for coupling between DataSource and webc-datatable
 
@@ -125,6 +140,8 @@ export default class DataSource {
     this.getElement = getElement;
 
     const element = this.getElement();
+    element.useOptimisticMode = this.options.useOptimisticMode;
+    element.useInfiniteScroll = this.options.useInfiniteScroll;
     element.pageSizeDelta = this.options.pageSizeDelta;
 
     this.setPageSize(this.options.pageSize);
@@ -139,9 +156,13 @@ export default class DataSource {
     const startOffset = pageSize * pageIndex;
     const recordsOffset = dataSize ? Math.min(dataSize - startOffset, pageSize) : pageSize;
 
-    await dataTableElement.clearCurrentPage();
-    dataTableElement.curentPageIndex = pageIndex;
+    if (!dataTableElement.useInfiniteScroll) {
+      await dataTableElement.clearCurrentPage();
+      await dataTableElement.fillCurrentPage(undefined);
+    }
+
     const pageData = await this.getPageDataAsync(startOffset, recordsOffset);
+    dataTableElement.curentPageIndex = pageIndex;
     await dataTableElement.fillCurrentPage(pageData);
   };
 }

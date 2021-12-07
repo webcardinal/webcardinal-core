@@ -145,9 +145,11 @@ export namespace Components {
         "fillCurrentPage": (data: any) => Promise<void>;
         "hidePagination": boolean;
         "lastPageIndex": number;
+        "loading": boolean;
         "pageSize": number;
         "pageSizeDelta": number;
-        "templateChildrenCount": number;
+        "useInfiniteScroll": boolean;
+        "useOptimisticMode": boolean;
     }
     interface WebcDocs {
         /**
@@ -552,6 +554,7 @@ declare namespace LocalJSX {
         "dataSize"?: number | undefined;
         "hidePagination"?: boolean;
         "lastPageIndex"?: number;
+        "loading"?: boolean;
         /**
           * Through this event the model is received.
          */
@@ -562,7 +565,8 @@ declare namespace LocalJSX {
         "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
         "pageSize"?: number;
         "pageSizeDelta"?: number;
-        "templateChildrenCount"?: number;
+        "useInfiniteScroll"?: boolean;
+        "useOptimisticMode"?: boolean;
     }
     interface WebcDocs {
         /**

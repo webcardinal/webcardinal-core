@@ -7,10 +7,14 @@
   "docsTags": [],
   "encapsulation": "none",
   "dependents": [
+    "webc-datatable",
     "webc-modal"
   ],
   "dependencies": [],
   "dependencyGraph": {
+    "webc-datatable": [
+      "webc-spinner"
+    ],
     "webc-modal": [
       "webc-spinner"
     ]

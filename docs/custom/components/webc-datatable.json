@@ -28,8 +28,14 @@
   ],
   "encapsulation": "shadow",
   "dependents": [],
-  "dependencies": [],
-  "dependencyGraph": {},
+  "dependencies": [
+    "webc-spinner"
+  ],
+  "dependencyGraph": {
+    "webc-datatable": [
+      "webc-spinner"
+    ]
+  },
   "props": [
     {
       "name": "chain",
@@ -115,6 +121,23 @@
       "required": false
     },
     {
+      "name": "loading",
+      "type": "boolean",
+      "mutable": true,
+      "attr": "loading",
+      "reflectToAttr": true,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
       "name": "pageSize",
       "type": "number",
       "mutable": false,
@@ -122,7 +145,7 @@
       "reflectToAttr": false,
       "docs": "",
       "docsTags": [],
-      "default": "20",
+      "default": "0",
       "values": [
         {
           "type": "number"
@@ -149,17 +172,34 @@
       "required": false
     },
     {
-      "name": "templateChildrenCount",
-      "type": "number",
-      "mutable": true,
-      "attr": "template-children-count",
-      "reflectToAttr": false,
+      "name": "useInfiniteScroll",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "use-infinite-scroll",
+      "reflectToAttr": true,
       "docs": "",
       "docsTags": [],
-      "default": "0",
+      "default": "false",
       "values": [
         {
-          "type": "number"
+          "type": "boolean"
+        }
+      ],
+      "optional": false,
+      "required": false
+    },
+    {
+      "name": "useOptimisticMode",
+      "type": "boolean",
+      "mutable": false,
+      "attr": "use-optimistic-mode",
+      "reflectToAttr": true,
+      "docs": "",
+      "docsTags": [],
+      "default": "false",
+      "values": [
+        {
+          "type": "boolean"
         }
       ],
       "optional": false,

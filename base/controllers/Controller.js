@@ -57,41 +57,6 @@ function getValueFromModelByChain(model, chain) {
   return chain.length ? getValueFromModelByChain(model[key], chain) : model[key];
 }
 
-function getTranslationModel() {
-  if (!getTranslationsFromState()) {
-    return;
-  }
-
-  let { translations } = window.WebCardinal;
-  const skin = getSkinFromState();
-  const pathname = getPathname();
-
-  const skinTranslations = translations[skin];
-  const defaultTranslations = translations['default'];
-
-  if (!skinTranslations && !defaultTranslations) {
-    console.warn(`No translations found for skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`);
-    return;
-  }
-
-  let pageTranslations = skinTranslations && skinTranslations[pathname];
-
-  if (pageTranslations) {
-    return pageTranslations;
-  }
-
-  pageTranslations = defaultTranslations && defaultTranslations[pathname];
-
-  if (!pageTranslations) {
-    console.warn(
-      `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`,
-    );
-    return;
-  }
-
-  return pageTranslations;
-}
-
 function clearVirtualHistory() {
   if (!document.querySelector('webc-app-loader[data-key]')) {
     virtualHistory.clear();
@@ -182,6 +147,77 @@ export function proxifyModelProperty(model) {
     return PskBindableModel.setModel(model);
   }
   return model;
+}
+
+export function getTranslationModel() {
+  if (!getTranslationsFromState()) {
+    return;
+  }
+
+  let { translations } = window.WebCardinal;
+  const skin = getSkinFromState();
+  const pathname = getPathname();
+
+  const skinTranslations = translations[skin];
+  const defaultTranslations = translations['default'];
+
+  if (!skinTranslations && !defaultTranslations) {
+    console.warn(`No translations found for skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`);
+    return;
+  }
+
+  let pageTranslations = skinTranslations?.[pathname];
+
+  if (pageTranslations) {
+    return pageTranslations;
+  }
+
+  pageTranslations = defaultTranslations?.[pathname];
+
+  if (!pageTranslations) {
+    console.warn(
+      `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''}`,
+    );
+    return;
+  }
+
+  return pageTranslations;
+}
+
+export function translate(translationChain, translationModel) {
+  if (!getTranslationsFromState()) {
+    console.warn(
+      [`Function "translate" must be called only when translations are enabled!`, `Check WebCardinal.state`].join(
+        '\n',
+      ),
+    );
+    return;
+  }
+
+  const skin = getSkinFromState();
+  const pathname = getPathname();
+
+  if (!translationModel) {
+    console.warn(
+      `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''})`,
+    );
+    return translationChain;
+  }
+
+  if (translationChain.startsWith('$')) {
+    translationChain = translationChain.slice(1);
+  }
+  const translation = getValueFromModelByChain(translationModel, translationChain);
+  if (!translation) {
+    console.warn(
+      `No translations found for chain: "${translationChain}" (page: "${pathname}", skins: "${skin}"${
+        skin !== 'default' ? ' and "default"' : ''
+      })`,
+    );
+    return translationChain;
+  }
+
+  return translation;
 }
 
 export default class Controller {
@@ -579,39 +615,7 @@ export default class Controller {
   }
 
   translate(translationChain) {
-    if (!getTranslationsFromState()) {
-      console.warn(
-        [`Function "translate" must be called only when translations are enabled!`, `Check WebCardinal.state`].join(
-          '\n',
-        ),
-      );
-      return;
-    }
-
-    const skin = getSkinFromState();
-    const pathname = getPathname();
-
-    if (!this.translationModel) {
-      console.warn(
-        `No translations found for page: "${pathname}" (skins: "${skin}"${skin !== 'default' ? ' and "default"' : ''})`,
-      );
-      return translationChain;
-    }
-
-    if (translationChain.startsWith('$')) {
-      translationChain = translationChain.slice(1);
-    }
-    const translation = getValueFromModelByChain(this.translationModel, translationChain);
-    if (!translation) {
-      console.warn(
-        `No translations found for chain: "${translationChain}" (page: "${pathname}", skins: "${skin}"${
-          skin !== 'default' ? ' and "default"' : ''
-        })`,
-      );
-      return translationChain;
-    }
-
-    return translation;
+    return translate(translationChain, this.translationModel);
   }
 
   getElementByTag(tag) {
