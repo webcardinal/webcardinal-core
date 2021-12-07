@@ -11,7 +11,8 @@ webc-datatable ion-infinite-scroll-content {
   min-height: 1px;
 }
 
-webc-datatable ion-infinite-scroll-content > .infinite-loading {
+webc-datatable ion-infinite-scroll-content .infinite-loading,
+webc-datatable ion-infinite-scroll-content .infinite-loading-text {
   margin: unset;
 }
 

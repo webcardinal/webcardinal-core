@@ -32,6 +32,7 @@ export default class DataSource {
 
     this.options = options;
     this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
+    this.model = PskBindableModel.setModel({ data: [] });
   }
 
   // Public methods
@@ -146,7 +147,8 @@ export default class DataSource {
 
     this.setPageSize(this.options.pageSize);
     this.setRecordsNumber(this.options.recordsNumber);
-    return PskBindableModel.setModel({ data: [] });
+
+    return this.model;
   };
 
   _renderPageAsync = async (pageIndex = 0) => {
