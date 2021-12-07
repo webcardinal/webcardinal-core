@@ -46,11 +46,16 @@ export function handleDataIfAttributePresence(
   }
 
   let conditionValue: string | undefined = 'webcardinal:data-if:first-render';
-
-  const trueSlotElements = getSlots(children, IF_TRUE_CONDITION_SLOT_NAME);
+  let trueSlotElements: ChildNode[];
+  trueSlotElements = getSlots(children, IF_TRUE_CONDITION_SLOT_NAME);
   const falseSlotElements = getSlots(children, IF_FALSE_CONDITION_SLOT_NAME);
   const loadingSlotElements = getSlots(children, IF_LOADIBNG_SLOT_NAME);
   const noDataSlotElements = getSlots(children, IF_NO_DATA_SLOT_NAME);
+
+  const slottedElements = [trueSlotElements, falseSlotElements, loadingSlotElements, noDataSlotElements].find(elements => elements.length > 0)
+  if (!slottedElements) {
+    trueSlotElements = Array.from(element.childNodes);
+  }
 
   removeElementChildNodes(element, model);
 
