@@ -1,6 +1,8 @@
-import { Component, Event, EventEmitter, h, Method, Prop, State } from '@stencil/core';
-import { HTMLStencilElement } from '@stencil/core/internal';
-import { injectHistory, RouterHistory } from '@stencil/router';
+import type { EventEmitter} from '@stencil/core';
+import { Component, Event, h, Method, Prop, State } from '@stencil/core';
+import type { HTMLStencilElement } from '@stencil/core/internal';
+import type { RouterHistory } from '@stencil/router';
+import { injectHistory } from '@stencil/router';
 
 import DefaultController from '../../../base/controllers/Controller.js';
 import { DEFAULT_CONTROLLER_KEY, MODEL_CHAIN_PREFIX, VIEW_MODEL_KEY } from '../../constants';
@@ -25,13 +27,13 @@ export class WebcContainer {
    * This property is a string that will permit the developer to choose his own controller.
    * If no value is set then the null default value will be taken and the component will use the basic Controller.
    */
-  @Prop() controller: string = '';
+  @Prop() controller = '';
 
   /**
    *  If it is not specified, all the innerHTML will be placed inside the unnamed slot.
    *  Otherwise the content will replace the <code>webc-container</code> element form DOM.
    */
-  @Prop({ reflect: true }) disableContainer: boolean = false;
+  @Prop({ reflect: true }) disableContainer = false;
 
   /**
    * Through this event the model is received.
@@ -67,6 +69,12 @@ export class WebcContainer {
     if (!this.host.isConnected) {
       return;
     }
+
+    if (this.host.hasAttribute('instantiate')) {
+      return;
+    }
+
+    this.host.setAttribute('instantiate', '');
 
     const [controllerElement, bindingElement] = this.resolveControllerElement();
     this.controllerElement = controllerElement;
