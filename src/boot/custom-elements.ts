@@ -125,7 +125,7 @@ export default function getCustomElementsAPI() {
           private translationModel;
           private parentChain;
           private listeners: ComponentListenersService;
-          private initialHTML;
+          private readonly refToOriginalChildNodes: ChildNode[];
 
           constructor() {
             super();
@@ -134,6 +134,11 @@ export default function getCustomElementsAPI() {
               this.attachShadow({ mode: 'open' });
             } else if (this.hasAttribute('shadow')) {
               this.attachShadow({ mode: 'open' });
+            }
+
+            this.refToOriginalChildNodes = Array.from(this.childNodes);
+            for (let i = 0; i < this.childNodes.length; i++) {
+              this.childNodes[i].remove();
             }
           }
 
@@ -238,12 +243,9 @@ export default function getCustomElementsAPI() {
                 this.setAttribute('shadow', '');
               }
 
-              if (!this.initialHTML) {
-                this.initialHTML = this.innerHTML;
-              }
-
               this.shadowRoot.innerHTML = html;
-              this.innerHTML = this.initialHTML;
+              this.innerHTML = '';
+              this.append(...this.refToOriginalChildNodes)
 
               BindingService.bindChildNodes(this.shadowRoot, {
                 model,
