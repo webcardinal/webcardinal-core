@@ -516,6 +516,9 @@ export class WebcDatatable {
     if (!this.model) {
       return;
     }
+    if (typeof this.model.data === 'undefined') {
+      return;
+    }
 
     this.model.data.length = 0;
   }

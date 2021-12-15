@@ -113,6 +113,16 @@ export default class DataSource {
     await dataTableElement.fillCurrentPage([]);
   }
 
+  async forceLoading() {
+    const dataTableElement = this.getElement();
+    await dataTableElement.fillCurrentPage(undefined);
+  }
+
+  async forceUpdate(useLoading = true) {
+    const pageIndex = this.getCurrentPageIndex();
+    await this._renderPageAsync(pageIndex, useLoading);
+  }
+
   // Optional await
   // When some action is required only after the page was changed
 
@@ -151,14 +161,14 @@ export default class DataSource {
     return this.model;
   };
 
-  _renderPageAsync = async (pageIndex = 0) => {
+  _renderPageAsync = async (pageIndex = 0, useLoading = true) => {
     const dataTableElement = this.getElement();
     const { pageSize, dataSize } = dataTableElement;
 
     const startOffset = pageSize * pageIndex;
     const recordsOffset = dataSize ? Math.min(dataSize - startOffset, pageSize) : pageSize;
 
-    if (!dataTableElement.useInfiniteScroll) {
+    if (!dataTableElement.useInfiniteScroll && useLoading) {
       await dataTableElement.clearCurrentPage();
       await dataTableElement.fillCurrentPage(undefined);
     }
