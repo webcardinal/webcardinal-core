@@ -235,7 +235,9 @@ export class WebcDatatable {
       if (loadingSlots.length > 0) {
         const div = document.createElement('div');
         div.append(...loadingSlots);
-        ionInfiniteContent.innerHTML = div.innerHTML;
+        ionInfiniteContent.componentOnReady().then(() => {
+          ionInfiniteContent.firstElementChild.append(div);
+        });
       } else {
         const webcSpinner = this.createDefaultSpinner();
         ionInfiniteContent.loadingText = webcSpinner.outerHTML;
