@@ -2,6 +2,7 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Host, h, Prop, Event, Method, Watch } from '@stencil/core';
 
 import {
+  DISABLE_BINDING,
   FOR_ATTRIBUTE,
   FOR_OPTIONS,
   FOR_EVENTS,
@@ -83,6 +84,7 @@ export class WebcDatatable {
   private dataSource;
   private infinitScroll;
   private model;
+  private translationModel;
   private childrenCount = 0;
   private bootConfig = {
     hidePagination: false,
@@ -134,6 +136,8 @@ export class WebcDatatable {
   private createDataTableWithPagination = () => {
     const { header, data, loading } = this.getTemplatesFromDOM();
 
+    header.forEach(element => element.setAttribute(DISABLE_BINDING, ''));
+
     const dataTable = document.createElement('div') as any;
     dataTable.setAttribute('slot', 'data');
     dataTable.classList.add('webc-datatable--container');
@@ -162,14 +166,30 @@ export class WebcDatatable {
 
       for (const element of loading) {
         element.setAttribute('slot', 'loading');
-        dataTable.append(element)
+        dataTable.append(element);
       }
     }
 
     dataTable.append(...data);
 
     const afterBindingCallback = () => {
-      dataTable.prepend(...header);
+      header.forEach(element => element.removeAttribute(DISABLE_BINDING));
+
+      // This is quite unorthodox, we are wrapping all header slots in a single div,
+      // This div is bounded by BindingService
+      // Then all the child nodes are inserted in webc-datatable
+      const hiddenWrapper = document.createElement('div');
+      hiddenWrapper.append(...header);
+      BindingService.bindChildNodes(hiddenWrapper, {
+        model: this.model,
+        translationModel: this.translationModel,
+        recursive: true,
+        enableTranslations: true,
+      });
+      dataTable.prepend(...Array.from(hiddenWrapper.childNodes));
+
+      // Real life scenario reveals that this solution is more optimal than multiple BindingService.bindElement
+      // also 'data-for' would be affected in the above use-case
     };
 
     return {
@@ -285,7 +305,7 @@ export class WebcDatatable {
           result.push(
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            <button active part="pagination-button pagination-button--active" disabled>
+            <button active part='pagination-button pagination-button--active' disabled>
               {i}
             </button>,
           );
@@ -293,7 +313,7 @@ export class WebcDatatable {
         }
 
         result.push(
-          <button part="pagination-button" onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
+          <button part='pagination-button' onClick={() => this.dataSource.goToPageByIndex(i - 1)}>
             {i}
           </button>,
         );
@@ -307,7 +327,7 @@ export class WebcDatatable {
     if (numberOfPages !== 1) {
       result.unshift(
         <button
-          part="pagination-button pagination-button--previous"
+          part='pagination-button pagination-button--previous'
           disabled={pageIndex === 1}
           onClick={() => this.dataSource.goToPreviousPage()}
         >
@@ -317,7 +337,7 @@ export class WebcDatatable {
 
       result.push(
         <button
-          part="pagination-button pagination-button--next"
+          part='pagination-button pagination-button--next'
           disabled={pageIndex === numberOfPages}
           onClick={() => this.dataSource.goToNextPage()}
         >
@@ -341,7 +361,7 @@ export class WebcDatatable {
     }
 
     return (
-      <div part="pagination" class="pagination">
+      <div part='pagination' class='pagination'>
         {this.createDefaultPagination()}
       </div>
     );
@@ -355,7 +375,7 @@ export class WebcDatatable {
     this.bootConfig.hidePagination = this.hidePagination;
 
     this.dataSource = await this.getDataSourceFromModel();
-    const translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
+    this.translationModel = await promisifyEventEmit(this.getTranslationModelEvent);
 
     const { DataSource } = window.WebCardinal.dataSources;
     if (!this.dataSource || typeof this.dataSource !== 'object' || !(this.dataSource instanceof DataSource)) {
@@ -380,7 +400,7 @@ export class WebcDatatable {
 
     BindingService.bindChildNodes(this.host, {
       model: this.model,
-      translationModel,
+      translationModel: this.translationModel,
       recursive: true,
       enableTranslations: true,
     });
@@ -389,7 +409,7 @@ export class WebcDatatable {
 
     this.listeners = new ComponentListenersService(this.host, {
       model: this.model,
-      translationModel,
+      translationModel: this.translationModel,
       chain: `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`,
     });
     this.listeners.getModel.add();
@@ -531,12 +551,12 @@ export class WebcDatatable {
   render() {
     return this.dataSource ? (
       <Host>
-        <slot name="before" />
-        <slot name="data" />
+        <slot name='before' />
+        <slot name='data' />
         {this.managePagination()}
-        <slot name="loading" />
-        <slot name="footer" />
-        <slot name="after" />
+        <slot name='loading' />
+        <slot name='footer' />
+        <slot name='after' />
       </Host>
     ) : null;
   }
