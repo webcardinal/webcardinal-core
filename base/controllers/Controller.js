@@ -11,7 +11,6 @@ import {
 } from '../../src';
 import PskBindableModel from '../libs/bindableModel.js';
 
-const WebCardinal = window.WebCardinal;
 const virtualHistory = new Set();
 let isLocationListenerActive = false;
 
@@ -98,15 +97,14 @@ function locationListener_v2(history) {
    The DOM is managed better then @ref locationListener_v1
    */
   const activeKey = history.location.key;
-  const inactiveKeys = Array.from(virtualHistory).filter(key => key !== activeKey);
 
   let shouldBeRemove = true;
   let loaders = document.querySelectorAll('webc-app-loader[data-key]');
   for (const loader of Array.from(loaders)) {
     if (loader.dataset.key === activeKey || loader.dataset.key === 'not-generated-yet') {
       loader.removeAttribute('hidden');
-      WebCardinal.state.page.loader = loader;
-      WebCardinal.state.page.src = loader.src;
+      window.WebCardinal.state.page.loader = loader;
+      window.WebCardinal.state.page.src = loader.src;
       shouldBeRemove = false;
       continue;
     }
@@ -473,7 +471,7 @@ export default class Controller {
       options.tag = undefined;
     }
 
-    const { basePath } = WebCardinal;
+    const { basePath } = window.WebCardinal;
     const { parentElement, namespace, skin, tag } = options;
     const { pathname } = this.history.location;
 
@@ -486,11 +484,11 @@ export default class Controller {
     }
 
     const backData = {
-      src: WebCardinal.state.page.loader.src,
+      src: window.WebCardinal.state.page.loader.src,
       key: this.history.location.key,
     };
 
-    const oldLoader = WebCardinal.state.page.loader;
+    const oldLoader = window.WebCardinal.state.page.loader;
     const pageLoader = this.createElement('webc-app-loader', { src, basePath, skin, tag, saveState: true });
     pageLoader.setAttribute('hidden', '');
     pageLoader.dataset.key = 'not-generated-yet';
