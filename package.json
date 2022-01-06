@@ -1,6 +1,6 @@
 {
   "name": "@webcardinal/core",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "description": "WebCardinal components for general routing, bindable decorators and base controllers.",
   "main": "build/dist/index.cjs.js",
   "module": "build/dist/index.js",
