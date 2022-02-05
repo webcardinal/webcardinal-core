@@ -239,8 +239,15 @@ export default class Controller {
       let chain = this.element.getAttribute(VIEW_MODEL_KEY);
       if (chain.startsWith(MODEL_CHAIN_PREFIX)) {
         chain = chain.slice(1);
+        //has root chain '@'
+        if (!chain) {
+          model = _model;
+        } else {
+          model = PskBindableModel.setModel(_model);
+        }
+      } else {
+        model = PskBindableModel.setModel(_model);
       }
-      model = PskBindableModel.setModel(_model);
     }
 
     Object.defineProperty(this, 'model', {
