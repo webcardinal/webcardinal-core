@@ -84,7 +84,7 @@ export default class ApplicationController {
 
   private _prepareConfiguration(rawConfig) {
     const getRaw = item => {
-      return rawConfig[item] ? rawConfig[item] : defaultConfig[item];
+      return typeof rawConfig[item] !== 'undefined' ? rawConfig[item] : defaultConfig[item];
     };
 
     const getIdentity = () => {
@@ -199,7 +199,14 @@ export default class ApplicationController {
       return getRaw('enableTranslations') === true;
     };
 
-    const getTranslations = () => getRaw('translations') === true;
+    const getTranslations = () => {
+      const translations = getRaw('translations')
+      if (typeof translations === 'boolean') {
+        return translations;
+      }
+
+      return true
+    };
 
     /**
      * @deprecated
