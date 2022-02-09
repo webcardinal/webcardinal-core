@@ -1,6 +1,6 @@
 import type { EventEmitter } from '@stencil/core';
 import { Component, Event, Host, h, Prop } from '@stencil/core';
-import { promisifyEventEmit } from '../../../utils';
+import { promisifyEventEmit, URLHelper } from '../../../utils';
 
 @Component({
   tag: 'webc-app-identity',
@@ -55,15 +55,22 @@ export class WebcAppIdentity {
       },
     };
 
+    let href = '/';
+    if (window.WebCardinal.basePath) {
+      href = URLHelper.join(window.WebCardinal.basePath).pathname;
+    }
+
     return (
       <Host {...attributes}>
         {this.avatar ? <img src={this.avatar} alt={this.name} /> : null}
-        <a href="/" class="name">
+        <a href={href} class="name">
           {this.name}
         </a>
-        <a href={`mailto:${this.email}`} class="email">
-          {this.email}
-        </a>
+        {this.email ? (
+          <a href={`mailto:${this.email}`} class="email">
+            {this.email}
+          </a>
+        ) : null}
       </Host>
     );
   }
