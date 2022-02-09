@@ -82,17 +82,18 @@ Type: `Promise<void>`
 
 ## Shadow Parts
 
-| Part        | Description |
-| ----------- | ----------- |
-| `"cancel"`  |             |
-| `"close"`   |             |
-| `"confirm"` |             |
-| `"content"` |             |
-| `"dialog"`  |             |
-| `"expand"`  |             |
-| `"footer"`  |             |
-| `"header"`  |             |
-| `"main"`    |             |
+| Part         | Description |
+| ------------ | ----------- |
+| `"cancel"`   |             |
+| `"close"`    |             |
+| `"confirm"`  |             |
+| `"content"`  |             |
+| `"dialog"`   |             |
+| `"expand"`   |             |
+| `"footer"`   |             |
+| `"header"`   |             |
+| `"main"`     |             |
+| `"position"` |             |
 
 
 ## CSS Custom Properties

@@ -301,7 +301,7 @@ export class WebcModal {
     }
 
     return (
-      <div class="webc-modal fade show" tabindex="-1" role="dialog" onClick={this.handleBackdropClick.bind(this)}>
+      <div part="position" class="webc-modal fade show" tabindex="-1" role="dialog" onClick={this.handleBackdropClick.bind(this)}>
         <div class={`webc-modal-dialog ${this.centered ? 'centered' : ''} `} role="document" part="dialog">
           <div class="webc-modal-content" part="content">
             <section class="header" part="header">
