@@ -256,6 +256,12 @@ export namespace Components {
     }
     interface WebcSpinner {
     }
+    interface WebcSsapp {
+        "appName": string;
+        "landingPath": string;
+        "params": { [indexer: string]: string };
+        "seed": string;
+    }
     interface WebcTemplate {
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
@@ -372,6 +378,12 @@ declare global {
         prototype: HTMLWebcSpinnerElement;
         new (): HTMLWebcSpinnerElement;
     };
+    interface HTMLWebcSsappElement extends Components.WebcSsapp, HTMLStencilElement {
+    }
+    var HTMLWebcSsappElement: {
+        prototype: HTMLWebcSsappElement;
+        new (): HTMLWebcSsappElement;
+    };
     interface HTMLWebcTemplateElement extends Components.WebcTemplate, HTMLStencilElement {
     }
     var HTMLWebcTemplateElement: {
@@ -395,6 +407,7 @@ declare global {
         "webc-modal": HTMLWebcModalElement;
         "webc-skin": HTMLWebcSkinElement;
         "webc-spinner": HTMLWebcSpinnerElement;
+        "webc-ssapp": HTMLWebcSsappElement;
         "webc-template": HTMLWebcTemplateElement;
     }
 }
@@ -681,6 +694,13 @@ declare namespace LocalJSX {
     }
     interface WebcSpinner {
     }
+    interface WebcSsapp {
+        "appName"?: string;
+        "landingPath"?: string;
+        "onWindowAction"?: (event: CustomEvent<any>) => void;
+        "params"?: { [indexer: string]: string };
+        "seed"?: string;
+    }
     interface WebcTemplate {
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
@@ -717,6 +737,7 @@ declare namespace LocalJSX {
         "webc-modal": WebcModal;
         "webc-skin": WebcSkin;
         "webc-spinner": WebcSpinner;
+        "webc-ssapp": WebcSsapp;
         "webc-template": WebcTemplate;
     }
 }
@@ -740,6 +761,7 @@ declare module "@stencil/core" {
             "webc-modal": LocalJSX.WebcModal & JSXBase.HTMLAttributes<HTMLWebcModalElement>;
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
             "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
+            "webc-ssapp": LocalJSX.WebcSsapp & JSXBase.HTMLAttributes<HTMLWebcSsappElement>;
             "webc-template": LocalJSX.WebcTemplate & JSXBase.HTMLAttributes<HTMLWebcTemplateElement>;
         }
     }

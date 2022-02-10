@@ -49,6 +49,9 @@
   "webc-spinner": {
     "source": "@webcardinal/core"
   },
+  "webc-ssapp": {
+    "source": "@webcardinal/core"
+  },
   "webc-template": {
     "source": "@webcardinal/core"
   }
