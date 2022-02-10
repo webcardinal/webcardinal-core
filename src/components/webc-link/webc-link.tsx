@@ -2,7 +2,7 @@ import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop } from '@stencil/core';
 
 import { HostElement } from '../../decorators';
-import {promisifyEventEmit, URLHelper} from '../../utils';
+import { promisifyEventEmit } from '../../utils';
 
 @Component({
   tag: 'webc-link',
@@ -41,11 +41,6 @@ export class WebcLink {
         this.href = await promisifyEventEmit(this.getTagsEvent, {
           tag: this.tag,
         });
-
-        if (window.WebCardinal.basePath) {
-          this.href = URLHelper.join(window.WebCardinal.basePath, this.href).pathname;
-        }
-
         this.content = (
           <stencil-route-link url={this.href}>
             <slot />

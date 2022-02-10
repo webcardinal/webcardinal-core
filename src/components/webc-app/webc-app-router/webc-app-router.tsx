@@ -76,7 +76,7 @@ export class WebcAppRouter {
 
   private _renderRoute = ({ path, src, loader, skin, tag }: RoutesPayload) => {
     const props = {
-      url: join(this.basePath, path).pathname,
+      url: path,
       exact: true,
       component: 'webc-app-loader',
       componentProps: { src, loader, skin, basePath: this.basePath, saveState: true } as any,
@@ -157,7 +157,6 @@ export class WebcAppRouter {
       } as any,
     };
     if (fallback.tag) {
-      this.tags[fallback.tag] = '#';
       props.componentProps.tag = fallback.tag;
     }
     return <stencil-route data-src={src} {...props} />;
@@ -269,7 +268,7 @@ export class WebcAppRouter {
 
   render() {
     return (
-      <stencil-router root='/'>
+      <stencil-router data-root={this.basePath + '/'} root={this.basePath + '/'}>
         <stencil-route-switch scrollTopOffset={0}>{...this.content}</stencil-route-switch>
       </stencil-router>
     );
