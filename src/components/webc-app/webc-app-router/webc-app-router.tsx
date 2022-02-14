@@ -1,7 +1,8 @@
 import type { EventEmitter } from '@stencil/core';
-import { Component, Event, h, Prop, State } from '@stencil/core';
+import { Build, Component, Event, h, Prop, State } from '@stencil/core';
 
 import { proxifyModelProperty } from '../../../../base/controllers/Controller';
+import { getWebCardinalConfig } from '../../../boot/context';
 import { HOOK_TYPE, PAGES_PATH } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { ComponentListenersService } from '../../../services';
@@ -76,7 +77,7 @@ export class WebcAppRouter {
 
   private _renderRoute = ({ path, src, loader, skin, tag }: RoutesPayload) => {
     const props = {
-      url: path,
+      url: join(this.basePath, path).pathname,
       exact: true,
       component: 'webc-app-loader',
       componentProps: { src, loader, skin, basePath: this.basePath, saveState: true } as any,
@@ -86,17 +87,20 @@ export class WebcAppRouter {
     }
 
     // fix regarding WebCardinal in a non-updated location context of an iframe
-    if (props.url === '/' && isSSAppContext()) {
-      const propsClone = {
-        ...props,
-        url: window.location.pathname,
-        componentProps: { url: '/' },
-      };
-      propsClone.component = 'webc-app-redirect';
-      this.content.push(<stencil-route data-path={propsClone.url} data-redirect="" {...propsClone} />);
+    if (isSSAppContext()) {
+        const config = getWebCardinalConfig();
+        const basePath = URLHelper.join(config.routing.baseURL).pathname;
+        if (props.url === basePath) {
+          window.history.replaceState(undefined, 'SSApp-Webc Application', basePath);
+        }
     }
 
-    return <stencil-route data-path={props.url} data-src={src} {...props} />;
+    if (Build.isDev) {
+      props['data-path'] = props.url;
+      props['data-src'] = src;
+    }
+
+    return <stencil-route data-type="page" {...props} />;
   };
 
   private _renderRoutes = (
@@ -157,9 +161,13 @@ export class WebcAppRouter {
       } as any,
     };
     if (fallback.tag) {
+      this.tags[fallback.tag] = '#';
       props.componentProps.tag = fallback.tag;
     }
-    return <stencil-route data-src={src} {...props} />;
+    if (Build.isDev) {
+      props['data-src'] = src;
+    }
+    return <stencil-route data-type="fallback" {...props} />;
   };
 
   private manageLandingPage = () => {
@@ -183,7 +191,12 @@ export class WebcAppRouter {
         component: 'webc-app-redirect',
         componentProps: { url: this.landingPage },
       };
-      this.content.push(<stencil-route data-path={props.url} data-redirect="" {...props} />);
+
+      if (Build.isDev) {
+        props['data-path'] = props.url;
+      }
+
+      this.content.push(<stencil-route data-type="landing" {...props} />);
     }
   };
 
@@ -268,7 +281,7 @@ export class WebcAppRouter {
 
   render() {
     return (
-      <stencil-router data-root={this.basePath + '/'} root={this.basePath + '/'}>
+      <stencil-router root="/">
         <stencil-route-switch scrollTopOffset={0}>{...this.content}</stencil-route-switch>
       </stencil-router>
     );

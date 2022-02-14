@@ -9,7 +9,7 @@ import type {
 export default {
   identity: {
     name: 'WebCardinal',
-    email: 'webcardinal@axiologic.net',
+    email: '',
     avatar: '',
   } as Identity,
   pagesFallback: {

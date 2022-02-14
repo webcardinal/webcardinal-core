@@ -1,9 +1,7 @@
-import { HTMLStencilElement } from '@stencil/core/internal';
+import type { HTMLStencilElement } from '@stencil/core/internal';
 
 import controllers from '../../base/controllers';
 import dataSources from '../../base/dataSources';
-import defaultConfig from './config/default';
-import { FallbackPage, LogLevel } from './config/types';
 import {
   LOG_LEVEL,
   EVENT_CONFIG_GET_ROUTING,
@@ -13,8 +11,10 @@ import {
   EVENT_CONFIG_GET_DOCS_SOURCE,
 } from '../constants';
 
-import getPreloadAPI, { applyPreloadMiddleware } from './prelaod';
+import defaultConfig from './config/default';
+import type { FallbackPage, LogLevel } from './config/types';
 import getCustomElementsAPI, { getCustomElementsTagNames } from './custom-elements';
+import getPreloadAPI, { applyPreloadMiddleware } from './prelaod';
 import applySkinCSS from './skin';
 
 const CONFIG_PATH = 'webcardinal.json';
@@ -37,7 +37,7 @@ export default class ApplicationController {
       path = path.slice(0, -1);
     }
     return path;
-  };
+  };ApplicationController
 
   private _initBaseURL() {
     const getBaseElementHref = () => {
@@ -212,7 +212,7 @@ export default class ApplicationController {
      * @deprecated
      */
     const getSkins = () => {
-      let skins = getRaw('skins');
+      const skins = getRaw('skins');
       if (skins) {
         console.warn(
           [
@@ -389,5 +389,9 @@ export default class ApplicationController {
       const request = this.pendingRequests.pop();
       this._provideConfiguration(request.configKey, request.callback);
     }
+  }
+
+  getConfig() {
+    return this.config;
   }
 }

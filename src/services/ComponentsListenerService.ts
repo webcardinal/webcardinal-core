@@ -1,3 +1,4 @@
+import { getWebCardinalConfig } from '../boot/context';
 import {
   EVENT_MODEL_GET,
   EVENT_PARENT_CHAIN_GET,
@@ -7,29 +8,31 @@ import {
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
 } from '../constants';
-import {extractCallback} from "../utils";
+import { extractCallback, URLHelper } from '../utils';
 
 interface ComponentsListenerServiceOptions {
   model?: any;
   translationModel?: any;
   tags?: any;
   routing?: any;
-  chain?:any
+  chain?: any;
 }
 
 class ComponentsListenerService {
   private readonly host: Element;
   private readonly tags: any;
   private readonly routing: any;
-  private readonly chain:any;
+  private readonly chain: any;
   private listeners: {
-    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting' | 'getParentChain']: (event: CustomEvent) => void;
+    [key in 'getModel' | 'getTranslationModel' | 'getTags' | 'getRouting' | 'getParentChain']: (
+      event: CustomEvent,
+    ) => void;
   } = {
     getModel: () => null,
     getTranslationModel: () => null,
     getTags: () => null,
     getRouting: () => null,
-    getParentChain:()=>null
+    getParentChain: () => null,
   };
 
   constructor(host: Element, { model, translationModel, tags, routing, chain }: ComponentsListenerServiceOptions) {
@@ -46,10 +49,10 @@ class ComponentsListenerService {
           let chain = event.detail.chain;
           if (!chain.startsWith(MODEL_CHAIN_PREFIX)) {
             console.warn(
-                [
-                  `Invalid chain found for ${event} (chain: "${chain}")!`,
-                  `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
-                ].join('\n'),
+              [
+                `Invalid chain found for ${event} (chain: "${chain}")!`,
+                `A valid chain must start with "${MODEL_CHAIN_PREFIX}".`,
+              ].join('\n'),
             );
             callback(undefined, model);
             return;
@@ -64,7 +67,6 @@ class ComponentsListenerService {
     }
 
     if (translationModel) {
-
       this.listeners.getTranslationModel = (event: CustomEvent) => {
         event.stopImmediatePropagation();
 
@@ -75,10 +77,10 @@ class ComponentsListenerService {
           let chain = event.detail.chain;
           if (!chain.startsWith(TRANSLATION_CHAIN_PREFIX)) {
             console.warn(
-                [
-                  `Invalid chain found for ${event} (chain: "${chain}")!`,
-                  `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
-                ].join('\n'),
+              [
+                `Invalid chain found for ${event} (chain: "${chain}")!`,
+                `A valid chain must start with "${TRANSLATION_CHAIN_PREFIX}".`,
+              ].join('\n'),
             );
             callback(undefined, translationModel);
             return;
@@ -104,7 +106,9 @@ class ComponentsListenerService {
           if (!this.tags[event.detail.tag]) {
             return callback(`There is no page tag "${event.detail.tag}" registered in webcardinal.json`);
           }
-          return callback(undefined, this.tags[event.detail.tag]);
+          const config = getWebCardinalConfig();
+          const { pathname } = URLHelper.join(config.routing.baseURL, this.tags[event.detail.tag]);
+          return callback(undefined, pathname);
         }
 
         return callback(undefined, this.tags);
@@ -123,14 +127,14 @@ class ComponentsListenerService {
       };
     }
 
-    if (typeof chain !== "undefined") {
+    if (typeof chain !== 'undefined') {
       this.chain = chain;
       this.listeners.getParentChain = (event: CustomEvent) => {
         event.stopImmediatePropagation();
         const callback = extractCallback(event);
         if (!callback) return;
         callback(undefined, this.chain);
-      }
+      };
     }
   }
 
@@ -152,7 +156,7 @@ class ComponentsListenerService {
     };
   }
 
-  get getParentChain(){
+  get getParentChain() {
     const eventName = EVENT_PARENT_CHAIN_GET;
     return {
       add: () => this.host.addEventListener(eventName, this.listeners.getParentChain),

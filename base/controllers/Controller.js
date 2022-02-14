@@ -445,6 +445,11 @@ export default class Controller {
               console.error(error);
               return;
             }
+            if (typeof path === 'object') {
+              console.warn(`Tag "${tag}" can not be found in all the available routes`, path)
+              return;
+            }
+
             this.navigateToUrl(path, state);
           },
         },

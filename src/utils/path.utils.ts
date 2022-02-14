@@ -109,11 +109,5 @@ export function getPathname(): string {
     // trim pathname if ends with "/", except for the corner case when pathname === "/"
     pathname = pathname.slice(0, -1);
   }
-
-  if (window.parent !== window) {
-    // presumption that current WebCardinal app is in a SSAPP
-    return URLHelper.join(window.WebCardinal.basePath, pathname).pathname
-  }
-
   return pathname;
 }

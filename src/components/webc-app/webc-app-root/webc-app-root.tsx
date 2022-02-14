@@ -1,8 +1,9 @@
-import type { EventEmitter} from '@stencil/core';
+import type { EventEmitter } from '@stencil/core';
 import { Component, Event, h, Prop, Watch } from '@stencil/core';
 import type { HTMLStencilElement } from '@stencil/core/internal';
 
 import ApplicationController from '../../../boot/ApplicationController';
+import { setWebCardinalConfig } from '../../../boot/context';
 import { CP_WEBC_APP_ROOT_MOBILE_BREAKPOINT, CP_WEBC_APP_ROOT_MODE, HOOK_TYPE } from '../../../constants';
 import { HostElement } from '../../../decorators';
 import { promisifyEventEmit } from '../../../utils';
@@ -84,6 +85,7 @@ export class WebcAppRoot {
 
     const controller = new ApplicationController(this.host);
     await controller.process(this.preload);
+    setWebCardinalConfig(controller);
 
     window.WebCardinal.root = this.host;
     window.WebCardinal.loader = this._loaderElement;
@@ -163,7 +165,6 @@ export class WebcAppRoot {
                 this.host.insertBefore(mobileElements.menu, elements.container);
               }
             } else {
-
               this.menuRef = elements.menu;
               if (!this.disableHeader) {
                 this.host.style.setProperty(CP_WEBC_APP_ROOT_MODE, ` ${initialMode}`);
@@ -197,7 +198,7 @@ export class WebcAppRoot {
     }
   }
 
-  private callHook = async (type) => {
+  private callHook = async type => {
     if (!window.WebCardinal.hooks) {
       return;
     }
@@ -211,4 +212,3 @@ export class WebcAppRoot {
     return <slot />;
   }
 }
-

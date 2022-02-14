@@ -34,7 +34,10 @@ export class WebcAppMenuItem {
   @Method()
   async activate() {
     if (['vertical', 'horizontal', 'mobile'].includes(this.mode)) {
-      if (this.host.getAttribute('url') === window.location.pathname) {
+      const url = this.host.getAttribute('url') || '';
+      const { pathname } = window.location;
+
+      if (url === pathname) {
         let element = this.host;
         element.setAttribute('active', '');
 
@@ -103,7 +106,7 @@ export class WebcAppMenuItem {
 
   async componentWillLoad() {
     if (!this.url) {
-      this.url = join(this.item.path).pathname;
+      this.url = join(this.basePath, this.item.path).pathname;
     }
     if (this.url === '') {
       this.url = '/';
