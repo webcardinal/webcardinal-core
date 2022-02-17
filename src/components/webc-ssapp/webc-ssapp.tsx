@@ -113,7 +113,14 @@ export class WebcSsapp {
 
     while (currentWindow !== parentWindow) {
       currentWindow = parentWindow;
-      parentWindow = currentWindow.parent;
+
+      //we need to prevent cors errors when from a frame with document.domain we are trying to access a frame with a different document.domain
+      //CORS related issue fix
+      try{
+        if(currentWindow.parent.document){
+          parentWindow = currentWindow.parent;
+        }
+      } catch(e){}
     }
 
     return { currentWindow, parentWindow };
