@@ -262,6 +262,9 @@ export namespace Components {
         "params": { [indexer: string]: string };
         "seed": string;
     }
+    interface WebcSwitch {
+        "condition": string;
+    }
     interface WebcTemplate {
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
@@ -384,6 +387,12 @@ declare global {
         prototype: HTMLWebcSsappElement;
         new (): HTMLWebcSsappElement;
     };
+    interface HTMLWebcSwitchElement extends Components.WebcSwitch, HTMLStencilElement {
+    }
+    var HTMLWebcSwitchElement: {
+        prototype: HTMLWebcSwitchElement;
+        new (): HTMLWebcSwitchElement;
+    };
     interface HTMLWebcTemplateElement extends Components.WebcTemplate, HTMLStencilElement {
     }
     var HTMLWebcTemplateElement: {
@@ -408,6 +417,7 @@ declare global {
         "webc-skin": HTMLWebcSkinElement;
         "webc-spinner": HTMLWebcSpinnerElement;
         "webc-ssapp": HTMLWebcSsappElement;
+        "webc-switch": HTMLWebcSwitchElement;
         "webc-template": HTMLWebcTemplateElement;
     }
 }
@@ -701,6 +711,9 @@ declare namespace LocalJSX {
         "params"?: { [indexer: string]: string };
         "seed"?: string;
     }
+    interface WebcSwitch {
+        "condition"?: string;
+    }
     interface WebcTemplate {
         /**
           * If it is not specified, all the markup coming <code>template</code> attribute will be placed inside innerHTML after the unnamed slot. Otherwise the content will replace the <code>webc-template</code> element form DOM.
@@ -738,6 +751,7 @@ declare namespace LocalJSX {
         "webc-skin": WebcSkin;
         "webc-spinner": WebcSpinner;
         "webc-ssapp": WebcSsapp;
+        "webc-switch": WebcSwitch;
         "webc-template": WebcTemplate;
     }
 }
@@ -762,6 +776,7 @@ declare module "@stencil/core" {
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
             "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
             "webc-ssapp": LocalJSX.WebcSsapp & JSXBase.HTMLAttributes<HTMLWebcSsappElement>;
+            "webc-switch": LocalJSX.WebcSwitch & JSXBase.HTMLAttributes<HTMLWebcSwitchElement>;
             "webc-template": LocalJSX.WebcTemplate & JSXBase.HTMLAttributes<HTMLWebcTemplateElement>;
         }
     }
