@@ -46,6 +46,9 @@ export const IF_TRUE_CONDITION_SLOT_NAME = 'true';
 export const IF_FALSE_CONDITION_SLOT_NAME = 'false';
 export const IF_NO_DATA_SLOT_NAME = 'no-data';
 export const IF_LOADIBNG_SLOT_NAME = 'loading';
+export const IF_OPTIONS = `${IF_ATTRIBUTE}-options`;
+export const IF_EVENTS = 'events';
+export const IF_CONTENT_UPDATED_EVENT = 'content-updated';
 
 // skin.css
 export const ID_DEFAULT_SKIN_CSS = 'webc-skin-default-stylesheet';

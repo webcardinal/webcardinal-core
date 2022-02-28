@@ -1,8 +1,11 @@
 import {
   IF_ATTRIBUTE,
+  IF_CONTENT_UPDATED_EVENT,
+  IF_EVENTS,
   IF_FALSE_CONDITION_SLOT_NAME,
   IF_LOADIBNG_SLOT_NAME,
   IF_NO_DATA_SLOT_NAME,
+  IF_OPTIONS,
   IF_TRUE_CONDITION_SLOT_NAME,
   MODEL_CHAIN_PREFIX,
   TRANSLATION_CHAIN_PREFIX,
@@ -18,6 +21,10 @@ import {
 } from '../../utils';
 
 import type { BindElementOptions } from './binding-service-utils';
+
+function getIfOptions(element: Element) {
+  return (element.getAttribute(IF_OPTIONS) || '').split(' ').filter(String);
+}
 
 export function handleDataIfAttributePresence(
   element: Element,
@@ -35,6 +42,8 @@ export function handleDataIfAttributePresence(
 
   conditionChain = conditionChain.slice(1);
   const completeConditionChain = getCompleteChain(chainPrefix, conditionChain);
+  const ifOptions = getIfOptions(element);
+  const areEventsActivated = ifOptions.includes(IF_EVENTS);
 
   const children = Array.from(element.children);
 
@@ -163,6 +172,19 @@ export function handleDataIfAttributePresence(
 
     if (mustUpdateVisibleContent) {
       setVisibleContent();
+
+      if (areEventsActivated) {
+        element.dispatchEvent(
+          new CustomEvent(IF_CONTENT_UPDATED_EVENT, {
+            bubbles: true,
+            cancelable: true,
+            composed: true,
+            detail: {
+              value
+            }
+          }),
+        );
+      }
     }
   };
 
