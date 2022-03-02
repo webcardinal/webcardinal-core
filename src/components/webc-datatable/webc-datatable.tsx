@@ -545,7 +545,7 @@ export class WebcDatatable {
 
   @Watch('pageSize')
   async pageSizeHandler() {
-    this.dataSource._renderPageAsync();
+    this.dataSource?._renderPageAsync();
   }
 
   render() {
