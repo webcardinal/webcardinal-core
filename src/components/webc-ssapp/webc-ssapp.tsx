@@ -29,6 +29,8 @@ export class WebcSsapp {
 
   private componentInitialized = false;
 
+  private iFrame: HTMLIFrameElement;
+
   @Event({
     bubbles: true,
     cancelable: true,
@@ -62,7 +64,6 @@ export class WebcSsapp {
   }
 
   componentDidLoad() {
-    let iframe = this.element.querySelector('iframe');
     console.log('#### Trying to register ssapp reference');
     // getInstanceRegistry().addSSAppReference(this.appName, iframe);
 
@@ -72,8 +73,8 @@ export class WebcSsapp {
 
     console.log(`### Trying to add listener to iframe document`);
     const self = this;
-    iframe.addEventListener('load', () => {
-      iframe.contentWindow.addEventListener('ssapp-action', self.handleActionFromWindow.bind(self));
+    this.iFrame.addEventListener('load', () => {
+      self.iFrame.contentWindow.addEventListener('ssapp-action', self.handleActionFromWindow.bind(self));
     });
   }
 
@@ -141,10 +142,9 @@ export class WebcSsapp {
 
   private ssappEventHandler(e) {
     const data = e.detail || {};
-    let iframe = this.element.querySelector('iframe');
 
     if (data.query === 'seed') {
-      iframe.contentWindow.document.dispatchEvent(
+      this.iFrame.contentWindow.document.dispatchEvent(
         new CustomEvent(this.digestKeySsiHex, {
           detail: {
             seed: this.seed,
@@ -157,11 +157,11 @@ export class WebcSsapp {
     if (data.status === 'completed') {
       const signalFinishLoading = () => {
         this.sendLoadingProgress(100);
-        iframe.removeEventListener('load', signalFinishLoading);
+        this.iFrame.removeEventListener('load', signalFinishLoading);
       };
 
-      iframe.addEventListener('load', signalFinishLoading);
-      iframe.contentWindow.location.reload();
+      this.iFrame.addEventListener('load', signalFinishLoading);
+      this.iFrame.contentWindow.location.reload();
     }
   }
 
@@ -235,6 +235,7 @@ export class WebcSsapp {
           width: '100%',
         }}
         src={iframeSrc}
+        ref={el => this.iFrame = el as HTMLIFrameElement}
       />
     );
   }
