@@ -52,7 +52,7 @@
       &.centered {
         display: flex;
         align-items: center;
-        min-height: calc(100% - calc(var(--margin)) * 2);
+        min-height: 100vh;
       }
     }
 
