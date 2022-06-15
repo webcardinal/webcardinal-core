@@ -57,7 +57,7 @@ export namespace Components {
     }
     interface WebcAppMenu {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>   <psk-code>    <base href="/my-custom-base">   </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
          */
         "basePath": string;
         /**
@@ -107,7 +107,7 @@ export namespace Components {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base/sub-path/">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>   <psk-code>    <base href="/my-custom-base/sub-path/">   </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath": string;
         /**
@@ -284,6 +284,54 @@ export namespace Components {
         "template": string;
     }
 }
+export interface WebcAppIdentityCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcAppIdentityElement;
+}
+export interface WebcAppLoaderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcAppLoaderElement;
+}
+export interface WebcAppMenuCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcAppMenuElement;
+}
+export interface WebcAppRootCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcAppRootElement;
+}
+export interface WebcAppRouterCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcAppRouterElement;
+}
+export interface WebcContainerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcContainerElement;
+}
+export interface WebcDatatableCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcDatatableElement;
+}
+export interface WebcDocsCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcDocsElement;
+}
+export interface WebcLinkCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcLinkElement;
+}
+export interface WebcModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcModalElement;
+}
+export interface WebcSsappCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcSsappElement;
+}
+export interface WebcTemplateCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcTemplateElement;
+}
 declare global {
     interface HTMLWebcAppContainerElement extends Components.WebcAppContainer, HTMLStencilElement {
     }
@@ -442,7 +490,7 @@ declare namespace LocalJSX {
         /**
           * All properties enumerated before are automatically filled by webc-app-identity when this event is fired from <code>ApplicationController</code>.
          */
-        "onWebcardinal:config:getIdentity"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getIdentity"?: (event: WebcAppIdentityCustomEvent<any>) => void;
     }
     interface WebcAppLoader {
         /**
@@ -460,7 +508,7 @@ declare namespace LocalJSX {
         /**
           * Routing configuration received from <code>webc-app-router</code>.
          */
-        "onWebcardinal:routing:get"?: (event: CustomEvent<RoutingState>) => void;
+        "onWebcardinal:routing:get"?: (event: WebcAppLoaderCustomEvent<RoutingState>) => void;
         /**
           * If this property is set, WebCardinal.state.page will be saved for current page session.
          */
@@ -480,7 +528,7 @@ declare namespace LocalJSX {
     }
     interface WebcAppMenu {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base">    </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>   <psk-code>    <base href="/my-custom-base">   </psk-code> </psk-example>  Both <code>webc-app-menu</code> and <code>webc-app-router</code> must share the same <code>basePath</code>.
          */
         "basePath"?: string;
         /**
@@ -495,7 +543,7 @@ declare namespace LocalJSX {
         /**
           * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
-        "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getRouting"?: (event: WebcAppMenuCustomEvent<any>) => void;
     }
     interface WebcAppMenuItem {
         "basePath"?: string;
@@ -528,7 +576,7 @@ declare namespace LocalJSX {
         /**
           * LogLevel configuration is received from <code>ApplicationController</code> when this event is fired.<br>
          */
-        "onWebcardinal:config:getLogLevel"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getLogLevel"?: (event: WebcAppRootCustomEvent<any>) => void;
         /**
           * Path to a JavaScript file which is loaded before configuration from <code>webcardinal.json</code> is applied.<br>
          */
@@ -536,7 +584,7 @@ declare namespace LocalJSX {
     }
     interface WebcAppRouter {
         /**
-          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>    <psk-code>     <base href="/my-custom-base/sub-path/">    </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
+          * There is the possibility to change the base path of your application, using <code>base</code> HTML Element: <psk-example>   <psk-code>    <base href="/my-custom-base/sub-path/">   </psk-code> </psk-example>  Both <code>webc-app-router</code> and <code>webc-app-menu</code> must share the same <code>basePath</code>.
          */
         "basePath"?: string;
         /**
@@ -546,7 +594,7 @@ declare namespace LocalJSX {
         /**
           * Routing configuration received from <code>ApplicationController</code>.<br> This configuration includes different settings for pages, skins, modals, etc.;
          */
-        "onWebcardinal:config:getRouting"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getRouting"?: (event: WebcAppRouterCustomEvent<any>) => void;
         /**
           * This Array is received from <code>ApplicationController</code>.
          */
@@ -564,12 +612,12 @@ declare namespace LocalJSX {
         /**
           * Through this event the model is received.
          */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-        "onWebcardinal:parentChain:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:model:get"?: (event: WebcContainerCustomEvent<any>) => void;
+        "onWebcardinal:parentChain:get"?: (event: WebcContainerCustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */
-        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: WebcContainerCustomEvent<any>) => void;
     }
     interface WebcDatatable {
         "chain"?: string;
@@ -581,11 +629,11 @@ declare namespace LocalJSX {
         /**
           * Through this event the model is received.
          */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:model:get"?: (event: WebcDatatableCustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */
-        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: WebcDatatableCustomEvent<any>) => void;
         "pageSize"?: number;
         "pageSizeDelta"?: number;
         "useInfiniteScroll"?: boolean;
@@ -603,14 +651,14 @@ declare namespace LocalJSX {
         /**
           * Gets the docs source for current component.<br> In <code>webcardinal.json</code>, if there is a key named <code>docsSource</code> with value <code>'local'</code>, all webc-docs components will be configured for local docs.<br> Default value for <code>docsSource</code> is <code>'github'</code>.
          */
-        "onWebcardinal:config:getDocsSource"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:config:getDocsSource"?: (event: WebcDocsCustomEvent<any>) => void;
     }
     interface WebcLink {
         "href"?: string | null;
         /**
           * Through this event a mapping (tag-page) with all tags is received from <code>webc-app-router</code>.
          */
-        "onWebcardinal:tags:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:tags:get"?: (event: WebcLinkCustomEvent<any>) => void;
         /**
           * A unique identifier for each page, which was previously set in <code>webcardinal.json</code>
          */
@@ -681,15 +729,15 @@ declare namespace LocalJSX {
         /**
           * Event that fires when the modal is pressed (only when the default footer is shown). The event will be passed with a boolean value to specify if the popup was closed due to a button press (true) or a click outside of the popup (false)
          */
-        "onClosed"?: (event: CustomEvent<boolean>) => void;
+        "onClosed"?: (event: WebcModalCustomEvent<boolean>) => void;
         /**
           * Event that fires when the confirm button is pressed (only when the default footer is shown).
          */
-        "onConfirmed"?: (event: CustomEvent<any>) => void;
+        "onConfirmed"?: (event: WebcModalCustomEvent<any>) => void;
         /**
           * Event that fires when the modal is initialised (after the modal content was successfully loaded).
          */
-        "onInitialised"?: (event: CustomEvent<HTMLElement>) => void;
+        "onInitialised"?: (event: WebcModalCustomEvent<HTMLElement>) => void;
         /**
           * The name of the model that will be loaded. The generated path will have the format <code>${basePath + skinPath}/modals/${template}.html</code>.
          */
@@ -707,7 +755,7 @@ declare namespace LocalJSX {
     interface WebcSsapp {
         "appName"?: string;
         "landingPath"?: string;
-        "onWindowAction"?: (event: CustomEvent<any>) => void;
+        "onWindowAction"?: (event: WebcSsappCustomEvent<any>) => void;
         "params"?: { [indexer: string]: string };
         "seed"?: string;
     }
@@ -722,12 +770,12 @@ declare namespace LocalJSX {
         /**
           * Through this event the model is received.
          */
-        "onWebcardinal:model:get"?: (event: CustomEvent<any>) => void;
-        "onWebcardinal:parentChain:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:model:get"?: (event: WebcTemplateCustomEvent<any>) => void;
+        "onWebcardinal:parentChain:get"?: (event: WebcTemplateCustomEvent<any>) => void;
         /**
           * Through this event the translation model is received.
          */
-        "onWebcardinal:translationModel:get"?: (event: CustomEvent<any>) => void;
+        "onWebcardinal:translationModel:get"?: (event: WebcTemplateCustomEvent<any>) => void;
         /**
           * The name of the template that will be loaded. The generated path will have the format <code>${basePath + skinPath}/templates/${template}.html</code>.
          */
