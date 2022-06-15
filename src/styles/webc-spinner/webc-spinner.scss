@@ -1,3 +1,4 @@
+@use "sass:math";
 webc-spinner {
   /**
    * @prop --animation
@@ -54,7 +55,7 @@ webc-spinner {
       transform: rotate($i * -40deg);
 
       &::after {
-        animation-delay: calc(#{$i / -10} * var(--animation-delay));
+        animation-delay: calc( math.div($i, -10) * var(--animation-delay));
       }
     }
   }

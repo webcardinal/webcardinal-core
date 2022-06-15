@@ -1,0 +1,36 @@
+{
+  "filePath": "./src/components/webc-switch/webc-switch.tsx",
+  "fileName": "webc-switch.tsx",
+  "tag": "webc-switch",
+  "usage": {},
+  "docs": "",
+  "docsTags": [],
+  "encapsulation": "shadow",
+  "dependents": [],
+  "dependencies": [],
+  "dependencyGraph": {},
+  "props": [
+    {
+      "name": "condition",
+      "type": "string",
+      "mutable": false,
+      "attr": "condition",
+      "reflectToAttr": false,
+      "docs": "",
+      "docsTags": [],
+      "values": [
+        {
+          "type": "string"
+        }
+      ],
+      "optional": false,
+      "required": false
+    }
+  ],
+  "methods": [],
+  "events": [],
+  "styles": [],
+  "slots": [],
+  "parts": [],
+  "listeners": []
+}
