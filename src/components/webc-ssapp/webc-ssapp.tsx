@@ -21,6 +21,8 @@ export class WebcSsapp {
 
   @Prop({ attribute: 'params', mutable: false, reflect: false }) params: { [indexer: string]: string };
 
+  @Prop({ attribute: 'basicSetup', mutable: false, reflect: false }) basicSetup: boolean = false;
+
   @State() digestKeySsiHex;
 
   @State() parsedParams;
@@ -215,8 +217,13 @@ export class WebcSsapp {
 
     // we are in a context in which SW are not enabled so the iframe must be identified by the seed
     const $$ = window['$$'];
-    const iframeKeySsi =
+    let iframeKeySsi =
       $$.SSAPP_CONTEXT && $$.SSAPP_CONTEXT.BASE_URL && $$.SSAPP_CONTEXT.SEED ? this.seed : this.digestKeySsiHex;
+
+    if(this.basicSetup){
+      basePath = "/";
+      iframeKeySsi = this.seed;
+    }
 
     return basePath + 'iframe/' + iframeKeySsi + this.getQueryParams();
   }
