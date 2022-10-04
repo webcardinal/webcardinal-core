@@ -241,7 +241,12 @@ export default class Controller {
         chain = chain.slice(1);
         //has root chain '@'
         if (!chain) {
-          model = _model;
+            if(typeof _model.hasExpression === "function") {
+                // _model is already a root PskBindableModel
+                model = _model;
+            } else {
+                model = PskBindableModel.setModel(_model);
+            }
         } else {
           model = PskBindableModel.setModel(_model);
         }
