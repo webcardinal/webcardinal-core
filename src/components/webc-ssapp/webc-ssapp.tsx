@@ -21,7 +21,7 @@ export class WebcSsapp {
 
   @Prop({ attribute: 'params', mutable: false, reflect: false }) params: { [indexer: string]: string };
 
-  @Prop({ attribute: 'basicSetup', mutable: false, reflect: false }) basicSetup: boolean = false;
+  @Prop({ attribute: 'basic-setup', mutable: false, reflect: false }) basicSetup: boolean = false;
 
   @State() digestKeySsiHex;
 
