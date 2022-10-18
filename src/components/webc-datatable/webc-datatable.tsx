@@ -217,8 +217,6 @@ export class WebcDatatable {
 
       // Real life scenario reveals that this solution is more optimal than multiple BindingService.bindElement
       // also 'data-for' would be affected in the above use-case
-
-      console.log(hiddenWrapper.childNodes);
     };
 
     return {
