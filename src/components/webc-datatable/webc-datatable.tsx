@@ -54,9 +54,12 @@ export class WebcDatatable {
 
   @Prop({ reflect: true }) useInfiniteScroll = false;
 
+  @Prop({ mutable: true, attribute: 'infinite-scroll-position' }) infiniteScrollPosition = "bottom";
+
   @Prop({ reflect: true }) useOptimisticMode = false;
 
   @Prop({ reflect: true, mutable: true }) loading = false;
+
 
   /**
    * Through this event the model is received.
@@ -144,9 +147,33 @@ export class WebcDatatable {
     dataTable.setAttribute(FOR_TEMPLATE_SIZE, `${this.childrenCount}`);
     dataTable.setAttribute(FOR_ATTRIBUTE, `${MODEL_CHAIN_PREFIX}${DATA_INTERNAL_CHAIN}`);
     dataTable.setAttribute(FOR_OPTIONS, `${FOR_EVENTS}${this.useOptimisticMode ? ` ${FOR_OPTIMISTIC}` : ''}`);
+
+    // @ts-ignore
+    if(typeof this.gotoBottom === "undefined"){
+      // @ts-ignore
+      this.gotoBottom = this.useInfiniteScroll && this.infiniteScrollPosition === "top";
+    } 
     dataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, event => {
+      //this method will be called each time the data-for refreshs the content
       event.stopPropagation();
       dataTable.prepend(...header);
+      //we need to scroll bottom if we use infiniteScroll and scroll position top
+      //@ts-ignore  
+      if (this.gotoBottom === true) {
+        // we are trying to scroll bottom only the first time if needed according to gotoBoffom flag
+        let content;
+        try {
+          content = document.querySelector('ion-content');
+        }
+        catch (e) {
+          console.log(e);
+          return;
+        }
+        // @ts-ignore
+        content.scrollToBottom();
+        // @ts-ignore
+        this.gotoBottom = false;
+      }
     });
     dataTable.addEventListener(FOR_CONTENT_UPDATED_EVENT, event => {
       event.stopPropagation();
@@ -190,6 +217,8 @@ export class WebcDatatable {
 
       // Real life scenario reveals that this solution is more optimal than multiple BindingService.bindElement
       // also 'data-for' would be affected in the above use-case
+
+      console.log(hiddenWrapper.childNodes);
     };
 
     return {
@@ -218,7 +247,6 @@ export class WebcDatatable {
     } = this.createDataTableWithPagination();
 
     internDataTable.removeAttribute('slot');
-
     const ionContent = document.createElement('ion-content') as any;
     ionContent.style.setProperty('--background', 'transparent');
     ionContent.scrollY = false;
@@ -263,6 +291,7 @@ export class WebcDatatable {
         ionInfiniteContent.loadingText = webcSpinner.outerHTML;
       }
       this.infinitScroll = document.createElement('ion-infinite-scroll');
+      this.infinitScroll.setAttribute('position', this.infiniteScrollPosition);
       this.infinitScroll.classList.add('infinite-scroll-enabled', 'infinite-scroll-loading');
 
       let currentPageIndex = 0;
@@ -273,11 +302,13 @@ export class WebcDatatable {
         await this.dataSource._renderPageAsync(currentPageIndex);
         window.requestAnimationFrame(() => this.infinitScroll.complete());
       });
+
+
       this.infinitScroll.append(ionInfiniteContent);
       this.infinitScroll.componentOnReady().then(() => {
         ionContent.style.height = `var(--height, ${internDataTable.scrollHeight + this.infinitScroll.scrollHeight}px)`;
       });
-      ionContent.append(this.infinitScroll);
+      this.infiniteScrollPosition === 'top' ? ionContent.prepend(this.infinitScroll) : ionContent.append(this.infinitScroll);
     };
 
     internDataTable.addEventListener(FOR_CONTENT_REPLACED_EVENT, internDataTableCallback);
@@ -397,7 +428,6 @@ export class WebcDatatable {
       ? this.createDataTableWithInfiniteScroll()
       : this.createDataTableWithPagination();
     this.host.append(dataTable);
-
     BindingService.bindChildNodes(this.host, {
       model: this.model,
       translationModel: this.translationModel,
@@ -477,7 +507,7 @@ export class WebcDatatable {
         return;
       }
 
-      if (isDataEmpty()) {
+      if (isDataEmpty() && this.infinitScroll) {
         this.infinitScroll.disabled = true;
         return;
       }
@@ -487,7 +517,10 @@ export class WebcDatatable {
         return;
       }
 
-      this.infinitScroll.disabled = false;
+      if(this.infinitScroll){
+        this.infinitScroll.disabled = false;
+      }
+      
 
       renderDataSlotIfNotExist();
 
@@ -495,12 +528,20 @@ export class WebcDatatable {
         this.model.data = [];
       }
 
-      this.model.data.push(...data);
+      if (this.infiniteScrollPosition === 'top') {
+        this.model.data.unshift(...data);
+      }
+      else {
+        this.model.data.push(...data);
+      }
+
 
       // if there will be no data to fetch in the future disable infinite scrolling
       // more precise, all the date from the datasource is now shown in datatable
       if (typeof this.dataSize === 'number' && this.dataSize === this.model.data.length) {
-        this.infinitScroll.disabled = true;
+        if(this.infinitScroll){
+          this.infinitScroll.disabled = true;
+        }        
         return;
       }
 
@@ -560,4 +601,5 @@ export class WebcDatatable {
       </Host>
     ) : null;
   }
+
 }

@@ -7,18 +7,19 @@
 
 ## Properties
 
-| Property            | Attribute             | Description | Type      | Default     |
-| ------------------- | --------------------- | ----------- | --------- | ----------- |
-| `chain`             | `datasource`          |             | `string`  | `undefined` |
-| `curentPageIndex`   | `curent-page-index`   |             | `number`  | `0`         |
-| `dataSize`          | `data-size`           |             | `number`  | `undefined` |
-| `hidePagination`    | `hide-pagination`     |             | `boolean` | `false`     |
-| `lastPageIndex`     | `last-page-index`     |             | `number`  | `0`         |
-| `loading`           | `loading`             |             | `boolean` | `false`     |
-| `pageSize`          | `page-size`           |             | `number`  | `0`         |
-| `pageSizeDelta`     | `page-size-delta`     |             | `number`  | `2`         |
-| `useInfiniteScroll` | `use-infinite-scroll` |             | `boolean` | `false`     |
-| `useOptimisticMode` | `use-optimistic-mode` |             | `boolean` | `false`     |
+| Property                 | Attribute                  | Description | Type      | Default     |
+| ------------------------ | -------------------------- | ----------- | --------- | ----------- |
+| `chain`                  | `datasource`               |             | `string`  | `undefined` |
+| `curentPageIndex`        | `curent-page-index`        |             | `number`  | `0`         |
+| `dataSize`               | `data-size`                |             | `number`  | `undefined` |
+| `hidePagination`         | `hide-pagination`          |             | `boolean` | `false`     |
+| `infiniteScrollPosition` | `infinite-scroll-position` |             | `string`  | `"bottom"`  |
+| `lastPageIndex`          | `last-page-index`          |             | `number`  | `0`         |
+| `loading`                | `loading`                  |             | `boolean` | `false`     |
+| `pageSize`               | `page-size`                |             | `number`  | `0`         |
+| `pageSizeDelta`          | `page-size-delta`          |             | `number`  | `2`         |
+| `useInfiniteScroll`      | `use-infinite-scroll`      |             | `boolean` | `false`     |
+| `useOptimisticMode`      | `use-optimistic-mode`      |             | `boolean` | `false`     |
 
 
 ## Events

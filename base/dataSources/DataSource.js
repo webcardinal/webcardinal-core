@@ -9,6 +9,7 @@ export default class DataSource {
    * @param {number} [options.pageSizeDelta=2]
    * @param {boolean} [options.useOptimisticMode=false]
    * @param {boolean} [options.useInfiniteScroll=false]
+   * @param {string} [options.infiniteScrollPosition='bottom']
    */
   constructor(options) {
     if (!options) {
@@ -29,7 +30,9 @@ export default class DataSource {
     if (typeof options.useInfiniteScroll !== 'boolean') {
       options.useInfiniteScroll = false;
     }
-
+    if (options.infiniteScrollPosition === undefined) {
+      options.infiniteScrollPosition = 'bottom';
+    }
     this.options = options;
     this.translationModel = PskBindableModel.setModel(getTranslationModel() || {});
     this.model = PskBindableModel.setModel({ data: [] });
@@ -153,6 +156,7 @@ export default class DataSource {
     const element = this.getElement();
     element.useOptimisticMode = this.options.useOptimisticMode;
     element.useInfiniteScroll = this.options.useInfiniteScroll;
+    element.infiniteScrollPosition=this.options.infiniteScrollPosition;
     element.pageSizeDelta = this.options.pageSizeDelta;
 
     this.setPageSize(this.options.pageSize);
