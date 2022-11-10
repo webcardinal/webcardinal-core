@@ -94,6 +94,10 @@ export class WebcContainer {
 
         const chain = this.chain ? this.chain.slice(1) : null;
         model = model.getChainValue(chain);
+        if(this.chain) {
+            // model has been reset to a part of the original model, so the chain must also be reset in order to be synched
+            this.chain = "@"; 
+        }
 
         this.controllerInstance = await this.loadController(controllerElement, history, model, translationModel);
       } catch (error) {
