@@ -144,6 +144,7 @@ export namespace Components {
         "dataSize": number | undefined;
         "fillCurrentPage": (data: any) => Promise<void>;
         "hidePagination": boolean;
+        "infiniteScrollPosition": string;
         "lastPageIndex": number;
         "loading": boolean;
         "pageSize": number;
@@ -258,6 +259,14 @@ export namespace Components {
     }
     interface WebcSsapp {
         "appName": string;
+        "basicSetup": boolean;
+        "landingPath": string;
+        "params": { [indexer: string]: string };
+        "seed": string;
+    }
+    interface WebcSsappSecure {
+        "appName": string;
+        "basicSetup": boolean;
         "landingPath": string;
         "params": { [indexer: string]: string };
         "seed": string;
@@ -327,6 +336,10 @@ export interface WebcModalCustomEvent<T> extends CustomEvent<T> {
 export interface WebcSsappCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLWebcSsappElement;
+}
+export interface WebcSsappSecureCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLWebcSsappSecureElement;
 }
 export interface WebcTemplateCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -435,6 +448,12 @@ declare global {
         prototype: HTMLWebcSsappElement;
         new (): HTMLWebcSsappElement;
     };
+    interface HTMLWebcSsappSecureElement extends Components.WebcSsappSecure, HTMLStencilElement {
+    }
+    var HTMLWebcSsappSecureElement: {
+        prototype: HTMLWebcSsappSecureElement;
+        new (): HTMLWebcSsappSecureElement;
+    };
     interface HTMLWebcSwitchElement extends Components.WebcSwitch, HTMLStencilElement {
     }
     var HTMLWebcSwitchElement: {
@@ -465,6 +484,7 @@ declare global {
         "webc-skin": HTMLWebcSkinElement;
         "webc-spinner": HTMLWebcSpinnerElement;
         "webc-ssapp": HTMLWebcSsappElement;
+        "webc-ssapp-secure": HTMLWebcSsappSecureElement;
         "webc-switch": HTMLWebcSwitchElement;
         "webc-template": HTMLWebcTemplateElement;
     }
@@ -624,6 +644,7 @@ declare namespace LocalJSX {
         "curentPageIndex"?: number;
         "dataSize"?: number | undefined;
         "hidePagination"?: boolean;
+        "infiniteScrollPosition"?: string;
         "lastPageIndex"?: number;
         "loading"?: boolean;
         /**
@@ -754,8 +775,17 @@ declare namespace LocalJSX {
     }
     interface WebcSsapp {
         "appName"?: string;
+        "basicSetup"?: boolean;
         "landingPath"?: string;
         "onWindowAction"?: (event: WebcSsappCustomEvent<any>) => void;
+        "params"?: { [indexer: string]: string };
+        "seed"?: string;
+    }
+    interface WebcSsappSecure {
+        "appName"?: string;
+        "basicSetup"?: boolean;
+        "landingPath"?: string;
+        "onWindowAction"?: (event: WebcSsappSecureCustomEvent<any>) => void;
         "params"?: { [indexer: string]: string };
         "seed"?: string;
     }
@@ -799,6 +829,7 @@ declare namespace LocalJSX {
         "webc-skin": WebcSkin;
         "webc-spinner": WebcSpinner;
         "webc-ssapp": WebcSsapp;
+        "webc-ssapp-secure": WebcSsappSecure;
         "webc-switch": WebcSwitch;
         "webc-template": WebcTemplate;
     }
@@ -824,6 +855,7 @@ declare module "@stencil/core" {
             "webc-skin": LocalJSX.WebcSkin & JSXBase.HTMLAttributes<HTMLWebcSkinElement>;
             "webc-spinner": LocalJSX.WebcSpinner & JSXBase.HTMLAttributes<HTMLWebcSpinnerElement>;
             "webc-ssapp": LocalJSX.WebcSsapp & JSXBase.HTMLAttributes<HTMLWebcSsappElement>;
+            "webc-ssapp-secure": LocalJSX.WebcSsappSecure & JSXBase.HTMLAttributes<HTMLWebcSsappSecureElement>;
             "webc-switch": LocalJSX.WebcSwitch & JSXBase.HTMLAttributes<HTMLWebcSwitchElement>;
             "webc-template": LocalJSX.WebcTemplate & JSXBase.HTMLAttributes<HTMLWebcTemplateElement>;
         }
