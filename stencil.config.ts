@@ -31,6 +31,6 @@ export const config: WebCardinalConfig = {
     sass()
   ],
   testing: {
-    browserHeadless: false
+    browserArgs: ['--no-sandbox', '--disable-setuid-sandbox']
   }
 };
