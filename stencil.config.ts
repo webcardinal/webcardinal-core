@@ -29,5 +29,8 @@ export const config: WebCardinalConfig = {
   ],
   plugins: [
     sass()
-  ]
+  ],
+  testing: {
+    browserHeadless: false
+  }
 };
