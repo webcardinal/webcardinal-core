@@ -22,11 +22,11 @@ import { getPagination } from './webc-datatable.utils';
 const DATA_INTERNAL_CHAIN = `data`;
 
 /**
- * @slot -
- * @slot before -
- * @slot header -
- * @slot footer -
- * @slot after -
+ * @slot before - ui fragment displayed before table (no matter if table contains data or empty)
+ * @slot header - contains table header (column title) 
+ * @slot footer - contains table footer (column footer)
+ * @slot after - ui fragment displayed after table 
+ * for examples check https://webcardinal.github.io/webcardinal-workspace/tests/manual/webc-datatable/1
  */
 @Component({
   tag: 'webc-datatable',
